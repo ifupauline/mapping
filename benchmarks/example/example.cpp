@@ -15,12 +15,12 @@ int main(void)
         vector<struct bin> lst_bins_wfdu_f;
 
         /* parameters */
-        prm.n = 1000;
+        prm.n = 100;
         prm.s = 100;
         prm.c = 100;
-        prm.k = 69;
         prm.cp = 4;
         prm.a = -1;
+        prm.phi = 80;
 
         /* generate set of items and initialize context */
         gen_data_set(lst_itms, prm);

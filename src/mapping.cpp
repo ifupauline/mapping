@@ -7,9 +7,9 @@ static void find_single_fit(vector<struct item> &lst_itms,
 
         start = clock();
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].size == ctx.prm.k) {
+                if (lst_itms[i].size == ctx.prm.phi) {
                         for (int j = 0; j < ctx.bins_count; j++) {
-                                if (lst_bins[j].cap_rem == ctx.prm.k) {
+                                if (lst_bins[j].cap_rem == ctx.prm.phi) {
                                         add_itm_to_bin(lst_bins, 
                                                         lst_itms[i], 
                                                         lst_bins[j].id, ctx);
@@ -36,11 +36,11 @@ static void find_double_fit(vector<struct item> &lst_itms,
                                         lst_itms[j].is_allocated == YES) 
                                 continue;
 
-                        if (lst_itms[i].size + lst_itms[j].size == ctx.prm.k)
+                        if (lst_itms[i].size + lst_itms[j].size == ctx.prm.phi)
                         {
 
                                 for (int k = 0; k < ctx.bins_count; k++) {
-                                        if (lst_bins[k].cap_rem == ctx.prm.k) {
+                                        if (lst_bins[k].cap_rem == ctx.prm.phi) {
                                                 add_itm_to_bin(lst_bins, 
                                                                 lst_itms[i], 
                                                                 lst_bins[k].id, ctx);
@@ -61,7 +61,7 @@ void add_bin(vector<struct bin> &lst_bins, struct context &ctx)
 {
         struct bin tmp_bin;
         tmp_bin.id = ctx.bins_count;
-        tmp_bin.cap_rem = ctx.prm.k;
+        tmp_bin.cap_rem = ctx.prm.phi;
         lst_bins.push_back(tmp_bin);
         ctx.bins_count++;
         printf("Bin %d Created\n", ctx.bins_count - 1);

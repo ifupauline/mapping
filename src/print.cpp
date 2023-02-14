@@ -10,13 +10,13 @@ static void standard_deviation(vector<struct bin> &lst_bins, struct context &ctx
         unsigned int n = lst_bins.size();
 
         for (unsigned int i = 0; i < n; i++) {
-                sum += (ctx.prm.k - lst_bins[i].cap_rem);
+                sum += (ctx.prm.phi - lst_bins[i].cap_rem);
         }
 
         mean = sum / n;
 
         for (unsigned int i = 0; i < n; i++) {
-                ctx.standard_dev = (ctx.prm.k - lst_bins[i].cap_rem) - mean;
+                ctx.standard_dev = (ctx.prm.phi - lst_bins[i].cap_rem) - mean;
                 sumsqr += ctx.standard_dev * ctx.standard_dev;
         }
         variance = sumsqr / n;
@@ -28,7 +28,7 @@ static void approximation_ratio(vector<struct item> &lst_itms, struct context &c
         int min_nbr_cuts = 0;
 
         for (unsigned int i = 0; i < lst_itms.size(); i++)  {
-                if (lst_itms[i].size > ctx.prm.k)
+                if (lst_itms[i].size > ctx.prm.phi)
                         min_nbr_cuts++;
         }
         ctx.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
@@ -40,11 +40,6 @@ static void comp_time(struct context &ctx)
         ctx.alloc_time = ctx.alloc_time * MSEC;
         ctx.frag_time = ctx.frag_time * MSEC;
         ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.frag_time;
-}
-
-static void fragmentation_rate(struct context &ctx)
-{
-        ctx.frag_rate = (float)ctx.cuts_count / (float)ctx.prm.n;
 }
 
 void comp_stats(vector<struct bin> &lst_bins, vector<struct item> &lst_itms, 
@@ -86,7 +81,6 @@ void comp_stats(vector<struct bin> &lst_bins, vector<struct item> &lst_itms,
         }
 
         comp_time(ctx);
-        fragmentation_rate(ctx);
         standard_deviation(lst_bins, ctx);
         approximation_ratio(lst_itms, ctx);
 }
@@ -143,7 +137,7 @@ void print_lst_bins(vector<struct bin> &lst_bins, struct context &ctx)
 
                 printf("+====================+\n");
                 printf("|Bin %d:       \n", lst_bins[i].id);
-                printf("|Load:    %u\n", ctx.prm.k - lst_bins[i].cap_rem);
+                printf("|Load:    %u\n", ctx.prm.phi - lst_bins[i].cap_rem);
                 printf("|--------------------|\n");
 
                 for (unsigned int j = 0; j < lst_bins[i].vc_itms.size(); j++) {
@@ -269,18 +263,18 @@ void print_stats(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
         comp_stats(lst_bins, lst_itms, ctx);
 
         printf("------------------------------------------->\n");
-        printf("N:  %u\n", ctx.prm.n);
-        printf("S:  %u\n", ctx.prm.s);
-        printf("C:  %u\n", ctx.prm.c);
-        printf("k:  %u\n", ctx.prm.k);
+        printf("N:    %u\n", ctx.prm.n);
+        printf("S:    %u\n", ctx.prm.s);
+        printf("C:    %u\n", ctx.prm.c);
+        printf("phi:  %u\n", ctx.prm.phi);
         if (ctx.prm.cp == 0) 
-                printf("cp: %u --> no fragmentation allowed\n", ctx.prm.cp);
+                printf("cp:   %u --> no fragmentation allowed\n", ctx.prm.cp);
         else
-                printf("cp: %u\n", ctx.prm.cp);
+                printf("cp:   %u\n", ctx.prm.cp);
         if (ctx.prm.a == BFDU_F)
-                printf("A:  BFDU_F\n");
+                printf("A:    BFDU_F\n");
         if (ctx.prm.a == WFDU_F)
-                printf("A:  WFDU_F\n");
+                printf("A:    WFDU_F\n");
         printf("------------------------------------------->\n");
         printf("Min Number of Bins:   %d\n", ctx.bins_min);
         printf("Cycles Count:         %d\n", ctx.cycl_count);
@@ -305,7 +299,6 @@ void print_stats(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
         }
         printf("Execution Time:       %f ms\n", ctx.e_time);
         printf("Load Distribution:    %f\n", ctx.standard_dev);
-        printf("Fragmentation Rate:   %f\n", ctx.frag_rate);
         printf("------------------------------------------->\n");
         printf("Approximation Ratio:  %f\n", ctx.opti_bins);
         printf("------------------------------------------->\n");

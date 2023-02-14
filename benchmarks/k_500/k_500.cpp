@@ -2,12 +2,11 @@
 
 #define STEP     2
 #define ITER     25
-#define POOLSIZE 1000
+#define SIMNBR   500
 
 static char const *cmd_gnuplot_ar[] = {};
 static char const *cmd_gnuplot_et[] = {};
 static char const *cmd_gnuplot_ld[] = {};
-static char const *cmd_gnuplot_fr[] = {};
 
 static void k_500(vector<struct b_stats> &v_stts_bfdu_f, 
                 vector<struct b_stats> &v_stts_wfdu_f)
@@ -18,20 +17,20 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
         prm.n = 500;
         prm.s = 100;
         prm.c = 100;
-        prm.k = 100;
         prm.cp = 4;
+        prm.phi = 100;
 
-        for(int i = 0; i < ITER; i++) {
+        for (int i = 0; i < ITER; i++) {
                 struct b_stats stts_bfdu_f;
                 struct b_stats stts_wfdu_f;
 
-                prm.k -= STEP;
+                prm.phi -= STEP;
                 stts_bfdu_f = {0};
                 stts_wfdu_f = {0};
-                stts_bfdu_f.k = prm.k;
-                stts_wfdu_f.k = prm.k;
+                stts_bfdu_f.phi = prm.phi;
+                stts_wfdu_f.phi = prm.phi;
 
-                for (int j = 0; j < POOLSIZE; j++) {
+                for (int j = 0; j < SIMNBR; j++) {
                         struct context ctx;
                         vector<struct item> lst_itms;
                         vector<struct bin> lst_bins;
@@ -68,18 +67,14 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
                         stts_wfdu_f.mean_ld += ctx_wfdu_f.standard_dev;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.e_time;
                         stts_wfdu_f.mean_et += ctx_wfdu_f.e_time;               
-                        stts_bfdu_f.mean_fr += ctx_bfdu_f.frag_rate;
-                        stts_wfdu_f.mean_fr += ctx_wfdu_f.frag_rate;
                 }
                 /* mean */
-                stts_bfdu_f.mean_ar /= (float)POOLSIZE;
-                stts_wfdu_f.mean_ar /= (float)POOLSIZE;
-                stts_bfdu_f.mean_et /= (float)POOLSIZE;
-                stts_wfdu_f.mean_et /= (float)POOLSIZE;
-                stts_bfdu_f.mean_ld /= (float)POOLSIZE;
-                stts_wfdu_f.mean_ld /= (float)POOLSIZE;
-                stts_bfdu_f.mean_fr /= (float)POOLSIZE;
-                stts_wfdu_f.mean_fr /= (float)POOLSIZE;
+                stts_bfdu_f.mean_ar /= (float)SIMNBR;
+                stts_wfdu_f.mean_ar /= (float)SIMNBR;
+                stts_bfdu_f.mean_et /= (float)SIMNBR;
+                stts_wfdu_f.mean_et /= (float)SIMNBR;
+                stts_bfdu_f.mean_ld /= (float)SIMNBR;
+                stts_wfdu_f.mean_ld /= (float)SIMNBR;
                 v_stts_bfdu_f.push_back(stts_bfdu_f);
                 v_stts_wfdu_f.push_back(stts_wfdu_f);
         }
@@ -99,8 +94,6 @@ int main(void)
         FILE *gnuplot_wfdu_f_et = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_bfdu_f_ld = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_wfdu_f_ld = (FILE*)popen("gnuplot -persistent", "w");
-        FILE *gnuplot_bfdu_f_fr = (FILE*)popen("gnuplot -persistent", "w");
-        FILE *gnuplot_wfdu_f_fr = (FILE*)popen("gnuplot -persistent", "w");
 
         FILE *bfdu_f_ar = (FILE*)fopen("data.bfdu_f_ar_k500", "w");
         FILE *wfdu_f_ar = (FILE*)fopen("data.wfdu_f_ar_k500", "w");
@@ -108,8 +101,6 @@ int main(void)
         FILE *wfdu_f_et = (FILE*)fopen("data.wfdu_f_et_k500", "w");
         FILE *bfdu_f_ld = (FILE*)fopen("data.bfdu_f_ld_k500", "w");
         FILE *wfdu_f_ld = (FILE*)fopen("data.wfdu_f_ld_k500", "w");
-        FILE *bfdu_f_fr = (FILE*)fopen("data.bfdu_f_fr_k500", "w");
-        FILE *wfdu_f_fr = (FILE*)fopen("data.wfdu_f_fr_k500", "w");
 
         write_data_to_file(bfdu_f_ar, v_stts_bfdu_f, B_AR, ITER);
         write_data_to_file(wfdu_f_ar, v_stts_wfdu_f, B_AR, ITER);
@@ -117,13 +108,11 @@ int main(void)
         write_data_to_file(wfdu_f_et, v_stts_wfdu_f, B_ET, ITER);
         write_data_to_file(bfdu_f_ld, v_stts_bfdu_f, B_LD, ITER);
         write_data_to_file(wfdu_f_ld, v_stts_wfdu_f, B_LD, ITER);
-        write_data_to_file(bfdu_f_fr, v_stts_bfdu_f, B_FR, ITER);
-        write_data_to_file(wfdu_f_fr, v_stts_wfdu_f, B_FR, ITER);
 
         cmd_gnuplot_ar[0] = "set title 'Approximation Ratio (Bins)'";
         cmd_gnuplot_ar[1] = "set xrange [100:45]";
         cmd_gnuplot_ar[2] = "set yrange [1:1.3]";
-        cmd_gnuplot_ar[3] = "set xlabel 'k'";
+        cmd_gnuplot_ar[3] = "set xlabel 'phi'";
         cmd_gnuplot_ar[4] = "set ylabel 'approximation ratio'";
         cmd_gnuplot_ar[5] = "plot 'data.bfdu_f_ar_k500' with linespoint lc 22 pointtype 22";
         cmd_gnuplot_ar[6] = "replot 'data.wfdu_f_ar_k500' with linespoint lc 7 pointtype 7";
@@ -132,7 +121,7 @@ int main(void)
         cmd_gnuplot_et[0] = "set title 'Execution Time (ms)'";
         cmd_gnuplot_et[1] = "set xrange [100:45]";
         cmd_gnuplot_et[2] = "set yrange [0:22]";
-        cmd_gnuplot_et[3] = "set xlabel 'k'";
+        cmd_gnuplot_et[3] = "set xlabel 'phi'";
         cmd_gnuplot_et[4] = "set ylabel 'time (ms)'";
         cmd_gnuplot_et[5] = "plot 'data.bfdu_f_et_k500' with linespoint lc 22 pointtype 22";
         cmd_gnuplot_et[6] = "replot 'data.wfdu_f_et_k500' with linespoint lc 7 pointtype 7";
@@ -141,29 +130,18 @@ int main(void)
         cmd_gnuplot_ld[0] = "set title 'Load Distribution'";
         cmd_gnuplot_ld[1] = "set xrange [100:45]";
         cmd_gnuplot_ld[2] = "set yrange [0:20]";
-        cmd_gnuplot_ld[3] = "set xlabel 'k'";
+        cmd_gnuplot_ld[3] = "set xlabel 'phi'";
         cmd_gnuplot_ld[4] = "set ylabel 'standard deviation on U'";
         cmd_gnuplot_ld[5] = "plot 'data.bfdu_f_ld_k500' with linespoint lc 22 pointtype 22";
         cmd_gnuplot_ld[6] = "replot 'data.wfdu_f_ld_k500' with linespoint lc 7 pointtype 7";
         plot_data(gnuplot_bfdu_f_ld, cmd_gnuplot_ld, 7);
 
-        cmd_gnuplot_fr[0] = "set title 'Fragmentation Rate (per)'";
-        cmd_gnuplot_fr[1] = "set xrange [100:45]";
-        cmd_gnuplot_fr[2] = "set yrange [0:1.0]";
-        cmd_gnuplot_fr[3] = "set xlabel 'k'";
-        cmd_gnuplot_fr[4] = "set ylabel 'fragmentation rate'";
-        cmd_gnuplot_fr[5] = "plot 'data.bfdu_f_fr_k500' with linespoint lc 22 pointtype 22";
-        cmd_gnuplot_fr[6] = "replot 'data.wfdu_f_fr_k500' with linespoint lc 7 pointtype 7";
-        plot_data(gnuplot_bfdu_f_fr, cmd_gnuplot_fr, 7);
-
         fflush(gnuplot_bfdu_f_ar);
         fflush(gnuplot_bfdu_f_et);
         fflush(gnuplot_bfdu_f_ld);
-        fflush(gnuplot_bfdu_f_fr);
         fclose(gnuplot_wfdu_f_ar);
         fclose(gnuplot_wfdu_f_et);
         fclose(gnuplot_wfdu_f_ld);
-        fclose(gnuplot_wfdu_f_fr);
 
         return 0;
 }

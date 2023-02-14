@@ -5,8 +5,8 @@ static void helper(void)
         printf("[N]         --> is number of items of the instance\n");
         printf("[S]         --> is the maximum size of an item\n");
         printf("[C]         --> is the bin capacity\n");
-        printf("[k]         --> is a constraint on C, means that a bin cannot "
-                        "be filled more than K\n");
+        printf("[phi]       --> is a constraint on C, means that a bin cannot "
+                        "be filled more than PHI\n");
         exit(0);
 }
 
@@ -29,8 +29,8 @@ static void check_params(struct params &prm)
                 helper();
         }
 
-        if (prm.k > prm.c || prm.k < MINK) {
-                printf("Wrong Value for k, cannot be >= C or < %d\n", MINK);
+        if (prm.phi > prm.c || prm.phi < MINPHI) {
+                printf("Wrong Value for phi, cannot be >= C or < %d\n", MINPHI);
                 helper();
         }
 
@@ -90,7 +90,7 @@ static void gen_frag_size(int size, int &lf_tmp, int &rf_tmp, struct params &prm
         lf_tmp = gen_rand(1, size - 1); 
         rf_tmp = size - lf_tmp;
 
-        while (lf_tmp > prm.k || rf_tmp > prm.k) {
+        while (lf_tmp > prm.phi || rf_tmp > prm.phi) {
                 lf_tmp = gen_rand(1, size - 1);
                 rf_tmp = size - lf_tmp;
         }
@@ -114,12 +114,12 @@ static void gen_itm_size(struct item &itm, struct params &prm)
 {
         switch (prm.cp) {
                 case 0:
-                        itm.size = gen_rand(1, prm.k);
+                        itm.size = gen_rand(1, prm.phi);
                         break;
 
                 default:
                         //if (itm.nbr_cut == 0)
-                        //        itm.size = gen_rand(1, prm.k);
+                        //        itm.size = gen_rand(1, prm.phi);
                         //else
                         itm.size = gen_rand(itm.nbr_cut + 1, prm.s);
                         break;
@@ -162,7 +162,6 @@ void init_ctx(struct params &prm, struct context &ctx)
         ctx.e_time = 0.0;
         ctx.standard_dev = 0.0;
         ctx.opti_bins = 0.0;
-        ctx.frag_rate = 0.0;
         ctx.cycl_count = 0;
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
@@ -178,7 +177,7 @@ void comp_min_bins(vector<struct item> &lst_itms, struct context &ctx)
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += lst_itms[i].size;
 
-        ctx.bins_min = abs(ctx.itms_size / ctx.prm.k) + 1;
+        ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
 
         printf("Number of Items: %d\n", ctx.itms_nbr);
         printf("Total Size of Items: %u\n", ctx.itms_size);

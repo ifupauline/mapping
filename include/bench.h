@@ -11,11 +11,10 @@
 #include "mapping.h"
 
 struct b_stats {
-        int k;
+        int phi;
         float mean_ar;
         float mean_ld;
         float mean_et;
-        float mean_fr;
 };
 
 void concatenate(char p[], char q[]);

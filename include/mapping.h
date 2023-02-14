@@ -22,9 +22,9 @@
 #define MSEC 1000
 
 /* params */
-#define MINK  50
-#define MAXCP 10
-#define MAXC  100
+#define MINPHI  50
+#define MAXCP   10
+#define MAXC    100
 
 using namespace std;
 
@@ -32,7 +32,7 @@ struct params {
         int n;
         int s;
         int c;
-        int k;
+        int phi;
         int cp;
         int a;
 };
@@ -53,7 +53,6 @@ struct context {
         float e_time;
         float standard_dev;
         float opti_bins;
-        float frag_rate;
         struct params prm;
 };
 

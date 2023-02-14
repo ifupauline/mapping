@@ -18,7 +18,7 @@ static int find_worst_bin(vector<struct bin> &lst_bins, struct item &itm,
 {
         int worst_rem = -1;
         int bin_id = 0;
-        int tmp = ctx.prm.k;
+        int tmp = ctx.prm.phi;
         int is_found = NO;
 
         for (unsigned int i = 0; i < lst_bins.size(); i++) {
@@ -32,7 +32,7 @@ static int find_worst_bin(vector<struct bin> &lst_bins, struct item &itm,
                         is_found = YES;
                         continue;
                 }
-                if (itm.size > ctx.prm.k) 
+                if (itm.size > ctx.prm.phi) 
                         is_found = -2;
         }
         if (is_found == YES) 
@@ -78,8 +78,8 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                 l_worst_diff = -1;
                 r_worst_diff = -1;
 
-                l_diff = ctx.prm.k;
-                r_diff = ctx.prm.k;
+                l_diff = ctx.prm.phi;
+                r_diff = ctx.prm.phi;
 
                 l_val = itm.lst_cuts[i].c_pair.first;
                 r_val = itm.lst_cuts[i].c_pair.second;
@@ -139,7 +139,7 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                          * must be >= or else it will never find a cut for itm
                          * with a size twice the size of k.
                          */
-                        if (ctx.prm.k <= ctx.prm.s / 2) {
+                        if (ctx.prm.phi <= ctx.prm.s / 2) {
                                 if (tmp_cut.diff >= tmp_max) {
                                         tmp_max = tmp_cut.diff;
                                         cut = tmp_cut;
@@ -210,50 +210,49 @@ void wfdu_f(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
                 struct context &ctx)
 {
         int ret;
-        int need_bin = NO;
         int alloc_count = 0;
         clock_t start, end;
 
-        while (alloc_count != ctx.prm.n) {
+        /* STEP - 1, place all possible items in bins using WFDU */
+        printf("\n<--------------------------------------->\n");
+        printf("STEP 1, WFDU\n");
+        printf("<--------------------------------------->\n");
+        start = clock();
+        for (int i = 0; i < ctx.prm.n; i++) {
+                if (lst_itms[i].is_allocated == YES) 
+                        continue;
 
-                /* STEP - 1, place all possible items in bins using BFDU */
-                printf("\n<--------------------------------------->\n");
-                printf("STEP 1, WFDU\n");
-                printf("<--------------------------------------->\n");
-                start = clock();
-                for (int i = 0; i < ctx.prm.n; i++) {
-                        if (lst_itms[i].is_allocated == YES) 
-                                continue;
+                /* find best bin to fit itm */
+                ret = find_worst_bin(lst_bins, lst_itms[i], ctx);
 
-                        /* find best bin to fit itm */
-                        ret = find_worst_bin(lst_bins, lst_itms[i], ctx);
+                /* bin found add itm to it */
+                if (ret > -1) {
+                        printf("Worst Bin to accomodate Item %d is Bin %d\n", 
+                                        lst_itms[i].id, ret);
+                        add_itm_to_bin(lst_bins, lst_itms[i], ret, ctx);
+                        lst_itms[i].is_allocated = YES;
 
-                        /* bin found add itm to it */
-                        if (ret > -1) {
-                                printf("Worst Bin to accomodate Item %d is Bin %d\n", 
-                                                lst_itms[i].id, ret);
-                                add_itm_to_bin(lst_bins, lst_itms[i], ret, ctx);
-                                lst_itms[i].is_allocated = YES;
+                        /* no bin was found */
+                } else if (ret == -1) {
+                        printf("No Bin was found to accomodate Item %d\n", 
+                                        lst_itms[i].id);
 
-                                /* no bin was found */
-                        } else if (ret == -1) {
-                                printf("No Bin was found to accomodate Item %d\n", 
-                                                lst_itms[i].id);
-
-                                /* size bigger than K */
-                        } else if (ret == -2) {
-                                printf("Item %d of size %d bigger than K\n", 
-                                                lst_itms[i].id, lst_itms[i].size);
-                        }
+                        /* size bigger than PHI */
+                } else if (ret == -2) {
+                        printf("Item %d of size %d bigger than PHI\n", 
+                                        lst_itms[i].id, lst_itms[i].size);
                 }
+        }
 
-                end = clock();
-                ctx.alloc_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+        end = clock();
+        ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 
-                /* 
-                 * STEP - 2, try to place remaining items using fragmentation 
-                 * with pair 
-                 */
+        /* 
+         * STEP - 2, try to place remaining items using fragmentation 
+         * with pair 
+         */
+        while (alloc_count != ctx.prm.n) {
+                alloc_count = 0;
                 printf("\n<--------------------------------------->\n");
                 printf("STEP 2, WORST-FIT FRAGMENTATION\n");
                 printf("<--------------------------------------->\n");
@@ -269,27 +268,15 @@ void wfdu_f(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
                                         lst_itms[i].is_allocated = YES;
                                         lst_itms[i].is_fragmented = YES;
                                 } 
-                                if (ret == NO)
-                                        need_bin = YES;
+                                if (ret == NO) {
+                                        add_bin(lst_bins, ctx);
+                                        ctx.cycl_count++;
+                                }
                         }
                 }
 
                 end = clock();
                 ctx.frag_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-
-                if (need_bin == YES) {
-                        /* 
-                         * STEP - 3, minimum required bins are not enough 
-                         * therefore add bin 
-                         */
-                        printf("\n<--------------------------------------->\n");
-                        printf("STEP 3, INCREASE\n");
-                        printf("<--------------------------------------->\n");
-                        add_bin(lst_bins, ctx);
-                        ctx.cycl_count++;
-                        need_bin = NO;
-                        continue;
-                }
 
                 for (int i = 0; i < ctx.prm.n; i++) {
                         if (lst_itms[i].is_allocated == YES)

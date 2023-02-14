@@ -26,25 +26,19 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                 case B_AR: 
                         for (int i = 0; i < size; i++)
                                 fprintf(filename, "%f %f \n", 
-                                                (float)data[i].k, data[i].mean_ar);
+                                                (float)data[i].phi, data[i].mean_ar);
                         break;
 
                 case B_ET:
                         for (int i = 0; i < size; i++)
                                 fprintf(filename, "%f %f \n", 
-                                                (float)data[i].k, data[i].mean_et);
+                                                (float)data[i].phi, data[i].mean_et);
                         break;
 
                 case B_LD:
                         for (int i = 0; i < size; i++)
                                 fprintf(filename, "%f %f \n", 
-                                                (float)data[i].k, data[i].mean_ld);
-                        break;
-
-                case B_FR:
-                        for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f \n", 
-                                                (float)data[i].k, data[i].mean_fr);
+                                                (float)data[i].phi, data[i].mean_ld);
                         break;
 
                 default:
@@ -63,7 +57,7 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f,
 {
         for (int i = 0; i < iter; i++) {
                 printf("+===============+\n");
-                printf("| K: %d         |\n", v_stts_bfdu_f[i].k);
+                printf("| PHI: %d         |\n", v_stts_bfdu_f[i].phi);
                 printf("+===============+\n");
                 printf("BFDU_F.Approximation Ratio (Bins) : %f\n", v_stts_bfdu_f[i].mean_ar);
                 printf("WFDU_F.Approximation Ratio (Bins) : %f\n\n", v_stts_wfdu_f[i].mean_ar);
@@ -71,8 +65,6 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f,
                 printf("WFDU_F.Execution Time (ms)        : %f\n\n", v_stts_wfdu_f[i].mean_et);
                 printf("BFDU_F.Load Distribution (std_dev): %f\n", v_stts_bfdu_f[i].mean_ld);
                 printf("WFDU_F.Load Distribution (std_dev): %f\n\n", v_stts_wfdu_f[i].mean_ld);
-                printf("BFDU_F.Fragmentation Rate (per)   : %f\n", v_stts_bfdu_f[i].mean_fr);
-                printf("WFDU_F.Fragmentation Rate (per)   : %f\n", v_stts_wfdu_f[i].mean_fr);
                 printf("\n");
         }
 }
