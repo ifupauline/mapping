@@ -1,4 +1,4 @@
-#include "../include/mapping.h"
+#include "mapping.h"
 
 struct worst_cut {
         int id;

@@ -1,5 +1,5 @@
-#include "../include/print.h"
-#include "../include/bench.h"
+#include "print.h"
+#include "bench.h"
 
 static void standard_deviation(vector<struct bin> &lst_bins, struct context &ctx)
 {

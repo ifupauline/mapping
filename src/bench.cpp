@@ -1,4 +1,4 @@
-#include "../include/bench.h"
+#include "bench.h"
 
 void concatenate(char p[], char q[]) {
         int c;

@@ -1,4 +1,4 @@
-#include "../include/bench.h"
+#include "bench.h"
 
 #define STEP     2
 #define ITER     25

@@ -1,4 +1,4 @@
-#include "../include/mapping.h"
+#include "mapping.h"
 
 static void find_single_fit(vector<struct item> &lst_itms, 
                 vector<struct bin> &lst_bins, struct context &ctx)

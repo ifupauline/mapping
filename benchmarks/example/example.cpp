@@ -1,4 +1,4 @@
-#include "../include/print.h"
+#include "print.h"
 
 int main(void)
 {

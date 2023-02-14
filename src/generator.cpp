@@ -1,4 +1,4 @@
-#include "../include/mapping.h"
+#include "mapping.h"
 
 static void helper(void)
 {
