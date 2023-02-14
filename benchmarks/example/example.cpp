@@ -15,7 +15,7 @@ int main(void)
         vector<struct bin> lst_bins_wfdu_f;
 
         /* parameters */
-        prm.n = 100;
+        prm.n = 500;
         prm.s = 100;
         prm.c = 100;
         prm.cp = 4;

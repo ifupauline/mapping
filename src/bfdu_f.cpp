@@ -254,10 +254,12 @@ void bfdu_f(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
                                                         cut, ctx);
                                         lst_itms[i].is_allocated = YES;
                                         lst_itms[i].is_fragmented = YES;
+                                        continue;
                                 } 
                                 if (ret == NO) {
                                         add_bin(lst_bins, ctx);
                                         ctx.cycl_count++;
+                                        continue;
                                 }
                         }
                 }
