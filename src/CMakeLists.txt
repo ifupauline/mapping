@@ -1,6 +1,7 @@
 add_library(bpp-if
         SHARED
-        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp bench.cpp)
+        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp bench.cpp
+        sched_analysis.cpp)
 
 install (TARGETS bpp-if
         DESTINATION lib)
