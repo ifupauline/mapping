@@ -15,25 +15,18 @@
 #define YES 2
 
 /* algorithms */
-#define BFDU_F 0
-#define WFDU_F 1
-
-/* units */
-#define MSEC 1000
-
-/* params */
-#define MINPHI  50
-#define MAXCP   10
-#define MAXC    100
+#define BFDU_F 1
+#define WFDU_F 2
 
 using namespace std;
 
 struct params {
         int n;
-        int s;
         int c;
+        int s;
         int phi;
         int cp;
+        int fr;
         int a;
 };
 
@@ -76,16 +69,6 @@ struct bin {
         int cap_rem;
         vector<struct item> vc_itms;
 };
-
-/* instance */
-void gen_data_set(vector<struct item> &lst_itms, struct params &prm);
-
-void comp_min_bins(vector<struct item> &lst_itms, struct context &ctx);
-
-void comp_stats(vector<struct bin> &lst_bins, vector<struct item> &lst_itms, 
-                struct context &ctx);
-
-void init_ctx(struct params &prm, struct context &ctx);
 
 /* mapping */
 void generation(vector<struct bin> &lst_bins, struct context &ctx);

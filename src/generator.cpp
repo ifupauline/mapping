@@ -1,44 +1,5 @@
-#include "mapping.h"
-
-static void helper(void)
-{
-        printf("[N]         --> is number of items of the instance\n");
-        printf("[S]         --> is the maximum size of an item\n");
-        printf("[C]         --> is the bin capacity\n");
-        printf("[phi]       --> is a constraint on C, means that a bin cannot "
-                        "be filled more than PHI\n");
-        exit(0);
-}
-
-static void check_params(struct params &prm)
-{
-        if (prm.n <= 0) {
-                printf("Wrong Value for N, cannot be <= %d\n", 0);
-                helper();
-        }
-
-        if (prm.s <= 0 || prm.s > prm.c ||
-                        (prm.s <= prm.cp)) {
-                printf("Wrong Value for S, cannot be <= %d or > C "
-                                "or <= cp\n", 0);
-                helper();
-        }
-
-        if (prm.c < MAXC) {
-                printf("Wrong Value for C, cannot be < %d\n", MAXC);
-                helper();
-        }
-
-        if (prm.phi > prm.c || prm.phi < MINPHI) {
-                printf("Wrong Value for phi, cannot be >= C or < %d\n", MINPHI);
-                helper();
-        }
-
-        if (prm.cp < 0 || prm.cp > MAXCP) {
-                printf("Wrong Value for cp, %d < cp <= %d\n", 0, MAXCP);
-                helper();
-        }
-}
+#include "generator.h"
+#include "sched_analysis.h"
 
 static int cmp_dec(const struct item &a, const struct item &b)
 {
@@ -184,14 +145,13 @@ void comp_min_bins(vector<struct item> &lst_itms, struct context &ctx)
         printf("Minimum Number of Bins Required: %u\n", ctx.bins_min);
 }
 
-void gen_data_set(vector<struct item> &lst_itms, struct params &prm)
+void gen_item_set(vector<struct item> &lst_itms, struct params &prm)
 {
         printf("\n\n");
         printf("+=====================================+\n");
         printf("| INSTANCE GENERATION                 |\n");
         printf("+=====================================+\n");
 
-        check_params(prm);
         for (int i = 0; i < prm.n; i++) {
                 struct item itm;
                 itm.is_frag = NO;
@@ -208,4 +168,45 @@ void gen_data_set(vector<struct item> &lst_itms, struct params &prm)
         }
         sort_dec(lst_itms);
         assign_id(lst_itms, prm);
+}
+
+void gen_tc_set(vector<struct task_chain> &v_tc, struct params &prm)
+{
+        int task_nbr;
+        int ncount = 0;
+        int phicount = 0;
+
+        while (ncount != prm.n) {
+                struct task_chain tc;
+                tc.u = 0;
+                task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
+
+                for (int i = 0; i < task_nbr; i++) {
+                        struct task tau;
+                        tau.u = gen_rand(1, prm.s);
+                        tau.c = gen_rand(MINWCET, MAXWCET);
+                        tau.t = ceilf(((float)tau.c/(float)tau.u) * PERCENT);
+                        tau.d = tau.t; /* implicit deadline */
+                        tau.r = 0;
+                        tau.p = i + 1; /* 1 is highest priority */
+                        tau.id = i;
+
+                        tc.v_tasks.push_back(tau);
+                        tc.u += tau.u;
+                }
+                if (wcrt(tc.v_tasks) == SCHED_FAILED) {
+                        continue;
+
+                } else if (tc.u <= prm.c && phicount != prm.fr && tc.u > prm.phi) {
+                        v_tc.push_back(tc);
+                        ncount++;
+                        phicount++;
+                        continue;
+
+                } else if (tc.u <= prm.c && phicount == prm.fr) {
+                        v_tc.push_back(tc);
+                        ncount++;
+                        continue;
+                }
+        }
 }

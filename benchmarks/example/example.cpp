@@ -1,4 +1,5 @@
 #include "print.h"
+#include "generator.h"
 
 int main(void)
 {
@@ -23,7 +24,7 @@ int main(void)
         prm.phi = 80;
 
         /* generate set of items and initialize context */
-        gen_data_set(lst_itms, prm);
+        gen_item_set(lst_itms, prm);
 
         /* cmp min bins req */
         init_ctx(prm, ctx);

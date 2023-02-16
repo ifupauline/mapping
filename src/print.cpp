@@ -303,3 +303,25 @@ void print_stats(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
         printf("Approximation Ratio:  %f\n", ctx.opti_bins);
         printf("------------------------------------------->\n");
 }
+
+
+void print_task_chains(vector<struct task_chain> &v_tc)
+{
+        int tasknbr = 0;
+
+        for (unsigned int i = 0; i < v_tc.size(); i++) {
+                printf("---------------------------\n");
+                printf("tc.id: %d u: %d size: %lu\n", 
+                                i, v_tc[i].u, v_tc[i].v_tasks.size());
+                printf("---------------------------\n");
+                for (unsigned int j = 0; j < v_tc[i].v_tasks.size(); j++) {
+                        printf("tau %d: u: %d  c: %d  t: %d\n",
+                                        j, v_tc[i].v_tasks[j].u, 
+                                        v_tc[i].v_tasks[j].c, 
+                                        v_tc[i].v_tasks[j].t);
+                        tasknbr++;
+                }
+                printf("\n");
+        }
+        printf("Total Number of Tasks: %d\n", tasknbr);
+}

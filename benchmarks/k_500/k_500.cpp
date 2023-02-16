@@ -1,4 +1,5 @@
 #include "bench.h"
+#include "generator.h"
 
 #define STEP     2
 #define ITER     25
@@ -35,7 +36,7 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
                         vector<struct item> lst_itms;
                         vector<struct bin> lst_bins;
 
-                        gen_data_set(lst_itms, prm);
+                        gen_item_set(lst_itms, prm);
                         init_ctx(prm, ctx);
                         comp_min_bins(lst_itms, ctx);
 

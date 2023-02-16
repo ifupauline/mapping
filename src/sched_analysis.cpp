@@ -42,7 +42,7 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         }
 
         for (unsigned int i = 0; i < hp_tasks.size(); i++)
-                tmp += (ceil((double)r_prev/(double)hp_tasks[i].t) * hp_tasks[i].c);
+                tmp += (ceilf((float)r_prev/(float)hp_tasks[i].t) * hp_tasks[i].c);
 
         r_curr = tmp;
 
