@@ -175,7 +175,10 @@ void gen_tc_set(vector<struct task_chain> &v_tc, struct params &prm)
         int task_nbr;
         int ncount = 0;
         int phicount = 0;
+        int lf_size = 0;
+        int rf_size = 0;
 
+        /* generate task-chains set */
         while (ncount != prm.n) {
                 struct task_chain tc;
                 tc.u = 0;
@@ -194,6 +197,7 @@ void gen_tc_set(vector<struct task_chain> &v_tc, struct params &prm)
                         tc.v_tasks.push_back(tau);
                         tc.u += tau.u;
                 }
+
                 if (wcrt(tc.v_tasks) == SCHED_FAILED) {
                         continue;
 
@@ -208,5 +212,36 @@ void gen_tc_set(vector<struct task_chain> &v_tc, struct params &prm)
                         ncount++;
                         continue;
                 }
+        }
+
+        printf("\n");
+
+        /* generate cuts for each chain */
+        for (unsigned int i = 0; i < v_tc.size(); i++) {
+                /* iterate over tasks */
+                for (unsigned int j = 0; j < v_tc[i].v_tasks.size() - 1; j++) {
+                        struct cut c;
+                        lf_size += v_tc[i].v_tasks[j].u;
+                        rf_size = v_tc[i].u - lf_size;
+                        c.id = j;
+                        c.c_pair.first = lf_size;
+                        c.c_pair.second = rf_size;
+
+                        /* copy tasks to left fragment */
+                        for (unsigned int k = j; k >= 0; k--) {
+                                c.v_tasks_lf.push_back(v_tc[i].v_tasks[k]);
+                                /* for the first task */
+                                if (k == 0)
+                                        break;
+                        }
+
+                        /* copy tasks to right fragment */
+                        for (unsigned int k = j + 1; k <= v_tc[i].v_tasks.size() - 1; k++) {
+                                c.v_tasks_rf.push_back(v_tc[i].v_tasks[k]);
+                        }
+                        v_tc[i].lst_cuts.push_back(c);
+                }
+                lf_size = 0;
+                rf_size = 0;
         }
 }

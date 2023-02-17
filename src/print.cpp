@@ -310,10 +310,10 @@ void print_task_chains(vector<struct task_chain> &v_tc)
         int tasknbr = 0;
 
         for (unsigned int i = 0; i < v_tc.size(); i++) {
-                printf("---------------------------\n");
+                printf("===========================\n");
                 printf("tc.id: %d u: %d size: %lu\n", 
                                 i, v_tc[i].u, v_tc[i].v_tasks.size());
-                printf("---------------------------\n");
+                printf("===========================\n");
                 for (unsigned int j = 0; j < v_tc[i].v_tasks.size(); j++) {
                         printf("tau %d: u: %d  c: %d  t: %d\n",
                                         j, v_tc[i].v_tasks[j].u, 
@@ -321,7 +321,26 @@ void print_task_chains(vector<struct task_chain> &v_tc)
                                         v_tc[i].v_tasks[j].t);
                         tasknbr++;
                 }
-                printf("\n");
+                printf("---------------------------\n");
+                for (unsigned int j = 0; j < v_tc[i].lst_cuts.size(); j++) {
+                        printf("{%d, %d} ", v_tc[i].lst_cuts[j].c_pair.first, 
+                                        v_tc[i].lst_cuts[j].c_pair.second);
+                        printf("lf: ");
+
+                        for (unsigned int k = 0; k < v_tc[i].lst_cuts[j].v_tasks_lf.size(); k++)
+                                printf("%d", v_tc[i].lst_cuts[j].v_tasks_lf[k].id);
+
+                        printf(" ");
+                        printf("rf: ");
+
+                        for (unsigned int k = 0; k < v_tc[i].lst_cuts[j].v_tasks_rf.size(); k++)
+                                printf("%d", v_tc[i].lst_cuts[j].v_tasks_rf[k].id);
+
+                        printf("\n");
+                }
+                printf("---------------------------\n");
+                printf("\n\n");
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
+        printf("Total Number of Task-Chains: %lu\n", v_tc.size());
 }

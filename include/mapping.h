@@ -52,6 +52,8 @@ struct context {
 struct cut {
         int id;
         pair<int, int> c_pair;
+        vector<struct task> v_tasks_lf;
+        vector<struct task> v_tasks_rf;
 };
 
 struct item {
@@ -68,6 +70,22 @@ struct bin {
         int id;
         int cap_rem;
         vector<struct item> vc_itms;
+};
+
+struct task {
+        int c;
+        int t;
+        int d;
+        int u;
+        int p;
+        int r;
+        int id;
+};
+
+struct task_chain {
+        int u;
+        vector<struct task> v_tasks;
+        vector<struct cut> lst_cuts;
 };
 
 /* mapping */

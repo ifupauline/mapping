@@ -11,7 +11,7 @@ int main(void)
         prm.c = 100;
         prm.phi = 80;
         prm.s = prm.c * 0.20; /* max utilization rate for a task is 20% of C */
-        prm.fr = prm.n * 0.30; /* fragmentation rate, that is 50% of tc > phi */
+        prm.fr = prm.n * 0.20; /* fragmentation rate, that is 50% of tc > phi */
         prm.cp = 2;
 
         gen_tc_set(v_tc, prm);
