@@ -25,7 +25,6 @@ struct params {
         int c;
         int s;
         int phi;
-        int cp;
         int fr;
         int a;
 };
@@ -49,29 +48,6 @@ struct context {
         struct params prm;
 };
 
-struct cut {
-        int id;
-        pair<int, int> c_pair;
-        vector<struct task> v_tasks_lf;
-        vector<struct task> v_tasks_rf;
-};
-
-struct item {
-        int id;
-        int size;
-        int nbr_cut;
-        int is_frag;
-        int is_allocated;
-        int is_fragmented;
-        vector<struct cut> lst_cuts;
-};
-
-struct bin {
-        int id;
-        int cap_rem;
-        vector<struct item> vc_itms;
-};
-
 struct task {
         int c;
         int t;
@@ -82,32 +58,55 @@ struct task {
         int id;
 };
 
+struct cut {
+        int id;
+        pair<int, int> c_pair;
+        vector<struct task> v_tasks_lf;
+        vector<struct task> v_tasks_rf;
+};
+
 struct task_chain {
         int u;
         vector<struct task> v_tasks;
-        vector<struct cut> lst_cuts;
+        vector<struct cut> v_cuts;
+};
+
+struct item {
+        int id;
+        int size;
+        int nbr_cut;
+        int is_frag;
+        int is_allocated;
+        int is_fragmented;
+        struct task_chain tc;
+};
+
+struct bin {
+        int id;
+        int cap_rem;
+        vector<struct item> vc_itms;
 };
 
 /* mapping */
-void generation(vector<struct bin> &lst_bins, struct context &ctx);
+void generation(vector<struct bin> &v_bins, struct context &ctx);
 
-void reduction(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
-void allocation(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
 /* operations */
-void add_bin(vector<struct bin> &lst_bins, struct context &ctx);
+void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
-void add_itm_to_bin(vector<struct bin> &lst_bins, struct item &itm, int bin_id, 
+void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
                 struct context &ctx);
 
 /* algorithms */
-void bfdu_f(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
-void wfdu_f(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
 /* getters */

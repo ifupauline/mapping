@@ -15,10 +15,9 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
         struct params prm;
 
         /* params instance */
-        prm.n = 500;
+        prm.n = 10;
         prm.s = 100;
         prm.c = 100;
-        prm.cp = 4;
         prm.phi = 100;
 
         for (int i = 0; i < ITER; i++) {
@@ -33,35 +32,35 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
 
                 for (int j = 0; j < SIMNBR; j++) {
                         struct context ctx;
-                        vector<struct item> lst_itms;
-                        vector<struct bin> lst_bins;
+                        vector<struct item> v_itms;
+                        vector<struct bin> v_bins;
 
-                        gen_item_set(lst_itms, prm);
+                        gen_tc_set(v_itms, prm);
                         init_ctx(prm, ctx);
-                        comp_min_bins(lst_itms, ctx);
+                        comp_min_bins(v_itms, ctx);
 
                         struct context ctx_bfdu_f = ctx;
                         struct context ctx_wfdu_f = ctx;
                         ctx_bfdu_f.prm.a = BFDU_F;
                         ctx_wfdu_f.prm.a = WFDU_F;
 
-                        vector<struct item> lst_itms_bfdu_f = lst_itms;
-                        vector<struct item> lst_itms_wfdu_f = lst_itms;
-                        vector<struct bin> lst_bins_bfdu_f = lst_bins;
-                        vector<struct bin> lst_bins_wfdu_f = lst_bins;
+                        vector<struct item> v_itms_bfdu_f = v_itms;
+                        vector<struct item> v_itms_wfdu_f = v_itms;
+                        vector<struct bin> v_bins_bfdu_f = v_bins;
+                        vector<struct bin> v_bins_wfdu_f = v_bins;
 
-                        generation(lst_bins_bfdu_f, ctx_bfdu_f);
-                        generation(lst_bins_wfdu_f, ctx_wfdu_f);
+                        generation(v_bins_bfdu_f, ctx_bfdu_f);
+                        generation(v_bins_wfdu_f, ctx_wfdu_f);
 
-                        reduction(lst_itms_bfdu_f, lst_bins_bfdu_f, ctx_bfdu_f);
-                        reduction(lst_itms_wfdu_f, lst_bins_wfdu_f, ctx_wfdu_f);
+                        reduction(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+                        reduction(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
-                        allocation(lst_itms_bfdu_f, lst_bins_bfdu_f, ctx_bfdu_f);
-                        allocation(lst_itms_wfdu_f, lst_bins_wfdu_f, ctx_wfdu_f);
+                        allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+                        allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
                         /* stats */
-                        comp_stats(lst_bins_bfdu_f, lst_itms_bfdu_f, ctx_bfdu_f);
-                        comp_stats(lst_bins_wfdu_f, lst_itms_wfdu_f, ctx_wfdu_f);
+                        comp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
+                        comp_stats(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
                         stts_bfdu_f.mean_ar += ctx_bfdu_f.opti_bins;
                         stts_wfdu_f.mean_ar += ctx_wfdu_f.opti_bins;
                         stts_bfdu_f.mean_ld += ctx_bfdu_f.standard_dev;

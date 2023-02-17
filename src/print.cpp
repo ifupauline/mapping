@@ -1,34 +1,34 @@
 #include "print.h"
 #include "bench.h"
 
-static void standard_deviation(vector<struct bin> &lst_bins, struct context &ctx)
+static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
 {
         float sum = 0.0;
         float mean = 0.0;
         float sumsqr = 0.0;
         float variance = 0.0;
-        unsigned int n = lst_bins.size();
+        unsigned int n = v_bins.size();
 
         for (unsigned int i = 0; i < n; i++) {
-                sum += (ctx.prm.phi - lst_bins[i].cap_rem);
+                sum += (ctx.prm.phi - v_bins[i].cap_rem);
         }
 
         mean = sum / n;
 
         for (unsigned int i = 0; i < n; i++) {
-                ctx.standard_dev = (ctx.prm.phi - lst_bins[i].cap_rem) - mean;
+                ctx.standard_dev = (ctx.prm.phi - v_bins[i].cap_rem) - mean;
                 sumsqr += ctx.standard_dev * ctx.standard_dev;
         }
         variance = sumsqr / n;
         ctx.standard_dev = sqrt(variance) ;
 }
 
-static void approximation_ratio(vector<struct item> &lst_itms, struct context &ctx)
+static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx)
 {
         int min_nbr_cuts = 0;
 
-        for (unsigned int i = 0; i < lst_itms.size(); i++)  {
-                if (lst_itms[i].size > ctx.prm.phi)
+        for (unsigned int i = 0; i < v_itms.size(); i++)  {
+                if (v_itms[i].size > ctx.prm.phi)
                         min_nbr_cuts++;
         }
         ctx.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
@@ -42,7 +42,7 @@ static void comp_time(struct context &ctx)
         ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.frag_time;
 }
 
-void comp_stats(vector<struct bin> &lst_bins, vector<struct item> &lst_itms, 
+void comp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx)
 {
         vector<struct item> *v_frags_bfdu_f;
@@ -52,10 +52,10 @@ void comp_stats(vector<struct bin> &lst_bins, vector<struct item> &lst_itms,
         v_frags_wfdu_f = get_frags_wfdu_f();
 
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_fragmented == YES) 
+                if (v_itms[i].is_fragmented == YES) 
                         continue;
 
-                if (lst_itms[i].is_allocated == YES)
+                if (v_itms[i].is_allocated == YES)
                         ctx.alloc_count++;
         }
 
@@ -76,55 +76,55 @@ void comp_stats(vector<struct bin> &lst_bins, vector<struct item> &lst_itms,
         }
 
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_fragmented == YES) 
+                if (v_itms[i].is_fragmented == YES) 
                         ctx.cuts_count++;
         }
 
         comp_time(ctx);
-        standard_deviation(lst_bins, ctx);
-        approximation_ratio(lst_itms, ctx);
+        standard_deviation(v_bins, ctx);
+        approximation_ratio(v_itms, ctx);
 }
 
-void print_not_allocated(vector<struct item> &lst_itms, struct context &ctx)
+void print_not_allocated(vector<struct item> &v_itms, struct context &ctx)
 {
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_allocated == NO)
+                if (v_itms[i].is_allocated == NO)
                         printf("Item %d could not be allocated\n", 
-                                        lst_itms[i].id);
+                                        v_itms[i].id);
         }
 }
 
-void print_not_fragmented(vector<struct item> &lst_itms, struct context &ctx)
+void print_not_fragmented(vector<struct item> &v_itms, struct context &ctx)
 {
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_allocated == NO)
+                if (v_itms[i].is_allocated == NO)
                         printf("Item %d could not be fragmented\n", 
-                                        lst_itms[i].id);
+                                        v_itms[i].id);
         }
 }
 
-void print_lst_itms(vector<struct item> &lst_itms, struct context &ctx)
+void print_v_itms(vector<struct item> &v_itms, struct context &ctx)
 {
         printf("+=====================================+\n");
         printf("| PRINT ITEMS                         |\n");
         printf("+=====================================+\n");
 
         for (int i = 0; i < ctx.prm.n; i++) {
-                lst_itms[i].id = i;
-                printf("item.id: %u\n", lst_itms[i].id);
-                printf("item.size: %u\n", lst_itms[i].size);
-                printf("item.nbr_cut: %u\n", lst_itms[i].nbr_cut);
+                v_itms[i].id = i;
+                printf("item.id: %u\n", v_itms[i].id);
+                printf("item.size: %u\n", v_itms[i].size);
+                printf("item.nbr_cut: %u\n", v_itms[i].nbr_cut);
                 printf("set of cuts: ");
 
-                for (int j = 0; j < lst_itms[i].nbr_cut; j++) {
-                        printf("{%u,%u} ", lst_itms[i].lst_cuts[j].c_pair.first, 
-                                        lst_itms[i].lst_cuts[j].c_pair.second);
+                for (int j = 0; j < v_itms[i].nbr_cut; j++) {
+                        printf("{%u,%u} ", v_itms[i].tc.v_cuts[j].c_pair.first, 
+                                        v_itms[i].tc.v_cuts[j].c_pair.second);
                 }
                 printf("\n\n");
         }
 }
 
-void print_lst_bins(vector<struct bin> &lst_bins, struct context &ctx)
+void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 {
         printf("+=====================================+\n");
         if (ctx.prm.a == BFDU_F)
@@ -133,23 +133,23 @@ void print_lst_bins(vector<struct bin> &lst_bins, struct context &ctx)
                 printf("| PRINT BINS WFDU_F                   |\n");
         printf("+=====================================+\n\n");
 
-        for (unsigned int i = 0; i < lst_bins.size(); i++) {
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
 
                 printf("+====================+\n");
-                printf("|Bin %d:       \n", lst_bins[i].id);
-                printf("|Load:    %u\n", ctx.prm.phi - lst_bins[i].cap_rem);
+                printf("|Bin %d:       \n", v_bins[i].id);
+                printf("|Load:    %u\n", ctx.prm.phi - v_bins[i].cap_rem);
                 printf("|--------------------|\n");
 
-                for (unsigned int j = 0; j < lst_bins[i].vc_itms.size(); j++) {
+                for (unsigned int j = 0; j < v_bins[i].vc_itms.size(); j++) {
 
-                        if (lst_bins[i].vc_itms[j].is_frag == YES) {
+                        if (v_bins[i].vc_itms[j].is_frag == YES) {
                                 printf("|Frag: %u size %u\n", 
-                                                lst_bins[i].vc_itms[j].id, 
-                                                lst_bins[i].vc_itms[j].size);
+                                                v_bins[i].vc_itms[j].id, 
+                                                v_bins[i].vc_itms[j].size);
                         } else {
                                 printf("|Item: %u size %u\n", 
-                                                lst_bins[i].vc_itms[j].id, 
-                                                lst_bins[i].vc_itms[j].size);
+                                                v_bins[i].vc_itms[j].id, 
+                                                v_bins[i].vc_itms[j].size);
                         }
 
 
@@ -158,7 +158,7 @@ void print_lst_bins(vector<struct bin> &lst_bins, struct context &ctx)
         }
 }
 
-void print_vectors(vector<struct item> &lst_itms, struct context &ctx)
+void print_vectors(vector<struct item> &v_itms, struct context &ctx)
 {
         printf("\n+=====================================+\n");
         if (ctx.prm.a == BFDU_F)
@@ -180,8 +180,8 @@ void print_vectors(vector<struct item> &lst_itms, struct context &ctx)
 
         printf("Vector:\n");
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_allocated == NO) {
-                        printf(" %u ", lst_itms[i].size);
+                if (v_itms[i].is_allocated == NO) {
+                        printf(" %u ", v_itms[i].size);
                         count_not_alloc++;
                 }
         }
@@ -191,11 +191,11 @@ void print_vectors(vector<struct item> &lst_itms, struct context &ctx)
 
         printf("Vector:\n");
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_fragmented == YES) 
+                if (v_itms[i].is_fragmented == YES) 
                         continue;
 
-                if (lst_itms[i].is_allocated == YES) {
-                        printf(" %u ", lst_itms[i].size);
+                if (v_itms[i].is_allocated == YES) {
+                        printf(" %u ", v_itms[i].size);
                         count_is_alloc++;
                 }
         }
@@ -240,8 +240,8 @@ void print_vectors(vector<struct item> &lst_itms, struct context &ctx)
 
         printf("Vector:\n");
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_fragmented == YES) {
-                        printf(" %u ", lst_itms[i].size);
+                if (v_itms[i].is_fragmented == YES) {
+                        printf(" %u ", v_itms[i].size);
                         count_cut++;
                 }
         }
@@ -250,7 +250,7 @@ void print_vectors(vector<struct item> &lst_itms, struct context &ctx)
         printf("\n");
 }
 
-void print_stats(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
         printf("\n+=====================================+\n");
@@ -260,17 +260,13 @@ void print_stats(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
                 printf("| PRINT STATS WFDU_F                  |\n");
         printf("+=====================================+\n");
 
-        comp_stats(lst_bins, lst_itms, ctx);
+        comp_stats(v_bins, v_itms, ctx);
 
         printf("------------------------------------------->\n");
         printf("N:    %u\n", ctx.prm.n);
         printf("S:    %u\n", ctx.prm.s);
         printf("C:    %u\n", ctx.prm.c);
         printf("phi:  %u\n", ctx.prm.phi);
-        if (ctx.prm.cp == 0) 
-                printf("cp:   %u --> no fragmentation allowed\n", ctx.prm.cp);
-        else
-                printf("cp:   %u\n", ctx.prm.cp);
         if (ctx.prm.a == BFDU_F)
                 printf("A:    BFDU_F\n");
         if (ctx.prm.a == WFDU_F)
@@ -305,36 +301,36 @@ void print_stats(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
 }
 
 
-void print_task_chains(vector<struct task_chain> &v_tc)
+void print_task_chains(vector<struct item> &v_itms)
 {
         int tasknbr = 0;
 
-        for (unsigned int i = 0; i < v_tc.size(); i++) {
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
                 printf("===========================\n");
                 printf("tc.id: %d u: %d size: %lu\n", 
-                                i, v_tc[i].u, v_tc[i].v_tasks.size());
+                                i, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size());
                 printf("===========================\n");
-                for (unsigned int j = 0; j < v_tc[i].v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
                         printf("tau %d: u: %d  c: %d  t: %d\n",
-                                        j, v_tc[i].v_tasks[j].u, 
-                                        v_tc[i].v_tasks[j].c, 
-                                        v_tc[i].v_tasks[j].t);
+                                        j, v_itms[i].tc.v_tasks[j].u, 
+                                        v_itms[i].tc.v_tasks[j].c, 
+                                        v_itms[i].tc.v_tasks[j].t);
                         tasknbr++;
                 }
                 printf("---------------------------\n");
-                for (unsigned int j = 0; j < v_tc[i].lst_cuts.size(); j++) {
-                        printf("{%d, %d} ", v_tc[i].lst_cuts[j].c_pair.first, 
-                                        v_tc[i].lst_cuts[j].c_pair.second);
+                for (unsigned int j = 0; j < v_itms[i].tc.v_cuts.size(); j++) {
+                        printf("{%d, %d} ", v_itms[i].tc.v_cuts[j].c_pair.first, 
+                                        v_itms[i].tc.v_cuts[j].c_pair.second);
                         printf("lf: ");
 
-                        for (unsigned int k = 0; k < v_tc[i].lst_cuts[j].v_tasks_lf.size(); k++)
-                                printf("%d", v_tc[i].lst_cuts[j].v_tasks_lf[k].id);
+                        for (unsigned int k = 0; k < v_itms[i].tc.v_cuts[j].v_tasks_lf.size(); k++)
+                                printf("%d", v_itms[i].tc.v_cuts[j].v_tasks_lf[k].id);
 
                         printf(" ");
                         printf("rf: ");
 
-                        for (unsigned int k = 0; k < v_tc[i].lst_cuts[j].v_tasks_rf.size(); k++)
-                                printf("%d", v_tc[i].lst_cuts[j].v_tasks_rf[k].id);
+                        for (unsigned int k = 0; k < v_itms[i].tc.v_cuts[j].v_tasks_rf.size(); k++)
+                                printf("%d", v_itms[i].tc.v_cuts[j].v_tasks_rf[k].id);
 
                         printf("\n");
                 }
@@ -342,5 +338,5 @@ void print_task_chains(vector<struct task_chain> &v_tc)
                 printf("\n\n");
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
-        printf("Total Number of Task-Chains: %lu\n", v_tc.size());
+        printf("Total Number of Task-Chains: %lu\n\n", v_itms.size());
 }

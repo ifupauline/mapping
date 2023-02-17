@@ -71,7 +71,7 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                 return -1;
 
         /* check for a cut */
-        for (unsigned int i = 0; i < itm.lst_cuts.size(); i++) {
+        for (unsigned int i = 0; i < itm.tc.v_cuts.size(); i++) {
                 is_l_val_found = NO;
                 is_r_val_found = NO;
 
@@ -81,8 +81,8 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                 l_diff = ctx.prm.phi;
                 r_diff = ctx.prm.phi;
 
-                l_val = itm.lst_cuts[i].c_pair.first;
-                r_val = itm.lst_cuts[i].c_pair.second;
+                l_val = itm.tc.v_cuts[i].c_pair.first;
+                r_val = itm.tc.v_cuts[i].c_pair.second;
 
                 tmp_cut = {0};
 
@@ -97,7 +97,7 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                                 /* save the bin for worst fit */
                                 if (l_diff > l_worst_diff) {
                                         l_worst_diff = l_diff;
-                                        tmp_cut.id = itm.lst_cuts[i].id;
+                                        tmp_cut.id = itm.tc.v_cuts[i].id;
                                         tmp_cut.target_bin_lf = lst_bins[j].id;
                                         tmp_cut.lf_size = l_val;
                                 }
@@ -124,7 +124,7 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                                 /* save the bin for worst fit */
                                 if (r_diff > r_worst_diff) {
                                         r_worst_diff = r_diff;
-                                        tmp_cut.id = itm.lst_cuts[i].id;
+                                        tmp_cut.id = itm.tc.v_cuts[i].id;
                                         tmp_cut.target_bin_rf = lst_bins[j].id;
                                         tmp_cut.rf_size = r_val;
                                 }
