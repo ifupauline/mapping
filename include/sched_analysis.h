@@ -16,4 +16,6 @@ using namespace std;
 
 int wcrt(vector<struct task> &v_tasks);
 
+int sched_analysis(vector<struct bin> &v_bins, struct context &ctx);
+
 #endif /* SCHED_ANALYSIS_H */

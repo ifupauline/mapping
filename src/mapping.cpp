@@ -1,4 +1,5 @@
 #include "mapping.h"
+#include "sched_analysis.h"
 
 static void find_single_fit(vector<struct item> &v_itms, 
                 vector<struct bin> &v_bins, struct context &ctx)
@@ -61,6 +62,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 {
         struct bin tmp_bin;
         tmp_bin.id = ctx.bins_count;
+        tmp_bin.flag = -1;
         tmp_bin.cap_rem = ctx.prm.phi;
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
@@ -78,7 +80,7 @@ void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id,
                                 exit(0);
                         }
                         itm.is_allocated = YES;
-                        v_bins[i].vc_itms.push_back(itm);
+                        v_bins[i].v_itms.push_back(itm);
                         v_bins[i].cap_rem -= itm.size;
 
                         if (itm.is_frag == NO) {
@@ -147,5 +149,22 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("| ALLOCATION WFDU_F                   |\n");
                 printf("+=====================================+\n");
                 wfdu_f(v_itms, v_bins, ctx);
+        }
+}
+
+void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
+{
+        if (ctx.prm.a == BFDU_F) {
+                printf("+=====================================+\n");
+                printf("| ALLOCATION BFDU_F                   |\n");
+                printf("+=====================================+\n");
+                sched_analysis(v_bins, ctx);
+        }
+
+        if (ctx.prm.a == WFDU_F) {
+                printf("+=====================================+\n");
+                printf("| ALLOCATION WFDU_F                   |\n");
+                printf("+=====================================+\n");
+                sched_analysis(v_bins, ctx);
         }
 }

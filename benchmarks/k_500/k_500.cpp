@@ -16,9 +16,10 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
 
         /* params instance */
         prm.n = 10;
-        prm.s = 100;
         prm.c = 100;
+        prm.max_tu = prm.c * 0.20;  /* max utilization rate for a task is 20% of C */
         prm.phi = 100;
+        prm.fr = prm.n * 0.10; /* fragmentation rate, that is 10% of tc > phi */
 
         for (int i = 0; i < ITER; i++) {
                 struct b_stats stts_bfdu_f;

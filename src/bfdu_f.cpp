@@ -7,6 +7,7 @@ struct best_cut {
         int target_bin_lf;
         int target_bin_rf;
         int diff;
+        struct cut c;
 };
 
 static vector<struct item> frags_bfdu_f;
@@ -98,6 +99,7 @@ static int find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                                 if (l_diff < l_best_diff) {
                                         l_best_diff = l_diff;
                                         tmp_cut.id = itm.tc.v_cuts[i].id;
+                                        tmp_cut.c.v_tasks_lf = itm.tc.v_cuts[i].v_tasks_lf;
                                         tmp_cut.target_bin_lf = v_bins[j].id;
                                         tmp_cut.lf_size = l_val;
                                 }
@@ -125,6 +127,7 @@ static int find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                                 if (r_diff < r_best_diff) {
                                         r_best_diff = r_diff;
                                         tmp_cut.id = itm.tc.v_cuts[i].id;
+                                        tmp_cut.c.v_tasks_rf = itm.tc.v_cuts[i].v_tasks_rf;
                                         tmp_cut.target_bin_rf = v_bins[j].id;
                                         tmp_cut.rf_size = r_val;
                                 }
@@ -164,6 +167,7 @@ static void bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_lf.is_fragmented = NO;
         itm_lf.nbr_cut = 0;
         itm_lf.size = cut.lf_size;
+        itm_lf.tc.v_tasks = cut.c.v_tasks_lf;
 
         /* creates second itm with right fragment*/
         ctx.itms_count++;
@@ -173,6 +177,7 @@ static void bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_rf.is_fragmented = NO;
         itm_rf.nbr_cut = 0;
         itm_rf.size = cut.rf_size;
+        itm_rf.tc.v_tasks = cut.c.v_tasks_rf;
 
         printf("\nLeft Fragment %d has been created from Item %d with size %d\n", 
                         itm_lf.id, itm.id, itm_lf.size);

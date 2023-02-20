@@ -14,7 +14,7 @@ static void find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_
                 struct task &tau, int &r_curr, int &r_prev)
 {
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                if (v_tasks[i].p <= tau.p) {
+                if (v_tasks[i].p < tau.p) {
                         r_curr += v_tasks[i].c;
                 }
         }
@@ -24,13 +24,13 @@ static void find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_
                 if (v_tasks[i].id == tau.id)
                         continue;
 
-                if (v_tasks[i].p <= tau.p)
+                if (v_tasks[i].p < tau.p)
                         hp_tasks.push_back(v_tasks[i]);
         }
 }
 
 static void fixpoint(vector<struct task> &hp_tasks, struct task &tau, 
-                int &r_curr, int &r_prev, int &flag)
+                int &r_curr, int &r_prev)
 {
         int tmp;
 
@@ -47,30 +47,27 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         r_curr = tmp;
 
         if (r_curr == r_prev) {
-                printf("WCRT of tau %d: %d\n", tau.id, r_curr);
+                //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
                 tau.r = r_curr;
                 return;
         }
 
         if (r_curr > tau.t) {
-                printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
-                                tau.id, r_curr, tau.t);
-                flag = SCHED_FAILED;
+                //printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
+                //              tau.id, r_curr, tau.t);
+                tau.r = -1;
                 return;
         }
 
         r_prev = r_curr;
-        fixpoint(hp_tasks, tau, r_curr, r_prev, flag);
+        fixpoint(hp_tasks, tau, r_curr, r_prev);
 }
 
 int wcrt(vector<struct task> &v_tasks)
 {
-        int flag;
         int r_curr;
         int r_prev;
         vector<struct task> hp_tasks;
-
-        flag = SCHED_OK;
 
         /* sort decreasing priority order 1 -> n */
         sort_inc(v_tasks);
@@ -82,7 +79,24 @@ int wcrt(vector<struct task> &v_tasks)
                 hp_tasks.clear();
                 find_hp_tasks(v_tasks, hp_tasks, v_tasks[i], r_curr, r_prev);
                 /* recursive */
-                fixpoint(hp_tasks, v_tasks[i], r_curr, r_prev, flag);
+                fixpoint(hp_tasks, v_tasks[i], r_curr, r_prev);
+
+                if (v_tasks[i].r == -1)
+                        return SCHED_FAILED;
         }
-        return flag;
+        return SCHED_OK;
+}
+
+int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        vector<struct task> v_tasks;
+                        for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                v_tasks.push_back(v_bins[i].v_itms[j].tc.v_tasks[k]);
+                        }
+                        v_bins[i].flag = wcrt(v_tasks);
+                }
+        }
+        return 0;
 }

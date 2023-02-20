@@ -24,9 +24,21 @@ void init_ctx(struct params &prm, struct context &ctx)
         ctx.alloc_count = 0;
         ctx.frags_count = 0;
         ctx.cuts_count = 0;
+        ctx.sched_ok_count = 0;
+        ctx.sched_failed_count = 0;
         ctx.itms_size = 0;
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n - 1;
+}
+
+static int cmp_dec(const struct item &a, const struct item &b)
+{
+        return a.size > b.size;
+}
+
+static void sort_dec(vector<struct item> &v_itms)
+{
+        sort(v_itms.begin(), v_itms.end(), cmp_dec);
 }
 
 void comp_min_bins(vector<struct item> &v_itms, struct context &ctx)
@@ -67,7 +79,7 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;
-                        tau.u = gen_rand(1, prm.s);
+                        tau.u = gen_rand(1, prm.max_tu);
                         tau.c = gen_rand(MINWCET, MAXWCET);
                         tau.t = ceilf(((float)tau.c/(float)tau.u) * PERCENT);
                         tau.d = tau.t; /* implicit deadline */
@@ -79,17 +91,14 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         itm.tc.u += tau.u;
                 }
 
-                if (wcrt(itm.tc.v_tasks) == SCHED_FAILED) {
-                        continue;
-
-                } else if (itm.tc.u <= prm.c && phicount != prm.fr && itm.tc.u > prm.phi) {
+                if (itm.tc.u <= prm.c && phicount < prm.fr && itm.tc.u > prm.phi) {
                         v_itms.push_back(itm);
                         v_itms[ncount].size = itm.tc.u;
                         ncount++;
                         phicount++;
                         continue;
 
-                } else if (itm.tc.u <= prm.c && phicount == prm.fr) {
+                } else if (itm.tc.u <= prm.c && phicount >= prm.fr) {
                         v_itms.push_back(itm);
                         v_itms[ncount].size = itm.tc.u;
                         ncount++;
@@ -118,12 +127,20 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         }
 
                         /* copy tasks to right fragment */
-                        for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++) {
+                        for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
-                        }
+
+
+                        /* test if fragment is schedulable */
+                        //if ((wcrt(c.v_tasks_lf) == SCHED_FAILED || wcrt(c.v_tasks_rf) == SCHED_FAILED) && v_itms[i].size > prm.phi) {
+                        //        printf("itm.id %d, cut wcrt failed\n", v_itms[i].id);
+                        //        continue;
+                        //}
+
                         v_itms[i].tc.v_cuts.push_back(c);
                 }
                 lf_size = 0;
                 rf_size = 0;
         }
+        sort_dec(v_itms);
 }

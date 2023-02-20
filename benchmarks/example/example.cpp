@@ -17,11 +17,11 @@ int main(void)
         vector<struct bin> v_bins_wfdu_f;
 
         /* parameters */
-        prm.n = 10;
+        prm.n = 50;
         prm.c = 100;
         prm.phi = 80;
-        prm.s = prm.c * 0.20;  /* max utilization rate for a task is 20% of C */
-        prm.fr = prm.n * 0.10; /* fragmentation rate, that is 50% of tc > phi */
+        prm.max_tu = prm.c * 0.20;  /* max utilization rate for a task is 20% of C */
+        prm.fr = prm.n * 0.20; /* fragmentation rate, that is 10% of tc.u > phi */
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm);
@@ -54,16 +54,17 @@ int main(void)
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
         allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
+        /* worst-case analysis */
+        worst_case_analysis(v_bins_bfdu_f, ctx_bfdu_f);
+        worst_case_analysis(v_bins_wfdu_f, ctx_wfdu_f);
+
         /* results */
-        print_v_itms(v_itms, ctx);
         print_v_bins(v_bins_bfdu_f, ctx_bfdu_f);
         print_v_bins(v_bins_wfdu_f, ctx_wfdu_f);
         print_vectors(v_itms_bfdu_f, ctx_bfdu_f);
         print_vectors(v_itms_wfdu_f, ctx_wfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
-
-        
 
         return 0;
 }

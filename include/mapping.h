@@ -23,7 +23,7 @@ using namespace std;
 struct params {
         int n;
         int c;
-        int s;
+        int max_tu;
         int phi;
         int fr;
         int a;
@@ -39,6 +39,8 @@ struct context {
         int alloc_count;
         int frags_count;
         int cuts_count;
+        int sched_ok_count;
+        int sched_failed_count;
         float redu_time;
         float alloc_time;
         float frag_time;
@@ -83,8 +85,9 @@ struct item {
 
 struct bin {
         int id;
+        int flag;
         int cap_rem;
-        vector<struct item> vc_itms;
+        vector<struct item> v_itms;
 };
 
 /* mapping */
@@ -95,6 +98,8 @@ void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
+
+void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
 /* operations */
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);

@@ -103,27 +103,6 @@ void print_not_fragmented(vector<struct item> &v_itms, struct context &ctx)
         }
 }
 
-void print_v_itms(vector<struct item> &v_itms, struct context &ctx)
-{
-        printf("+=====================================+\n");
-        printf("| PRINT ITEMS                         |\n");
-        printf("+=====================================+\n");
-
-        for (int i = 0; i < ctx.prm.n; i++) {
-                v_itms[i].id = i;
-                printf("item.id: %u\n", v_itms[i].id);
-                printf("item.size: %u\n", v_itms[i].size);
-                printf("item.nbr_cut: %u\n", v_itms[i].nbr_cut);
-                printf("set of cuts: ");
-
-                for (int j = 0; j < v_itms[i].nbr_cut; j++) {
-                        printf("{%u,%u} ", v_itms[i].tc.v_cuts[j].c_pair.first, 
-                                        v_itms[i].tc.v_cuts[j].c_pair.second);
-                }
-                printf("\n\n");
-        }
-}
-
 void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 {
         printf("+=====================================+\n");
@@ -135,26 +114,53 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
 
-                printf("+====================+\n");
+                printf("+=======================+\n");
                 printf("|Bin %d:       \n", v_bins[i].id);
                 printf("|Load:    %u\n", ctx.prm.phi - v_bins[i].cap_rem);
-                printf("|--------------------|\n");
-
-                for (unsigned int j = 0; j < v_bins[i].vc_itms.size(); j++) {
-
-                        if (v_bins[i].vc_itms[j].is_frag == YES) {
-                                printf("|Frag: %u size %u\n", 
-                                                v_bins[i].vc_itms[j].id, 
-                                                v_bins[i].vc_itms[j].size);
-                        } else {
-                                printf("|Item: %u size %u\n", 
-                                                v_bins[i].vc_itms[j].id, 
-                                                v_bins[i].vc_itms[j].size);
-                        }
-
-
+                if (v_bins[i].flag == SCHED_OK) {
+                        printf("|Sched: OK\n");
+                        ctx.sched_ok_count++;
                 }
-                printf("+====================+\n\n");
+                if (v_bins[i].flag == SCHED_FAILED) {
+                        printf("|Sched: FAILED\n");
+                        ctx.sched_failed_count++;
+                }
+
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+
+                        if (v_bins[i].v_itms[j].is_frag == YES) {
+                                printf("|-----------------------|\n");
+                                printf("|Frag: %u size %u\n", 
+                                                v_bins[i].v_itms[j].id, 
+                                                v_bins[i].v_itms[j].size);
+                                printf("|-----------------------|\n");
+                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                        printf("|task.id: %d u: %d p: %d r: %d p: %d\n", 
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].id, 
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].u,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].p,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                }
+
+                        } else {
+                                printf("|-----------------------|\n");
+                                printf("|Item: %u size %u\n", 
+                                                v_bins[i].v_itms[j].id, 
+                                                v_bins[i].v_itms[j].size);
+
+                                printf("|-----------------------|\n");
+                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                        printf("|task.id: %d u: %d p: %d r: %d p: %d\n", 
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].id, 
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].u,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].p,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                }
+                        }
+                }
+                printf("+=======================+\n\n");
         }
 }
 
@@ -263,14 +269,14 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         comp_stats(v_bins, v_itms, ctx);
 
         printf("------------------------------------------->\n");
-        printf("N:    %u\n", ctx.prm.n);
-        printf("S:    %u\n", ctx.prm.s);
-        printf("C:    %u\n", ctx.prm.c);
-        printf("phi:  %u\n", ctx.prm.phi);
+        printf("n:      %u\n", ctx.prm.n);
+        printf("c:      %u\n", ctx.prm.c);
+        printf("phi:    %u\n", ctx.prm.phi);
+        printf("max_tu: %u\n", ctx.prm.max_tu);
         if (ctx.prm.a == BFDU_F)
-                printf("A:    BFDU_F\n");
+                printf("a:      BFDU_F\n");
         if (ctx.prm.a == WFDU_F)
-                printf("A:    WFDU_F\n");
+                printf("a:      WFDU_F\n");
         printf("------------------------------------------->\n");
         printf("Min Number of Bins:   %d\n", ctx.bins_min);
         printf("Cycles Count:         %d\n", ctx.cycl_count);
@@ -293,6 +299,9 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("------------------------------------------->\n");
 
         }
+        printf("SCHED_OK:      %d\n", ctx.sched_ok_count);
+        printf("SCHED_FAILED:  %d\n", ctx.sched_failed_count);
+        printf("Schedulability Rate:  %f\n", (float)ctx.sched_ok_count / (float)ctx.bins_count);
         printf("Execution Time:       %f ms\n", ctx.e_time);
         printf("Load Distribution:    %f\n", ctx.standard_dev);
         printf("------------------------------------------->\n");
@@ -300,16 +309,15 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------->\n");
 }
 
-
 void print_task_chains(vector<struct item> &v_itms)
 {
         int tasknbr = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
-                printf("===========================\n");
-                printf("tc.id: %d u: %d size: %lu\n", 
-                                i, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size());
-                printf("===========================\n");
+                printf("===============================\n");
+                printf("itm.id: %d u: %d size: %lu sched : %d\n", 
+                                v_itms[i].id, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size(), wcrt(v_itms[i].tc.v_tasks));
+                printf("===============================\n");
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
                         printf("tau %d: u: %d  c: %d  t: %d\n",
                                         j, v_itms[i].tc.v_tasks[j].u, 
@@ -317,9 +325,10 @@ void print_task_chains(vector<struct item> &v_itms)
                                         v_itms[i].tc.v_tasks[j].t);
                         tasknbr++;
                 }
-                printf("---------------------------\n");
+                printf("-------------------------------\n");
                 for (unsigned int j = 0; j < v_itms[i].tc.v_cuts.size(); j++) {
-                        printf("{%d, %d} ", v_itms[i].tc.v_cuts[j].c_pair.first, 
+                        printf("cut: %d {%d, %d} ", v_itms[i].tc.v_cuts[j].id, 
+                                        v_itms[i].tc.v_cuts[j].c_pair.first, 
                                         v_itms[i].tc.v_cuts[j].c_pair.second);
                         printf("lf: ");
 
@@ -334,7 +343,7 @@ void print_task_chains(vector<struct item> &v_itms)
 
                         printf("\n");
                 }
-                printf("---------------------------\n");
+                printf("-------------------------------\n");
                 printf("\n\n");
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
