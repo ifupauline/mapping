@@ -50,6 +50,12 @@ struct context {
         struct params prm;
 };
 
+struct t_idx {
+        int bin_idx;
+        int itm_idx;
+        int task_idx;
+};
+
 struct task {
         int c;
         int t;
@@ -58,6 +64,7 @@ struct task {
         int p;
         int r;
         int id;
+        struct t_idx idx;
 };
 
 struct cut {

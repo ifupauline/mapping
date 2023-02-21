@@ -135,15 +135,17 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
                                                 v_bins[i].v_itms[j].size);
                                 printf("|--------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|task.id: %d u: %d p: %d r: %d t: %d\n", 
+                                        printf("|task.id: %d u: %d p: %d r: %d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
-                                                printf("PROBLEM\n");
-                                                exit(0);
+                                                printf(" -----------> deadline  violated!\n");
+                                        } else {
+                                                printf("\n");
+
                                         }
                                 }
 
@@ -155,15 +157,16 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 
                                 printf("|--------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|task.id: %d u: %d p: %d r: %d t: %d\n", 
+                                        printf("|task.id: %d u: %d p: %d r: %d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
-                                                printf("PROBLEM\n");
-                                                exit(0);
+                                                printf(" -----------> deadline  violated!\n");
+                                        } else {
+                                                printf("\n");
                                         }
                                 }
                         }

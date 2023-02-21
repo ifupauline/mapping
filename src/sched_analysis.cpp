@@ -98,8 +98,22 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
                                 v_bins[i].v_tasks.push_back(v_bins[i].v_itms[j].tc.v_tasks[k]);
+                                /* save location of task in tc */
+                                v_bins[i].v_tasks.back().idx.bin_idx = i;
+                                v_bins[i].v_tasks.back().idx.itm_idx = j;
+                                v_bins[i].v_tasks.back().idx.task_idx = k;
                         }
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
+                }
+        }
+
+        /* copy back new response time to original tasks in tc */
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_tasks.size(); j++) {
+                        int bin_idx = v_bins[i].v_tasks[j].idx.bin_idx;
+                        int itm_idx = v_bins[i].v_tasks[j].idx.itm_idx;
+                        int task_idx = v_bins[i].v_tasks[j].idx.task_idx;
+                        v_bins[bin_idx].v_itms[itm_idx].tc.v_tasks[task_idx].r = v_bins[i].v_tasks[j].r;
                 }
         }
         return 0;
