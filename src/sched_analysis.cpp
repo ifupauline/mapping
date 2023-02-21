@@ -30,7 +30,7 @@ static void find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_
 }
 
 static void fixpoint(vector<struct task> &hp_tasks, struct task &tau, 
-                int &r_curr, int &r_prev)
+                int &r_curr, int &r_prev, int &ret)
 {
         int tmp;
 
@@ -47,24 +47,29 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         r_curr = tmp;
 
         if (r_curr == r_prev) {
-                //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
+                printf("WCRT of tau %d: %d\n", tau.id, r_curr);
                 tau.r = r_curr;
+                ret = SCHED_OK;
                 return;
         }
 
         if (r_curr > tau.t) {
-                //printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
-                //              tau.id, r_curr, tau.t);
-                tau.r = -1;
+                printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
+                                tau.id, r_curr, tau.t);
+                tau.r = r_curr;
+                ret = SCHED_FAILED;
                 return;
         }
 
-        r_prev = r_curr;
-        fixpoint(hp_tasks, tau, r_curr, r_prev);
+        if (r_prev < r_curr) {
+                r_prev = r_curr;
+                fixpoint(hp_tasks, tau, r_curr, r_prev, ret);
+        }
 }
 
 int wcrt(vector<struct task> &v_tasks)
 {
+        int ret;
         int r_curr;
         int r_prev;
         vector<struct task> hp_tasks;
@@ -79,9 +84,9 @@ int wcrt(vector<struct task> &v_tasks)
                 hp_tasks.clear();
                 find_hp_tasks(v_tasks, hp_tasks, v_tasks[i], r_curr, r_prev);
                 /* recursive */
-                fixpoint(hp_tasks, v_tasks[i], r_curr, r_prev);
+                fixpoint(hp_tasks, v_tasks[i], r_curr, r_prev, ret);
 
-                if (v_tasks[i].r == -1)
+                if (ret == SCHED_FAILED)
                         return SCHED_FAILED;
         }
         return SCHED_OK;
@@ -91,11 +96,10 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        vector<struct task> v_tasks;
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                v_tasks.push_back(v_bins[i].v_itms[j].tc.v_tasks[k]);
+                                v_bins[i].v_tasks.push_back(v_bins[i].v_itms[j].tc.v_tasks[k]);
                         }
-                        v_bins[i].flag = wcrt(v_tasks);
+                        v_bins[i].flag = wcrt(v_bins[i].v_tasks);
                 }
         }
         return 0;

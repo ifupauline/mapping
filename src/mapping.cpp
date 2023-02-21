@@ -156,14 +156,14 @@ void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
         if (ctx.prm.a == BFDU_F) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION BFDU_F                   |\n");
+                printf("| WORST-CASE-ANALYSIS BFDU_F          |\n");
                 printf("+=====================================+\n");
                 sched_analysis(v_bins, ctx);
         }
 
         if (ctx.prm.a == WFDU_F) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION WFDU_F                   |\n");
+                printf("| WORST-CASE-ANALYSIS WFDU_F          |\n");
                 printf("+=====================================+\n");
                 sched_analysis(v_bins, ctx);
         }

@@ -91,7 +91,10 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         itm.tc.u += tau.u;
                 }
 
-                if (itm.tc.u <= prm.c && phicount < prm.fr && itm.tc.u > prm.phi) {
+                if (wcrt(itm.tc.v_tasks) == SCHED_FAILED) {
+                        continue;
+
+                } else if (itm.tc.u <= prm.c && phicount < prm.fr && itm.tc.u > prm.phi) {
                         v_itms.push_back(itm);
                         v_itms[ncount].size = itm.tc.u;
                         ncount++;
@@ -129,13 +132,6 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         /* copy tasks to right fragment */
                         for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
-
-
-                        /* test if fragment is schedulable */
-                        //if ((wcrt(c.v_tasks_lf) == SCHED_FAILED || wcrt(c.v_tasks_rf) == SCHED_FAILED) && v_itms[i].size > prm.phi) {
-                        //        printf("itm.id %d, cut wcrt failed\n", v_itms[i].id);
-                        //        continue;
-                        //}
 
                         v_itms[i].tc.v_cuts.push_back(c);
                 }

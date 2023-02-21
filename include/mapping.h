@@ -88,6 +88,7 @@ struct bin {
         int flag;
         int cap_rem;
         vector<struct item> v_itms;
+        vector<struct task> v_tasks;
 };
 
 /* mapping */

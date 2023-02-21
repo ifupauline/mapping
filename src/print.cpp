@@ -114,7 +114,7 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
 
-                printf("+=======================+\n");
+                printf("+======================================+\n");
                 printf("|Bin %d:       \n", v_bins[i].id);
                 printf("|Load:    %u\n", ctx.prm.phi - v_bins[i].cap_rem);
                 if (v_bins[i].flag == SCHED_OK) {
@@ -129,38 +129,46 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
 
                         if (v_bins[i].v_itms[j].is_frag == YES) {
-                                printf("|-----------------------|\n");
+                                printf("|--------------------------------------|\n");
                                 printf("|Frag: %u size %u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
-                                printf("|-----------------------|\n");
+                                printf("|--------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|task.id: %d u: %d p: %d r: %d p: %d\n", 
+                                        printf("|task.id: %d u: %d p: %d r: %d t: %d\n", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
+                                                printf("PROBLEM\n");
+                                                exit(0);
+                                        }
                                 }
 
                         } else {
-                                printf("|-----------------------|\n");
+                                printf("|--------------------------------------|\n");
                                 printf("|Item: %u size %u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
 
-                                printf("|-----------------------|\n");
+                                printf("|--------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|task.id: %d u: %d p: %d r: %d p: %d\n", 
+                                        printf("|task.id: %d u: %d p: %d r: %d t: %d\n", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
+                                                printf("PROBLEM\n");
+                                                exit(0);
+                                        }
                                 }
                         }
                 }
-                printf("+=======================+\n\n");
+                printf("+======================================+\n\n");
         }
 }
 
@@ -319,9 +327,10 @@ void print_task_chains(vector<struct item> &v_itms)
                                 v_itms[i].id, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size(), wcrt(v_itms[i].tc.v_tasks));
                 printf("===============================\n");
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
-                        printf("tau %d: u: %d  c: %d  t: %d\n",
+                        printf("tau %d: u: %d  c: %d  r: %d t: %d\n",
                                         j, v_itms[i].tc.v_tasks[j].u, 
                                         v_itms[i].tc.v_tasks[j].c, 
+                                        v_itms[i].tc.v_tasks[j].r, 
                                         v_itms[i].tc.v_tasks[j].t);
                         tasknbr++;
                 }
