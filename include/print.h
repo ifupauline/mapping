@@ -17,7 +17,9 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx);
 void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
-void print_vectors(vector<struct item> &v_itms, struct context &ctx);
+void print_items_vectors(vector<struct item> &v_itms, struct context &ctx);
+
+void print_bins_vectors(vector<struct bin> &v_bins, struct context &ctx);
 
 void print_task_chains(vector<struct item> &v_itms);
 

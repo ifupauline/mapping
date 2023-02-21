@@ -17,6 +17,7 @@ void init_ctx(struct params &prm, struct context &ctx)
         ctx.alloc_time = 0.0;
         ctx.frag_time = 0.0;
         ctx.e_time = 0.0;
+        ctx.sched_time = 0.0;
         ctx.standard_dev = 0.0;
         ctx.opti_bins = 0.0;
         ctx.cycl_count = 0;
@@ -41,19 +42,42 @@ static void sort_dec(vector<struct item> &v_itms)
         sort(v_itms.begin(), v_itms.end(), cmp_dec);
 }
 
-void comp_min_bins(vector<struct item> &v_itms, struct context &ctx)
+static void assign_id(vector<struct item> &v_itms)
 {
-        for (int i = 0; i < ctx.prm.n; i++) 
-                ctx.itms_size += v_itms[i].size;
-
-        ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
-
-        printf("Number of Items: %d\n", ctx.itms_nbr);
-        printf("Total Size of Items: %u\n", ctx.itms_size);
-        printf("Minimum Number of Bins Required: %u\n", ctx.bins_min);
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                v_itms[i].id = i;
+        }
 }
 
-void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
+static void check_params(struct params &prm)
+{
+        if (prm.n < 10 || prm.n > 10000) {
+                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+                exit(0);
+        }
+
+        if (prm.c < prm.phi || prm.c > 100) {
+                printf("Invalid params: prm.c rule -> [prm.phi <= c <= 100]\n\n");
+                exit(0);
+        }
+
+        if (prm.phi > 90) {
+                printf("Invalid params: prm.phi rule -> [prm.phi < 90]\n\n");
+                exit(0);
+        }
+
+        if (prm.max_tu < 10 || prm.max_tu > prm.phi) {
+                printf("Invalid params: prm.max_tu rule -> [10 <= prm.max_tu < prm.phi]\n\n");
+                exit(0);
+        }
+
+        if (prm.fr < 5 || prm.fr > prm.n) {
+                printf("Invalid params: prm.fr rule -> [5 <= prm.fr < prm.n]\n\n");
+                exit(0);
+        }
+}
+
+static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 {
         int task_nbr;
         int ncount = 0;
@@ -65,6 +89,8 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
         printf("+=====================================+\n");
         printf("| INSTANCE GENERATION                 |\n");
         printf("+=====================================+\n");
+
+        check_params(prm);
 
         /* generate task-chains set */
         while (ncount != prm.n) {
@@ -91,15 +117,21 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         itm.tc.u += tau.u;
                 }
 
+                if (itm.tc.u > prm.c)
+                        continue;
+
                 if (wcrt(itm.tc.v_tasks) == SCHED_FAILED) {
                         continue;
 
-                } else if (itm.tc.u <= prm.c && phicount < prm.fr && itm.tc.u > prm.phi) {
-                        v_itms.push_back(itm);
-                        v_itms[ncount].size = itm.tc.u;
-                        ncount++;
-                        phicount++;
-                        continue;
+                } else if (itm.tc.u > prm.phi) {
+                        if (phicount < prm.fr) {
+                                v_itms.push_back(itm);
+                                v_itms[ncount].size = itm.tc.u;
+                                ncount++;
+                                phicount++;
+                                printf("phicount: %d\n", phicount);
+                                continue;
+                        }
 
                 } else if (itm.tc.u <= prm.c && phicount >= prm.fr) {
                         v_itms.push_back(itm);
@@ -113,6 +145,7 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
         /* generate cuts for each chain */
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 /* iterate over tasks */
+                unsigned int count = 0;
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size() - 1; j++) {
                         struct cut c;
                         lf_size += v_itms[i].tc.v_tasks[j].u;
@@ -120,6 +153,13 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         c.id = j;
                         c.c_pair.first = lf_size;
                         c.c_pair.second = rf_size;
+
+                        if (lf_size > prm.phi || rf_size > prm.phi) {
+                                count++;
+                                if (count == v_itms[i].tc.v_tasks.size() - 1) {
+                                        return -1;
+                                }
+                        } 
 
                         /* copy tasks to left fragment */
                         for (unsigned int k = j; k >= 0; k--) {
@@ -139,4 +179,32 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                 rf_size = 0;
         }
         sort_dec(v_itms);
+        assign_id(v_itms);
+        
+        return 0;
+}
+
+void comp_min_bins(vector<struct item> &v_itms, struct context &ctx)
+{
+        for (int i = 0; i < ctx.prm.n; i++) 
+                ctx.itms_size += v_itms[i].size;
+
+        ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
+
+        printf("Number of Items: %d\n", ctx.itms_nbr);
+        printf("Total Size of Items: %u\n", ctx.itms_size);
+        printf("Minimum Number of Bins Required: %u\n", ctx.bins_min);
+}
+
+void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
+{
+        while(1) {
+                int ret = -1;
+                vector<struct item> v_itms_tmp;
+                ret = _gen_tc_set(v_itms_tmp, prm);
+                if (ret == 0) {
+                        v_itms = v_itms_tmp;
+                        break;
+                }
+        }
 }

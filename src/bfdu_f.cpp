@@ -262,6 +262,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                         continue;
                                 } 
                                 if (ret == NO) {
+                                        printf("Could not find a Bin for Item %d\n", v_itms[i].id);
                                         add_bin(v_bins, ctx);
                                         ctx.cycl_count++;
                                         continue;

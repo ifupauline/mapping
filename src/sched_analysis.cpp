@@ -47,15 +47,15 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         r_curr = tmp;
 
         if (r_curr == r_prev) {
-                printf("WCRT of tau %d: %d\n", tau.id, r_curr);
+                //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
                 tau.r = r_curr;
                 ret = SCHED_OK;
                 return;
         }
 
         if (r_curr > tau.t) {
-                printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
-                                tau.id, r_curr, tau.t);
+                //printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
+                //                tau.id, r_curr, tau.t);
                 tau.r = r_curr;
                 ret = SCHED_FAILED;
                 return;
@@ -94,6 +94,9 @@ int wcrt(vector<struct task> &v_tasks)
 
 int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
+        clock_t start, end;
+
+        start = clock();
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
@@ -104,8 +107,18 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                                 v_bins[i].v_tasks.back().idx.task_idx = k;
                         }
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
+
+                        if (v_bins[i].flag == SCHED_OK) {
+                                printf("Bin %d SCHED_OK\n", v_bins[i].id);
+                        }
+
+                        if (v_bins[i].flag == SCHED_FAILED) {
+                                printf("Bin %d SCHED_FAILED\n", v_bins[i].id);
+                        }
                 }
         }
+        end = clock();
+        ctx.sched_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 
         /* copy back new response time to original tasks in tc */
         for (unsigned int i = 0; i < v_bins.size(); i++) {

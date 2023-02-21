@@ -45,6 +45,7 @@ struct context {
         float alloc_time;
         float frag_time;
         float e_time;
+        float sched_time;
         float standard_dev;
         float opti_bins;
         struct params prm;
