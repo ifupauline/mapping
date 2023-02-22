@@ -65,6 +65,7 @@ static void check_params(struct params &prm)
 static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 {
         int task_nbr;
+        int rand = 0;
         int ncount = 0;
         int phicount = 0;
         int lf_size = 0;
@@ -157,7 +158,19 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
 
-                        v_itms[i].tc.v_cuts.push_back(c);
+                        rand = gen_rand(NO, YES);
+                        /* sometimes do not add the cut, only for size < phi */
+                        if (rand == YES && v_itms[i].size < prm.phi)
+                                continue;
+                        else {
+                                v_itms[i].tc.v_cuts.push_back(c);
+                                continue;
+                        }
+
+
+                        if (c.c_pair.first < prm.phi && c.c_pair.second < prm.phi && v_itms[i].size > prm.phi)  {
+                                v_itms[i].tc.v_cuts.push_back(c);
+                        }
                 }
                 lf_size = 0;
                 rf_size = 0;
@@ -204,7 +217,7 @@ void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx)
 
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 {
-        while(1) {
+        while (1) {
                 int ret = -1;
 
                 vector<struct item> v_itms_tmp;

@@ -16,15 +16,14 @@ int main(void)
         /* TODO 
          * - generate harmonic task-chains
          * - fix k_500 tests
-         * - create number of cuts  
          */
 
         /* parameters */
         prm.n = 100;
         prm.c = 100;
-        prm.phi = 80;
+        prm.phi = 50;
         prm.max_tu = 20;  /* max utilization rate for a task in percent */
-        prm.fr = 5;      /* fragmentation rate in number of items > phi */
+        prm.fr = 30;      /* fragmentation rate in number of items > phi */
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm);

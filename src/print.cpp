@@ -344,7 +344,7 @@ void print_task_chains(vector<struct item> &v_itms)
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 printf("====================================\n");
-                printf("itm.id: %d u: %d size: %lu\n", 
+                printf("itm.id: %d u: %d tasks_nbr: %lu\n", 
                                 v_itms[i].id, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size());
                 printf("====================================\n");
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
