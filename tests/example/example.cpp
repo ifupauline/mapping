@@ -15,15 +15,17 @@ int main(void)
 
         /* TODO 
          * - generate harmonic task-chains
-         * - fix k_500 tests
+         * - create a couple of benchmarks ex: bfdu_f vs wfdu_f
+         * - swapping algorithm
+         * - optimization loop on phi or something else?  
          */
 
         /* parameters */
         prm.n = 100;
         prm.c = 100;
-        prm.phi = 50;
+        prm.phi = 80;
         prm.max_tu = 20;  /* max utilization rate for a task in percent */
-        prm.fr = 30;      /* fragmentation rate in number of items > phi */
+        prm.fr = 50;      /* fragmentation rate in number of items > phi */
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm);

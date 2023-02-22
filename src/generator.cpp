@@ -65,7 +65,6 @@ static void check_params(struct params &prm)
 static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 {
         int task_nbr;
-        int rand = 0;
         int ncount = 0;
         int phicount = 0;
         int lf_size = 0;
@@ -132,11 +131,12 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 /* iterate over tasks */
                 unsigned int count = 0;
+                int cut_id = 0;
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size() - 1; j++) {
                         struct cut c;
                         lf_size += v_itms[i].tc.v_tasks[j].u;
                         rf_size = v_itms[i].tc.u - lf_size;
-                        c.id = j;
+                        c.id = cut_id;
                         c.c_pair.first = lf_size;
                         c.c_pair.second = rf_size;
 
@@ -158,19 +158,14 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
 
-                        rand = gen_rand(NO, YES);
                         /* sometimes do not add the cut, only for size < phi */
-                        if (rand == YES && v_itms[i].size < prm.phi)
+                        if (lf_size > prm.phi || rf_size > prm.phi) {
                                 continue;
-                        else {
+                        } else {
                                 v_itms[i].tc.v_cuts.push_back(c);
-                                continue;
+                                cut_id++;
                         }
 
-
-                        if (c.c_pair.first < prm.phi && c.c_pair.second < prm.phi && v_itms[i].size > prm.phi)  {
-                                v_itms[i].tc.v_cuts.push_back(c);
-                        }
                 }
                 lf_size = 0;
                 rf_size = 0;

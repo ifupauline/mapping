@@ -3,8 +3,8 @@
 
 #include "mapping.h"
 
-#define MINTASKNBR 2
-#define MAXTASKNBR 15
+#define MINTASKNBR 4
+#define MAXTASKNBR 16
 
 #define MINWCET 1
 #define MAXWCET 10
@@ -12,8 +12,6 @@
 #define PERCENT 100
 
 /* instance */
-void gen_item_set(vector<struct item> &v_itms, struct params &prm);
-
 void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx);
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
