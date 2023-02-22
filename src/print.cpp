@@ -40,6 +40,22 @@ static void cmp_time(struct context &ctx)
         ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.sched_time;
 }
 
+static void schedulability_rate(vector<struct bin> &v_bins, struct context &ctx)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_OK) {
+                        ctx.sched_ok_count++;
+                }
+        }
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_FAILED) {
+                        ctx.sched_failed_count++;
+                }
+        }
+        ctx.sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+}
+
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx)
 {
@@ -81,6 +97,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         cmp_time(ctx);
         standard_deviation(v_bins, ctx);
         approximation_ratio(v_itms, ctx);
+        schedulability_rate(v_bins, ctx);
 }
 
 void print_not_allocated(vector<struct item> &v_itms, struct context &ctx)
@@ -265,7 +282,6 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         printf("Vector:\n");
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_OK) {
-                        ctx.sched_ok_count++;
                         printf("%d  ", v_bins[i].id);
                 }
         }
@@ -276,7 +292,6 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         printf("Vector:\n");
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_FAILED) {
-                        ctx.sched_failed_count++;
                         printf("%d  ", v_bins[i].id);
                 }
         }
@@ -326,7 +341,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         }
         printf("WCRT Time:            %f ms\n", ctx.sched_time);
         printf("------------------------------------------->\n");
-        printf("Schedulability Rate:  %f\n", (float)ctx.sched_ok_count / (float)ctx.bins_count);
+        printf("Schedulability Rate:  %f\n", ctx.sched_rate);
         printf("Execution Time:       %f ms\n", ctx.e_time);
         printf("Load Distribution:    %f\n", ctx.standard_dev);
         printf("------------------------------------------->\n");

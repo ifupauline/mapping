@@ -5,6 +5,7 @@
 #define B_ET 1
 #define B_LD 2
 #define B_FR 3
+#define B_SCHED 4
 
 #define BUFFSIZE 256
 
@@ -15,6 +16,7 @@ struct b_stats {
         float mean_ar;
         float mean_ld;
         float mean_et;
+        float mean_sched;
 };
 
 void concatenate(char p[], char q[]);

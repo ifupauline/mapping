@@ -25,7 +25,6 @@ struct params {
         int c;
         int max_tu;
         int phi;
-        int fr;
         int a;
 };
 
@@ -47,6 +46,7 @@ struct context {
         float sched_time;
         float standard_dev;
         float opti_bins;
+        float sched_rate;
         struct params prm;
 };
 
