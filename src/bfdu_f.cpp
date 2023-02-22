@@ -207,50 +207,30 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");
-        printf("STEP 1, BFDU\n");
+        printf("STEP 1, BFDU_F\n");
         printf("<--------------------------------------->\n");
         start = clock();
-        for (int i = 0; i < ctx.prm.n; i++) {
-                if (v_itms[i].is_allocated == YES) 
-                        continue;
-
-                /* find best bin to fit itm */
-                ret = find_best_bin(v_bins, v_itms[i], ctx);
-
-                /* bin found add itm to it */
-                if (ret > -1) {
-                        printf("Best Bin to accomodate Item %d is Bin %d\n", 
-                                        v_itms[i].id, ret);
-                        add_itm_to_bin(v_bins, v_itms[i], ret, ctx);
-                        v_itms[i].is_allocated = YES;
-
-                        /* no bin was found */
-                } else if (ret == -1) {
-                        printf("No Bin was found to accomodate Item %d\n", 
-                                        v_itms[i].id);
-
-                        /* size bigger than phi */
-                } else if (ret == -2) {
-                        printf("Item %d of size %d bigger than PHI\n", 
-                                        v_itms[i].id, v_itms[i].size);
-                }
-        }
-
-        end = clock();
-        ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-
-        /* 
-         * STEP - 2, try to place remaining items using fragmentation 
-         * with pair 
-         */
-        while (alloc_count != ctx.prm.n) {
+        while(alloc_count != ctx.prm.n) {
                 alloc_count = 0;
-                printf("\n<--------------------------------------->\n");
-                printf("STEP 2, BEST-FIT FRAGMENTATION\n");
-                printf("<--------------------------------------->\n");
-                start = clock();
                 for (int i = 0; i < ctx.prm.n; i++) {
-                        if (v_itms[i].is_allocated == NO) {
+                        if (v_itms[i].is_allocated == YES) 
+                                continue;
+
+                        /* find best bin to fit itm */
+                        ret = find_best_bin(v_bins, v_itms[i], ctx);
+
+                        /* bin found add itm to it */
+                        if (ret > -1) {
+                                printf("Best Bin to accomodate Item %d is Bin %d\n", 
+                                                v_itms[i].id, ret);
+                                add_itm_to_bin(v_bins, v_itms[i], ret, ctx);
+                                v_itms[i].is_allocated = YES;
+
+                                /* no bin was found */
+                        } else if (ret == -1) {
+                                printf("No Bin was found to accomodate Item %d\n", 
+                                                v_itms[i].id);
+
                                 ret = find_best_cut(v_bins, v_itms[i], ctx);
                                 if (ret == YES) {
                                         printf("Found Cut %d for Item %d\n", 
@@ -262,22 +242,44 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                         continue;
                                 } 
                                 if (ret == NO) {
-                                        printf("Could not find a Bin for Item %d\n", v_itms[i].id);
+                                        printf("No Cut was found to accomodate Item %d\n\n", v_itms[i].id);
+                                        add_bin(v_bins, ctx);
+                                        ctx.cycl_count++;
+                                        continue;
+                                }
+
+                                /* size bigger than phi */
+                        } else if (ret == -2) {
+                                printf("Item %d of size %d bigger than PHI\n", 
+                                                v_itms[i].id, v_itms[i].size);
+
+                                ret = find_best_cut(v_bins, v_itms[i], ctx);
+                                if (ret == YES) {
+                                        printf("Found Cut %d for Item %d\n", 
+                                                        cut.id, v_itms[i].id);
+                                        bff(v_itms, v_bins, v_itms[i], 
+                                                        cut, ctx);
+                                        v_itms[i].is_allocated = YES;
+                                        v_itms[i].is_fragmented = YES;
+                                        continue;
+                                } 
+                                if (ret == NO) {
+                                        printf("No Cut was found to accomodate Item %d\n\n", v_itms[i].id);
                                         add_bin(v_bins, ctx);
                                         ctx.cycl_count++;
                                         continue;
                                 }
                         }
                 }
-
-                end = clock();
-                ctx.frag_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-
+                /* count remaining item to be allocated */
                 for (int i = 0; i < ctx.prm.n; i++) {
                         if (v_itms[i].is_allocated == YES)
                                 alloc_count++;
                 }
         }
+
+        end = clock();
+        ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 vector<struct item> *get_frags_bfdu_f(void)

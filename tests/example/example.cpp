@@ -10,8 +10,11 @@ int main(void)
         vector<struct bin> v_bins;
 
         struct context ctx_bfdu_f;
+        struct context ctx_wfdu_f;
         vector<struct item> v_itms_bfdu_f;
+        vector<struct item> v_itms_wfdu_f;
         vector<struct bin> v_bins_bfdu_f;
+        vector<struct bin> v_bins_wfdu_f;
 
         /* TODO 
          * - generate harmonic task-chains
@@ -25,7 +28,6 @@ int main(void)
         prm.c = 100;
         prm.phi = 80;
         prm.max_tu = 20;  /* max utilization rate for a task in percent */
-        prm.fr = 50;      /* fragmentation rate in number of items > phi */
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm);
@@ -36,28 +38,39 @@ int main(void)
 
         /* copy instances and select algorithm */
         ctx_bfdu_f = ctx;
+        ctx_wfdu_f = ctx;
         ctx_bfdu_f.prm.a = BFDU_F;
+        ctx_wfdu_f.prm.a = WFDU_F;
 
         v_itms_bfdu_f = v_itms;
+        v_itms_wfdu_f = v_itms;
         v_bins_bfdu_f = v_bins;
+        v_bins_wfdu_f = v_bins;
 
         /* generation */
         generation(v_bins_bfdu_f, ctx_bfdu_f);
+        generation(v_bins_wfdu_f, ctx_wfdu_f);
 
         /* reduction */
         reduction(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+        reduction(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+        allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
         /* worst-case analysis */
         worst_case_analysis(v_bins_bfdu_f, ctx_bfdu_f);
+        worst_case_analysis(v_bins_wfdu_f, ctx_wfdu_f);
 
         /* results */
         print_task_chains(v_itms);
         print_bins(v_bins_bfdu_f, ctx_bfdu_f);
+        print_bins(v_bins_wfdu_f, ctx_wfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
+        print_vectors(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+        print_stats(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
         return 0;
 }

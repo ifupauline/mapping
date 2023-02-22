@@ -1,8 +1,6 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-#define MINFR    5
-#define MAXPHI   90
 #define MINMAXTU 10
 #define MAXC     100
 
@@ -46,7 +44,7 @@ static void check_params(struct params &prm)
                 exit(0);
         }
 
-        if (prm.phi > MAXPHI) {
+        if (prm.phi > MAXC) {
                 printf("Invalid params: prm.phi rule -> [prm.phi < 90]\n\n");
                 exit(0);
         }
@@ -55,18 +53,13 @@ static void check_params(struct params &prm)
                 printf("Invalid params: prm.max_tu rule -> [10 <= prm.max_tu < prm.phi]\n\n");
                 exit(0);
         }
-
-        if (prm.fr < MINFR || prm.fr > prm.n) {
-                printf("Invalid params: prm.fr rule -> [5 <= prm.fr < prm.n]\n\n");
-                exit(0);
-        }
 }
 
 static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 {
         int task_nbr;
+        int rand;
         int ncount = 0;
-        int phicount = 0;
         int lf_size = 0;
         int rf_size = 0;
 
@@ -105,25 +98,12 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                 if (itm.tc.u > prm.c)
                         continue;
 
-                if (wcrt(itm.tc.v_tasks) == SCHED_FAILED) {
+                if (wcrt(itm.tc.v_tasks) == SCHED_FAILED)
                         continue;
 
-                } else if (itm.tc.u > prm.phi) {
-                        if (phicount < prm.fr) {
-                                v_itms.push_back(itm);
-                                v_itms[ncount].size = itm.tc.u;
-                                ncount++;
-                                phicount++;
-                                printf("phicount: %d\n", phicount);
-                                continue;
-                        }
-
-                } else if (itm.tc.u <= prm.c && phicount >= prm.fr) {
-                        v_itms.push_back(itm);
-                        v_itms[ncount].size = itm.tc.u;
-                        ncount++;
-                        continue;
-                }
+                v_itms.push_back(itm);
+                v_itms[ncount].size = itm.tc.u;
+                ncount++;
         }
         printf("\n");
 
@@ -158,6 +138,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                         for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
 
+                        rand = gen_rand(NO, YES);
+                        if (rand == YES && v_itms[i].size <= prm.phi)
+                                continue;
+
                         /* sometimes do not add the cut, only for size < phi */
                         if (lf_size > prm.phi || rf_size > prm.phi) {
                                 continue;
@@ -165,7 +149,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
                                 v_itms[i].tc.v_cuts.push_back(c);
                                 cut_id++;
                         }
-
                 }
                 lf_size = 0;
                 rf_size = 0;
@@ -181,7 +164,6 @@ void init_ctx(struct params &prm, struct context &ctx)
         ctx.prm = prm;
         ctx.redu_time = 0.0;
         ctx.alloc_time = 0.0;
-        ctx.frag_time = 0.0;
         ctx.e_time = 0.0;
         ctx.sched_time = 0.0;
         ctx.standard_dev = 0.0;

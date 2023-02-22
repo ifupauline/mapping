@@ -66,7 +66,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         tmp_bin.cap_rem = ctx.prm.phi;
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
-        printf("Bin %d Created\n", ctx.bins_count - 1);
+        printf("Bin %d Created\n\n", ctx.bins_count - 1);
 }
 
 void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 

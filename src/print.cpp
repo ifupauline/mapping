@@ -37,8 +37,7 @@ static void cmp_time(struct context &ctx)
 {
         ctx.redu_time = ctx.redu_time * MSEC;
         ctx.alloc_time = ctx.alloc_time * MSEC;
-        ctx.frag_time = ctx.frag_time * MSEC;
-        ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.frag_time + ctx.sched_time;
+        ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.sched_time;
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -319,17 +318,14 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------->\n");
         printf("Reduction Time:       %f ms\n", ctx.redu_time);
         if (ctx.prm.a == BFDU_F) {
-                printf("BFDU Time:            %f ms\n", ctx.alloc_time);
-                printf("BFF  Time:            %f ms\n", ctx.frag_time);
+                printf("BFDU_F Time:          %f ms\n", ctx.alloc_time);
         }
-        printf("Timing Analysis:      %f ms\n", ctx.sched_time);
-        printf("------------------------------------------->\n");
         if (ctx.prm.a == WFDU_F) {
-                printf("WFDU Time:            %f ms\n", ctx.alloc_time);
-                printf("WFF Time:             %f ms\n", ctx.frag_time);
-                printf("------------------------------------------->\n");
+                printf("WFDU_F Time:          %f ms\n", ctx.alloc_time);
 
         }
+        printf("WCRT Time:            %f ms\n", ctx.sched_time);
+        printf("------------------------------------------->\n");
         printf("Schedulability Rate:  %f\n", (float)ctx.sched_ok_count / (float)ctx.bins_count);
         printf("Execution Time:       %f ms\n", ctx.e_time);
         printf("Load Distribution:    %f\n", ctx.standard_dev);

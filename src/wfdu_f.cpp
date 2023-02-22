@@ -14,7 +14,7 @@ static vector<struct item> frags_wfdu_f;
 
 static struct worst_cut cut = {0};
 
-static int find_worst_bin(vector<struct bin> &lst_bins, struct item &itm,
+static int find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
                 struct context &ctx)
 {
         int worst_rem = -1;
@@ -22,13 +22,13 @@ static int find_worst_bin(vector<struct bin> &lst_bins, struct item &itm,
         int tmp = ctx.prm.phi;
         int is_found = NO;
 
-        for (unsigned int i = 0; i < lst_bins.size(); i++) {
-                if (itm.size <= lst_bins[i].cap_rem) {
-                        tmp = lst_bins[i].cap_rem - itm.size;
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (itm.size <= v_bins[i].cap_rem) {
+                        tmp = v_bins[i].cap_rem - itm.size;
 
                         if (tmp > worst_rem) {
                                 worst_rem = tmp;
-                                bin_id = lst_bins[i].id;
+                                bin_id = v_bins[i].id;
                         }
                         is_found = YES;
                         continue;
@@ -48,7 +48,7 @@ static int find_worst_bin(vector<struct bin> &lst_bins, struct item &itm,
         return -1;
 }
 
-static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
+static int find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                 struct context &ctx)
 {
         int l_diff;
@@ -87,20 +87,20 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
 
                 tmp_cut = {0};
 
-                for (unsigned int j = 0; j < lst_bins.size(); j++) {
+                for (unsigned int j = 0; j < v_bins.size(); j++) {
                         /* check if fragment can be placed in a bin */
-                        if (l_val <= lst_bins[j].cap_rem) {
+                        if (l_val <= v_bins[j].cap_rem) {
                                 is_l_val_found = YES;
 
                                 /* compute the remaining */
-                                l_diff = lst_bins[j].cap_rem - l_val; 
+                                l_diff = v_bins[j].cap_rem - l_val; 
 
                                 /* save the bin for worst fit */
                                 if (l_diff > l_worst_diff) {
                                         l_worst_diff = l_diff;
                                         tmp_cut.id = itm.tc.v_cuts[i].id;
                                         tmp_cut.c.v_tasks_lf = itm.tc.v_cuts[i].v_tasks_lf;
-                                        tmp_cut.target_bin_lf = lst_bins[j].id;
+                                        tmp_cut.target_bin_lf = v_bins[j].id;
                                         tmp_cut.lf_size = l_val;
                                 }
 
@@ -112,23 +112,23 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                 }
 
                 /* right value */
-                for (unsigned int j = 0; j < lst_bins.size(); j++) {
-                        if (lst_bins[j].id == tmp_cut.target_bin_lf) 
+                for (unsigned int j = 0; j < v_bins.size(); j++) {
+                        if (v_bins[j].id == tmp_cut.target_bin_lf) 
                                 continue;
 
                         /* check if fragment can be placed in a bin */
-                        if (r_val <= lst_bins[j].cap_rem) {
+                        if (r_val <= v_bins[j].cap_rem) {
                                 is_r_val_found = YES;
 
                                 /* compute the remaining */
-                                r_diff = lst_bins[j].cap_rem - r_val;
+                                r_diff = v_bins[j].cap_rem - r_val;
 
                                 /* save the bin for worst fit */
                                 if (r_diff > r_worst_diff) {
                                         r_worst_diff = r_diff;
                                         tmp_cut.id = itm.tc.v_cuts[i].id;
                                         tmp_cut.c.v_tasks_rf = itm.tc.v_cuts[i].v_tasks_rf;
-                                        tmp_cut.target_bin_rf = lst_bins[j].id;
+                                        tmp_cut.target_bin_rf = v_bins[j].id;
                                         tmp_cut.rf_size = r_val;
                                 }
                         }
@@ -166,7 +166,7 @@ static int find_worst_cut(vector<struct bin> &lst_bins, struct item &itm,
                 return NO;
 }
 
-static void wff(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+static void wff(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct item &itm, struct worst_cut &cut, struct context &ctx)
 {
         struct item itm_lf;
@@ -207,89 +207,92 @@ static void wff(vector<struct item> &lst_itms, vector<struct bin> &lst_bins,
         frags_wfdu_f.push_back(itm_rf);
 
         /* add fragments to their respective bins */
-        add_itm_to_bin(lst_bins, itm_lf, cut.target_bin_lf, ctx);
-        add_itm_to_bin(lst_bins, itm_rf, cut.target_bin_rf, ctx);
+        add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx);
+        add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx);
 }
 
-void wfdu_f(vector<struct item> &lst_itms, vector<struct bin> &lst_bins, 
+void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
         int ret;
         int alloc_count = 0;
         clock_t start, end;
 
-        /* STEP - 1, place all possible items in bins using WFDU */
+        /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");
-        printf("STEP 1, WFDU\n");
+        printf("STEP 1, WFDU_F\n");
         printf("<--------------------------------------->\n");
         start = clock();
-        for (int i = 0; i < ctx.prm.n; i++) {
-                if (lst_itms[i].is_allocated == YES) 
-                        continue;
-
-                /* find best bin to fit itm */
-                ret = find_worst_bin(lst_bins, lst_itms[i], ctx);
-
-                /* bin found add itm to it */
-                if (ret > -1) {
-                        printf("Worst Bin to accomodate Item %d is Bin %d\n", 
-                                        lst_itms[i].id, ret);
-                        add_itm_to_bin(lst_bins, lst_itms[i], ret, ctx);
-                        lst_itms[i].is_allocated = YES;
-
-                        /* no bin was found */
-                } else if (ret == -1) {
-                        printf("No Bin was found to accomodate Item %d\n", 
-                                        lst_itms[i].id);
-
-                        /* size bigger than PHI */
-                } else if (ret == -2) {
-                        printf("Item %d of size %d bigger than PHI\n", 
-                                        lst_itms[i].id, lst_itms[i].size);
-                }
-        }
-
-        end = clock();
-        ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-
-        /* 
-         * STEP - 2, try to place remaining items using fragmentation 
-         * with pair 
-         */
-        while (alloc_count != ctx.prm.n) {
+        while(alloc_count != ctx.prm.n) {
                 alloc_count = 0;
-                printf("\n<--------------------------------------->\n");
-                printf("STEP 2, WORST-FIT FRAGMENTATION\n");
-                printf("<--------------------------------------->\n");
-                start = clock();
                 for (int i = 0; i < ctx.prm.n; i++) {
-                        if (lst_itms[i].is_allocated == NO) {
-                                ret = find_worst_cut(lst_bins, lst_itms[i], ctx);
+                        if (v_itms[i].is_allocated == YES) 
+                                continue;
+
+                        /* find best bin to fit itm */
+                        ret = find_worst_bin(v_bins, v_itms[i], ctx);
+
+                        /* bin found add itm to it */
+                        if (ret > -1) {
+                                printf("Worst Bin to accomodate Item %d is Bin %d\n", 
+                                                v_itms[i].id, ret);
+                                add_itm_to_bin(v_bins, v_itms[i], ret, ctx);
+                                v_itms[i].is_allocated = YES;
+
+                                /* no bin was found */
+                        } else if (ret == -1) {
+                                printf("No Bin was found to accomodate Item %d\n", 
+                                                v_itms[i].id);
+
+                                ret = find_worst_cut(v_bins, v_itms[i], ctx);
                                 if (ret == YES) {
                                         printf("Found Cut %d for Item %d\n", 
-                                                        cut.id, lst_itms[i].id);
-                                        wff(lst_itms, lst_bins, lst_itms[i], 
+                                                        cut.id, v_itms[i].id);
+                                        wff(v_itms, v_bins, v_itms[i], 
                                                         cut, ctx);
-                                        lst_itms[i].is_allocated = YES;
-                                        lst_itms[i].is_fragmented = YES;
+                                        v_itms[i].is_allocated = YES;
+                                        v_itms[i].is_fragmented = YES;
                                         continue;
                                 } 
                                 if (ret == NO) {
-                                        add_bin(lst_bins, ctx);
+                                        printf("No Cut was found to accomodate Item %d\n\n", v_itms[i].id);
+                                        add_bin(v_bins, ctx);
+                                        ctx.cycl_count++;
+                                        continue;
+                                }
+
+                                /* size bigger than phi */
+                        } else if (ret == -2) {
+                                printf("Item %d of size %d bigger than PHI\n", 
+                                                v_itms[i].id, v_itms[i].size);
+
+                                ret = find_worst_cut(v_bins, v_itms[i], ctx);
+                                if (ret == YES) {
+                                        printf("Found Cut %d for Item %d\n", 
+                                                        cut.id, v_itms[i].id);
+                                        wff(v_itms, v_bins, v_itms[i], 
+                                                        cut, ctx);
+                                        v_itms[i].is_allocated = YES;
+                                        v_itms[i].is_fragmented = YES;
+                                        continue;
+                                } 
+                                if (ret == NO) {
+                                        printf("No Cut was found to accomodate Item %d\n\n", v_itms[i].id);
+                                        add_bin(v_bins, ctx);
                                         ctx.cycl_count++;
                                         continue;
                                 }
                         }
                 }
-
-                end = clock();
-                ctx.frag_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-
+                /* count remaining item to be allocated */
                 for (int i = 0; i < ctx.prm.n; i++) {
-                        if (lst_itms[i].is_allocated == YES)
+                        if (v_itms[i].is_allocated == YES)
                                 alloc_count++;
                 }
         }
+
+        end = clock();
+        ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 vector<struct item> *get_frags_wfdu_f(void)

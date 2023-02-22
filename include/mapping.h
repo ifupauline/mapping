@@ -43,7 +43,6 @@ struct context {
         int sched_failed_count;
         float redu_time;
         float alloc_time;
-        float frag_time;
         float e_time;
         float sched_time;
         float standard_dev;
