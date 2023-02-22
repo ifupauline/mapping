@@ -6,9 +6,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 include_directories(include)
 
-project(bpp-if)
+project(bpp-ifc)
 
 add_subdirectory(src)
-add_subdirectory(benchmarks/example)
+add_subdirectory(tests/wcrt)
+add_subdirectory(tests/example)
 add_subdirectory(benchmarks/k_500)
-add_subdirectory(benchmarks/wcrt)

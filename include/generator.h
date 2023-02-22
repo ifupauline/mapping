@@ -14,9 +14,9 @@
 /* instance */
 void gen_item_set(vector<struct item> &v_itms, struct params &prm);
 
-void comp_min_bins(vector<struct item> &v_itms, struct context &ctx);
+void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx);
 
-void comp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx);
 
 void init_ctx(struct params &prm, struct context &ctx);

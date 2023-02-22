@@ -38,7 +38,7 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
 
                         gen_tc_set(v_itms, prm);
                         init_ctx(prm, ctx);
-                        comp_min_bins(v_itms, ctx);
+                        cmp_min_bins(v_itms, ctx);
 
                         struct context ctx_bfdu_f = ctx;
                         struct context ctx_wfdu_f = ctx;
@@ -60,8 +60,8 @@ static void k_500(vector<struct b_stats> &v_stts_bfdu_f,
                         allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
                         /* stats */
-                        comp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-                        comp_stats(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
+                        cmp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
+                        cmp_stats(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
                         stts_bfdu_f.mean_ar += ctx_bfdu_f.opti_bins;
                         stts_wfdu_f.mean_ar += ctx_wfdu_f.opti_bins;
                         stts_bfdu_f.mean_ld += ctx_bfdu_f.standard_dev;

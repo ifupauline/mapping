@@ -14,28 +14,24 @@ int main(void)
         vector<struct bin> v_bins_bfdu_f;
 
         /* TODO 
-         * - fusion print items and bins vector
          * - generate harmonic task-chains
          * - fix k_500 tests
-         * - min max params as define    
-         * - c should always be 100  
-         * - check bfdu algo for extra frag  
-         * - folder for tests and benchmarks  
+         * - create number of cuts  
          */
 
         /* parameters */
         prm.n = 100;
         prm.c = 100;
-        prm.phi = 50;
+        prm.phi = 80;
         prm.max_tu = 20;  /* max utilization rate for a task in percent */
-        prm.fr = 30;      /* fragmentation rate in number of items > phi */
+        prm.fr = 5;      /* fragmentation rate in number of items > phi */
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm);
 
         /* cmp min bins req */
         init_ctx(prm, ctx);
-        comp_min_bins(v_itms, ctx);
+        cmp_min_bins(v_itms, ctx);
 
         /* copy instances and select algorithm */
         ctx_bfdu_f = ctx;
@@ -58,9 +54,8 @@ int main(void)
 
         /* results */
         print_task_chains(v_itms);
-        print_v_bins(v_bins_bfdu_f, ctx_bfdu_f);
-        print_items_vectors(v_itms_bfdu_f, ctx_bfdu_f);
-        print_bins_vectors(v_bins_bfdu_f, ctx_bfdu_f);
+        print_bins(v_bins_bfdu_f, ctx_bfdu_f);
+        print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;

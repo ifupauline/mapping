@@ -1,6 +1,14 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
+#define MINFR    5
+#define MAXPHI   90
+#define MINMAXTU 10
+#define MAXC     100
+
+#define MINN     10
+#define MAXN     10000
+
 static int gen_rand(int min, int max) 
 {
         random_device rd;
@@ -8,28 +16,6 @@ static int gen_rand(int min, int max)
         uniform_int_distribution<> distr(min, max);
 
         return distr(gen);
-}
-
-void init_ctx(struct params &prm, struct context &ctx)
-{
-        ctx.prm = prm;
-        ctx.redu_time = 0.0;
-        ctx.alloc_time = 0.0;
-        ctx.frag_time = 0.0;
-        ctx.e_time = 0.0;
-        ctx.sched_time = 0.0;
-        ctx.standard_dev = 0.0;
-        ctx.opti_bins = 0.0;
-        ctx.cycl_count = 0;
-        ctx.bins_count = 0;
-        ctx.alloc_count = 0;
-        ctx.frags_count = 0;
-        ctx.cuts_count = 0;
-        ctx.sched_ok_count = 0;
-        ctx.sched_failed_count = 0;
-        ctx.itms_size = 0;
-        ctx.itms_nbr = ctx.prm.n;
-        ctx.itms_count = ctx.prm.n - 1;
 }
 
 static int cmp_dec(const struct item &a, const struct item &b)
@@ -44,34 +30,33 @@ static void sort_dec(vector<struct item> &v_itms)
 
 static void assign_id(vector<struct item> &v_itms)
 {
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
+        for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].id = i;
-        }
 }
 
 static void check_params(struct params &prm)
 {
-        if (prm.n < 10 || prm.n > 10000) {
+        if (prm.n < MINN || prm.n > MAXN) {
                 printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
                 exit(0);
         }
 
-        if (prm.c < prm.phi || prm.c > 100) {
+        if (prm.c < prm.phi || prm.c > MAXC) {
                 printf("Invalid params: prm.c rule -> [prm.phi <= c <= 100]\n\n");
                 exit(0);
         }
 
-        if (prm.phi > 90) {
+        if (prm.phi > MAXPHI) {
                 printf("Invalid params: prm.phi rule -> [prm.phi < 90]\n\n");
                 exit(0);
         }
 
-        if (prm.max_tu < 10 || prm.max_tu > prm.phi) {
+        if (prm.max_tu < MINMAXTU || prm.max_tu > prm.phi) {
                 printf("Invalid params: prm.max_tu rule -> [10 <= prm.max_tu < prm.phi]\n\n");
                 exit(0);
         }
 
-        if (prm.fr < 5 || prm.fr > prm.n) {
+        if (prm.fr < MINFR || prm.fr > prm.n) {
                 printf("Invalid params: prm.fr rule -> [5 <= prm.fr < prm.n]\n\n");
                 exit(0);
         }
@@ -156,9 +141,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 
                         if (lf_size > prm.phi || rf_size > prm.phi) {
                                 count++;
-                                if (count == v_itms[i].tc.v_tasks.size() - 1) {
+                                if (count == v_itms[i].tc.v_tasks.size() - 1)
                                         return -1;
-                                }
                         } 
 
                         /* copy tasks to left fragment */
@@ -180,11 +164,33 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
         }
         sort_dec(v_itms);
         assign_id(v_itms);
-        
+
         return 0;
 }
 
-void comp_min_bins(vector<struct item> &v_itms, struct context &ctx)
+void init_ctx(struct params &prm, struct context &ctx)
+{
+        ctx.prm = prm;
+        ctx.redu_time = 0.0;
+        ctx.alloc_time = 0.0;
+        ctx.frag_time = 0.0;
+        ctx.e_time = 0.0;
+        ctx.sched_time = 0.0;
+        ctx.standard_dev = 0.0;
+        ctx.opti_bins = 0.0;
+        ctx.cycl_count = 0;
+        ctx.bins_count = 0;
+        ctx.alloc_count = 0;
+        ctx.frags_count = 0;
+        ctx.cuts_count = 0;
+        ctx.sched_ok_count = 0;
+        ctx.sched_failed_count = 0;
+        ctx.itms_size = 0;
+        ctx.itms_nbr = ctx.prm.n;
+        ctx.itms_count = ctx.prm.n - 1;
+}
+
+void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx)
 {
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += v_itms[i].size;
@@ -200,8 +206,10 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
 {
         while(1) {
                 int ret = -1;
+
                 vector<struct item> v_itms_tmp;
                 ret = _gen_tc_set(v_itms_tmp, prm);
+
                 if (ret == 0) {
                         v_itms = v_itms_tmp;
                         break;

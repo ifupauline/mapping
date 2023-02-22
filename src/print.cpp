@@ -9,9 +9,8 @@ static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
         float variance = 0.0;
         unsigned int n = v_bins.size();
 
-        for (unsigned int i = 0; i < n; i++) {
+        for (unsigned int i = 0; i < n; i++)
                 sum += (ctx.prm.phi - v_bins[i].cap_rem);
-        }
 
         mean = sum / n;
 
@@ -34,7 +33,7 @@ static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx
         ctx.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
 }
 
-static void comp_time(struct context &ctx)
+static void cmp_time(struct context &ctx)
 {
         ctx.redu_time = ctx.redu_time * MSEC;
         ctx.alloc_time = ctx.alloc_time * MSEC;
@@ -42,7 +41,7 @@ static void comp_time(struct context &ctx)
         ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.frag_time + ctx.sched_time;
 }
 
-void comp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx)
 {
         vector<struct item> *v_frags_bfdu_f;
@@ -80,7 +79,7 @@ void comp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                         ctx.cuts_count++;
         }
 
-        comp_time(ctx);
+        cmp_time(ctx);
         standard_deviation(v_bins, ctx);
         approximation_ratio(v_itms, ctx);
 }
@@ -103,7 +102,7 @@ void print_not_fragmented(vector<struct item> &v_itms, struct context &ctx)
         }
 }
 
-void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
+void print_bins(vector<struct bin> &v_bins, struct context &ctx)
 {
         printf("+=====================================+\n");
         if (ctx.prm.a == BFDU_F)
@@ -115,8 +114,8 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
 
                 printf("+======================================+\n");
-                printf("|Bin %d:       \n", v_bins[i].id);
-                printf("|Load:    %u\n", ctx.prm.phi - v_bins[i].cap_rem);
+                printf("|Core: %d\n", v_bins[i].id);
+                printf("|Load: %u\n", ctx.prm.phi - v_bins[i].cap_rem);
                 if (v_bins[i].flag == SCHED_OK) {
                         printf("|Sched: OK\n");
                 }
@@ -139,12 +138,11 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
-                                                printf(" -----------> deadline  violated!\n");
-                                        } else {
-                                                printf("\n");
 
-                                        }
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
+                                                printf(" -----------> deadline  violated!\n");
+                                        else
+                                                printf("\n");
                                 }
 
                         } else {
@@ -161,11 +159,11 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
+
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
                                                 printf(" -----------> deadline  violated!\n");
-                                        } else {
+                                        else
                                                 printf("\n");
-                                        }
                                 }
                         }
                 }
@@ -173,13 +171,14 @@ void print_v_bins(vector<struct bin> &v_bins, struct context &ctx)
         }
 }
 
-void print_items_vectors(vector<struct item> &v_itms, struct context &ctx)
+void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+                struct context &ctx)
 {
         printf("\n+=====================================+\n");
         if (ctx.prm.a == BFDU_F)
-                printf("| PRINT ITEMS VECTORS BFDU_F          |\n");
+                printf("| PRINT VECTORS BFDU_F                |\n");
         if (ctx.prm.a == WFDU_F)
-                printf("| PRINT ITEMS VECTORS WFDU_F          |\n");
+                printf("| PRINT VECTORS WFDU_F                |\n");
         printf("+=====================================+\n");
 
         int count_not_alloc = 0;
@@ -263,16 +262,6 @@ void print_items_vectors(vector<struct item> &v_itms, struct context &ctx)
         printf("\n");
         printf("Number of Cuts: %u\n", count_cut);
         printf("\n");
-}
-
-void print_bins_vectors(vector<struct bin> &v_bins, struct context &ctx)
-{
-        printf("\n+=====================================+\n");
-        if (ctx.prm.a == BFDU_F)
-                printf("| PRINT BINS VECTORS BFDU_F           |\n");
-        if (ctx.prm.a == WFDU_F)
-                printf("| PRINT BINS VECTORS WFDU_F           |\n");
-        printf("+=====================================+\n");
 
         printf("Vector:\n");
         for (unsigned int i = 0; i < v_bins.size(); i++) {
@@ -307,7 +296,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("| PRINT STATS WFDU_F                  |\n");
         printf("+=====================================+\n");
 
-        comp_stats(v_bins, v_itms, ctx);
+        cmp_stats(v_bins, v_itms, ctx);
 
         printf("------------------------------------------->\n");
         printf("n:      %u\n", ctx.prm.n);
