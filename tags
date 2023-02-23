@@ -87,17 +87,17 @@ B_FR	include/bench.h	7;"	d
 B_LD	include/bench.h	6;"	d
 B_SCHED	include/bench.h	8;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_BINARY_DIR	benchmarks/k_500/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_BINARY_DIR	benchmarks/bench_1/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/example/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	benchmarks/k_500/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	benchmarks/bench_1/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/example/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_SOURCE_DIR	benchmarks/k_500/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_SOURCE_DIR	benchmarks/bench_1/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/example/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -419,7 +419,7 @@ C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	752;"	d	file:
 DEC	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
 EQUALS	Makefile	/^EQUALS = =$/;"	m
-EQUALS	benchmarks/k_500/Makefile	/^EQUALS = =$/;"	m
+EQUALS	benchmarks/bench_1/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
@@ -427,7 +427,7 @@ GENERATOR_H	include/generator.h	2;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
-ITER	benchmarks/k_500/k_500.cpp	5;"	d	file:
+ITER	benchmarks/bench_1/bench_1.cpp	5;"	d	file:
 MAPPING_H	include/mapping.h	2;"	d
 MAXC	src/generator.cpp	5;"	d	file:
 MAXN	src/generator.cpp	8;"	d	file:
@@ -510,7 +510,7 @@ PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
 PRINT_H	include/print.h	2;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	benchmarks/k_500/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	benchmarks/bench_1/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/example/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -518,11 +518,11 @@ SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	13;"	d
 SCHED_OK	include/sched_analysis.h	12;"	d
 SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	benchmarks/k_500/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	benchmarks/bench_1/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/example/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SIMNBR	benchmarks/k_500/k_500.cpp	6;"	d	file:
+SIMNBR	benchmarks/bench_1/bench_1.cpp	6;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	291;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	30;"	d	file:
@@ -567,7 +567,7 @@ SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	105;"	d	
 SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	67;"	d	file:
 SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	105;"	d	file:
 SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	67;"	d	file:
-STEP	benchmarks/k_500/k_500.cpp	4;"	d	file:
+STEP	benchmarks/bench_1/bench_1.cpp	4;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	417;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	402;"	d	file:
 STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	416;"	d	file:
@@ -586,6 +586,7 @@ allocation	src/mapping.cpp	/^void allocation(vector<struct item> &v_itms, vector
 approximation_ratio	src/print.cpp	/^static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
 assign_id	src/generator.cpp	/^static void assign_id(vector<struct item> &v_itms)$/;"	f	file:
 b_stats	include/bench.h	/^struct b_stats {$/;"	s
+bench_1	benchmarks/bench_1/bench_1.cpp	/^static void bench_1(vector<struct b_stats> &v_stts_bfdu_f, $/;"	f	file:
 best_cut	src/bfdu_f.cpp	/^struct best_cut {$/;"	s	file:
 bfdu_f	src/bfdu_f.cpp	/^void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 bff	src/bfdu_f.cpp	/^static void bff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
@@ -600,10 +601,10 @@ c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:w
 c_pair	include/mapping.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
 cap_rem	include/mapping.h	/^        int cap_rem;$/;"	m	struct:bin
 check_params	src/generator.cpp	/^static void check_params(struct params &prm)$/;"	f	file:
-cmd_gnuplot_ar	benchmarks/k_500/k_500.cpp	/^static char const *cmd_gnuplot_ar[] = {};$/;"	v	file:
-cmd_gnuplot_et	benchmarks/k_500/k_500.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
-cmd_gnuplot_ld	benchmarks/k_500/k_500.cpp	/^static char const *cmd_gnuplot_ld[] = {};$/;"	v	file:
-cmd_gnuplot_sched	benchmarks/k_500/k_500.cpp	/^static char const *cmd_gnuplot_sched[] = {};$/;"	v	file:
+cmd_gnuplot_ar	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_ar[] = {};$/;"	v	file:
+cmd_gnuplot_et	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
+cmd_gnuplot_ld	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_ld[] = {};$/;"	v	file:
+cmd_gnuplot_sched	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_sched[] = {};$/;"	v	file:
 cmp_dec	src/generator.cpp	/^static int cmp_dec(const struct item &a, const struct item &b)$/;"	f	file:
 cmp_inc	src/sched_analysis.cpp	/^static int cmp_inc(const struct task &a, const struct task &b)$/;"	f	file:
 cmp_min_bins	src/generator.cpp	/^void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx)$/;"	f
@@ -678,13 +679,12 @@ itm_idx	include/mapping.h	/^        int itm_idx;$/;"	m	struct:t_idx
 itms_count	include/mapping.h	/^        int itms_count;$/;"	m	struct:context
 itms_nbr	include/mapping.h	/^        int itms_nbr;$/;"	m	struct:context
 itms_size	include/mapping.h	/^        int itms_size;$/;"	m	struct:context
-k_500	benchmarks/k_500/k_500.cpp	/^static void k_500(vector<struct b_stats> &v_stts_bfdu_f, $/;"	f	file:
 lf_size	src/bfdu_f.cpp	/^        int lf_size;$/;"	m	struct:best_cut	file:
 lf_size	src/wfdu_f.cpp	/^        int lf_size;$/;"	m	struct:worst_cut	file:
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
-main	benchmarks/k_500/k_500.cpp	/^int main(void)$/;"	f
+main	benchmarks/bench_1/bench_1.cpp	/^int main(void)$/;"	f
 main	tests/example/example.cpp	/^int main(void)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 max_tu	include/mapping.h	/^        int max_tu;$/;"	m	struct:params

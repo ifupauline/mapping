@@ -53,9 +53,12 @@ int main(void)
 
         ret = wcrt(v_tasks);
         if (ret == SCHED_FAILED)
-                printf("SCHEDULABILITY FAILED\n");
+                printf("Schedulability FAILED\n");
         else 
-                printf("\nSCHEDULABILITY OK\n");
+                printf("\nSchedulability OK\n");
+
+        for (unsigned int i = 0; i < v_tasks.size(); i++)
+                printf("tau %d: r: %d t: %d\n",i , v_tasks[i].r, v_tasks[i].t);
 
         return 0;
 }
