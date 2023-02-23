@@ -439,6 +439,7 @@ MINTASKNBR	include/generator.h	6;"	d
 MINWCET	include/generator.h	9;"	d
 MSEC	include/print.h	7;"	d
 NO	include/mapping.h	14;"	d
+OPTIMIZATION_H	include/optimization.h	2;"	d
 PERCENT	include/generator.h	12;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
@@ -606,10 +607,11 @@ cmd_gnuplot_et	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_e
 cmd_gnuplot_ld	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_ld[] = {};$/;"	v	file:
 cmd_gnuplot_sched	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_sched[] = {};$/;"	v	file:
 cmp_dec	src/generator.cpp	/^static int cmp_dec(const struct item &a, const struct item &b)$/;"	f	file:
-cmp_inc	src/sched_analysis.cpp	/^static int cmp_inc(const struct task &a, const struct task &b)$/;"	f	file:
+cmp_inc	src/print.cpp	/^static int cmp_inc(const struct bin &a, const struct bin &b)$/;"	f	file:
+cmp_inc_id	src/sched_analysis.cpp	/^static int cmp_inc_id(const struct task &a, const struct task &b)$/;"	f	file:
+cmp_inc_priority	src/sched_analysis.cpp	/^static int cmp_inc_priority(const struct task &a, const struct task &b)$/;"	f	file:
 cmp_min_bins	src/generator.cpp	/^void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx)$/;"	f
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
-cmp_time	src/print.cpp	/^static void cmp_time(struct context &ctx)$/;"	f	file:
 concatenate	src/bench.cpp	/^void concatenate(char p[], char q[]) {$/;"	f
 const	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	10;"	d	file:
 context	include/mapping.h	/^struct context {$/;"	s
@@ -622,6 +624,7 @@ d	include/mapping.h	/^        int d;$/;"	m	struct:task
 diff	src/bfdu_f.cpp	/^        int diff;$/;"	m	struct:best_cut	file:
 diff	src/wfdu_f.cpp	/^        int diff;$/;"	m	struct:worst_cut	file:
 e_time	include/mapping.h	/^        float e_time;$/;"	m	struct:context
+execution_time	src/print.cpp	/^static void execution_time(struct context &ctx)$/;"	f	file:
 find_best_bin	src/bfdu_f.cpp	/^static int find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 find_best_cut	src/bfdu_f.cpp	/^static int find_best_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 find_double_fit	src/mapping.cpp	/^static void find_double_fit(vector<struct item> &v_itms, $/;"	f	file:
@@ -695,6 +698,8 @@ mean_sched	include/bench.h	/^        float mean_sched;$/;"	m	struct:b_stats
 n	include/mapping.h	/^        int n;$/;"	m	struct:params
 nbr_cut	include/mapping.h	/^        int nbr_cut;$/;"	m	struct:item
 opti_bins	include/mapping.h	/^        float opti_bins;$/;"	m	struct:context
+opti_priority	src/optimization.cpp	/^void opti_priority(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+optimization	src/mapping.cpp	/^void optimization(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 p	include/mapping.h	/^        int p;$/;"	m	struct:task
 params	include/mapping.h	/^struct params {$/;"	s
 phi	include/bench.h	/^        int phi;$/;"	m	struct:b_stats
@@ -707,6 +712,7 @@ print_not_fragmented	src/print.cpp	/^void print_not_fragmented(vector<struct ite
 print_stats	src/print.cpp	/^void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 print_task_chains	src/print.cpp	/^void print_task_chains(vector<struct item> &v_itms)$/;"	f
 print_vectors	src/print.cpp	/^void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
+priority_assignment	src/sched_analysis.cpp	/^void priority_assignment(vector<struct bin> &v_bins)$/;"	f
 prm	include/mapping.h	/^        struct params prm;$/;"	m	struct:context	typeref:struct:context::params
 qnxnto	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 qnxnto	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
@@ -721,9 +727,12 @@ sched_ok_count	include/mapping.h	/^        int sched_ok_count;$/;"	m	struct:cont
 sched_rate	include/mapping.h	/^        float sched_rate;$/;"	m	struct:context
 sched_time	include/mapping.h	/^        float sched_time;$/;"	m	struct:context
 schedulability_rate	src/print.cpp	/^static void schedulability_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f	file:
+search_bin	src/optimization.cpp	/^static void search_bin(vector<struct bin> &v_bc, struct item &itm, struct context &ctx)$/;"	f	file:
 size	include/mapping.h	/^        int size;$/;"	m	struct:item
 sort_dec	src/generator.cpp	/^static void sort_dec(vector<struct item> &v_itms)$/;"	f	file:
-sort_inc	src/sched_analysis.cpp	/^static void sort_inc(vector<struct task> &v_tasks)$/;"	f	file:
+sort_inc	src/print.cpp	/^static void sort_inc(vector<struct bin> &v_bins)$/;"	f	file:
+sort_inc_id	src/sched_analysis.cpp	/^static void sort_inc_id(vector<struct task> &v_tasks)$/;"	f	file:
+sort_inc_priority	src/sched_analysis.cpp	/^static void sort_inc_priority(vector<struct task> &v_tasks)$/;"	f	file:
 standard_dev	include/mapping.h	/^        float standard_dev;$/;"	m	struct:context
 standard_deviation	src/print.cpp	/^static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f	file:
 t	include/mapping.h	/^        int t;$/;"	m	struct:task

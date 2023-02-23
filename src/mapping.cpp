@@ -1,4 +1,5 @@
 #include "mapping.h"
+#include "optimization.h"
 #include "sched_analysis.h"
 
 static void find_single_fit(vector<struct item> &v_itms, 
@@ -158,6 +159,7 @@ void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 printf("+=====================================+\n");
                 printf("| WORST-CASE-ANALYSIS BFDU_F          |\n");
                 printf("+=====================================+\n");
+                priority_assignment(v_bins);
                 sched_analysis(v_bins, ctx);
         }
 
@@ -165,6 +167,7 @@ void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 printf("+=====================================+\n");
                 printf("| WORST-CASE-ANALYSIS WFDU_F          |\n");
                 printf("+=====================================+\n");
+                priority_assignment(v_bins);
                 sched_analysis(v_bins, ctx);
         }
 }
@@ -175,11 +178,13 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
                 printf("+=====================================+\n");
                 printf("| OPTIMIZATION BFDU_F                 |\n");
                 printf("+=====================================+\n");
+                opti_priority(v_bins, ctx);
         }
 
         if (ctx.prm.a == WFDU_F) {
                 printf("+=====================================+\n");
                 printf("| OPTIMIZATION WFDU_F                 |\n");
                 printf("+=====================================+\n");
+                opti_priority(v_bins, ctx);
         }
 }

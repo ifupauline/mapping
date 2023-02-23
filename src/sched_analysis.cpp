@@ -1,13 +1,23 @@
 #include "sched_analysis.h"
 
-static int cmp_inc(const struct task &a, const struct task &b)
+static int cmp_inc_priority(const struct task &a, const struct task &b)
 {
         return a.p < b.p;
 }
 
-static void sort_inc(vector<struct task> &v_tasks)
+static void sort_inc_priority(vector<struct task> &v_tasks)
 {
-        sort(v_tasks.begin(), v_tasks.end(), cmp_inc);
+        sort(v_tasks.begin(), v_tasks.end(), cmp_inc_priority);
+}
+
+static int cmp_inc_id(const struct task &a, const struct task &b)
+{
+        return a.id < b.id;
+}
+
+static void sort_inc_id(vector<struct task> &v_tasks)
+{
+        sort(v_tasks.begin(), v_tasks.end(), cmp_inc_id);
 }
 
 static void find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
@@ -67,6 +77,17 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         }
 }
 
+void priority_assignment(vector<struct bin> &v_bins)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        sort_inc_id(v_bins[i].v_itms[j].tc.v_tasks);
+                        for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++)
+                                v_bins[i].v_itms[j].tc.v_tasks[k].p = k + 1;
+                }
+        }
+}
+
 int wcrt(vector<struct task> &v_tasks)
 {
         int ret;
@@ -75,7 +96,7 @@ int wcrt(vector<struct task> &v_tasks)
         vector<struct task> hp_tasks;
 
         /* sort decreasing priority order 1 -> n */
-        sort_inc(v_tasks);
+        sort_inc_priority(v_tasks);
 
         /* compute WCRT for each task */
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
@@ -97,7 +118,9 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
         clock_t start, end;
 
         start = clock();
+
         for (unsigned int i = 0; i < v_bins.size(); i++) {
+                v_bins[i].v_tasks.clear();
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
                                 v_bins[i].v_tasks.push_back(v_bins[i].v_itms[j].tc.v_tasks[k]);
@@ -108,13 +131,11 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                         }
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
 
-                        if (v_bins[i].flag == SCHED_OK) {
+                        if (v_bins[i].flag == SCHED_OK)
                                 printf("Bin %d SCHED_OK\n", v_bins[i].id);
-                        }
 
-                        if (v_bins[i].flag == SCHED_FAILED) {
+                        if (v_bins[i].flag == SCHED_FAILED)
                                 printf("Bin %d SCHED_FAILED\n", v_bins[i].id);
-                        }
                 }
         }
         end = clock();

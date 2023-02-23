@@ -4,7 +4,7 @@
 #define MINMAXTU 10
 #define MAXC     100
 
-#define MINN     10
+#define MINN     5
 #define MAXN     10000
 
 static int gen_rand(int min, int max) 

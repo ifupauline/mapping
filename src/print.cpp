@@ -33,7 +33,7 @@ static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx
         ctx.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
 }
 
-static void cmp_time(struct context &ctx)
+static void execution_time(struct context &ctx)
 {
         ctx.redu_time = ctx.redu_time * MSEC;
         ctx.alloc_time = ctx.alloc_time * MSEC;
@@ -104,7 +104,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                         ctx.cuts_count++;
         }
 
-        cmp_time(ctx);
+        execution_time(ctx);
         standard_deviation(v_bins, ctx);
         approximation_ratio(v_itms, ctx);
         schedulability_rate(v_bins, ctx);
@@ -212,6 +212,8 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         int count_is_alloc = 0;
         int count_frag = 0;
         int count_cut = 0;
+        int sched_ok = 0;
+        int sched_failed = 0;
 
         vector<struct item> *v_frags_bfdu_f;
         vector<struct item> *v_frags_wfdu_f;
@@ -294,20 +296,22 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_OK) {
                         printf("%d  ", v_bins[i].id);
+                        sched_ok++;
                 }
         }
         printf("\n");
-        printf("Bins Number SCHED_OK: %u\n", ctx.sched_ok_count);
+        printf("Bins Number SCHED_OK: %u\n", sched_ok);
         printf("\n");
 
         printf("Vector:\n");
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_FAILED) {
                         printf("%d  ", v_bins[i].id);
+                        sched_failed++;
                 }
         }
         printf("\n");
-        printf("Bins Number SCHED_FAILED: %u\n", ctx.sched_failed_count);
+        printf("Bins Number SCHED_FAILED: %u\n", sched_failed++);
         printf("\n");
 }
 
@@ -352,8 +356,8 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         }
         printf("WCRT Time:            %f ms\n", ctx.sched_time);
         printf("------------------------------------------->\n");
-        printf("Schedulability Rate:  %f\n", ctx.sched_rate);
         printf("Execution Time:       %f ms\n", ctx.e_time);
+        printf("Schedulability Rate:  %f\n", ctx.sched_rate);
         printf("Load Distribution:    %f\n", ctx.standard_dev);
         printf("------------------------------------------->\n");
         printf("Approximation Ratio:  %f\n", ctx.opti_bins);
