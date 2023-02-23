@@ -18,8 +18,7 @@ int main(void)
 
         /* TODO 
          * - generate harmonic task-chains
-         * - create a couple of benchmarks ex: bfdu_f vs wfdu_f
-         * - swapping algorithm
+         * - mapping optimization algorithm
          * - optimization loop on phi or something else?  
          */
 
@@ -62,6 +61,10 @@ int main(void)
         /* worst-case analysis */
         worst_case_analysis(v_bins_bfdu_f, ctx_bfdu_f);
         worst_case_analysis(v_bins_wfdu_f, ctx_wfdu_f);
+
+        /* mapping optimization */
+        optimization(v_bins_bfdu_f, ctx_bfdu_f);
+        optimization(v_bins_wfdu_f, ctx_wfdu_f);
 
         /* results */
         print_task_chains(v_itms);

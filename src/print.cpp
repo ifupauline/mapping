@@ -56,6 +56,16 @@ static void schedulability_rate(vector<struct bin> &v_bins, struct context &ctx)
         ctx.sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
 }
 
+static int cmp_inc(const struct bin &a, const struct bin &b)
+{
+        return a.cap_rem < b.cap_rem;
+}
+
+static void sort_inc(vector<struct bin> &v_bins)
+{
+        sort(v_bins.begin(), v_bins.end(), cmp_inc);
+}
+
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx)
 {
@@ -126,6 +136,7 @@ void print_bins(vector<struct bin> &v_bins, struct context &ctx)
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT BINS WFDU_F                   |\n");
         printf("+=====================================+\n\n");
+        sort_inc(v_bins);
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
 

@@ -109,6 +109,8 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
 void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
+void optimization(vector<struct bin> &v_bins, struct context &ctx);
+
 /* operations */
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
