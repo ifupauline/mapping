@@ -14,10 +14,9 @@ int main(void)
         vector<struct bin> v_bins_bfdu_f;
 
         /* TODO 
-         * - generate harmonic task-chains
+         * - FIX print (bin to core etc...) and stats with new priority function
          * - mapping optimization algorithm
-         * - do not change priority of failed bin after re-assignment
-         * - update print functions to see change before and after opti
+         * - generate harmonic task-chains
          */
 
         /* parameters */
@@ -61,7 +60,6 @@ int main(void)
         /* mapping optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-        print_bins(v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;
 }

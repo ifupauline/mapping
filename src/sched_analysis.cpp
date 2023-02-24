@@ -56,18 +56,24 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
 
         r_curr = tmp;
 
-        if (r_curr == r_prev) {
-                //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
-                tau.r = r_curr;
-                ret = SCHED_OK;
-                return;
-        }
-
+        /* YOU MUST TEST THIS CONDITION FIRST */
         if (r_curr > tau.t) {
                 //printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
                 //                tau.id, r_curr, tau.t);
                 tau.r = r_curr;
                 ret = SCHED_FAILED;
+                return;
+        }
+
+        if (r_curr == r_prev) {
+                //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
+                tau.r = r_curr;
+                ret = SCHED_OK;
+                if (tau.r > tau.t) {
+                        printf("ERR! tau.r: %d > tau.t: %d\n", tau.r, tau.t);
+                        exit(0);
+                }
+
                 return;
         }
 
@@ -88,9 +94,81 @@ void priority_assignment(vector<struct bin> &v_bins)
         }
 }
 
+void priority_reassignment(struct bin &b, unsigned int &j, int &p)
+{
+        struct bin b_tmp = b;
+        int start_p;
+        int flag = -1;
+
+        /* starting new p */
+        p = p + 1;
+        b_tmp.v_tasks.clear();
+        start_p = p + 1;
+        printf("Updating Priorities... with p: %d\n", p);
+
+        for (unsigned int l = 0; l < b_tmp.v_itms.size(); l++) {
+                /* do not iterate the unschedulable item */
+                if (b_tmp.v_itms[l].id == b_tmp.v_itms[j].id)
+                        continue;
+
+                /* assign new priorities */
+                for (unsigned int m = 0; m < b_tmp.v_itms[l].tc.v_tasks.size(); m++) {
+                        b_tmp.v_itms[l].tc.v_tasks[m].p = p;
+                        p++;
+                }
+                p = start_p;
+        }
+
+        /* extract tasks from concerned bin*/
+        for (unsigned int i = 0; i < b_tmp.v_itms.size(); i++) {
+                for (unsigned int j = 0; j < b_tmp.v_itms[i].tc.v_tasks.size(); j++) {
+                        b_tmp.v_tasks.push_back(b_tmp.v_itms[i].tc.v_tasks[j]);
+                        b_tmp.v_tasks.back().idx.itm_idx = i;
+                        b_tmp.v_tasks.back().idx.task_idx = j;
+                        printf("Core %d Item %d tau %d p:%d\n", 
+                                        b_tmp.id, b_tmp.v_itms[i].id, 
+                                        b_tmp.v_itms[i].tc.v_tasks[j].id, 
+                                        b_tmp.v_itms[i].tc.v_tasks[j].p);
+                }
+        }
+
+        flag = wcrt(b_tmp.v_tasks);
+        /* copy back response time to tc */
+        for (unsigned int j = 0; j < b_tmp.v_tasks.size(); j++) {
+                int itm_idx = b_tmp.v_tasks[j].idx.itm_idx;
+                int task_idx = b_tmp.v_tasks[j].idx.task_idx;
+                b_tmp.v_itms[itm_idx].tc.v_tasks[task_idx].r = b_tmp.v_tasks[j].r;
+        }
+
+        if (flag == SCHED_OK) {
+                b = b_tmp;
+                b.flag = SCHED_OK;
+                printf("Core %d SCHED_OK with new priority assignment\n\n", b_tmp.id);
+                for (unsigned int i = 0; i < b_tmp.v_tasks.size(); i++) {
+                        if (b_tmp.v_tasks[i].r > b_tmp.v_tasks[i].t) {
+                                printf("p: %d tau.id: %d r: %d t: %d\n", 
+                                                b_tmp.v_tasks[i].p, 
+                                                b_tmp.v_tasks[i].id, 
+                                                b_tmp.v_tasks[i].r, 
+                                                b_tmp.v_tasks[i].t);
+                                printf("ERR! wcrt should have failed\n");
+                                exit(0);
+                        }
+                }
+
+        } else if (flag == SCHED_FAILED) {
+                b.flag = SCHED_FAILED;
+                printf("Core %d SCHED_FAILED with new priority assignment\n\n", b_tmp.id);
+
+        } else {
+                printf("ERR! priority reassignment\n");
+                exit(0);
+        }
+}
+
 int wcrt(vector<struct task> &v_tasks)
 {
-        int ret;
+        int ret = -1;
         int r_curr;
         int r_prev;
         vector<struct task> hp_tasks;
@@ -131,10 +209,12 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                         }
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
 
-
-                        if (v_bins[i].flag == SCHED_FAILED)
-                                printf("Bin %d SCHED_FAILED\n", v_bins[i].id);
                 }
+
+                if (v_bins[i].flag == SCHED_FAILED)
+                        printf("Core %d SCHED_FAILED\n", v_bins[i].id);
+                else
+                        printf("Core %d SCHED_OK\n", v_bins[i].id);
         }
         end = clock();
         ctx.sched_time = ((float) (end - start)) / CLOCKS_PER_SEC;

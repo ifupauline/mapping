@@ -174,17 +174,8 @@ void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx)
 {
-        if (ctx.prm.a == BFDU_F) {
-                printf("+=====================================+\n");
-                printf("| OPTIMIZATION BFDU_F                 |\n");
-                printf("+=====================================+\n");
-                opti_priority(v_bins, ctx);
-        }
-
-        if (ctx.prm.a == WFDU_F) {
-                printf("+=====================================+\n");
-                printf("| OPTIMIZATION WFDU_F                 |\n");
-                printf("+=====================================+\n");
-                opti_priority(v_bins, ctx);
-        }
+        printf("+=====================================+\n");
+        printf("| PRIORITY ASSIGNMENT OPTIMIZATION    |\n");
+        printf("+=====================================+\n");
+        priority_optimization(v_bins, ctx);
 }
