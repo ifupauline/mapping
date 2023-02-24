@@ -168,7 +168,12 @@ void print_bins(vector<struct bin> &v_bins, struct context &ctx)
 
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
                                                 printf(" -----------> deadline  violated!\n");
-                                        else
+                                        else if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t && 
+                                                        v_bins[i].flag == SCHED_OK) {
+                                                printf("ERR! \n");
+                                                exit(0);
+
+                                        }else
                                                 printf("\n");
                                 }
 
@@ -187,9 +192,12 @@ void print_bins(vector<struct bin> &v_bins, struct context &ctx)
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
 
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
-                                                printf(" -----------> deadline  violated!\n");
-                                        else
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t && 
+                                                        v_bins[i].flag == SCHED_OK) {
+                                                printf("ERR! \n");
+                                                exit(0);
+
+                                        }else
                                                 printf("\n");
                                 }
                         }

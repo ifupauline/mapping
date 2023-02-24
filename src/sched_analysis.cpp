@@ -131,8 +131,6 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                         }
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
 
-                        if (v_bins[i].flag == SCHED_OK)
-                                printf("Bin %d SCHED_OK\n", v_bins[i].id);
 
                         if (v_bins[i].flag == SCHED_FAILED)
                                 printf("Bin %d SCHED_FAILED\n", v_bins[i].id);
