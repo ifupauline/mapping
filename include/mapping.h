@@ -18,6 +18,8 @@
 #define BFDU_F 1
 #define WFDU_F 2
 
+#define PERCENT 100
+
 using namespace std;
 
 struct params {
@@ -38,15 +40,19 @@ struct context {
         int alloc_count;
         int frags_count;
         int cuts_count;
+        int tasks_count;
         int sched_ok_count;
         int sched_failed_count;
+        int sched_imp;
         float redu_time;
         float alloc_time;
         float e_time;
-        float sched_time;
+        float wca_time;
+        float opti_time;
         float standard_dev;
         float opti_bins;
-        float sched_rate;
+        float sched_rate_bef;
+        float sched_rate_aft;
         struct params prm;
 };
 

@@ -5,9 +5,6 @@
 static void find_single_fit(vector<struct item> &v_itms, 
                 vector<struct bin> &v_bins, struct context &ctx)
 {
-        clock_t start, end;
-
-        start = clock();
         for (int i = 0; i < ctx.prm.n; i++) {
                 if (v_itms[i].size == ctx.prm.phi) {
                         for (int j = 0; j < ctx.bins_count; j++) {
@@ -20,16 +17,11 @@ static void find_single_fit(vector<struct item> &v_itms,
                         }
                 }
         }
-        end = clock();
-        ctx.redu_time += ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 static void find_double_fit(vector<struct item> &v_itms, 
                 vector<struct bin> &v_bins, struct context &ctx)
 {
-        clock_t start, end;
-
-        start = clock();
         for (int i = 0; i < ctx.prm.n - 1; i++)
         {
                 for (int j = i + 1; j < ctx.prm.n; j++)
@@ -55,8 +47,6 @@ static void find_double_fit(vector<struct item> &v_itms,
                         }
                 }
         }
-        end = clock();
-        ctx.redu_time += ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx)
@@ -130,8 +120,13 @@ void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("+=====================================+\n");
         }
 
+        clock_t start, end;
+
+        start = clock();
         find_single_fit(v_itms, v_bins, ctx);
         find_double_fit(v_itms, v_bins, ctx);
+        end = clock();
+        ctx.redu_time += ((float) (end - start)) / CLOCKS_PER_SEC;
         printf("\n");
 }
 
@@ -142,14 +137,24 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("+=====================================+\n");
                 printf("| ALLOCATION BFDU_F                   |\n");
                 printf("+=====================================+\n");
+
+                clock_t start, end;
+                start = clock();
                 bfdu_f(v_itms, v_bins, ctx);
+                end = clock();
+                ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == WFDU_F) {
                 printf("+=====================================+\n");
                 printf("| ALLOCATION WFDU_F                   |\n");
                 printf("+=====================================+\n");
+
+                clock_t start, end;
+                start = clock();
                 wfdu_f(v_itms, v_bins, ctx);
+                end = clock();
+                ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 }
 
@@ -159,16 +164,27 @@ void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 printf("+=====================================+\n");
                 printf("| WORST-CASE-ANALYSIS BFDU_F          |\n");
                 printf("+=====================================+\n");
+
+                clock_t start, end;
+
+                start = clock();
                 priority_assignment(v_bins);
                 sched_analysis(v_bins, ctx);
+                end = clock();
+                ctx.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == WFDU_F) {
                 printf("+=====================================+\n");
                 printf("| WORST-CASE-ANALYSIS WFDU_F          |\n");
                 printf("+=====================================+\n");
+                clock_t start, end;
+
+                start = clock();
                 priority_assignment(v_bins);
                 sched_analysis(v_bins, ctx);
+                end = clock();
+                ctx.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 }
 
@@ -177,5 +193,10 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| PRIORITY ASSIGNMENT OPTIMIZATION    |\n");
         printf("+=====================================+\n");
+        clock_t start, end;
+
+        start = clock();
         priority_optimization(v_bins, ctx);
+        end = clock();
+        ctx.opti_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }

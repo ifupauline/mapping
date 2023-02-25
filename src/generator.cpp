@@ -55,7 +55,8 @@ static void check_params(struct params &prm)
         }
 }
 
-static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
+static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
+                struct context &ctx)
 {
         int task_nbr;
         int rand;
@@ -159,13 +160,14 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm)
         return 0;
 }
 
-void init_ctx(struct params &prm, struct context &ctx)
+void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)
 {
         ctx.prm = prm;
         ctx.redu_time = 0.0;
         ctx.alloc_time = 0.0;
         ctx.e_time = 0.0;
-        ctx.sched_time = 0.0;
+        ctx.wca_time = 0.0;
+        ctx.opti_time = 0.0;
         ctx.standard_dev = 0.0;
         ctx.opti_bins = 0.0;
         ctx.cycl_count = 0;
@@ -173,32 +175,33 @@ void init_ctx(struct params &prm, struct context &ctx)
         ctx.alloc_count = 0;
         ctx.frags_count = 0;
         ctx.cuts_count = 0;
+        ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
+        ctx.sched_imp = 0;
+        ctx.sched_rate_bef = 0.0;
+        ctx.sched_rate_aft = 0.0;
         ctx.itms_size = 0;
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n - 1;
-}
 
-void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx)
-{
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += v_itms[i].size;
 
         ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
 
-        printf("Number of Items: %d\n", ctx.itms_nbr);
-        printf("Total Size of Items: %u\n", ctx.itms_size);
-        printf("Minimum Number of Bins Required: %u\n", ctx.bins_min);
+        printf("Total Utilization of Task-Chains: %u\n", ctx.itms_size);
+        printf("Minimum Number of Cores Required: %u\n", ctx.bins_min);
 }
 
-void gen_tc_set(vector<struct item> &v_itms, struct params &prm)
+void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
+                struct context &ctx)
 {
         while (1) {
                 int ret = -1;
 
                 vector<struct item> v_itms_tmp;
-                ret = _gen_tc_set(v_itms_tmp, prm);
+                ret = _gen_tc_set(v_itms_tmp, prm, ctx);
 
                 if (ret == 0) {
                         v_itms = v_itms_tmp;

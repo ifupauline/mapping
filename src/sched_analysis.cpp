@@ -125,7 +125,7 @@ void priority_reassignment(struct bin &b, unsigned int &j, int &p)
                         b_tmp.v_tasks.push_back(b_tmp.v_itms[i].tc.v_tasks[j]);
                         b_tmp.v_tasks.back().idx.itm_idx = i;
                         b_tmp.v_tasks.back().idx.task_idx = j;
-                        printf("Core %d Item %d tau %d p:%d\n", 
+                        printf("Core %d task-chain %d tau %d p:%d\n", 
                                         b_tmp.id, b_tmp.v_itms[i].id, 
                                         b_tmp.v_itms[i].tc.v_tasks[j].id, 
                                         b_tmp.v_itms[i].tc.v_tasks[j].p);
@@ -191,12 +191,8 @@ int wcrt(vector<struct task> &v_tasks)
         return SCHED_OK;
 }
 
-int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
+void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
-        clock_t start, end;
-
-        start = clock();
-
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 v_bins[i].v_tasks.clear();
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
@@ -208,16 +204,16 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                                 v_bins[i].v_tasks.back().idx.task_idx = k;
                         }
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
-
                 }
 
-                if (v_bins[i].flag == SCHED_FAILED)
+                if (v_bins[i].flag == SCHED_FAILED) {
+                        ctx.sched_failed_count++;
                         printf("Core %d SCHED_FAILED\n", v_bins[i].id);
-                else
+                } else {
+                        ctx.sched_ok_count++;
                         printf("Core %d SCHED_OK\n", v_bins[i].id);
+                }
         }
-        end = clock();
-        ctx.sched_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 
         /* copy back new response time to original tasks in tc */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
@@ -228,5 +224,6 @@ int sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                         v_bins[bin_idx].v_itms[itm_idx].tc.v_tasks[task_idx].r = v_bins[i].v_tasks[j].r;
                 }
         }
-        return 0;
+        ctx.sched_rate_bef = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+        ctx.sched_imp = ctx.sched_imp - ctx.sched_ok_count;
 }

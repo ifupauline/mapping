@@ -9,16 +9,13 @@
 #define MINWCET 1
 #define MAXWCET 10
 
-#define PERCENT 100
 
 /* instance */
-void cmp_min_bins(vector<struct item> &v_itms, struct context &ctx);
 
-void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
 
-void init_ctx(struct params &prm, struct context &ctx);
-
-void gen_tc_set(vector<struct item> &v_itms, struct params &prm);
+void gen_tc_set(vector<struct item> &v_itms, struct params &prm, 
+                struct context &ctx);
 
 #endif /* GENERATOR_H */

@@ -216,13 +216,11 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 {
         int ret;
         int alloc_count = 0;
-        clock_t start, end;
 
         /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, WFDU_F\n");
         printf("<--------------------------------------->\n");
-        start = clock();
         while(alloc_count != ctx.prm.n) {
                 alloc_count = 0;
                 for (int i = 0; i < ctx.prm.n; i++) {
@@ -248,8 +246,7 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 if (ret == YES) {
                                         printf("Found Cut %d for Item %d\n", 
                                                         cut.id, v_itms[i].id);
-                                        wff(v_itms, v_bins, v_itms[i], 
-                                                        cut, ctx);
+                                        wff(v_itms, v_bins, v_itms[i], cut, ctx);
                                         v_itms[i].is_allocated = YES;
                                         v_itms[i].is_fragmented = YES;
                                         continue;
@@ -290,9 +287,6 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 alloc_count++;
                 }
         }
-
-        end = clock();
-        ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 vector<struct item> *get_frags_wfdu_f(void)

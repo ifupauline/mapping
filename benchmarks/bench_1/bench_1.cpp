@@ -1,3 +1,4 @@
+#include "print.h"
 #include "bench.h"
 #include "generator.h"
 
@@ -36,9 +37,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         vector<struct item> v_itms;
                         vector<struct bin> v_bins;
 
-                        gen_tc_set(v_itms, prm);
-                        init_ctx(prm, ctx);
-                        cmp_min_bins(v_itms, ctx);
+                        gen_tc_set(v_itms, prm, ctx);
+                        init_ctx(v_itms, prm, ctx);
 
                         struct context ctx_bfdu_f = ctx;
                         struct context ctx_wfdu_f = ctx;
@@ -71,8 +71,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         stts_wfdu_f.mean_ld += ctx_wfdu_f.standard_dev;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.e_time;
                         stts_wfdu_f.mean_et += ctx_wfdu_f.e_time;               
-                        stts_bfdu_f.mean_sched += ctx_bfdu_f.sched_rate * PERCENT;
-                        stts_wfdu_f.mean_sched += ctx_wfdu_f.sched_rate * PERCENT;
+                        stts_bfdu_f.mean_sched += ctx_bfdu_f.sched_rate_aft * PERCENT;
+                        stts_wfdu_f.mean_sched += ctx_wfdu_f.sched_rate_aft * PERCENT;
                 }
                 /* mean */
                 stts_bfdu_f.mean_ar /= (float)SIMNBR;
