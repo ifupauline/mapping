@@ -7,8 +7,9 @@
 #include "string.h"
 
 #include <random>
-#include <vector>
 #include <algorithm>
+
+#include "model.h"
 
 /* booleans */
 #define NO  1
@@ -20,14 +21,25 @@
 
 #define PERCENT 100
 
-using namespace std;
-
 struct params {
         int n;
         int c;
         int max_tu;
         int phi;
         int a;
+};
+
+struct perf {
+        float redu_time;
+        float alloc_time;
+        float e_time;
+        float wca_time;
+        float opti_time;
+        float standard_dev;
+        float opti_bins;
+        float sched_rate_bef;
+        float sched_rate_aft;
+        int sched_imp;
 };
 
 struct context {
@@ -43,65 +55,8 @@ struct context {
         int tasks_count;
         int sched_ok_count;
         int sched_failed_count;
-        int sched_imp;
-        float redu_time;
-        float alloc_time;
-        float e_time;
-        float wca_time;
-        float opti_time;
-        float standard_dev;
-        float opti_bins;
-        float sched_rate_bef;
-        float sched_rate_aft;
+        struct perf p;
         struct params prm;
-};
-
-struct t_idx {
-        int bin_idx;
-        int itm_idx;
-        int task_idx;
-};
-
-struct task {
-        int c;
-        int t;
-        int d;
-        int u;
-        int p;
-        int r;
-        int id;
-        struct t_idx idx;
-};
-
-struct cut {
-        int id;
-        pair<int, int> c_pair;
-        vector<struct task> v_tasks_lf;
-        vector<struct task> v_tasks_rf;
-};
-
-struct task_chain {
-        int u;
-        vector<struct task> v_tasks;
-        vector<struct cut> v_cuts;
-};
-
-struct item {
-        int id;
-        int size;
-        int nbr_cut;
-        int is_frag;
-        int is_allocated;
-        int is_fragmented;
-        struct task_chain tc;
-};
-
-struct bin {
-        int id;
-        int flag;
-        int cap_rem;
-        vector<struct item> v_itms;
-        vector<struct task> v_tasks;
 };
 
 /* mapping */
@@ -120,7 +75,7 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx);
 /* operations */
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
-void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
+void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, 
                 struct context &ctx);
 
 /* algorithms */

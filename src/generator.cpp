@@ -1,11 +1,17 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
+/* params */
 #define MINMAXTU 10
 #define MAXC     100
-
 #define MINN     5
 #define MAXN     10000
+
+/* generator */
+#define MINTASKNBR 4
+#define MAXTASKNBR 16
+#define MINWCET 1
+#define MAXWCET 10
 
 static int gen_rand(int min, int max) 
 {
@@ -60,9 +66,15 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 {
         int task_nbr;
         int rand;
-        int ncount = 0;
-        int lf_size = 0;
-        int rf_size = 0;
+        int ncount;
+        int lf_size;
+        int rf_size;
+        int cut_id;
+        unsigned int count;
+
+        ncount = 0;
+        lf_size = 0;
+        rf_size = 0;
 
         printf("\n\n");
         printf("+=====================================+\n");
@@ -111,8 +123,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         /* generate cuts for each chain */
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 /* iterate over tasks */
-                unsigned int count = 0;
-                int cut_id = 0;
+                count = 0;
+                cut_id = 0;
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size() - 1; j++) {
                         struct cut c;
                         lf_size += v_itms[i].tc.v_tasks[j].u;
@@ -163,13 +175,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)
 {
         ctx.prm = prm;
-        ctx.redu_time = 0.0;
-        ctx.alloc_time = 0.0;
-        ctx.e_time = 0.0;
-        ctx.wca_time = 0.0;
-        ctx.opti_time = 0.0;
-        ctx.standard_dev = 0.0;
-        ctx.opti_bins = 0.0;
+        
         ctx.cycl_count = 0;
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
@@ -178,12 +184,20 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
-        ctx.sched_imp = 0;
-        ctx.sched_rate_bef = 0.0;
-        ctx.sched_rate_aft = 0.0;
         ctx.itms_size = 0;
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n - 1;
+
+        ctx.p.redu_time = 0.0;
+        ctx.p.alloc_time = 0.0;
+        ctx.p.e_time = 0.0;
+        ctx.p.wca_time = 0.0;
+        ctx.p.opti_time = 0.0;
+        ctx.p.standard_dev = 0.0;
+        ctx.p.opti_bins = 0.0;
+        ctx.p.sched_rate_bef = 0.0;
+        ctx.p.sched_rate_aft = 0.0;
+        ctx.p.sched_imp = 0;
 
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += v_itms[i].size;
@@ -197,10 +211,11 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
-        while (1) {
-                int ret = -1;
+        int ret;
 
+        while (1) {
                 vector<struct item> v_itms_tmp;
+                ret = -1;
                 ret = _gen_tc_set(v_itms_tmp, prm, ctx);
 
                 if (ret == 0) {

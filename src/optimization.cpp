@@ -22,6 +22,4 @@ void priority_optimization(vector<struct bin> &v_bins, struct context &ctx)
                         }
                 }
         }
-
-        
 }

@@ -1,10 +1,7 @@
 #ifndef PRINT_H
 #define PRINT_H
 
-#include "mapping.h"
 #include "sched_analysis.h"
-
-#define MSEC 1000
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx);

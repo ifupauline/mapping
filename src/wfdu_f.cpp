@@ -17,10 +17,15 @@ static struct worst_cut cut = {0};
 static int find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
                 struct context &ctx)
 {
-        int worst_rem = -1;
-        int bin_id = 0;
-        int tmp = ctx.prm.phi;
-        int is_found = NO;
+        int tmp;
+        int bin_id;
+        int is_found;
+        int worst_rem;
+
+        worst_rem = -1;
+        bin_id = 0;
+        tmp = ctx.prm.phi;
+        is_found = NO;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (itm.size <= v_bins[i].cap_rem) {
@@ -57,15 +62,25 @@ static int find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
         int l_worst_diff;
         int r_worst_diff;
 
-        int l_val = 0;
-        int r_val = 0;
+        int l_val;
+        int r_val;
 
-        int is_l_val_found = NO;
-        int is_r_val_found = NO;
+        int is_l_val_found;
+        int is_r_val_found;
 
-        int tmp_max = 0;
-        int is_worst_found = NO;
-        struct worst_cut tmp_cut = {0};
+        int tmp_max;
+        int is_worst_found;
+        struct worst_cut tmp_cut;
+
+        l_val = 0;
+        r_val = 0;
+
+        is_l_val_found = NO;
+        is_r_val_found = NO;
+
+        tmp_max = 0;
+        tmp_cut = {0};
+        is_worst_found = NO;
 
         /* fragment cannot be fragmented */
         if (itm.is_frag == YES) 
@@ -161,7 +176,6 @@ static int find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
 
         if (is_worst_found == YES)
                 return YES;
-
         else 
                 return NO;
 }
@@ -215,7 +229,7 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 struct context &ctx)
 {
         int ret;
-        int alloc_count = 0;
+        int alloc_count;
 
         /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");

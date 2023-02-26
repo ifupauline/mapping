@@ -1,5 +1,7 @@
 #include "print.h"
 
+#define MSEC 1000
+
 static int cmp_inc(const struct bin &a, const struct bin &b)
 {
         return a.cap_rem < b.cap_rem;
@@ -12,11 +14,17 @@ static void sort_inc(vector<struct bin> &v_bins)
 
 static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
 {
-        float sum = 0.0;
-        float mean = 0.0;
-        float sumsqr = 0.0;
-        float variance = 0.0;
-        unsigned int n = v_bins.size();
+        float sum;
+        float mean;
+        float sumsqr;
+        float variance;
+        unsigned int n;
+
+        sum = 0.0;
+        mean = 0.0;
+        sumsqr = 0.0;
+        variance = 0.0;
+        n = v_bins.size();
 
         for (unsigned int i = 0; i < n; i++)
                 sum += (ctx.prm.phi - v_bins[i].cap_rem);
@@ -24,29 +32,32 @@ static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
         mean = sum / n;
 
         for (unsigned int i = 0; i < n; i++) {
-                ctx.standard_dev = (ctx.prm.phi - v_bins[i].cap_rem) - mean;
-                sumsqr += ctx.standard_dev * ctx.standard_dev;
+                ctx.p.standard_dev = (ctx.prm.phi - v_bins[i].cap_rem) - mean;
+                sumsqr += ctx.p.standard_dev * ctx.p.standard_dev;
         }
         variance = sumsqr / n;
-        ctx.standard_dev = sqrt(variance) ;
+        ctx.p.standard_dev = sqrt(variance) ;
 }
 
 static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx)
 {
-        int min_nbr_cuts = 0;
+        int min_nbr_cuts;
+
+        min_nbr_cuts = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++)  {
                 if (v_itms[i].size > ctx.prm.phi)
                         min_nbr_cuts++;
         }
-        ctx.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
+        ctx.p.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
 }
 
 static void execution_time(struct context &ctx)
 {
-        ctx.redu_time = ctx.redu_time * MSEC;
-        ctx.alloc_time = ctx.alloc_time * MSEC;
-        ctx.e_time = ctx.redu_time + ctx.alloc_time + ctx.wca_time + ctx.opti_time;
+        ctx.p.redu_time = ctx.p.redu_time * MSEC;
+        ctx.p.alloc_time = ctx.p.alloc_time * MSEC;
+        ctx.p.e_time = ctx.p.redu_time + ctx.p.alloc_time + ctx.p.wca_time + 
+                ctx.p.opti_time;
 }
 
 static void schedulability_rate(vector<struct bin> &v_bins, struct context &ctx)
@@ -65,8 +76,8 @@ static void schedulability_rate(vector<struct bin> &v_bins, struct context &ctx)
                         ctx.sched_failed_count++;
                 }
         }
-        ctx.sched_rate_aft = (float)ctx.sched_ok_count / (float)ctx.bins_count;
-        ctx.sched_imp = ctx.sched_imp + ctx.sched_ok_count;
+        ctx.p.sched_rate_aft = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+        ctx.p.sched_imp = ctx.p.sched_imp + ctx.sched_ok_count;
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -138,7 +149,9 @@ void print_not_fragmented(vector<struct item> &v_itms, struct context &ctx)
 
 void print_task_chains(vector<struct item> &v_itms)
 {
-        int tasknbr = 0;
+        int tasknbr;
+
+        tasknbr = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 printf("====================================\n");
@@ -267,15 +280,22 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                 printf("| PRINT VECTORS WFDU_F                |\n");
         printf("+=====================================+\n");
 
-        int count_not_alloc = 0;
-        int count_is_alloc = 0;
-        int count_frag = 0;
-        int count_cut = 0;
-        int sched_ok = 0;
-        int sched_failed = 0;
+        int count_not_alloc;
+        int count_is_alloc;
+        int count_frag;
+        int count_cut;
+        int sched_ok;
+        int sched_failed;
 
         vector<struct item> *v_frags_bfdu_f;
         vector<struct item> *v_frags_wfdu_f;
+
+        count_not_alloc = 0;
+        count_is_alloc = 0;
+        count_frag = 0;
+        count_cut = 0;
+        sched_ok = 0;
+        sched_failed = 0;
 
         v_frags_bfdu_f = get_frags_bfdu_f();
         v_frags_wfdu_f = get_frags_wfdu_f();
@@ -406,18 +426,18 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Cuts Count:            %d\n", ctx.cuts_count);
         printf("Fragments Count:       %d\n", ctx.frags_count);
         printf("------------------------------------------->\n");
-        printf("Reduction Time:             %f ms\n", ctx.redu_time);
-        printf("Allocation Time:            %f ms\n", ctx.alloc_time);
-        printf("Worst-Case Analysis Time:   %f ms\n", ctx.wca_time);
-        printf("Priority Optimization Time: %f ms\n", ctx.opti_time);
+        printf("Reduction Time:             %f ms\n", ctx.p.redu_time);
+        printf("Allocation Time:            %f ms\n", ctx.p.alloc_time);
+        printf("Worst-Case Analysis Time:   %f ms\n", ctx.p.wca_time);
+        printf("Priority Optimization Time: %f ms\n", ctx.p.opti_time);
         printf("------------------------------------------->\n");
-        printf("Total Execution Time:       %f ms\n", ctx.e_time);
+        printf("Total Execution Time:       %f ms\n", ctx.p.e_time);
         printf("------------------------------------------->\n");
-        printf("Load Distribution:          %f\n", ctx.standard_dev);
-        printf("Schedulability Rate (bef):  %f\n", ctx.sched_rate_bef * PERCENT);
+        printf("Load Distribution:          %f\n", ctx.p.standard_dev);
+        printf("Schedulability Rate (bef):  %f\n", ctx.p.sched_rate_bef * PERCENT);
         printf("Schedulability Rate (aft):  %f  +%d cores\n", 
-                        ctx.sched_rate_aft * PERCENT, ctx.sched_imp);
+                        ctx.p.sched_rate_aft * PERCENT, ctx.p.sched_imp);
         printf("------------------------------------------->\n");
-        printf("Approximation Ratio:        %f\n", ctx.opti_bins);
+        printf("Approximation Ratio:        %f\n", ctx.p.opti_bins);
         printf("------------------------------------------->\n");
 }

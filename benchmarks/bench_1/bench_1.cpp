@@ -65,14 +65,14 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         /* stats */
                         cmp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
                         cmp_stats(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
-                        stts_bfdu_f.mean_ar += ctx_bfdu_f.opti_bins;
-                        stts_wfdu_f.mean_ar += ctx_wfdu_f.opti_bins;
-                        stts_bfdu_f.mean_ld += ctx_bfdu_f.standard_dev;
-                        stts_wfdu_f.mean_ld += ctx_wfdu_f.standard_dev;
-                        stts_bfdu_f.mean_et += ctx_bfdu_f.e_time;
-                        stts_wfdu_f.mean_et += ctx_wfdu_f.e_time;               
-                        stts_bfdu_f.mean_sched += ctx_bfdu_f.sched_rate_aft * PERCENT;
-                        stts_wfdu_f.mean_sched += ctx_wfdu_f.sched_rate_aft * PERCENT;
+                        stts_bfdu_f.mean_ar += ctx_bfdu_f.p.opti_bins;
+                        stts_wfdu_f.mean_ar += ctx_wfdu_f.p.opti_bins;
+                        stts_bfdu_f.mean_ld += ctx_bfdu_f.p.standard_dev;
+                        stts_wfdu_f.mean_ld += ctx_wfdu_f.p.standard_dev;
+                        stts_bfdu_f.mean_et += ctx_bfdu_f.p.e_time;
+                        stts_wfdu_f.mean_et += ctx_wfdu_f.p.e_time;               
+                        stts_bfdu_f.mean_sched += ctx_bfdu_f.p.sched_rate_aft * PERCENT;
+                        stts_wfdu_f.mean_sched += ctx_wfdu_f.p.sched_rate_aft * PERCENT;
                 }
                 /* mean */
                 stts_bfdu_f.mean_ar /= (float)SIMNBR;

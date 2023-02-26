@@ -65,6 +65,11 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
                 return;
         }
 
+        if (r_prev < r_curr) {
+                r_prev = r_curr;
+                fixpoint(hp_tasks, tau, r_curr, r_prev, ret);
+        }
+
         if (r_curr == r_prev) {
                 //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
                 tau.r = r_curr;
@@ -73,13 +78,7 @@ static void fixpoint(vector<struct task> &hp_tasks, struct task &tau,
                         printf("ERR! tau.r: %d > tau.t: %d\n", tau.r, tau.t);
                         exit(0);
                 }
-
                 return;
-        }
-
-        if (r_prev < r_curr) {
-                r_prev = r_curr;
-                fixpoint(hp_tasks, tau, r_curr, r_prev, ret);
         }
 }
 
@@ -96,9 +95,12 @@ void priority_assignment(vector<struct bin> &v_bins)
 
 void priority_reassignment(struct bin &b, unsigned int &j, int &p)
 {
-        struct bin b_tmp = b;
+        int flag;
         int start_p;
-        int flag = -1;
+        struct bin b_tmp;
+
+        b_tmp = b;
+        flag = -1;
 
         /* starting new p */
         p = p + 1;
@@ -168,10 +170,12 @@ void priority_reassignment(struct bin &b, unsigned int &j, int &p)
 
 int wcrt(vector<struct task> &v_tasks)
 {
-        int ret = -1;
+        int ret;
         int r_curr;
         int r_prev;
         vector<struct task> hp_tasks;
+
+        ret = -1;
 
         /* sort decreasing priority order 1 -> n */
         sort_inc_priority(v_tasks);
@@ -224,6 +228,6 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                         v_bins[bin_idx].v_itms[itm_idx].tc.v_tasks[task_idx].r = v_bins[i].v_tasks[j].r;
                 }
         }
-        ctx.sched_rate_bef = (float)ctx.sched_ok_count / (float)ctx.bins_count;
-        ctx.sched_imp = ctx.sched_imp - ctx.sched_ok_count;
+        ctx.p.sched_rate_bef = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+        ctx.p.sched_imp = ctx.p.sched_imp - ctx.sched_ok_count;
 }

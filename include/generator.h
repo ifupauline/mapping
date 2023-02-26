@@ -3,15 +3,6 @@
 
 #include "mapping.h"
 
-#define MINTASKNBR 4
-#define MAXTASKNBR 16
-
-#define MINWCET 1
-#define MAXWCET 10
-
-
-/* instance */
-
 void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
 

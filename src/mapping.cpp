@@ -52,6 +52,7 @@ static void find_double_fit(vector<struct item> &v_itms,
 void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 {
         struct bin tmp_bin;
+
         tmp_bin.id = ctx.bins_count;
         tmp_bin.flag = -1;
         tmp_bin.cap_rem = ctx.prm.phi;
@@ -60,7 +61,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         printf("Bin %d Created\n\n", ctx.bins_count - 1);
 }
 
-void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
+void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, 
                 struct context &ctx)
 {
         for (int i = 0; i < ctx.bins_count; i++) {
@@ -121,12 +122,11 @@ void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         }
 
         clock_t start, end;
-
         start = clock();
         find_single_fit(v_itms, v_bins, ctx);
         find_double_fit(v_itms, v_bins, ctx);
         end = clock();
-        ctx.redu_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.redu_time += ((float) (end - start)) / CLOCKS_PER_SEC;
         printf("\n");
 }
 
@@ -142,7 +142,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 start = clock();
                 bfdu_f(v_itms, v_bins, ctx);
                 end = clock();
-                ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == WFDU_F) {
@@ -154,7 +154,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 start = clock();
                 wfdu_f(v_itms, v_bins, ctx);
                 end = clock();
-                ctx.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 }
 
@@ -166,25 +166,24 @@ void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 printf("+=====================================+\n");
 
                 clock_t start, end;
-
                 start = clock();
                 priority_assignment(v_bins);
                 sched_analysis(v_bins, ctx);
                 end = clock();
-                ctx.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == WFDU_F) {
                 printf("+=====================================+\n");
                 printf("| WORST-CASE-ANALYSIS WFDU_F          |\n");
                 printf("+=====================================+\n");
-                clock_t start, end;
 
+                clock_t start, end;
                 start = clock();
                 priority_assignment(v_bins);
                 sched_analysis(v_bins, ctx);
                 end = clock();
-                ctx.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 }
 
@@ -193,10 +192,10 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| PRIORITY ASSIGNMENT OPTIMIZATION    |\n");
         printf("+=====================================+\n");
-        clock_t start, end;
 
+        clock_t start, end;
         start = clock();
         priority_optimization(v_bins, ctx);
         end = clock();
-        ctx.opti_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.opti_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
