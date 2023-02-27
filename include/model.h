@@ -16,10 +16,10 @@ struct task {
         int c;
         int t;
         int d;
-        int u;
         int p;
         int r;
         int id;
+        int u;
         struct t_idx idx;
 };
 

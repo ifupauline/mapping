@@ -159,10 +159,9 @@ void print_task_chains(vector<struct item> &v_itms)
                                 v_itms[i].id, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size());
                 printf("====================================\n");
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
-                        printf("tau %d: u: %02d  c: %02d  r: %02d t: %d\n",
+                        printf("tau %d: u: %02d c: %02d t: %d\n",
                                         j, v_itms[i].tc.v_tasks[j].u, 
                                         v_itms[i].tc.v_tasks[j].c, 
-                                        v_itms[i].tc.v_tasks[j].r, 
                                         v_itms[i].tc.v_tasks[j].t);
                         tasknbr++;
                 }
@@ -221,16 +220,17 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                                 v_bins[i].v_itms[j].size);
                                 printf("|--------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|tau: %d u: %02d p: %d r: %02d t: %d", 
+                                        printf("|tau: %d u: %02d p: %02d r: %02d c: %02d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].c,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
 
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
-                                                printf(" -----------> deadline  violated!");
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t && 
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1)
+                                                printf(" -----------> deadline  missed!");
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR! \n");
                                                 exit(0);
@@ -247,16 +247,17 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                                 printf("|--------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|tau: %d u: %02d p: %d r: %02d t: %d", 
+                                        printf("|tau: %d u: %02d p: %02d r: %02d c: %02d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].c,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
 
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
-                                                printf(" -----------> deadline  violated!");
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t && 
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1)
+                                                printf(" -----------> deadline  missed!");
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR!\n");
                                                 exit(0);
