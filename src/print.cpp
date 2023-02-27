@@ -409,7 +409,6 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         printf("------------------------------------------->\n");
         printf("n:      %u\n", ctx.prm.n);
-        printf("c:      %u\n", ctx.prm.c);
         printf("phi:    %u\n", ctx.prm.phi);
         printf("max_tu: %u\n", ctx.prm.max_tu);
         if (ctx.prm.a == BFDU_F)

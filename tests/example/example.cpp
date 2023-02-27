@@ -2,7 +2,19 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-int main(void)
+static void _input(int argc, char **argv, struct params &prm)
+{
+        if (argc != 4) {
+                printf("Wrong Number of Arguments!\n");
+                exit(0);
+        }
+        prm.n = atoi(argv[1]);
+        prm.phi = atoi(argv[2]);
+        prm.max_tu = atoi(argv[3]);
+        check_params(prm);
+}
+
+int main(int argc, char **argv)
 {
         struct params prm;
         struct context ctx;
@@ -19,10 +31,7 @@ int main(void)
          */
 
         /* parameters */
-        prm.n = 50;
-        prm.c = 100;
-        prm.phi = 80;
-        prm.max_tu = 20;  /* max utilization rate for a task in percent */
+        _input(argc, argv, prm);
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm, ctx);

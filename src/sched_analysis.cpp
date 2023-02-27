@@ -29,6 +29,7 @@ void priority_assignment(vector<struct bin> &v_bins)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 v_bins[i].v_tasks.clear();
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        /* sort tasks by id */
                         sort_inc_id(v_bins[i].v_itms[j].tc.v_tasks);
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
                                 v_bins[i].v_itms[j].tc.v_tasks[k].id = k;
@@ -38,6 +39,7 @@ void priority_assignment(vector<struct bin> &v_bins)
                                 v_bins[i].v_tasks.back().idx.task_idx = k;
                         }
                 }
+                /* sort tasks by id */
                 sort_inc_id(v_bins[i].v_tasks);
         }
 

@@ -3,6 +3,8 @@
 
 #include "mapping.h"
 
+void check_params(struct params &prm);
+
 void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
 

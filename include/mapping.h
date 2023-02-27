@@ -23,9 +23,8 @@
 
 struct params {
         int n;
-        int c;
-        int max_tu;
         int phi;
+        int max_tu;
         int a;
 };
 

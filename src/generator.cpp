@@ -2,16 +2,23 @@
 #include "sched_analysis.h"
 
 /* params */
-#define MINMAXTU 10
-#define MAXC     100
+#define C        100
+
 #define MINN     5
 #define MAXN     10000
 
+#define MINPHI   50
+#define MAXPHI   C
+
+#define MINMAXTU 5
+#define MAXMAXTU 20
+
 /* generator */
-#define MINTASKNBR 4
-#define MAXTASKNBR 16
 #define MINWCET 1
 #define MAXWCET 10
+
+#define MINTASKNBR 4
+#define MAXTASKNBR 16
 
 static int gen_rand(int min, int max) 
 {
@@ -36,29 +43,6 @@ static void assign_id(vector<struct item> &v_itms)
 {
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].id = i;
-}
-
-static void check_params(struct params &prm)
-{
-        if (prm.n < MINN || prm.n > MAXN) {
-                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
-                exit(0);
-        }
-
-        if (prm.c < prm.phi || prm.c > MAXC) {
-                printf("Invalid params: prm.c rule -> [prm.phi <= c <= 100]\n\n");
-                exit(0);
-        }
-
-        if (prm.phi > MAXC) {
-                printf("Invalid params: prm.phi rule -> [prm.phi < 90]\n\n");
-                exit(0);
-        }
-
-        if (prm.max_tu < MINMAXTU || prm.max_tu > prm.phi) {
-                printf("Invalid params: prm.max_tu rule -> [10 <= prm.max_tu < prm.phi]\n\n");
-                exit(0);
-        }
 }
 
 static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
@@ -108,7 +92,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         itm.tc.u += tau.u;
                 }
 
-                if (itm.tc.u > prm.c)
+                if (itm.tc.u > C)
                         continue;
 
                 if (wcrt(itm.tc.v_tasks) == SCHED_FAILED)
@@ -172,10 +156,29 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         return 0;
 }
 
+void check_params(struct params &prm)
+{
+        if (prm.n < MINN || prm.n > MAXN) {
+                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+                exit(0);
+        }
+
+        if (prm.phi < MINPHI || prm.phi > MAXPHI) {
+                printf("Invalid params: prm.phi rule -> [prm.phi < %d]\n\n", MAXPHI);
+                exit(0);
+        }
+
+        if (prm.max_tu < MINMAXTU || prm.max_tu > MAXMAXTU) {
+                printf("Invalid params: prm.max_tu rule -> [%d <= prm.max_tu <= %d]\n\n", 
+                                MINMAXTU, MAXMAXTU);
+                exit(0);
+        }
+}
+
 void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)
 {
         ctx.prm = prm;
-        
+
         ctx.cycl_count = 0;
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
@@ -213,14 +216,9 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 {
         int ret;
 
-        while (1) {
-                vector<struct item> v_itms_tmp;
-                ret = -1;
-                ret = _gen_tc_set(v_itms_tmp, prm, ctx);
-
-                if (ret == 0) {
-                        v_itms = v_itms_tmp;
-                        break;
-                }
+        ret = _gen_tc_set(v_itms, prm, ctx);
+        if (ret == -1) {
+                printf("ERR! data set generation\n");
+                exit(0);
         }
 }

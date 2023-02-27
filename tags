@@ -86,6 +86,7 @@ B_ET	include/bench.h	5;"	d
 B_FR	include/bench.h	7;"	d
 B_LD	include/bench.h	6;"	d
 B_SCHED	include/bench.h	8;"	d
+C	src/generator.cpp	5;"	d	file:
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	benchmarks/bench_1/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -429,14 +430,16 @@ HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ITER	benchmarks/bench_1/bench_1.cpp	6;"	d	file:
 MAPPING_H	include/mapping.h	2;"	d
-MAXC	src/generator.cpp	6;"	d	file:
+MAXMAXTU	src/generator.cpp	14;"	d	file:
 MAXN	src/generator.cpp	8;"	d	file:
-MAXTASKNBR	src/generator.cpp	12;"	d	file:
-MAXWCET	src/generator.cpp	14;"	d	file:
-MINMAXTU	src/generator.cpp	5;"	d	file:
+MAXPHI	src/generator.cpp	11;"	d	file:
+MAXTASKNBR	src/generator.cpp	21;"	d	file:
+MAXWCET	src/generator.cpp	18;"	d	file:
+MINMAXTU	src/generator.cpp	13;"	d	file:
 MINN	src/generator.cpp	7;"	d	file:
-MINTASKNBR	src/generator.cpp	11;"	d	file:
-MINWCET	src/generator.cpp	13;"	d	file:
+MINPHI	src/generator.cpp	10;"	d	file:
+MINTASKNBR	src/generator.cpp	20;"	d	file:
+MINWCET	src/generator.cpp	17;"	d	file:
 MODEL_H	include/model.h	2;"	d
 MSEC	src/print.cpp	3;"	d	file:
 NO	include/mapping.h	15;"	d
@@ -579,6 +582,7 @@ YES	include/mapping.h	16;"	d
 __has_include	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
 __has_include	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
+_input	tests/example/example.cpp	/^static void _input(int argc, char **argv, struct params &prm)$/;"	f	file:
 a	include/mapping.h	/^        int a;$/;"	m	struct:params
 add_bin	src/mapping.cpp	/^void add_bin(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 add_itm_to_bin	src/mapping.cpp	/^void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, $/;"	f
@@ -596,13 +600,12 @@ bin	include/model.h	/^struct bin {$/;"	s
 bin_idx	include/model.h	/^        int bin_idx;$/;"	m	struct:t_idx
 bins_count	include/mapping.h	/^        int bins_count;$/;"	m	struct:context
 bins_min	include/mapping.h	/^        int bins_min;$/;"	m	struct:context
-c	include/mapping.h	/^        int c;$/;"	m	struct:params
 c	include/model.h	/^        int c;$/;"	m	struct:task
 c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:best_cut::cut	file:
 c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
 c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
 cap_rem	include/model.h	/^        int cap_rem;$/;"	m	struct:bin
-check_params	src/generator.cpp	/^static void check_params(struct params &prm)$/;"	f	file:
+check_params	src/generator.cpp	/^void check_params(struct params &prm)$/;"	f
 cmd_gnuplot_ar	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_ar[] = {};$/;"	v	file:
 cmd_gnuplot_et	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
 cmd_gnuplot_ld	benchmarks/bench_1/bench_1.cpp	/^static char const *cmd_gnuplot_ld[] = {};$/;"	v	file:
@@ -688,7 +691,7 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	benchmarks/bench_1/bench_1.cpp	/^int main(void)$/;"	f
-main	tests/example/example.cpp	/^int main(void)$/;"	f
+main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 max_tu	include/mapping.h	/^        int max_tu;$/;"	m	struct:params
 mean_ar	include/bench.h	/^        float mean_ar;$/;"	m	struct:b_stats
@@ -716,7 +719,7 @@ print_task_chains	src/print.cpp	/^void print_task_chains(vector<struct item> &v_
 print_vectors	src/print.cpp	/^void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 priority_assignment	src/sched_analysis.cpp	/^void priority_assignment(vector<struct bin> &v_bins)$/;"	f
 priority_optimization	src/optimization.cpp	/^void priority_optimization(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
-priority_reassignment	src/sched_analysis.cpp	/^void priority_reassignment(struct bin &b, unsigned int &j, int &p)$/;"	f
+priority_reassignment	src/sched_analysis.cpp	/^void priority_reassignment(struct bin &b, unsigned int &itm_id, int &p)$/;"	f
 prm	include/mapping.h	/^        struct params prm;$/;"	m	struct:context	typeref:struct:context::params
 qnxnto	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 qnxnto	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
