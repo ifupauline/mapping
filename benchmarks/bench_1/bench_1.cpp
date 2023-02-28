@@ -18,7 +18,6 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
 
         /* params instance */
         prm.n = 100;
-        prm.max_tu = 20;
         prm.phi = 100;
 
         for (int i = 0; i < ITER; i++) {

@@ -12,20 +12,21 @@
 #include "model.h"
 
 /* booleans */
-#define NO  1
-#define YES 2
+#define NO  0
+#define YES 1
 
 /* algorithms */
 #define BFDU_F 1
 #define WFDU_F 2
 
+#define C       100
 #define PERCENT 100
 
 struct params {
         int n;
         int phi;
-        int max_tu;
         int a;
+        int h;
 };
 
 struct perf {

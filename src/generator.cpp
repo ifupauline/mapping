@@ -2,23 +2,29 @@
 #include "sched_analysis.h"
 
 /* params */
-#define C        100
+#define PRECISION  0.40
 
-#define MINN     5
-#define MAXN     10000
+#define MINN       5
+#define MAXN       10000
 
-#define MINPHI   50
-#define MAXPHI   C
+#define MINPHI     C/2
+#define MAXPHI     C
 
-#define MINMAXTU 5
-#define MAXMAXTU 20
+#define MINMAXTU   1
+#define MAXMAXTU   15
 
-/* generator */
-#define MINWCET 1
-#define MAXWCET 10
+#define MINWCET    1
+#define MAXWCET    10
 
-#define MINTASKNBR 4
-#define MAXTASKNBR 16
+#define MINTASKNBR 2
+#define MAXTASKNBR 18
+
+/* harmonic chains table */
+static int harm[3][10] = {
+        {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024},
+        {5, 10, 20, 40, 80, 120, 240, 480, 960, 1920},
+        {3, 6, 12, 24, 48, 96, 192, 384, 768, 1536},
+};
 
 static int gen_rand(int min, int max) 
 {
@@ -45,11 +51,61 @@ static void assign_id(vector<struct item> &v_itms)
                 v_itms[i].id = i;
 }
 
+static void gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
+{
+        tau.u = gen_rand(MINMAXTU, MAXMAXTU);
+        tau.c = gen_rand(MINWCET, MAXWCET);
+        tau.t = ceilf(((float)tau.c/(float)tau.u) * PERCENT);
+        tau.d = tau.t; /* implicit deadline */
+        tau.r = 0;
+        tau.p = i + 1; /* 1 is highest priority */
+        tau.id = i;
+}
+
+static void gen_harmonic_task(struct task &tau, struct params &prm, int i, int x)
+{
+        int y;
+        int real_t;
+        float real_c;
+        float real_u;
+        float udiff;
+
+        while (1) {
+                y  = gen_rand(0, 9);
+                real_t = harm[x][y];
+                real_c = gen_rand(MINWCET, MAXWCET);
+                real_u = (real_c/real_t) * PERCENT;
+
+                /* c is minimum 1 */
+                if (real_c < 1)
+                        continue;
+
+                if (real_u > MAXMAXTU || real_u < MINMAXTU)
+                        continue;
+
+                tau.u = ceil((real_c/real_t) * PERCENT);
+                tau.c = ceil(real_c);
+                tau.t = real_t;
+
+                /* if diff too big redo */
+                udiff = tau.u - real_u;
+                if (udiff > PRECISION)
+                        continue;
+
+                tau.d = tau.t; /* implicit deadline */
+                tau.r = 0;
+                tau.p = i + 1; /* 1 is highest priority */
+                tau.id = i;
+                break;
+        }
+}
+
 static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
-        int task_nbr;
+        int x;
         int rand;
+        int task_nbr;
         int ncount;
         int lf_size;
         int rf_size;
@@ -77,17 +133,20 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 itm.is_frag = NO;
                 itm.is_fragmented = NO;
                 itm.is_allocated = NO;
+                x = gen_rand(0, 2);
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;
-                        tau.u = gen_rand(1, prm.max_tu);
-                        tau.c = gen_rand(MINWCET, MAXWCET);
-                        tau.t = ceilf(((float)tau.c/(float)tau.u) * PERCENT);
-                        tau.d = tau.t; /* implicit deadline */
-                        tau.r = 0;
-                        tau.p = i + 1; /* 1 is highest priority */
-                        tau.id = i;
 
+                        if (prm.h == NO)
+                                gen_non_harmonic_task(tau, prm, i);
+
+                        else if (prm.h == YES)
+                                gen_harmonic_task(tau, prm, i, x);
+                        else {
+                                printf("ERR! input params!\n");
+                                exit(0);
+                        }
                         itm.tc.v_tasks.push_back(tau);
                         itm.tc.u += tau.u;
                 }
@@ -101,6 +160,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.tc.u;
                 ncount++;
+                printf("%d\n", ncount);
         }
         printf("\n");
 
@@ -164,13 +224,14 @@ void check_params(struct params &prm)
         }
 
         if (prm.phi < MINPHI || prm.phi > MAXPHI) {
-                printf("Invalid params: prm.phi rule -> [prm.phi < %d]\n\n", MAXPHI);
+                printf("Invalid params: prm.phi rule -> [prm.phi < %d]\n\n", 
+                                MAXPHI);
                 exit(0);
         }
 
-        if (prm.max_tu < MINMAXTU || prm.max_tu > MAXMAXTU) {
-                printf("Invalid params: prm.max_tu rule -> [%d <= prm.max_tu <= %d]\n\n", 
-                                MINMAXTU, MAXMAXTU);
+        if (prm.h != NO && prm.h != YES) {
+                printf("Invalid params: prm.h rule -> [%d -> NO || %d -> YES]\n\n", 
+                                NO, YES);
                 exit(0);
         }
 }
@@ -214,11 +275,10 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
-        int ret;
 
-        ret = _gen_tc_set(v_itms, prm, ctx);
+redo:   int ret = _gen_tc_set(v_itms, prm, ctx);
         if (ret == -1) {
                 printf("ERR! data set generation\n");
-                exit(0);
+                goto redo;
         }
 }

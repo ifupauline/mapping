@@ -157,7 +157,7 @@ static int find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                          * must be >= or else it will never find a cut for itm
                          * with a size twice the size of phi.
                          */
-                        if (ctx.prm.phi <= ctx.prm.max_tu / 2) {
+                        if (ctx.prm.phi <= C / 2) {
                                 if (tmp_cut.diff >= tmp_max) {
                                         tmp_max = tmp_cut.diff;
                                         cut = tmp_cut;

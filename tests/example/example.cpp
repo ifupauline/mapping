@@ -10,7 +10,7 @@ static void _input(int argc, char **argv, struct params &prm)
         }
         prm.n = atoi(argv[1]);
         prm.phi = atoi(argv[2]);
-        prm.max_tu = atoi(argv[3]);
+        prm.h = atoi(argv[3]);
         check_params(prm);
 }
 
