@@ -11,19 +11,23 @@
 #define MAXPHI     C
 
 #define MINMAXTU   1
-#define MAXMAXTU   15
+#define MAXMAXTU   20
 
 #define MINWCET    1
 #define MAXWCET    10
 
 #define MINTASKNBR 2
-#define MAXTASKNBR 18
+#define MAXTASKNBR 20
 
 /* harmonic chains table */
-static int harm[3][10] = {
-        {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024},
-        {5, 10, 20, 40, 80, 120, 240, 480, 960, 1920},
-        {3, 6, 12, 24, 48, 96, 192, 384, 768, 1536},
+static int harm[7][5] = {
+        {4, 8, 16, 32, 64},
+        {5, 10, 25, 50, 100},
+        {5, 15, 30, 60, 120},
+        {6, 12, 24, 48, 96},
+        {7, 14, 28, 56, 112},
+        {9, 18, 36, 72, 144},
+        {10, 20, 40, 80, 160},
 };
 
 static int gen_rand(int min, int max) 
@@ -71,7 +75,7 @@ static void gen_harmonic_task(struct task &tau, struct params &prm, int i, int x
         float udiff;
 
         while (1) {
-                y  = gen_rand(0, 9);
+                y  = gen_rand(0, 4);
                 real_t = harm[x][y];
                 real_c = gen_rand(MINWCET, MAXWCET);
                 real_u = (real_c/real_t) * PERCENT;
@@ -133,7 +137,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 itm.is_frag = NO;
                 itm.is_fragmented = NO;
                 itm.is_allocated = NO;
-                x = gen_rand(0, 2);
+                x = gen_rand(0, 6);
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;
@@ -275,10 +279,16 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
+        int ret; 
 
-redo:   int ret = _gen_tc_set(v_itms, prm, ctx);
-        if (ret == -1) {
-                printf("ERR! data set generation\n");
-                goto redo;
+        while (1) {
+                ret = _gen_tc_set(v_itms, prm, ctx);
+                if (ret == -1) {
+                        printf("ERR! data set generation\n");
+                        v_itms.clear();
+                        continue;
+
+                } else
+                        return;
         }
 }

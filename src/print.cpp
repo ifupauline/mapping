@@ -202,7 +202,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
 
-                printf("+======================================+\n");
+                printf("+==========================================+\n");
                 printf("|Core: %d\n", v_bins[i].id);
                 printf("|Load: %u\n", ctx.prm.phi - v_bins[i].cap_rem);
                 if (v_bins[i].flag == SCHED_OK)
@@ -214,11 +214,11 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
 
                         if (v_bins[i].v_itms[j].is_frag == YES) {
-                                printf("|--------------------------------------|\n");
+                                printf("|------------------------------------------|\n");
                                 printf("|Frag-task-chain: %u size %u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
-                                printf("|--------------------------------------|\n");
+                                printf("|------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-2d p: %02d r: %-3d c: %-2d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
@@ -229,7 +229,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
 
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1)
-                                                printf(" -----------> deadline  missed!");
+                                                printf(" ---------------> deadline  missed!");
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR! \n");
@@ -240,12 +240,12 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                 }
 
                         } else {
-                                printf("|--------------------------------------|\n");
+                                printf("|------------------------------------------|\n");
                                 printf("|task-chain: %u size %u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
 
-                                printf("|--------------------------------------|\n");
+                                printf("|------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-2d p: %-2d r: %-3d c: %-2d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
@@ -256,7 +256,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].t);
 
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1)
-                                                printf(" -----------> deadline  missed!");
+                                                printf(" ---------------> deadline  missed!");
                                         if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR!\n");
@@ -267,7 +267,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                 }
                         }
                 }
-                printf("+======================================+\n\n");
+                printf("+==========================================+\n\n");
         }
 }
 

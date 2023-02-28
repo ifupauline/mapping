@@ -26,8 +26,12 @@ int main(int argc, char **argv)
         vector<struct bin> v_bins_bfdu_f;
 
         /* TODO 
-         * - mapping optimization algorithm
-         * - MAYBE generate harmonic task-chains
+         * - create swapping functions
+         * - integrate priority optimization in worst-case analysis  
+         * - design swapping algorithm  
+         * - improve reduction
+         * - move input function in generator.cpp
+         * - fix bench1.cpp
          */
 
         /* parameters */
