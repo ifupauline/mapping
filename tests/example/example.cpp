@@ -32,6 +32,8 @@ int main(int argc, char **argv)
          * - improve reduction
          * - move input function in generator.cpp
          * - fix bench1.cpp
+         * - reassign priority for displacement optimization
+         * - massive refact for optimization, build reusable primitives
          */
 
         /* parameters */
@@ -71,7 +73,7 @@ int main(int argc, char **argv)
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
-        swapping_optimization(v_bins_bfdu_f, ctx_bfdu_f);
+        displacement_optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;
 }

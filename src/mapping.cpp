@@ -198,4 +198,6 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         priority_optimization(v_bins, ctx);
         end = clock();
         ctx.p.opti_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+
+        //swapping_optimization(v_bins, ctx);
 }

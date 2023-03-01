@@ -94,7 +94,7 @@ void priority_reassignment(struct bin &b, unsigned int &itm_id, int &p)
 
         flag = wcrt(b_tmp.v_tasks);
 
-        /* copy back response time  and priorities to tc */
+        /* copy back response time and priorities to tc */
         for (unsigned int j = 0; j < b_tmp.v_tasks.size(); j++) {
                 itm_idx = b_tmp.v_tasks[j].idx.itm_idx;
                 task_idx = b_tmp.v_tasks[j].idx.task_idx;
