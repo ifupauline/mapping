@@ -1,5 +1,6 @@
 #include "print.h"
 #include "generator.h"
+#include "optimization.h"
 #include "sched_analysis.h"
 
 static void _input(int argc, char **argv, struct params &prm)
@@ -26,7 +27,6 @@ int main(int argc, char **argv)
         vector<struct bin> v_bins_bfdu_f;
 
         /* TODO 
-         * - create swapping functions
          * - integrate priority optimization in worst-case analysis  
          * - design swapping algorithm  
          * - improve reduction
@@ -70,6 +70,8 @@ int main(int argc, char **argv)
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+
+        swapping_optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;
 }

@@ -287,7 +287,6 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         printf("ERR! data set generation\n");
                         v_itms.clear();
                         continue;
-
                 } else
                         return;
         }
