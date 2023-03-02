@@ -1,7 +1,7 @@
 #include "optimization.h"
 #include "sched_analysis.h"
 
-static void _swapping(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id, 
+static void _swap(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id, 
                 int dst_bin_id, int dst_itm_id)
 {
         int flag_src;
@@ -64,7 +64,7 @@ static void _swapping(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id
         }
 }
 
-static void _reassignment(struct bin &b, unsigned int &itm_id, int &p)
+static void _reassign(struct bin &b, unsigned int &itm_id, int &p)
 {
         int flag;
         struct bin b_tmp;
@@ -144,25 +144,53 @@ void reassignment(vector<struct bin> &v_bins, struct context &ctx)
 
                                         /* save priority of unschedulable task */
                                         p = v_bins[i].v_itms[j].tc.v_tasks[k].p;
-                                        _reassignment(v_bins[i], j, p);
+                                        _reassign(v_bins[i], j, p);
                                 }
                         }
                 }
         }
 }
 
-void displacement(vector<struct bin> &v_bins, struct context &ctx)
+static void _test_displacement(struct bin &b, vector<struct bin> &v_bins, vector<struct item> &v_it, int &min, 
+                int item_idx, int bin_idx, int &best_bin_id)
 {
         int ret;
+        int tmp_min;
+
+        /* copy itm task to v_tasks of bin */
+        for (unsigned int k = 0; k < b.v_itms.size(); k++)
+                copy_tc_to_v_tasks(b, bin_idx, k);
+
+        /* assign unique priorities to each tasks */
+        assign_unique_prio(b);
+
+        /* test wcrt */
+        ret = wcrt(b.v_tasks);
+        if (ret == SCHED_OK) {
+                printf("Test WCRT Core %d for TC %d OK!\n", v_bins[bin_idx].id, v_it[item_idx].id);
+                /* store min cap_rem */
+                tmp_min = v_bins[bin_idx].cap_rem - v_it[item_idx].tc.u;
+                printf("tmp_min %d\n", tmp_min);
+                if (tmp_min < min) {
+                        min = tmp_min;
+                        best_bin_id = v_bins[bin_idx].id;
+                }
+
+        } else if (ret == SCHED_FAILED) {
+                printf("Failed WCRT of TC %d in Core %d\n\n", v_it[item_idx].id, v_bins[bin_idx].id);
+                /* test priority reassigment */
+        }
+}
+
+void displacement(vector<struct bin> &v_bins, struct context &ctx)
+{
         int flag;
         int min;
-        int tmp_min;
-        int best_bin_id;
         vector<struct bin> v_bi;
         vector<struct item> v_it;
 
         flag = NO;
-        best_bin_id = -1;
+        int best_bin_id = -1;
 
         /* take next unschedulable itm */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
@@ -197,34 +225,18 @@ void displacement(vector<struct bin> &v_bins, struct context &ctx)
                                 v_bi.back().v_tasks.clear();
                                 printf("Found Core %-3d for TC %-3d\n", v_bins[j].id, v_it[i].id);
 
-                                /* copy itm task to v_tasks of bin */
-                                for (unsigned int k = 0; k < v_bi.back().v_itms.size(); k++)
-                                        copy_tc_to_v_tasks(v_bi.back(), j, k);
-
-                                /* assign unique priorities to each tasks */
-                                assign_unique_prio(v_bi.back());
-
-                                /* test wcrt */
-                                ret = wcrt(v_bi.back().v_tasks);
-                                if (ret == SCHED_OK) {
-                                        printf("Test WCRT Core %d for TC %d OK!\n", v_bins[j].id, v_it[i].id);
-                                        /* store min cap_rem */
-                                        tmp_min = v_bins[j].cap_rem - v_it[i].tc.u;
-                                        if (tmp_min < min) {
-                                                min = tmp_min;
-                                                best_bin_id = v_bins[j].id;
-                                        }
-                                }
-                                else if (ret == SCHED_FAILED) {
-                                        printf("No Displacement of TC %d has been found!\n\n", v_it[i].id);
-                                        /* test priority reassigment */
-                                }
+                                /* test if bin is ok and save best bin */
+                                _test_displacement(v_bi.back(), v_bins, v_it, min, i, j, best_bin_id);
                         }
                 }
-                if (best_bin_id == -1 || min == C)
+
+                if (best_bin_id == -1 || min == C) {
                         continue;
-                else
+
+                } else {
+                        /* displace tc to best bin and rmv tc from original bin */
                         printf("Best Core %d with min %d for TC: %d\n\n", best_bin_id, min, v_it[i].id);
+                }
         }
 }
 
