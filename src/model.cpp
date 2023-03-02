@@ -105,12 +105,12 @@ void copy_back_resp(struct bin &b)
         }
 }
 
-void copy_tc_to_v_tasks(struct bin &b, int i, int j)
+void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx)
 {
-        for (unsigned int k = 0; k < b.v_itms[j].tc.v_tasks.size(); k++) {
-                b.v_tasks.push_back(b.v_itms[j].tc.v_tasks[k]);
-                b.v_tasks.back().idx.bin_idx = i;
-                b.v_tasks.back().idx.itm_idx = j;
+        for (unsigned int k = 0; k < b.v_itms[itm_idx].tc.v_tasks.size(); k++) {
+                b.v_tasks.push_back(b.v_itms[itm_idx].tc.v_tasks[k]);
+                b.v_tasks.back().idx.bin_idx = bin_idx;
+                b.v_tasks.back().idx.itm_idx = itm_idx;
                 b.v_tasks.back().idx.task_idx = k;
         }
         /* sort tasks by id */

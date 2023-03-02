@@ -74,7 +74,7 @@ void copy_back_prio(struct bin &b);
 
 void copy_back_resp(struct bin &b);
 
-void copy_tc_to_v_tasks(struct bin &b, int i, int j);
+void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx);
 
 void compute_tc_u(struct item &itm);
 

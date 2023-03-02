@@ -9,13 +9,11 @@ static void _assign_priority(vector<struct bin> &v_bins)
                 }
         }
 
-        /* assign unique priorities to each tasks */
-        for (unsigned int i = 0; i < v_bins.size(); i++)
+        /* assign and copy back unique priorities to each tasks */
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
                 assign_unique_prio(v_bins[i]);
-
-        /* copy back new priority to original tasks in tc */
-        for (unsigned int i = 0; i < v_bins.size(); i++)
                 copy_back_prio(v_bins[i]);
+        }
 }
 
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
@@ -68,6 +66,25 @@ static void _fixpoint(vector<struct task> &hp_tasks, struct task &tau,
                 }
                 return;
         }
+}
+
+int wcrt_bin(struct bin &b, int bin_idx)
+{
+        int ret;
+
+        b.v_tasks.clear();
+        for (unsigned int y = 0; y < b.v_itms.size(); y++)
+                copy_tc_to_v_tasks(b, bin_idx, y);
+
+        /* assign unique priorities to each tasks */
+        assign_unique_prio(b);
+        
+        /* test wcrt */
+        ret = wcrt(b.v_tasks);
+        copy_back_prio(b);
+        copy_back_resp(b);
+
+        return ret;
 }
 
 int wcrt(vector<struct task> &v_tasks)

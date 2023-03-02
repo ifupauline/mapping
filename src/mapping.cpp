@@ -31,7 +31,6 @@ static void _find_double_fit(vector<struct item> &v_itms,
 
                         if (v_itms[i].size + v_itms[j].size == ctx.prm.phi)
                         {
-
                                 for (int k = 0; k < ctx.bins_count; k++) {
                                         if (v_bins[k].cap_rem == ctx.prm.phi) {
                                                 add_itm_to_bin(v_bins, 

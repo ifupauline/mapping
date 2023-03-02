@@ -27,13 +27,12 @@ int main(int argc, char **argv)
         vector<struct bin> v_bins_bfdu_f;
 
         /* TODO 
-         * - integrate priority optimization in worst-case analysis  
          * - design swapping algorithm  
          * - improve reduction
          * - move input function in generator.cpp
          * - fix bench1.cpp
          * - reassign priority for displacement optimization
-         * - massive refact for optimization, build reusable primitives
+         * - refact displacement and put stats and print with timing and rmv err
          */
 
         /* parameters */
@@ -74,6 +73,8 @@ int main(int argc, char **argv)
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
         displacement(v_bins_bfdu_f, ctx_bfdu_f);
+        print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
+        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;
 }

@@ -128,6 +128,33 @@ static void _reassign(struct bin &b, unsigned int &itm_id, int &p)
         }
 }
 
+static void _test_displacement(struct bin &b, vector<struct bin> &v_bins, vector<pair<struct item, int>> &v_it, int &min, 
+                int item_idx, int bin_idx, int &best_bin_id)
+{
+        int ret;
+        int tmp_min;
+
+        /* copy itm task to v_tasks of bin */
+        for (unsigned int k = 0; k < b.v_itms.size(); k++)
+                copy_tc_to_v_tasks(b, bin_idx, k);
+
+        /* test wcrt for dst bin */
+        ret = wcrt_bin(b, bin_idx);
+        if (ret == SCHED_OK) {
+                printf("Test WCRT Core %d for TC %d OK!\n", b.id, v_it[item_idx].first.id);
+                /* store min cap_rem */
+                tmp_min = b.cap_rem - v_it[item_idx].first.tc.u;
+                if (tmp_min < min) {
+                        min = tmp_min;
+                        best_bin_id = b.id;
+                }
+
+        } else if (ret == SCHED_FAILED) {
+                printf("Failed WCRT of TC %d in Core %d\n\n", v_it[item_idx].first.id, b.id);
+                /* test priority reassigment */
+        }
+}
+
 void reassignment(vector<struct bin> &v_bins, struct context &ctx)
 {
         int p;
@@ -151,53 +178,28 @@ void reassignment(vector<struct bin> &v_bins, struct context &ctx)
         }
 }
 
-static void _test_displacement(struct bin &b, vector<struct bin> &v_bins, vector<struct item> &v_it, int &min, 
-                int item_idx, int bin_idx, int &best_bin_id)
-{
-        int ret;
-        int tmp_min;
-
-        /* copy itm task to v_tasks of bin */
-        for (unsigned int k = 0; k < b.v_itms.size(); k++)
-                copy_tc_to_v_tasks(b, bin_idx, k);
-
-        /* assign unique priorities to each tasks */
-        assign_unique_prio(b);
-
-        /* test wcrt */
-        ret = wcrt(b.v_tasks);
-        if (ret == SCHED_OK) {
-                printf("Test WCRT Core %d for TC %d OK!\n", v_bins[bin_idx].id, v_it[item_idx].id);
-                /* store min cap_rem */
-                tmp_min = v_bins[bin_idx].cap_rem - v_it[item_idx].tc.u;
-                printf("tmp_min %d\n", tmp_min);
-                if (tmp_min < min) {
-                        min = tmp_min;
-                        best_bin_id = v_bins[bin_idx].id;
-                }
-
-        } else if (ret == SCHED_FAILED) {
-                printf("Failed WCRT of TC %d in Core %d\n\n", v_it[item_idx].id, v_bins[bin_idx].id);
-                /* test priority reassigment */
-        }
-}
-
 void displacement(vector<struct bin> &v_bins, struct context &ctx)
 {
-        int flag;
+        int ret;
         int min;
+        int flag;
+        int best_bin_id;
         vector<struct bin> v_bi;
-        vector<struct item> v_it;
 
         flag = NO;
-        int best_bin_id = -1;
+        best_bin_id = -1;
+
+        vector<pair<struct item, int>> v_it;
 
         /* take next unschedulable itm */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
                                 if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1) {
-                                        v_it.push_back(v_bins[i].v_itms[j]);
+                                        pair<struct item, int> p;
+                                        p.first = v_bins[i].v_itms[j];
+                                        p.second = v_bins[i].id;
+                                        v_it.push_back(p);
                                         flag = YES;
                                         printf("Save tc %-3d\n", v_bins[i].v_itms[j].id);
                                         break;
@@ -208,8 +210,8 @@ void displacement(vector<struct bin> &v_bins, struct context &ctx)
 
         /* compute_tc_u to tc if itm is a fragment */
         for (unsigned int i = 0; i < v_it.size(); i++) {
-                v_it[i].tc.u = 0;
-                compute_tc_u(v_it[i]);
+                v_it[i].first.tc.u = 0;
+                compute_tc_u(v_it[i].first);
         }
 
         /* find a schedulable bin that has enough space for the itm to fit */
@@ -218,12 +220,12 @@ void displacement(vector<struct bin> &v_bins, struct context &ctx)
                 min = C;
                 v_bi.clear();
                 for (unsigned int j = 0; j < v_bins.size(); j++) {
-                        if (v_bins[j].flag == SCHED_OK && flag == YES && v_bins[j].cap_rem >= v_it[i].tc.u) {
+                        if (v_bins[j].flag == SCHED_OK && flag == YES && v_bins[j].cap_rem >= v_it[i].first.tc.u) {
                                 /* add bin in v_bi and add itm to v_bi */
                                 v_bi.push_back(v_bins[j]);
-                                v_bi.back().v_itms.push_back(v_it[i]);
+                                v_bi.back().v_itms.push_back(v_it[i].first);
                                 v_bi.back().v_tasks.clear();
-                                printf("Found Core %-3d for TC %-3d\n", v_bins[j].id, v_it[i].id);
+                                printf("Found Core %-3d for TC %-3d\n", v_bins[j].id, v_it[i].first.id);
 
                                 /* test if bin is ok and save best bin */
                                 _test_displacement(v_bi.back(), v_bins, v_it, min, i, j, best_bin_id);
@@ -235,7 +237,40 @@ void displacement(vector<struct bin> &v_bins, struct context &ctx)
 
                 } else {
                         /* displace tc to best bin and rmv tc from original bin */
-                        printf("Best Core %d with min %d for TC: %d\n\n", best_bin_id, min, v_it[i].id);
+                        printf("Best Core %d with min %d for TC: %d\n\n", best_bin_id, min, v_it[i].first.id);
+                        pair<struct item, int> p = v_it[i];
+
+                        /* insert item to new bin */
+                        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                                if (v_bins[i].id == p.second) {
+                                        for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                                                if (v_bins[i].v_itms[j].id == p.first.id) {
+                                                        printf("Remove tc: %d from Core %d\n", v_bins[i].v_itms[j].id, v_bins[i].id);
+                                                        v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
+
+                                                        ret = wcrt_bin(v_bins[i], i);
+                                                        if (ret == SCHED_OK)
+                                                                v_bins[i].flag = SCHED_OK;
+                                                        else if (ret == SCHED_FAILED){
+                                                                printf("ERR! src Displacement WCRT!\n");
+                                                                exit(0);
+                                                        }
+                                                }
+                                        }
+                                }
+                                if (v_bins[i].id == best_bin_id) {
+                                        printf("Insert tc: %d in Core %d\n\n", p.first.id, v_bins[i].id);
+                                        v_bins[i].v_itms.push_back(p.first);
+
+                                        ret = wcrt_bin(v_bins[i], i);
+                                        if (ret == SCHED_OK)
+                                                v_bins[i].flag = SCHED_OK;
+                                        else {
+                                                printf("ERR! dst Displacement WCRT!\n");
+                                                exit(0);
+                                        }
+                                }
+                        }
                 }
         }
 }
@@ -248,9 +283,8 @@ void swapping(vector<struct bin> &v_bins, struct context &ctx)
 
         /* save unschedulable bins in temporary vector */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].flag == SCHED_FAILED) {
+                if (v_bins[i].flag == SCHED_FAILED)
                         t_v_bins.push_back(v_bins[i]);
-                }
         }
 
         /* take next unschedulable itm */
