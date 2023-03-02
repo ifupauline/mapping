@@ -14,7 +14,7 @@ static vector<struct item> frags_bfdu_f;
 
 static struct best_cut cut = {0};
 
-static int find_best_bin(vector<struct bin> &v_bins, struct item &itm,
+static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,
                 struct context &ctx)
 {
         int best_rem = ctx.prm.phi;
@@ -53,7 +53,7 @@ static int find_best_bin(vector<struct bin> &v_bins, struct item &itm,
         return -1;
 }
 
-static int find_best_cut(vector<struct bin> &v_bins, struct item &itm,
+static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                 struct context &ctx)
 {
         int l_diff;
@@ -165,7 +165,7 @@ static int find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                 return NO;
 }
 
-static void bff(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct item &itm, struct best_cut &cut, struct context &ctx)
 {
         struct item itm_lf;
@@ -227,7 +227,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 continue;
 
                         /* find best bin to fit itm */
-                        ret = find_best_bin(v_bins, v_itms[i], ctx);
+                        ret = _find_best_bin(v_bins, v_itms[i], ctx);
 
                         /* bin found add itm to it */
                         if (ret > -1) {
@@ -241,11 +241,11 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 printf("No Bin was found to accomodate Item %d\n", 
                                                 v_itms[i].id);
 
-                                ret = find_best_cut(v_bins, v_itms[i], ctx);
+                                ret = _find_best_cut(v_bins, v_itms[i], ctx);
                                 if (ret == YES) {
                                         printf("Found Cut %d for Item %d\n", 
                                                         cut.id, v_itms[i].id);
-                                        bff(v_itms, v_bins, v_itms[i], cut, ctx);
+                                        _bff(v_itms, v_bins, v_itms[i], cut, ctx);
                                         v_itms[i].is_allocated = YES;
                                         v_itms[i].is_fragmented = YES;
                                         continue;
@@ -262,11 +262,11 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 printf("Item %d of size %d bigger than PHI\n", 
                                                 v_itms[i].id, v_itms[i].size);
 
-                                ret = find_best_cut(v_bins, v_itms[i], ctx);
+                                ret = _find_best_cut(v_bins, v_itms[i], ctx);
                                 if (ret == YES) {
                                         printf("Found Cut %d for Item %d\n", 
                                                         cut.id, v_itms[i].id);
-                                        bff(v_itms, v_bins, v_itms[i], cut, ctx);
+                                        _bff(v_itms, v_bins, v_itms[i], cut, ctx);
                                         v_itms[i].is_allocated = YES;
                                         v_itms[i].is_fragmented = YES;
                                         continue;

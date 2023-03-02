@@ -6,9 +6,6 @@
 #include "stdio.h"
 #include "string.h"
 
-#include <random>
-#include <algorithm>
-
 #include "model.h"
 
 /* booleans */
@@ -34,7 +31,7 @@ struct perf {
         float alloc_time;
         float e_time;
         float wca_time;
-        float opti_time;
+        float reass_time;
         float standard_dev;
         float opti_bins;
         float sched_rate_bef;
@@ -68,15 +65,9 @@ void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
-void worst_case_analysis(vector<struct bin> &v_bins, struct context &ctx);
+void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx);
-
-/* operations */
-void add_bin(vector<struct bin> &v_bins, struct context &ctx);
-
-void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, 
-                struct context &ctx);
 
 /* algorithms */
 void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 

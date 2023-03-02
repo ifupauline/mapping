@@ -1,16 +1,8 @@
 #include "print.h"
+#include "mapping.h"
+#include "sched_analysis.h"
 
 #define MSEC 1000
-
-static int cmp_inc(const struct bin &a, const struct bin &b)
-{
-        return a.cap_rem < b.cap_rem;
-}
-
-static void sort_inc(vector<struct bin> &v_bins)
-{
-        sort(v_bins.begin(), v_bins.end(), cmp_inc);
-}
 
 static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
 {
@@ -57,7 +49,7 @@ static void execution_time(struct context &ctx)
         ctx.p.redu_time = ctx.p.redu_time * MSEC;
         ctx.p.alloc_time = ctx.p.alloc_time * MSEC;
         ctx.p.e_time = ctx.p.redu_time + ctx.p.alloc_time + ctx.p.wca_time + 
-                ctx.p.opti_time;
+                ctx.p.reass_time;
 }
 
 static void schedulability_rate(vector<struct bin> &v_bins, struct context &ctx)
@@ -198,7 +190,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT CORE WFDU_F                   |\n");
         printf("+=====================================+\n\n");
-        sort_inc(v_bins);
+        sort_inc_bin_cap_rem(v_bins);
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
 
@@ -425,12 +417,12 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Cuts Count:            %d\n", ctx.cuts_count);
         printf("Fragments Count:       %d\n", ctx.frags_count);
         printf("------------------------------------------->\n");
-        printf("Reduction Time:             %f ms\n", ctx.p.redu_time);
-        printf("Allocation Time:            %f ms\n", ctx.p.alloc_time);
-        printf("Worst-Case Analysis Time:   %f ms\n", ctx.p.wca_time);
-        printf("Priority Optimization Time: %f ms\n", ctx.p.opti_time);
+        printf("Reduction Time:                 %f ms\n", ctx.p.redu_time);
+        printf("Allocation Time:                %f ms\n", ctx.p.alloc_time);
+        printf("Schedulability Analysis Time:   %f ms\n", ctx.p.wca_time);
+        printf("Priority Optimization Time:     %f ms\n", ctx.p.reass_time);
         printf("------------------------------------------->\n");
-        printf("Total Execution Time:       %f ms\n", ctx.p.e_time);
+        printf("Total Execution Time:           %f ms\n", ctx.p.e_time);
         printf("------------------------------------------->\n");
         printf("Load Distribution:          %f\n", ctx.p.standard_dev);
         printf("Schedulability Rate (bef):  %f\n", ctx.p.sched_rate_bef * PERCENT);

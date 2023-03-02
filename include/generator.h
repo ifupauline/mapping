@@ -1,6 +1,8 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include <random>
+
 #include "mapping.h"
 
 void check_params(struct params &prm);

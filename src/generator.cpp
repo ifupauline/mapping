@@ -30,7 +30,7 @@ static int harm[7][5] = {
         {10, 20, 40, 80, 160},
 };
 
-static int gen_rand(int min, int max) 
+static int _gen_rand(int min, int max) 
 {
         random_device rd;
         mt19937 gen(rd());
@@ -39,26 +39,16 @@ static int gen_rand(int min, int max)
         return distr(gen);
 }
 
-static int cmp_dec(const struct item &a, const struct item &b)
-{
-        return a.size > b.size;
-}
-
-static void sort_dec(vector<struct item> &v_itms)
-{
-        sort(v_itms.begin(), v_itms.end(), cmp_dec);
-}
-
-static void assign_id(vector<struct item> &v_itms)
+static void _assign_id(vector<struct item> &v_itms)
 {
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].id = i;
 }
 
-static void gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
+static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
 {
-        tau.u = gen_rand(MINMAXTU, MAXMAXTU);
-        tau.c = gen_rand(MINWCET, MAXWCET);
+        tau.u = _gen_rand(MINMAXTU, MAXMAXTU);
+        tau.c = _gen_rand(MINWCET, MAXWCET);
         tau.t = ceilf(((float)tau.c/(float)tau.u) * PERCENT);
         tau.d = tau.t; /* implicit deadline */
         tau.r = 0;
@@ -66,7 +56,7 @@ static void gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
         tau.id = i;
 }
 
-static void gen_harmonic_task(struct task &tau, struct params &prm, int i, int x)
+static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int x)
 {
         int y;
         int real_t;
@@ -75,9 +65,9 @@ static void gen_harmonic_task(struct task &tau, struct params &prm, int i, int x
         float udiff;
 
         while (1) {
-                y  = gen_rand(0, 4);
+                y  = _gen_rand(0, 4);
                 real_t = harm[x][y];
-                real_c = gen_rand(MINWCET, MAXWCET);
+                real_c = _gen_rand(MINWCET, MAXWCET);
                 real_u = (real_c/real_t) * PERCENT;
 
                 /* c is minimum 1 */
@@ -132,21 +122,21 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct item itm;
                 itm.id = ncount;
                 itm.tc.u = 0;
-                task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
+                task_nbr = _gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.nbr_cut = task_nbr - 1;
                 itm.is_frag = NO;
                 itm.is_fragmented = NO;
                 itm.is_allocated = NO;
-                x = gen_rand(0, 6);
+                x = _gen_rand(0, 6);
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;
 
                         if (prm.h == NO)
-                                gen_non_harmonic_task(tau, prm, i);
+                                _gen_non_harmonic_task(tau, prm, i);
 
                         else if (prm.h == YES)
-                                gen_harmonic_task(tau, prm, i, x);
+                                _gen_harmonic_task(tau, prm, i, x);
                         else {
                                 printf("ERR! input params!\n");
                                 exit(0);
@@ -199,7 +189,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
 
-                        rand = gen_rand(NO, YES);
+                        rand = _gen_rand(NO, YES);
                         if (rand == YES && v_itms[i].size <= prm.phi)
                                 continue;
 
@@ -214,8 +204,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 lf_size = 0;
                 rf_size = 0;
         }
-        sort_dec(v_itms);
-        assign_id(v_itms);
+        sort_dec_itm_size(v_itms);
+        _assign_id(v_itms);
 
         return 0;
 }
@@ -260,7 +250,7 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.p.alloc_time = 0.0;
         ctx.p.e_time = 0.0;
         ctx.p.wca_time = 0.0;
-        ctx.p.opti_time = 0.0;
+        ctx.p.reass_time = 0.0;
         ctx.p.standard_dev = 0.0;
         ctx.p.opti_bins = 0.0;
         ctx.p.sched_rate_bef = 0.0;

@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -54,5 +55,29 @@ struct bin {
         vector<struct item> v_itms;
         vector<struct task> v_tasks;
 };
+
+/* OPERATIONS ON DATA STRUCTURES */
+void sort_inc_task_priority(vector<struct task> &v_tasks);
+
+void sort_inc_task_id(vector<struct task> &v_tasks);
+
+void sort_dec_itm_size(vector<struct item> &v_itms);
+
+void sort_inc_bin_cap_rem(vector<struct bin> &v_bins);
+
+void add_bin(vector<struct bin> &v_bins, struct context &ctx);
+
+void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, 
+                struct context &ctx);
+
+void copy_back_prio(struct bin &b);
+
+void copy_back_resp(struct bin &b);
+
+void copy_tc_to_v_tasks(struct bin &b, int i, int j);
+
+void compute_tc_u(struct item &itm);
+
+void assign_unique_prio(struct bin &b);
 
 #endif /* MODEL_H */

@@ -62,8 +62,8 @@ int main(int argc, char **argv)
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
-        /* worst-case analysis */
-        worst_case_analysis(v_bins_bfdu_f, ctx_bfdu_f);
+        /* schedulability analysis */
+        schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
 
         /* priority assignment optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
-        displacement_optimization(v_bins_bfdu_f, ctx_bfdu_f);
+        displacement(v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;
 }

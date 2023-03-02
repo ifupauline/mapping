@@ -1,7 +1,7 @@
 #ifndef PRINT_H
 #define PRINT_H
 
-#include "sched_analysis.h"
+#include "model.h"
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx);

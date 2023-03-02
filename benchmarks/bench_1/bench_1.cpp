@@ -57,8 +57,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
                         allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
 
-                        worst_case_analysis(v_bins_bfdu_f, ctx_bfdu_f);
-                        worst_case_analysis(v_bins_wfdu_f, ctx_wfdu_f);
+                        schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
+                        schedulability_analysis(v_bins_wfdu_f, ctx_wfdu_f);
 
                         /* stats */
                         cmp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
