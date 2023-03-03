@@ -3,17 +3,7 @@
 #include "optimization.h"
 #include "sched_analysis.h"
 
-static void _input(int argc, char **argv, struct params &prm)
-{
-        if (argc != 4) {
-                printf("Wrong Number of Arguments!\n");
-                exit(0);
-        }
-        prm.n = atoi(argv[1]);
-        prm.phi = atoi(argv[2]);
-        prm.h = atoi(argv[3]);
-        check_params(prm);
-}
+
 
 int main(int argc, char **argv)
 {
@@ -36,7 +26,7 @@ int main(int argc, char **argv)
          */
 
         /* parameters */
-        _input(argc, argv, prm);
+        input(argc, argv, prm);
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm, ctx);
@@ -71,10 +61,6 @@ int main(int argc, char **argv)
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
-
-        displacement(v_bins_bfdu_f, ctx_bfdu_f);
-        print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
 
         return 0;
 }

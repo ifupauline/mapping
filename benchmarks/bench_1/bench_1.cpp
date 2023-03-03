@@ -69,8 +69,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         stts_wfdu_f.mean_ld += ctx_wfdu_f.p.standard_dev;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.p.e_time;
                         stts_wfdu_f.mean_et += ctx_wfdu_f.p.e_time;               
-                        stts_bfdu_f.mean_sched += ctx_bfdu_f.p.sched_rate_aft * PERCENT;
-                        stts_wfdu_f.mean_sched += ctx_wfdu_f.p.sched_rate_aft * PERCENT;
+                        stts_bfdu_f.mean_sched += ctx_bfdu_f.p.sched_rate_prio * PERCENT;
+                        stts_wfdu_f.mean_sched += ctx_wfdu_f.p.sched_rate_prio * PERCENT;
                 }
                 /* mean */
                 stts_bfdu_f.mean_ar /= (float)SIMNBR;

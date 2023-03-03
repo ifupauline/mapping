@@ -32,11 +32,14 @@ struct perf {
         float e_time;
         float wca_time;
         float reass_time;
+        float disp_time;
         float standard_dev;
         float opti_bins;
         float sched_rate_bef;
-        float sched_rate_aft;
-        int sched_imp;
+        float sched_rate_prio;
+        float sched_rate_disp;
+        int sched_imp_prio;
+        int sched_imp_disp;
 };
 
 struct context {

@@ -45,6 +45,26 @@ static void _assign_id(vector<struct item> &v_itms)
                 v_itms[i].id = i;
 }
 
+void _check_params(struct params &prm)
+{
+        if (prm.n < MINN || prm.n > MAXN) {
+                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+                exit(0);
+        }
+
+        if (prm.phi < MINPHI || prm.phi > MAXPHI) {
+                printf("Invalid params: prm.phi rule -> [prm.phi < %d]\n\n", 
+                                MAXPHI);
+                exit(0);
+        }
+
+        if (prm.h != NO && prm.h != YES) {
+                printf("Invalid params: prm.h rule -> [%d -> NO || %d -> YES]\n\n", 
+                                NO, YES);
+                exit(0);
+        }
+}
+
 static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
 {
         tau.u = _gen_rand(MINMAXTU, MAXMAXTU);
@@ -115,7 +135,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         printf("| INSTANCE GENERATION                 |\n");
         printf("+=====================================+\n");
 
-        check_params(prm);
+        _check_params(prm);
 
         /* generate task-chains set */
         while (ncount != prm.n) {
@@ -210,24 +230,16 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         return 0;
 }
 
-void check_params(struct params &prm)
+void input(int argc, char **argv, struct params &prm)
 {
-        if (prm.n < MINN || prm.n > MAXN) {
-                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+        if (argc != 4) {
+                printf("Wrong Number of Arguments!\n");
                 exit(0);
         }
-
-        if (prm.phi < MINPHI || prm.phi > MAXPHI) {
-                printf("Invalid params: prm.phi rule -> [prm.phi < %d]\n\n", 
-                                MAXPHI);
-                exit(0);
-        }
-
-        if (prm.h != NO && prm.h != YES) {
-                printf("Invalid params: prm.h rule -> [%d -> NO || %d -> YES]\n\n", 
-                                NO, YES);
-                exit(0);
-        }
+        prm.n = atoi(argv[1]);
+        prm.phi = atoi(argv[2]);
+        prm.h = atoi(argv[3]);
+        _check_params(prm);
 }
 
 void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)
@@ -251,11 +263,14 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.p.e_time = 0.0;
         ctx.p.wca_time = 0.0;
         ctx.p.reass_time = 0.0;
+        ctx.p.disp_time = 0.0;
         ctx.p.standard_dev = 0.0;
         ctx.p.opti_bins = 0.0;
         ctx.p.sched_rate_bef = 0.0;
-        ctx.p.sched_rate_aft = 0.0;
-        ctx.p.sched_imp = 0;
+        ctx.p.sched_rate_prio = 0.0;
+        ctx.p.sched_rate_disp = 0.0;
+        ctx.p.sched_imp_prio = 0;
+        ctx.p.sched_imp_disp = 0;
 
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += v_itms[i].size;

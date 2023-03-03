@@ -68,7 +68,37 @@ static void _reassign(struct bin &b, unsigned int &itm_id, int &p)
         }
 }
 
-static void _search_core_displace(struct bin &b, vector<struct bin> &v_bins, 
+static int _test_src_displace(vector<struct bin> &v_bins, pair<struct item, int> &p)
+{
+        int ret;
+        int bin_idx;
+        struct bin b;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == p.second) {
+                        b = v_bins[i];
+                        bin_idx = i;
+                }
+        }
+
+        /* remove item first */
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                if (b.v_itms[i].id == p.first.id) {
+                        b.v_itms.erase(b.v_itms.begin() + i);
+                }
+        }
+
+        ret = wcrt_bin(b, bin_idx);
+        if (ret == SCHED_OK)
+                printf("Test WCRT src Core %d for TC: %d OK!\n", v_bins[bin_idx].id, p.first.id);
+        else if (ret == SCHED_FAILED) {
+                /* TODO test priority reassigment */
+                return ret;
+        }
+        return ret;
+}
+
+static void _test_dst_displace(struct bin &b, vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_it, int &min, int item_idx, 
                 int bin_idx, int &best_bin_id)
 {
@@ -82,7 +112,7 @@ static void _search_core_displace(struct bin &b, vector<struct bin> &v_bins,
         /* test wcrt for dst bin */
         ret = wcrt_bin(b, bin_idx);
         if (ret == SCHED_OK) {
-                printf("Test WCRT Core %d for TC %d OK!\n", 
+                printf("Test WCRT dst Core %d for TC %d OK!\n", 
                                 b.id, v_it[item_idx].first.id);
                 /* store min cap_rem */
                 tmp_min = b.cap_rem - v_it[item_idx].first.tc.u;
@@ -90,12 +120,13 @@ static void _search_core_displace(struct bin &b, vector<struct bin> &v_bins,
                         min = tmp_min;
                         best_bin_id = b.id;
                 }
+                return;
 
         } else if (ret == SCHED_FAILED) {
-                printf("Failed WCRT of TC %d in Core %d\n\n", 
-                                v_it[item_idx].first.id, b.id);
-                /* test priority reassigment */
+                /* TODO test priority reassigment */
+                return;
         }
+        return;
 }
 
 static void _displace(vector<struct bin> &v_bins, pair<struct item, int> &p, 
@@ -107,23 +138,23 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item, int> &p,
                 if (v_bins[i].id == p.second) {
                         for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                                 if (v_bins[i].v_itms[j].id == p.first.id) {
-                                        printf("Remove tc: %d from Core %d\n", 
+                                        printf("Remove task-chain %d from Core %d\n", 
                                                         v_bins[i].v_itms[j].id, v_bins[i].id);
                                         v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
 
                                         ret = wcrt_bin(v_bins[i], i);
                                         if (ret == SCHED_OK)
                                                 v_bins[i].flag = SCHED_OK;
+
                                         else if (ret == SCHED_FAILED){
-                                                printf("ERR! src Displacement WCRT!\n");
-                                                exit(0);
+                                                v_bins[i].flag = SCHED_FAILED;
                                         }
                                 }
                         }
                 }
 
                 if (v_bins[i].id == best_bin_id) {
-                        printf("Insert tc: %d in Core %d\n\n", p.first.id, v_bins[i].id);
+                        printf("Insert task-chain %d in Core %d\n", p.first.id, v_bins[i].id);
                         v_bins[i].v_itms.push_back(p.first);
 
                         ret = wcrt_bin(v_bins[i], i);
@@ -187,20 +218,20 @@ static void _swap(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id,
                 for (unsigned int i = 0; i < v_bins.size(); i++) {
                         if (v_bins[i].id == dst_bin_id) {
                                 v_bins[i].v_itms.push_back(src_itm);
-                                printf("Insert tc %d to Core %d\n", 
+                                printf("Insert task-chain %d to Core %d\n", 
                                                 src_itm.id, v_bins[i].id);
                         }
 
                         if (v_bins[i].id == src_bin_id) {
                                 v_bins[i].v_itms.push_back(dst_itm);
-                                printf("Insert tc %d to Core %d\n", 
+                                printf("Insert task-chain %d to Core %d\n", 
                                                 dst_itm.id, v_bins[i].id);
                         }
                 }
         }
 }
 
-void reassignment(vector<struct bin> &v_bins, struct context &ctx)
+void reassignment(vector<struct bin> &v_bins)
 {
         int p;
 
@@ -223,7 +254,7 @@ void reassignment(vector<struct bin> &v_bins, struct context &ctx)
         }
 }
 
-void displacement(vector<struct bin> &v_bins, struct context &ctx)
+void displacement(vector<struct bin> &v_bins)
 {
         int min;
         int flag;
@@ -246,13 +277,15 @@ void displacement(vector<struct bin> &v_bins, struct context &ctx)
                                         p.second = v_bins[i].id;
                                         v_it.push_back(p);
                                         flag = YES;
-                                        printf("Save tc %-3d\n", 
-                                                        v_bins[i].v_itms[j].id);
+                                        printf("Add task-chain %-3d from Core %d\n", 
+                                                        v_bins[i].v_itms[j].id,
+                                                        v_bins[i].id);
                                         break;
                                 }
                         }
                 }
         }
+        printf("\n");
 
         /* compute_tc_u to tc if itm is a fragment */
         for (unsigned int i = 0; i < v_it.size(); i++) {
@@ -272,31 +305,36 @@ void displacement(vector<struct bin> &v_bins, struct context &ctx)
                                 v_bi.push_back(v_bins[j]);
                                 v_bi.back().v_itms.push_back(v_it[i].first);
                                 v_bi.back().v_tasks.clear();
-                                printf("Found Core %-3d for TC %-3d\n", 
-                                                v_bins[j].id, v_it[i].first.id);
 
-                                /* test if bin is ok and save best bin */
-                                _search_core_displace(v_bi.back(), v_bins, v_it, 
+                                /* test dst bins and save best bin */
+                                _test_dst_displace(v_bi.back(), v_bins, v_it, 
                                                 min, i, j, best_bin_id);
                         }
                 }
 
+                /* if bin not found continue */
                 if (best_bin_id == -1 || min == C)
                         continue;
 
                 else {
-                        /* displace tc to best bin and rmv tc from original bin */
-                        printf("Best Core %d with min %d for TC: %d\n\n", 
-                                        best_bin_id, min, v_it[i].first.id);
+                        /* test src bin */
                         p.first = {0};
                         p.second = 0;
                         p = v_it[i];
-                        _displace(v_bins, p, best_bin_id);
+
+                        int ret = _test_src_displace(v_bins, p);
+
+                        if (ret == SCHED_OK) {
+                                /* dst bin is ok src bin is ok so displace */
+                                printf("Best Core %d with min %d for TC: %d\n\n", 
+                                                best_bin_id, min, v_it[i].first.id);
+                                _displace(v_bins, p, best_bin_id);
+                        }                 
                 }
         }
 }
 
-void swapping(vector<struct bin> &v_bins, struct context &ctx)
+void swapping(vector<struct bin> &v_bins)
 {
         struct item src_itm;
         struct item dst_itm;

@@ -78,7 +78,7 @@ int wcrt_bin(struct bin &b, int bin_idx)
 
         /* assign unique priorities to each tasks */
         assign_unique_prio(b);
-        
+
         /* test wcrt */
         ret = wcrt(b.v_tasks);
         copy_back_prio(b);
@@ -146,7 +146,21 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
         /* copy back new response time to original tasks in tc */
         for (unsigned int i = 0; i < v_bins.size(); i++)
                 copy_back_resp(v_bins[i]);
+}
 
-        ctx.p.sched_rate_bef = (float)ctx.sched_ok_count / (float)ctx.bins_count;
-        ctx.p.sched_imp = ctx.p.sched_imp - ctx.sched_ok_count;
+float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
+{
+        ctx.sched_ok_count = 0;
+        ctx.sched_failed_count = 0;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_OK)
+                        ctx.sched_ok_count++;
+        }
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_FAILED)
+                        ctx.sched_failed_count++;
+        }
+        return (float)ctx.sched_ok_count / (float)ctx.bins_count;
 }
