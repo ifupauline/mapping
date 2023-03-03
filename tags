@@ -589,6 +589,7 @@ _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item
 _cmp_inc_bin_cap_rem	src/model.cpp	/^static int _cmp_inc_bin_cap_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
 _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const struct task &a, const struct task &b)$/;"	f	file:
+_displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, int> &p, $/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_best_cut	src/bfdu_f.cpp	/^static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_double_fit	src/mapping.cpp	/^static void _find_double_fit(vector<struct item> &v_itms, $/;"	f	file:
@@ -602,8 +603,9 @@ _gen_non_harmonic_task	src/generator.cpp	/^static void _gen_non_harmonic_task(st
 _gen_rand	src/generator.cpp	/^static int _gen_rand(int min, int max) $/;"	f	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _input	tests/example/example.cpp	/^static void _input(int argc, char **argv, struct params &prm)$/;"	f	file:
-_reassignment	src/optimization.cpp	/^static void _reassignment(struct bin &b, unsigned int &itm_id, int &p)$/;"	f	file:
-_swapping	src/optimization.cpp	/^static void _swapping(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id, $/;"	f	file:
+_reassign	src/optimization.cpp	/^static void _reassign(struct bin &b, unsigned int &itm_id, int &p)$/;"	f	file:
+_search_core_displace	src/optimization.cpp	/^static void _search_core_displace(struct bin &b, vector<struct bin> &v_bins, $/;"	f	file:
+_swap	src/optimization.cpp	/^static void _swap(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id, $/;"	f	file:
 _wff	src/wfdu_f.cpp	/^static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
 a	include/mapping.h	/^        int a;$/;"	m	struct:params
 add_bin	src/model.cpp	/^void add_bin(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
@@ -638,7 +640,7 @@ const	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	10;"	d	file:
 context	include/mapping.h	/^struct context {$/;"	s
 copy_back_prio	src/model.cpp	/^void copy_back_prio(struct bin &b)$/;"	f
 copy_back_resp	src/model.cpp	/^void copy_back_resp(struct bin &b)$/;"	f
-copy_tc_to_v_tasks	src/model.cpp	/^void copy_tc_to_v_tasks(struct bin &b, int i, int j)$/;"	f
+copy_tc_to_v_tasks	src/model.cpp	/^void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx)$/;"	f
 cut	include/model.h	/^struct cut {$/;"	s
 cut	src/bfdu_f.cpp	/^static struct best_cut cut = {0};$/;"	v	typeref:struct:best_cut	file:
 cut	src/wfdu_f.cpp	/^static struct worst_cut cut = {0};$/;"	v	typeref:struct:worst_cut	file:
@@ -778,6 +780,7 @@ v_tasks_rf	include/model.h	/^        vector<struct task> v_tasks_rf;$/;"	m	struc
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 wca_time	include/mapping.h	/^        float wca_time;$/;"	m	struct:perf
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
+wcrt_bin	src/sched_analysis.cpp	/^int wcrt_bin(struct bin &b, int bin_idx)$/;"	f
 wfdu_f	src/wfdu_f.cpp	/^void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 worst_cut	src/wfdu_f.cpp	/^struct worst_cut {$/;"	s	file:
 write_data_to_file	src/bench.cpp	/^void write_data_to_file(FILE *filename, vector<struct b_stats> &data,$/;"	f
