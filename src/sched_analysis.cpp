@@ -42,7 +42,6 @@ static void _fixpoint(vector<struct task> &hp_tasks, struct task &tau,
 
         r_curr = tmp;
 
-        /* YOU MUST TEST THIS CONDITION FIRST */
         if (r_curr > tau.t) {
                 //printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
                 //                tau.id, r_curr, tau.t);
