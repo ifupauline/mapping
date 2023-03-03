@@ -1,7 +1,7 @@
 #include "optimization.h"
 #include "sched_analysis.h"
 
-static void _reassign(struct bin &b, unsigned int &itm_id, int &p)
+static void _reassign(struct bin &b, unsigned int itm_id, int &p)
 {
         int flag;
         struct bin b_tmp;
@@ -83,27 +83,28 @@ static int _test_src_displace(vector<struct bin> &v_bins, pair<struct item, int>
 
         /* remove item first */
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].id == p.first.id) {
+                if (b.v_itms[i].id == p.first.id)
                         b.v_itms.erase(b.v_itms.begin() + i);
-                }
         }
 
         ret = wcrt_bin(b, bin_idx);
-        if (ret == SCHED_OK)
+        if (ret == SCHED_OK) {
                 printf("Test WCRT src Core %d for TC: %d OK!\n", v_bins[bin_idx].id, p.first.id);
-        else if (ret == SCHED_FAILED) {
-                /* TODO test priority reassigment */
+                return ret;
+
+        } else if (ret == SCHED_FAILED) {
                 return ret;
         }
-        return ret;
+        return -1;
 }
 
-static void _test_dst_displace(struct bin &b, vector<struct bin> &v_bins, 
+static int _test_dst_displace(struct bin &b, vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_it, int &min, int item_idx, 
-                int bin_idx, int &best_bin_id)
+                int bin_idx)
 {
         int ret;
         int tmp_min;
+        int best_bin_id;
 
         /* copy itm task to v_tasks of bin */
         for (unsigned int k = 0; k < b.v_itms.size(); k++)
@@ -119,14 +120,10 @@ static void _test_dst_displace(struct bin &b, vector<struct bin> &v_bins,
                 if (tmp_min < min) {
                         min = tmp_min;
                         best_bin_id = b.id;
+                        return best_bin_id;
                 }
-                return;
-
-        } else if (ret == SCHED_FAILED) {
-                /* TODO test priority reassigment */
-                return;
         }
-        return;
+        return -1;
 }
 
 static void _displace(vector<struct bin> &v_bins, pair<struct item, int> &p, 
@@ -307,8 +304,8 @@ void displacement(vector<struct bin> &v_bins)
                                 v_bi.back().v_tasks.clear();
 
                                 /* test dst bins and save best bin */
-                                _test_dst_displace(v_bi.back(), v_bins, v_it, 
-                                                min, i, j, best_bin_id);
+                                best_bin_id = _test_dst_displace(v_bi.back(), 
+                                                v_bins, v_it, min, i, j);
                         }
                 }
 

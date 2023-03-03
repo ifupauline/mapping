@@ -3,8 +3,6 @@
 #include "optimization.h"
 #include "sched_analysis.h"
 
-
-
 int main(int argc, char **argv)
 {
         struct params prm;
@@ -19,10 +17,8 @@ int main(int argc, char **argv)
         /* TODO 
          * - design swapping algorithm  
          * - improve reduction
-         * - move input function in generator.cpp
          * - fix bench1.cpp
          * - reassign priority for displacement optimization
-         * - refact displacement and put stats and print with timing and rmv err
          */
 
         /* parameters */
