@@ -14,19 +14,16 @@
 #define MAXMAXTU   20
 
 #define MINWCET    1
-#define MAXWCET    10
+#define MAXWCET    20
 
 #define MINTASKNBR 2
 #define MAXTASKNBR 20
 
 /* harmonic chains table */
-static int harm[7][5] = {
+static int harm[4][5] = {
         {4, 8, 16, 32, 64},
-        {5, 10, 25, 50, 100},
         {5, 15, 30, 60, 120},
-        {6, 12, 24, 48, 96},
-        {7, 14, 28, 56, 112},
-        {9, 18, 36, 72, 144},
+        {5, 10, 25, 50, 100},
         {10, 20, 40, 80, 160},
 };
 
@@ -147,7 +144,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 itm.is_frag = NO;
                 itm.is_fragmented = NO;
                 itm.is_allocated = NO;
-                x = _gen_rand(0, 6);
+                x = _gen_rand(0, 3);
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;

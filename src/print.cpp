@@ -191,7 +191,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                                 v_bins[i].v_itms[j].size);
                                 printf("|------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        printf("|tau: %-2d u: %-2d p: %02d r: %-3d c: %-2d t: %d", 
+                                        printf("|tau: %-2d u: %-2d p: %-2d r: %-3d c: %-2d t: %d", 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].id, 
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].u,
                                                         v_bins[i].v_itms[j].tc.v_tasks[k].p,
