@@ -2,9 +2,9 @@
 #include "bench.h"
 #include "generator.h"
 
-#define STEP   1
-#define ITER   50
-#define SIMNBR 300
+#define STEP   2
+#define ITER   25
+#define SIMNBR 500
 
 static char const *cmd_gnuplot_ar[] = {};
 static char const *cmd_gnuplot_et[] = {};
@@ -19,6 +19,7 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
         /* params instance */
         prm.n = 100;
         prm.phi = 100;
+        prm.h = YES;
 
         for (int i = 0; i < ITER; i++) {
                 struct b_stats stts_bfdu_f;
@@ -69,8 +70,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         stts_wfdu_f.mean_ld += ctx_wfdu_f.p.standard_dev;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.p.e_time;
                         stts_wfdu_f.mean_et += ctx_wfdu_f.p.e_time;               
-                        stts_bfdu_f.mean_sched += ctx_bfdu_f.p.sched_rate_prio * PERCENT;
-                        stts_wfdu_f.mean_sched += ctx_wfdu_f.p.sched_rate_prio * PERCENT;
+                        stts_bfdu_f.mean_sched += ctx_bfdu_f.p.sched_rate_bef * PERCENT;
+                        stts_wfdu_f.mean_sched += ctx_wfdu_f.p.sched_rate_bef * PERCENT;
                 }
                 /* mean */
                 stts_bfdu_f.mean_ar /= (float)SIMNBR;

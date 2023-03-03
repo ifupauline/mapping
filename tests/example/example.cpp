@@ -18,7 +18,6 @@ int main(int argc, char **argv)
          * - design swapping algorithm  
          * - improve reduction
          * - fix bench1.cpp
-         * - reassign priority for displacement optimization
          */
 
         /* parameters */
@@ -50,7 +49,7 @@ int main(int argc, char **argv)
         /* schedulability analysis */
         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
 
-        /* priority assignment optimization */
+        /* optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
         /* results */
@@ -58,5 +57,7 @@ int main(int argc, char **argv)
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
+        swapping(v_bins_bfdu_f);
+        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         return 0;
 }

@@ -174,7 +174,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.tc.u;
                 ncount++;
-                printf("%d\n", ncount);
+                //printf("%d\n", ncount);
         }
         printf("\n");
 

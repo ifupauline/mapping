@@ -181,8 +181,8 @@ static void _swap(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id,
                 if (v_bins[i].id == src_bin_id) {
                         for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                                 if (v_bins[i].v_itms[j].id == src_itm_id) {
-                                        printf("Core %d task-chain %d\n", 
-                                                        v_bins[i].id, v_bins[i].v_itms[j].id);
+                                        printf("Remove task-chain %d from Core %d\n", 
+                                                        v_bins[i].v_itms[j].id, v_bins[i].id);
                                         src_itm = v_bins[i].v_itms[j];
                                         v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
                                         flag_src = YES;
@@ -192,13 +192,13 @@ static void _swap(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id,
                 }
         }
 
-        /* save src itm and remove original one */
+        /* save dst itm and remove original one */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].id == dst_bin_id) {
                         for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                                 if (v_bins[i].v_itms[j].id == dst_itm_id) {
-                                        printf("Core %d task-chain %d\n", 
-                                                        v_bins[i].id, v_bins[i].v_itms[j].id);
+                                        printf("Remove task-chain %d from Core %d\n", 
+                                                        v_bins[i].v_itms[j].id, v_bins[i].id);
                                         dst_itm = v_bins[i].v_itms[j];
                                         v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
                                         flag_dst = YES;
@@ -215,13 +215,13 @@ static void _swap(vector<struct bin> &v_bins, int src_bin_id, int src_itm_id,
                 for (unsigned int i = 0; i < v_bins.size(); i++) {
                         if (v_bins[i].id == dst_bin_id) {
                                 v_bins[i].v_itms.push_back(src_itm);
-                                printf("Insert task-chain %d to Core %d\n", 
+                                printf("Insert task-chain %d in Core %d\n", 
                                                 src_itm.id, v_bins[i].id);
                         }
 
                         if (v_bins[i].id == src_bin_id) {
                                 v_bins[i].v_itms.push_back(dst_itm);
-                                printf("Insert task-chain %d to Core %d\n", 
+                                printf("Insert task-chain %d in Core %d\n", 
                                                 dst_itm.id, v_bins[i].id);
                         }
                 }
@@ -331,24 +331,84 @@ void displacement(vector<struct bin> &v_bins)
         }
 }
 
+static int _search_for_swap(vector<struct bin> &failed_v_bins, 
+                struct item &src_itm, struct item &dst_itm, 
+                int &src_itm_id, int &src_bin_id, int &src_bin_cap_rem, 
+                int &dst_itm_id, int &dst_bin_id)
+{
+        int ret;
+
+        ret = NO;
+
+        /* find dst itm */
+        for (unsigned int i = 0; i < failed_v_bins.size(); i++) {
+                /* skip bin of src itm */
+                if (failed_v_bins[i].id == src_bin_id)
+                        continue;
+
+                for (unsigned int j = 0; j < failed_v_bins[i].v_itms.size(); j++) {
+                        if (failed_v_bins[i].cap_rem + failed_v_bins[i].v_itms[j].size >= src_itm.size) {
+                                dst_itm = failed_v_bins[i].v_itms[j];
+                                dst_itm_id = dst_itm.id;
+                                dst_bin_id = failed_v_bins[i].id;
+
+                                /* verify it can fit in src bin */
+                                for (unsigned int k = 0; k < failed_v_bins.size(); k++) {
+                                        /* skip bin of dst itm */
+                                        if (failed_v_bins[k].id == dst_bin_id)
+                                                continue;
+
+                                        if (failed_v_bins[k].id == src_bin_id) {
+                                                for (unsigned int l = 0; l < failed_v_bins[k].v_itms.size(); l++) {
+                                                        if (failed_v_bins[k].v_itms[l].id == src_itm_id) {
+                                                                if (failed_v_bins[k].v_itms[l].size + failed_v_bins[k].cap_rem >= dst_itm.size) {
+                                                                        printf("Found Swap for TC %d from Core %d with TC %d from Core %d\n",
+                                                                                        src_itm_id, src_bin_id, dst_itm_id, dst_bin_id);
+                                                                        _swap(failed_v_bins, src_bin_id, src_itm_id, dst_bin_id, dst_itm_id);
+
+                                                                        /* test wcrt for both bins */
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+        return ret;
+}
+
 void swapping(vector<struct bin> &v_bins)
 {
+        int src_itm_id;
+        int src_bin_id;
+        int src_bin_cap_rem;
+        int dst_itm_id;
+        int dst_bin_id;
         struct item src_itm;
         struct item dst_itm;
-        vector<struct bin> t_v_bins;
+        vector<struct bin> failed_v_bins;
 
         /* save unschedulable bins in temporary vector */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_FAILED)
-                        t_v_bins.push_back(v_bins[i]);
+                        failed_v_bins.push_back(v_bins[i]);
         }
 
         /* take next unschedulable itm */
-        for (unsigned int i = 0; i < t_v_bins.size(); i++) {
-                for (unsigned int j = 0; j < t_v_bins[i].v_itms.size(); j++) {
-                        for (unsigned int k = 0; k < t_v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                if (t_v_bins[i].v_itms[j].tc.v_tasks[k].r == -1) {
-                                        src_itm = t_v_bins[i].v_itms[j];
+        for (unsigned int i = 0; i < failed_v_bins.size(); i++) {
+                for (unsigned int j = 0; j < failed_v_bins[i].v_itms.size(); j++) {
+                        for (unsigned int k = 0; k < failed_v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                if (failed_v_bins[i].v_itms[j].tc.v_tasks[k].r == -1) {
+                                        src_itm = failed_v_bins[i].v_itms[j];
+                                        src_itm_id = src_itm.id;
+                                        src_bin_id = failed_v_bins[i].id;
+                                        src_bin_cap_rem = failed_v_bins[i].cap_rem;
+
+                                        int ret = _search_for_swap(failed_v_bins, 
+                                                        src_itm, dst_itm, 
+                                                        src_itm_id, src_bin_id, src_bin_cap_rem,
+                                                        dst_itm_id, dst_bin_id);
                                 }
                         }
                 }
