@@ -33,7 +33,6 @@ struct perf {
         float wca_time;
         float reass_time;
         float disp_time;
-        float standard_dev;
         float opti_bins;
         float sched_rate_bef;
         float sched_rate_prio;

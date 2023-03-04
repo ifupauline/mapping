@@ -1,7 +1,7 @@
 #include "optimization.h"
 #include "sched_analysis.h"
 
-static void _store_unsched_items(vector<struct bin> &v_bins, 
+static void _store_unsched_itms(vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_it, int &flag)
 {
         pair<struct item, int> p;
@@ -71,7 +71,7 @@ static void _reassign(struct bin &b, int &p, int itm_idx)
         }
 }
 
-static int _search_dst_for_displace(vector<struct bin> &v_bins, 
+static int _search_for_displace(vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_it, int &min, int item_idx)
 {
         int tmp_min;
@@ -163,7 +163,7 @@ void displacement(vector<struct bin> &v_bins)
         best_bin_id = -1;
 
         /* take next unschedulable itm */
-        _store_unsched_items(v_bins, v_it, flag);
+        _store_unsched_itms(v_bins, v_it, flag);
 
         printf("\n");
 
@@ -189,7 +189,7 @@ void displacement(vector<struct bin> &v_bins)
                 }
 
                 /* test dst bins and save best bin */
-                best_bin_id = _search_dst_for_displace(v_bi, v_it, min, i);
+                best_bin_id = _search_for_displace(v_bi, v_it, min, i);
 
                 /* if bin not found continue */
                 if (best_bin_id == -1 || min == C)

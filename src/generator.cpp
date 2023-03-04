@@ -22,8 +22,8 @@
 /* harmonic chains table */
 static int harm[4][5] = {
         {4, 8, 16, 32, 64},
-        {5, 15, 30, 60, 120},
         {5, 10, 25, 50, 100},
+        {5, 15, 30, 60, 120},
         {10, 20, 40, 80, 160},
 };
 
@@ -257,19 +257,7 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n - 1;
 
-        ctx.p.redu_time = 0.0;
-        ctx.p.alloc_time = 0.0;
-        ctx.p.e_time = 0.0;
-        ctx.p.wca_time = 0.0;
-        ctx.p.reass_time = 0.0;
-        ctx.p.disp_time = 0.0;
-        ctx.p.standard_dev = 0.0;
-        ctx.p.opti_bins = 0.0;
-        ctx.p.sched_rate_bef = 0.0;
-        ctx.p.sched_rate_prio = 0.0;
-        ctx.p.sched_rate_disp = 0.0;
-        ctx.p.sched_imp_prio = 0;
-        ctx.p.sched_imp_disp = 0;
+        ctx.p = {0};
 
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += v_itms[i].size;

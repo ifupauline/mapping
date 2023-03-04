@@ -4,33 +4,6 @@
 
 #define MSEC 1000
 
-static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
-{
-        float sum;
-        float mean;
-        float sumsqr;
-        float variance;
-        unsigned int n;
-
-        sum = 0.0;
-        mean = 0.0;
-        sumsqr = 0.0;
-        variance = 0.0;
-        n = v_bins.size();
-
-        for (unsigned int i = 0; i < n; i++)
-                sum += (ctx.prm.phi - v_bins[i].cap_rem);
-
-        mean = sum / n;
-
-        for (unsigned int i = 0; i < n; i++) {
-                ctx.p.standard_dev = (ctx.prm.phi - v_bins[i].cap_rem) - mean;
-                sumsqr += ctx.p.standard_dev * ctx.p.standard_dev;
-        }
-        variance = sumsqr / n;
-        ctx.p.standard_dev = sqrt(variance) ;
-}
-
 static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx)
 {
         int min_nbr_cuts;
@@ -96,7 +69,6 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                 }
         }
         execution_time(ctx);
-        standard_deviation(v_bins, ctx);
         approximation_ratio(v_itms, ctx);
 }
 
