@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 
         /* TODO 
          * - design increase algorithm
+         * - try again swapping algorithm
          * - improve reduction
          * - fix bench1.cpp
          */

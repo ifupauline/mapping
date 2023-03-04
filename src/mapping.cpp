@@ -125,12 +125,14 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
                 clock_t start, end;
                 start = clock();
-                sched_analysis(v_bins, ctx);
+                wcrt_v_bins(v_bins, ctx);
                 end = clock();
                 ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-
                 ctx.p.sched_rate_bef = sched_rate(v_bins, ctx);
-                ctx.p.sched_imp_prio = ctx.p.sched_imp_prio - ctx.sched_ok_count;
+
+                /* init var for priority optimization */
+                ctx.p.sched_imp_prio -= ctx.sched_ok_count;
+                ctx.p.sched_imp_tc_prio = ctx.sched_tcfailed_count;
         }
 
         if (ctx.prm.a == WFDU_F) {
@@ -140,12 +142,14 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
                 clock_t start, end;
                 start = clock();
-                sched_analysis(v_bins, ctx);
+                wcrt_v_bins(v_bins, ctx);
                 end = clock();
                 ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-
                 ctx.p.sched_rate_bef = sched_rate(v_bins, ctx);
-                ctx.p.sched_imp_prio = ctx.p.sched_imp_prio - ctx.sched_ok_count;
+
+                /* init var for priority optimization */
+                ctx.p.sched_imp_prio -= ctx.sched_ok_count;
+                ctx.p.sched_imp_tc_prio = ctx.sched_tcfailed_count;
         }
 }
 
@@ -161,9 +165,14 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         end = clock();
         ctx.p.reass_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         ctx.p.sched_rate_prio = sched_rate(v_bins, ctx);
-        ctx.p.sched_imp_prio = ctx.p.sched_imp_prio + ctx.sched_ok_count;
 
-        ctx.p.sched_imp_disp = ctx.p.sched_imp_disp - ctx.sched_ok_count;
+        /*compute improvement */
+        ctx.p.sched_imp_prio = ctx.p.sched_imp_prio + ctx.sched_ok_count;
+        ctx.p.sched_imp_tc_prio -= ctx.sched_failed_count;
+
+        /* init var for displacement */
+        ctx.p.sched_imp_disp -= ctx.sched_ok_count;
+        ctx.p.sched_imp_tc_disp = ctx.sched_tcfailed_count;
 
         printf("+=====================================+\n");
         printf("| DISPLACEMENT OPTIMIZATION           |\n");
@@ -173,7 +182,9 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         displacement(v_bins);
         end = clock();
         ctx.p.disp_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-
         ctx.p.sched_rate_disp = sched_rate(v_bins, ctx);
+
+        /*compute improvement */
         ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
+        ctx.p.sched_imp_tc_disp -= ctx.sched_tcfailed_count;
 }

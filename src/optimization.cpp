@@ -17,7 +17,7 @@ static void _store_unsched_items(vector<struct bin> &v_bins,
                                         p.second = v_bins[i].id;
                                         v_it.push_back(p);
                                         flag = YES;
-                                        printf("Add task-chain %-3d from Core %d\n", 
+                                        printf("Add task-chain %-3d from Core %-3d\n", 
                                                         v_bins[i].v_itms[j].id,
                                                         v_bins[i].id);
                                         break;

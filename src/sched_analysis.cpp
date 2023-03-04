@@ -130,7 +130,7 @@ int wcrt(vector<struct task> &v_tasks)
         return -1;
 }
 
-void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
+void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 {
         _assign_priority(v_bins);
 
@@ -139,10 +139,8 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                         v_bins[i].flag = wcrt(v_bins[i].v_tasks);
 
                 if (v_bins[i].flag == SCHED_FAILED) {
-                        ctx.sched_failed_count++;
                         printf("Core %d SCHED_FAILED\n", v_bins[i].id);
                 } else {
-                        ctx.sched_ok_count++;
                         printf("Core %d SCHED_OK\n", v_bins[i].id);
                 }
         }
@@ -154,6 +152,10 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
 float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
 {
+        int tc_count;
+        float sched_rate;
+
+        tc_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
 
@@ -166,7 +168,30 @@ float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
                 if (v_bins[i].flag == SCHED_FAILED)
                         ctx.sched_failed_count++;
         }
-        return (float)ctx.sched_ok_count / (float)ctx.bins_count;
+
+        ctx.sched_tcok_count = 0;
+        ctx.sched_tcfailed_count = 0;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        tc_count++;
+                }
+        }
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1) {
+                                        ctx.sched_tcfailed_count++;
+                                        continue;
+                                }
+                        }
+                }
+        }
+        ctx.sched_tcok_count = tc_count - ctx.sched_tcfailed_count;
+        sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+
+        return sched_rate;
 }
 
 void assign_unique_priorities(struct bin &b)

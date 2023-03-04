@@ -16,8 +16,8 @@ int wcrt(vector<struct task> &v_tasks);
 
 void wcrt_bin(struct bin &b, int bin_idx);
 
-float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
+void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx);
 
-void sched_analysis(vector<struct bin> &v_bins, struct context &ctx);
+float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
 
 #endif /* SCHED_ANALYSIS_H */

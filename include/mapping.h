@@ -40,6 +40,8 @@ struct perf {
         float sched_rate_disp;
         int sched_imp_prio;
         int sched_imp_disp;
+        int sched_imp_tc_prio;
+        int sched_imp_tc_disp;
 };
 
 struct context {
@@ -55,6 +57,8 @@ struct context {
         int tasks_count;
         int sched_ok_count;
         int sched_failed_count;
+        int sched_tcok_count;
+        int sched_tcfailed_count;
         struct perf p;
         struct params prm;
 };

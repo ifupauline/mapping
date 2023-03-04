@@ -251,6 +251,8 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
+        ctx.sched_tcok_count = 0;
+        ctx.sched_tcfailed_count = 0;
         ctx.itms_size = 0;
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n - 1;

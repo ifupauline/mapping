@@ -378,40 +378,42 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         cmp_stats(v_bins, v_itms, ctx);
 
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
         printf("n:      %u\n", ctx.prm.n);
         printf("phi:    %u\n", ctx.prm.phi);
         if (ctx.prm.a == BFDU_F)
                 printf("a:      BFDU_F\n");
         if (ctx.prm.a == WFDU_F)
                 printf("a:      WFDU_F\n");
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
         printf("Min Number of Cores:   %d\n", ctx.bins_min);
         printf("New Added Cores:       %d\n", ctx.cycl_count);
         printf("Actual Cores Count:    %d\n", ctx.bins_count);
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
         printf("Task-Chains Allocated: %d\n", ctx.alloc_count + ctx.frags_count);
         printf("Total Number of Tasks: %d\n", ctx.tasks_count);
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
         printf("Cuts Count:            %d\n", ctx.cuts_count);
         printf("Fragments Count:       %d\n", ctx.frags_count);
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
         printf("Reduction Time:                     %f ms\n", ctx.p.redu_time);
         printf("Allocation Time:                    %f ms\n", ctx.p.alloc_time);
         printf("Schedulability Analysis Time:       %f ms\n", ctx.p.wca_time);
         printf("Priority Optimization Time:         %f ms\n", ctx.p.reass_time);
         printf("Displacement Optimization Time:     %f ms\n", ctx.p.disp_time);
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
         printf("Total Execution Time:               %f ms\n", ctx.p.e_time);
-        printf("----------------------------------------------------------->\n");
-        //printf("Load Distribution:                  %.2f\n", ctx.p.standard_dev);
+        printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate :               %.2f\n", 
                         ctx.p.sched_rate_bef * PERCENT);
-        printf("Schedulability Rate (prio):         %.2f  +%d cores\n", 
-                        ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio);
-        printf("Schedulability Rate (disp):         %.2f  +%d cores\n", 
-                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
-        printf("----------------------------------------------------------->\n");
+        printf("Schedulability Rate (prio):         %.2f  +%-2d cores +%-2d task-chains\n", 
+                        ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio, ctx.p.sched_imp_tc_prio);
+        printf("Schedulability Rate (disp):         %.2f  +%-2d cores +%-2d task-chains\n", 
+                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp, ctx.p.sched_imp_tc_disp);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Optimization Improvement:           %.2f\n", 
+                        (ctx.p.sched_rate_disp * PERCENT - ctx.p.sched_rate_bef * PERCENT));
+        printf("------------------------------------------------------------------------>\n");
         printf("Approximation Ratio:                %f\n", ctx.p.opti_bins);
-        printf("----------------------------------------------------------->\n");
+        printf("------------------------------------------------------------------------>\n");
 }
