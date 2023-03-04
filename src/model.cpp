@@ -1,5 +1,6 @@
 #include "model.h"
 #include "mapping.h"
+#include "sched_analysis.h"
 
 static int _cmp_inc_task_priority(const struct task &a, const struct task &b)
 {
@@ -48,6 +49,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         tmp_bin.id = ctx.bins_count;
         tmp_bin.flag = -1;
         tmp_bin.cap_rem = ctx.prm.phi;
+        tmp_bin.phi = ctx.prm.phi;
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
         printf("Bin %d Created\n\n", ctx.bins_count - 1);
@@ -81,7 +83,7 @@ void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id,
         }
 }
 
-void copy_back_prio(struct bin &b)
+void copy_back_prio_to_tc(struct bin &b)
 {
         int itm_idx;
         int task_idx;
@@ -93,7 +95,7 @@ void copy_back_prio(struct bin &b)
         }
 }
 
-void copy_back_resp(struct bin &b)
+void copy_back_resp_to_tc(struct bin &b)
 {
         int itm_idx;
         int task_idx;
@@ -117,14 +119,47 @@ void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx)
         sort_inc_task_id(b.v_tasks);
 }
 
-void compute_tc_u(struct item &itm)
+void compute_tc_load(struct item &itm)
 {
         for (unsigned int i = 0; i < itm.tc.v_tasks.size(); i++)
                 itm.tc.u += itm.tc.v_tasks[i].u;
 }
 
-void assign_unique_prio(struct bin &b)
+void compute_bin_load(struct bin &b)
 {
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++)
-                b.v_tasks[i].p = i + 1;
+        int load;
+
+        load = 0;
+        b.cap_rem = 0;
+
+        for (unsigned int i = 0; i < b.v_itms.size(); i++)
+                load += b.v_itms[i].size;
+
+        b.cap_rem = b.phi - load;
+}
+
+void delete_itm_by_id(vector<struct bin> &v_bins, int &itm_id)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        if (v_bins[i].v_itms[j].id == itm_id) {
+                                v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
+                                wcrt_bin(v_bins[i], i);
+                                printf("Remove task-chain %d from Core %d\n", 
+                                                itm_id, v_bins[i].id);
+                        }
+                }
+        }
+}
+
+void add_itm_by_id(vector<struct bin> &v_bins, struct item &itm, int &bin_id)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == bin_id) {
+                        v_bins[i].v_itms.push_back(itm);
+                        wcrt_bin(v_bins[i], i);
+                        printf("Insert task-chain %d in Core %d\n", 
+                                        itm.id, v_bins[i].id);
+                }
+        }
 }

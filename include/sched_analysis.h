@@ -8,9 +8,13 @@
 #define SCHED_OK     1
 #define SCHED_FAILED 2
 
+void assign_unique_priorities(struct bin &b);
+
+void assign_new_priorities(struct bin &b, int &p, int &itm_idx);
+
 int wcrt(vector<struct task> &v_tasks);
 
-int wcrt_bin(struct bin &b, int bin_idx);
+void wcrt_bin(struct bin &b, int bin_idx);
 
 float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
 

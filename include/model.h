@@ -50,6 +50,7 @@ struct item {
 
 struct bin {
         int id;
+        int phi;
         int flag;
         int cap_rem;
         vector<struct item> v_itms;
@@ -65,19 +66,23 @@ void sort_dec_itm_size(vector<struct item> &v_itms);
 
 void sort_inc_bin_cap_rem(vector<struct bin> &v_bins);
 
+void copy_back_prio_to_tc(struct bin &b);
+
+void copy_back_resp_to_tc(struct bin &b);
+
+void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx);
+
+void compute_bin_load(struct bin &b);
+
+void compute_tc_load(struct item &itm);
+
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
 void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, 
                 struct context &ctx);
 
-void copy_back_prio(struct bin &b);
+void add_itm_by_id(vector<struct bin> &v_bins, struct item &itm, int &bin_id);
 
-void copy_back_resp(struct bin &b);
-
-void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx);
-
-void compute_tc_u(struct item &itm);
-
-void assign_unique_prio(struct bin &b);
+void delete_itm_by_id(vector<struct bin> &v_bins, int &itm_id);
 
 #endif /* MODEL_H */

@@ -11,8 +11,8 @@ static void _assign_priority(vector<struct bin> &v_bins)
 
         /* assign and copy back unique priorities to each tasks */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                assign_unique_prio(v_bins[i]);
-                copy_back_prio(v_bins[i]);
+                assign_unique_priorities(v_bins[i]);
+                copy_back_prio_to_tc(v_bins[i]);
         }
 }
 
@@ -67,7 +67,7 @@ static void _fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         }
 }
 
-int wcrt_bin(struct bin &b, int bin_idx)
+void wcrt_bin(struct bin &b, int bin_idx)
 {
         int ret;
 
@@ -76,14 +76,19 @@ int wcrt_bin(struct bin &b, int bin_idx)
                 copy_tc_to_v_tasks(b, bin_idx, y);
 
         /* assign unique priorities to each tasks */
-        assign_unique_prio(b);
+        assign_unique_priorities(b);
 
         /* test wcrt */
         ret = wcrt(b.v_tasks);
-        copy_back_prio(b);
-        copy_back_resp(b);
-
-        return ret;
+        if (ret == SCHED_OK) 
+                b.flag = SCHED_OK;
+        
+        else if (ret == SCHED_FAILED)
+                b.flag = SCHED_FAILED;
+                
+        copy_back_prio_to_tc(b);
+        copy_back_resp_to_tc(b);
+        compute_bin_load(b);
 }
 
 int wcrt(vector<struct task> &v_tasks)
@@ -144,7 +149,7 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
         /* copy back new response time to original tasks in tc */
         for (unsigned int i = 0; i < v_bins.size(); i++)
-                copy_back_resp(v_bins[i]);
+                copy_back_resp_to_tc(v_bins[i]);
 }
 
 float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
@@ -162,4 +167,36 @@ float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
                         ctx.sched_failed_count++;
         }
         return (float)ctx.sched_ok_count / (float)ctx.bins_count;
+}
+
+void assign_unique_priorities(struct bin &b)
+{
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++)
+                b.v_tasks[i].p = i + 1;
+}
+
+void assign_new_priorities(struct bin &b, int &p, int &itm_idx)
+{
+        /* starting new p */
+        p = p + 1;
+        printf("Updating Priorities... with p: %d\n", p);
+
+        /* assign new priorities */
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                if (b.v_tasks[i].idx.itm_idx == (int)itm_idx)
+                        continue;
+
+                if (b.v_tasks[i].p < p) {
+                        for (unsigned int j = 0; j < b.v_itms[itm_idx].tc.v_tasks.size(); j++) {
+                                if (b.v_itms[itm_idx].tc.v_tasks[j].p == p) {
+                                        printf("priority %d already assigned\n", p);
+                                        p++;
+                                }
+                        }
+                        b.v_tasks[i].p = p;
+                        p = p + 1;
+                        printf("tau %d p: %d\n", b.v_tasks[i].id, 
+                                        b.v_tasks[i].p);
+                }
+        }
 }

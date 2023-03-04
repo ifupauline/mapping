@@ -5,6 +5,6 @@
 
 void reassignment(vector<struct bin> &v_bins);
 
-void displacement(vector<struct bin> &v_bins, struct context &ctx);
+void displacement(vector<struct bin> &v_bins);
 
 #endif /* OPTIMIZATION_H */
