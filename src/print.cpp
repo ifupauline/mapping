@@ -72,24 +72,6 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         approximation_ratio(v_itms, ctx);
 }
 
-void print_not_allocated(vector<struct item> &v_itms, struct context &ctx)
-{
-        for (int i = 0; i < ctx.prm.n; i++) {
-                if (v_itms[i].is_allocated == NO)
-                        printf("Item %d could not be allocated\n", 
-                                        v_itms[i].id);
-        }
-}
-
-void print_not_fragmented(vector<struct item> &v_itms, struct context &ctx)
-{
-        for (int i = 0; i < ctx.prm.n; i++) {
-                if (v_itms[i].is_allocated == NO)
-                        printf("Item %d could not be fragmented\n", 
-                                        v_itms[i].id);
-        }
-}
-
 void print_task_chains(vector<struct item> &v_itms)
 {
         int tasknbr;
@@ -131,6 +113,15 @@ void print_task_chains(vector<struct item> &v_itms)
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
         printf("Total Number of Task-Chains: %lu\n\n", v_itms.size());
+}
+
+void print_core(struct bin &b)
+{
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                printf("Core %d tau %d p: %-2d  idx: %d sched: %d\n", 
+                                b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
+                                b.v_tasks[i].idx.itm_idx, b.flag);
+        }
 }
 
 void print_cores(vector<struct bin> &v_bins, struct context &ctx)
@@ -378,10 +369,10 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate :               %.2f\n", 
                         ctx.p.sched_rate_bef * PERCENT);
-        printf("Schedulability Rate (prio):         %.2f  +%-2d cores +%-2d task-chains\n", 
-                        ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio, ctx.p.sched_imp_tc_prio);
-        printf("Schedulability Rate (disp):         %.2f  +%-2d cores +%-2d task-chains\n", 
-                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp, ctx.p.sched_imp_tc_disp);
+        printf("Schedulability Rate (prio):         %.2f  +%-2d cores\n", 
+                        ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio);
+        printf("Schedulability Rate (disp):         %.2f  +%-2d cores\n", 
+                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         printf("------------------------------------------------------------------------>\n");
         printf("Optimization Improvement:           %.2f\n", 
                         (ctx.p.sched_rate_disp * PERCENT - ctx.p.sched_rate_bef * PERCENT));

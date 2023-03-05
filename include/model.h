@@ -7,7 +7,7 @@
 using namespace std;
 
 /* TASK MODEL */
-struct t_idx {
+struct t_pos {
         int bin_idx;
         int itm_idx;
         int task_idx;
@@ -21,7 +21,7 @@ struct task {
         int r;
         int id;
         int u;
-        struct t_idx idx;
+        struct t_pos idx;
 };
 
 struct cut {
@@ -78,11 +78,11 @@ void compute_tc_load(struct item &itm);
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
-void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int &bin_id, 
+void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
                 struct context &ctx);
 
-void add_itm_by_id(vector<struct bin> &v_bins, struct item &itm, int &bin_id);
+void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 
-void delete_itm_by_id(vector<struct bin> &v_bins, int &itm_id);
+void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id);
 
 #endif /* MODEL_H */

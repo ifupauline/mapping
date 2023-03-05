@@ -132,7 +132,6 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
                 /* init var for priority optimization */
                 ctx.p.sched_imp_prio -= ctx.sched_ok_count;
-                ctx.p.sched_imp_tc_prio = ctx.sched_tcfailed_count;
         }
 
         if (ctx.prm.a == WFDU_F) {
@@ -149,7 +148,6 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
                 /* init var for priority optimization */
                 ctx.p.sched_imp_prio -= ctx.sched_ok_count;
-                ctx.p.sched_imp_tc_prio = ctx.sched_tcfailed_count;
         }
 }
 
@@ -168,11 +166,9 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_prio = ctx.p.sched_imp_prio + ctx.sched_ok_count;
-        ctx.p.sched_imp_tc_prio -= ctx.sched_failed_count;
 
         /* init var for displacement */
         ctx.p.sched_imp_disp -= ctx.sched_ok_count;
-        ctx.p.sched_imp_tc_disp = ctx.sched_tcfailed_count;
 
         printf("+=====================================+\n");
         printf("| DISPLACEMENT OPTIMIZATION           |\n");
@@ -186,5 +182,4 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
-        ctx.p.sched_imp_tc_disp -= ctx.sched_tcfailed_count;
 }

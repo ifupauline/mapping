@@ -10,7 +10,7 @@
 
 void assign_unique_priorities(struct bin &b);
 
-void assign_new_priorities(struct bin &b, int &p, int &itm_idx);
+void assign_new_priorities(struct bin &b, int p, int itm_idx);
 
 int wcrt(vector<struct task> &v_tasks);
 

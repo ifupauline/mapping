@@ -1,6 +1,6 @@
 #include "sched_analysis.h"
 
-static void _assign_priority(vector<struct bin> &v_bins)
+static void _assign_unique_priorities(vector<struct bin> &v_bins)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 v_bins[i].v_tasks.clear();
@@ -71,12 +71,11 @@ void wcrt_bin(struct bin &b, int bin_idx)
 {
         int ret;
 
+        ret = -1;
         b.v_tasks.clear();
+
         for (unsigned int y = 0; y < b.v_itms.size(); y++)
                 copy_tc_to_v_tasks(b, bin_idx, y);
-
-        /* assign unique priorities to each tasks */
-        assign_unique_priorities(b);
 
         /* test wcrt */
         ret = wcrt(b.v_tasks);
@@ -100,10 +99,10 @@ int wcrt(vector<struct task> &v_tasks)
         vector<struct task> hp_tasks;
 
         ret = -1;
+        flag = -1;
+        r_curr = 0;
+        r_prev = 0;
         flag = SCHED_OK;
-
-        /* sort decreasing priority order 1 -> n */
-        sort_inc_task_priority(v_tasks);
 
         /* compute WCRT for each task */
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
@@ -132,7 +131,7 @@ int wcrt(vector<struct task> &v_tasks)
 
 void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 {
-        _assign_priority(v_bins);
+        _assign_unique_priorities(v_bins);
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
@@ -152,10 +151,9 @@ void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx)
 
 float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
 {
-        int tc_count;
         float sched_rate;
 
-        tc_count = 0;
+        sched_rate = 0.0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
 
@@ -169,26 +167,6 @@ float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
                         ctx.sched_failed_count++;
         }
 
-        ctx.sched_tcok_count = 0;
-        ctx.sched_tcfailed_count = 0;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        tc_count++;
-                }
-        }
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1) {
-                                        ctx.sched_tcfailed_count++;
-                                        continue;
-                                }
-                        }
-                }
-        }
-        ctx.sched_tcok_count = tc_count - ctx.sched_tcfailed_count;
         sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
 
         return sched_rate;
@@ -196,15 +174,18 @@ float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
 
 void assign_unique_priorities(struct bin &b)
 {
+        sort_inc_task_id(b.v_tasks);
+
         for (unsigned int i = 0; i < b.v_tasks.size(); i++)
                 b.v_tasks[i].p = i + 1;
 }
 
-void assign_new_priorities(struct bin &b, int &p, int &itm_idx)
+void assign_new_priorities(struct bin &b, int p, int itm_idx)
 {
+        sort_inc_task_id(b.v_tasks);
         /* starting new p */
         p = p + 1;
-        printf("Updating Priorities... with p: %d\n", p);
+        printf("Priorities Reassignment... with p: %d\n", p);
 
         /* assign new priorities */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
@@ -219,9 +200,8 @@ void assign_new_priorities(struct bin &b, int &p, int &itm_idx)
                                 }
                         }
                         b.v_tasks[i].p = p;
+                        printf("tau %d p: %d itm_idx: %d\n", b.v_tasks[i].id, b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx);
                         p = p + 1;
-                        printf("tau %d p: %d\n", b.v_tasks[i].id, 
-                                        b.v_tasks[i].p);
                 }
         }
 }
