@@ -50,7 +50,6 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
                                         fail_itm.second = v_bins[i].id;
                                         v_fail_itms.push_back(fail_itm);
                                         flag = YES;
-
                                         break;
                                 }
                         }
@@ -338,28 +337,35 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                 pair<struct item, int> fail_src_itm, 
                 pair<struct item, int> fail_dst_itm)
 {
-        int flag_src_dst;
         int flag_dst_src;
+        int flag_src_dst;
 
         flag_src_dst = NO;
         flag_dst_src = NO;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 /* test src -> dst */
+                if (v_bins[i].id == fail_src_itm.second)
+                        continue;
+
                 if (v_bins[i].id == fail_dst_itm.second) {
-                        if (v_bins[i].cap_rem + fail_dst_itm.first.size >= v_bins[i].cap_rem + fail_src_itm.first.size) {
-                                printf("dst Core %d cap_rem: %d\n", v_bins[i].id, v_bins[i].cap_rem);
+                        if (v_bins[i].cap_rem + fail_dst_itm.first.size >= fail_src_itm.first.size) {
                                 flag_src_dst = YES;
+                                break;
                         }
                 }
         }
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == fail_dst_itm.second)
+                        continue;
+
                 /* test dst -> src */
                 if (v_bins[i].id == fail_src_itm.second) {
-                        if (v_bins[i].cap_rem + fail_src_itm.first.size >= v_bins[i].cap_rem + fail_dst_itm.first.size)
-                                printf("src Core %d cap_rem: %d\n", v_bins[i].id, v_bins[i].cap_rem);
-                        flag_dst_src = YES;
+                        if (v_bins[i].cap_rem + fail_src_itm.first.size >= fail_dst_itm.first.size) {
+                                flag_dst_src = YES;
+                                break;
+                        }
                 }
         }
 
@@ -406,6 +412,8 @@ void swapping(vector<struct bin> &v_bins)
                                 dst_bin_id = v_fail_itms[j].second;
                                 _retrieve_src_dst_bins(v_bins, src_bin, dst_bin, 
                                                 src_bin_id, dst_bin_id);
+                                print_core(src_bin);
+                                print_core(dst_bin);
                         }
                         /* test swapping */
                 }
