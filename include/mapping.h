@@ -33,12 +33,15 @@ struct perf {
         float wca_time;
         float reass_time;
         float disp_time;
+        float swap_time;
         float opti_bins;
         float sched_rate_bef;
         float sched_rate_prio;
         float sched_rate_disp;
+        float sched_rate_swap;
         int sched_imp_prio;
         int sched_imp_disp;
+        int sched_imp_swap;
 };
 
 struct context {
@@ -54,8 +57,6 @@ struct context {
         int tasks_count;
         int sched_ok_count;
         int sched_failed_count;
-        int sched_tcok_count;
-        int sched_tcfailed_count;
         struct perf p;
         struct params prm;
 };

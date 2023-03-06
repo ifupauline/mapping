@@ -16,7 +16,6 @@ int main(int argc, char **argv)
 
         /* TODO 
          * - design increase algorithm
-         * - try again swapping algorithm
          * - improve reduction
          * - fix bench1.cpp
          */
@@ -57,8 +56,6 @@ int main(int argc, char **argv)
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
-
-        swapping(v_bins_bfdu_f);
 
         return 0;
 }

@@ -126,7 +126,7 @@ void print_core(struct bin &b)
 {
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].tc.v_tasks.size(); j++) {
-                        printf("TC %d tau %d p: %-2d idx: %d sched: %d\n", 
+                        printf("TC %-3d tau %d p: %-2d idx: %d sched: %d\n", 
                                         b.v_itms[i].id, b.v_itms[i].tc.v_tasks[j].id, 
                                         b.v_itms[i].tc.v_tasks[j].p,
                                         b.v_tasks[i].idx.itm_idx, b.flag);
@@ -375,18 +375,21 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Schedulability Analysis Time:       %f ms\n", ctx.p.wca_time);
         printf("Priority Optimization Time:         %f ms\n", ctx.p.reass_time);
         printf("Displacement Optimization Time:     %f ms\n", ctx.p.disp_time);
+        printf("Swapping Optimization Time:         %f ms\n", ctx.p.swap_time);
         printf("------------------------------------------------------------------------>\n");
         printf("Total Execution Time:               %f ms\n", ctx.p.e_time);
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Rate :               %.2f\n", 
+        printf("Schedulability Rate :               %-3.3f\n", 
                         ctx.p.sched_rate_bef * PERCENT);
-        printf("Schedulability Rate (prio):         %.2f  +%-2d cores\n", 
+        printf("Schedulability Rate (prio):         %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio);
-        printf("Schedulability Rate (disp):         %.2f  +%-2d cores\n", 
+        printf("Schedulability Rate (disp):         %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
+        printf("Schedulability Rate (swap):         %-3.3f  +%-2d cores\n", 
+                        ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
         printf("------------------------------------------------------------------------>\n");
-        printf("Optimization Improvement:           %.2f\n", 
-                        (ctx.p.sched_rate_disp * PERCENT - ctx.p.sched_rate_bef * PERCENT));
+        printf("Optimization Improvement:           %-3.3f\n", 
+                        (ctx.p.sched_rate_swap * PERCENT - ctx.p.sched_rate_bef * PERCENT));
         printf("------------------------------------------------------------------------>\n");
         printf("Approximation Ratio:                %f\n", ctx.p.opti_bins);
         printf("------------------------------------------------------------------------>\n");

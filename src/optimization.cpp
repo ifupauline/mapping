@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-#include "print.h"
 #include "sched_analysis.h"
 
 static int _search_unsched_task(vector<struct task> &v_tasks)
@@ -99,8 +98,8 @@ static void _reassign(struct bin &b, int &p, int itm_idx)
                 return;
 
         } else if (flag == SCHED_FAILED) {
-                printf("Core %d SCHED_FAILED with new priority assignment\n\n", 
-                                b_tmp.id);
+                //printf("Core %d SCHED_FAILED with new priority assignment\n\n", 
+                //                b_tmp.id);
                 return;
 
         } else {
@@ -191,6 +190,7 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                                         printf("Removing task-chain %d from Core %d\n", 
                                                         fail_itm.first.id, v_bins[i].id);
                                         delete_itm_by_id(v_bins, fail_itm.first.id);
+
                                         assign_unique_priorities(v_bins[i]);
                                         wcrt_bin(v_bins[i], i);
                                         if (v_bins[i].flag == SCHED_OK)
@@ -227,6 +227,28 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
         }
         printf("\n");
 }
+
+static void _reassign_by_bin_id(vector<struct bin> &v_bins, int bin_id)
+{
+        int p;
+
+        p = -1;
+        /* detect bin not schedulable */
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_FAILED && v_bins[i].id == bin_id) {
+                        for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                                p = _search_unsched_task(v_bins[i].v_itms[j].tc.v_tasks);
+
+                                /* if no unscheduled task found go to next itm */
+                                if (p == -1) 
+                                        continue;
+                                else
+                                        _reassign(v_bins[i], p, j);
+                        }
+                }
+        }
+}
+
 
 void reassignment(vector<struct bin> &v_bins)
 {
@@ -344,9 +366,9 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         }
 
         if (flag_src_dst == YES && flag_dst_src == YES) {
-                printf("Found swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
-                                fail_src_itm.first.id, fail_src_itm.first.size, fail_src_itm.second,
-                                fail_dst_itm.first.id, fail_dst_itm.first.size, fail_dst_itm.second);
+                //printf("Found swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
+                //                fail_src_itm.first.id, fail_src_itm.first.size, fail_src_itm.second,
+                //                fail_dst_itm.first.id, fail_dst_itm.first.size, fail_dst_itm.second);
                 return YES;
         }
         return NO;
@@ -355,15 +377,17 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, 
                 int src_bin_id, int dst_bin_id)
 {
+        int bin_idx;
+        int flag_src;
+        int flag_dst;
         struct item src_tc;
         struct item dst_tc;
         vector<struct bin> tmp_v_bins;
 
         tmp_v_bins = v_bins;
-
-        src_tc = {0};
-        dst_tc = {0};
-        int bin_idx;
+        flag_src = NO;
+        flag_dst = NO;
+        bin_idx = -1;
 
         /* save src_tc and dst_tc */
         retrieve_tc_by_id(tmp_v_bins, src_tc , src_tc_id);
@@ -408,30 +432,46 @@ void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
 
                         assign_unique_priorities(tmp_v_bins[i]);
                         copy_back_prio_to_tc(tmp_v_bins[i]);
-                        printf("BEFORE WCRT\n");
-                        print_v_tasks(tmp_v_bins[i]);
                         wcrt_bin(tmp_v_bins[i], bin_idx);
 
-                        printf("Core %d\n", tmp_v_bins[i].id);
-                        print_v_tasks(tmp_v_bins[i]);
+                        /* try to reassign priority */
+                        if (tmp_v_bins[i].flag == SCHED_FAILED)
+                                _reassign_by_bin_id(tmp_v_bins, src_bin_id);
+
+                        if (tmp_v_bins[i].flag == SCHED_OK)
+                                flag_src = YES;
                 }
         }
-        printf("\nsrc Core %d after swap\n", tmp_v_bins[bin_idx].id);
-        print_core(tmp_v_bins[bin_idx]);
-        exit(0);
 
         /* insert src_tc to dst_bin */
         for (unsigned int i = 0; i < tmp_v_bins.size(); i++) {
                 if (tmp_v_bins[i].id == dst_bin_id) {
                         tmp_v_bins[i].v_itms.push_back(src_tc);
                         bin_idx = i;
-                        /* test wcrt */
+
+                        /* copy itm task to v_tasks of bin */
+                        tmp_v_bins[i].v_tasks.clear();
+                        for (unsigned int j = 0; j < tmp_v_bins[i].v_itms.size(); j++)
+                                copy_tc_to_v_tasks_with_pos(tmp_v_bins[i], bin_idx, j);
+
                         assign_unique_priorities(tmp_v_bins[i]);
-                        wcrt_bin(tmp_v_bins[i], i);
+                        copy_back_prio_to_tc(tmp_v_bins[i]);
+                        wcrt_bin(tmp_v_bins[i], bin_idx);
+
+                        /* try to reassign priority */
+                        if (tmp_v_bins[i].flag == SCHED_FAILED)
+                                _reassign_by_bin_id(tmp_v_bins, src_bin_id);
+
+                        if (tmp_v_bins[i].flag == SCHED_OK)
+                                flag_dst = YES;
                 }
         }
-        printf("\ndst Core %d after swap\n", tmp_v_bins[bin_idx].id);
-        print_core(tmp_v_bins[bin_idx]);
+        if (flag_src == YES && flag_dst == YES) {
+                v_bins.clear();
+                v_bins = tmp_v_bins;
+                printf("<----Swap between src TC %d and dst TC %d Succeeded!---->\n", 
+                                src_tc_id, dst_tc_id);
+        }
 }
 
 void swapping(vector<struct bin> &v_bins)
@@ -471,7 +511,6 @@ void swapping(vector<struct bin> &v_bins)
 
                                 /* swap */
                                 _swap(v_bins, src_tc_id, dst_tc_id, src_bin_id, dst_bin_id);
-                                exit(0);
                         }
                 }
         }
