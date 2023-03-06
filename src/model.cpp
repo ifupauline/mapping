@@ -109,13 +109,13 @@ void copy_back_resp_to_tc(struct bin &b)
         }
 }
 
-void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx)
+void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
 {
-        for (unsigned int k = 0; k < b.v_itms[itm_idx].tc.v_tasks.size(); k++) {
-                b.v_tasks.push_back(b.v_itms[itm_idx].tc.v_tasks[k]);
+        for (unsigned int i = 0; i < b.v_itms[itm_idx].tc.v_tasks.size(); i++) {
+                b.v_tasks.push_back(b.v_itms[itm_idx].tc.v_tasks[i]);
                 b.v_tasks.back().idx.bin_idx = bin_idx;
                 b.v_tasks.back().idx.itm_idx = itm_idx;
-                b.v_tasks.back().idx.task_idx = k;
+                b.v_tasks.back().idx.task_idx = i;
         }
         /* sort tasks by id */
         sort_inc_task_id(b.v_tasks);
@@ -157,15 +157,19 @@ void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].id == b.id) {
                         v_bins[i] = b;
+                        return;
                 }
         }
 }
 
-void retrieve_tc_by_id(struct bin &b, struct item &tc , int tc_id)
+void retrieve_tc_by_id(vector<struct bin> &v_bins, struct item &tc, int tc_id)
 {
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].id == tc_id) {
-                        tc = b.v_itms[i];
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        if (v_bins[i].v_itms[j].id == tc_id) {
+                                tc = v_bins[i].v_itms[j];
+                                return;
+                        }
                 }
         }
 }

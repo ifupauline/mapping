@@ -70,7 +70,7 @@ void copy_back_prio_to_tc(struct bin &b);
 
 void copy_back_resp_to_tc(struct bin &b);
 
-void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx);
+void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx);
 
 void compute_bin_cap_rem(struct bin &b);
 
@@ -85,6 +85,6 @@ void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 
 void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id);
 
-void retrieve_tc_by_id(struct bin &b, struct item &tc , int tc_id);
+void retrieve_tc_by_id(vector<struct bin> &v_bins, struct item &tc , int tc_id);
 
 #endif /* MODEL_H */

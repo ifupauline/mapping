@@ -115,6 +115,13 @@ void print_task_chains(vector<struct item> &v_itms)
         printf("Total Number of Task-Chains: %lu\n\n", v_itms.size());
 }
 
+void print_v_tasks(struct bin &b)
+{
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                printf("tau %d :p %d sched %d\n", b.v_tasks[i].id, b.v_tasks[i].p, b.flag);
+        }
+}
+
 void print_core(struct bin &b)
 {
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {

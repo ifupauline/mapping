@@ -5,7 +5,7 @@ static void _assign_unique_priorities(vector<struct bin> &v_bins)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 v_bins[i].v_tasks.clear();
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        copy_tc_to_v_tasks(v_bins[i], i, j);
+                        copy_tc_to_v_tasks_with_pos(v_bins[i], i, j);
                 }
         }
 
@@ -74,8 +74,8 @@ void wcrt_bin(struct bin &b, int bin_idx)
         ret = -1;
         b.v_tasks.clear();
 
-        for (unsigned int y = 0; y < b.v_itms.size(); y++)
-                copy_tc_to_v_tasks(b, bin_idx, y);
+        for (unsigned int i = 0; i < b.v_itms.size(); i++)
+                copy_tc_to_v_tasks_with_pos(b, bin_idx, i);
 
         /* test wcrt */
         ret = wcrt(b.v_tasks);

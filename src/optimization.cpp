@@ -1,3 +1,5 @@
+#include <bits/stdc++.h>
+
 #include "print.h"
 #include "sched_analysis.h"
 
@@ -120,7 +122,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
         int itm_idx;
 
         p = -1;
-        high_p = 1000;
+        high_p = INT_MAX;
         bin_idx = 0;
         itm_idx = 0;
         min = C;
@@ -130,7 +132,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
         /* copy itm task to v_tasks of bin */
         for (unsigned int i = 0; i < v_fail_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_fail_bins[i].v_itms.size(); j++)
-                        copy_tc_to_v_tasks(v_fail_bins[i], i, j);
+                        copy_tc_to_v_tasks_with_pos(v_fail_bins[i], i, j);
         }
 
         for (unsigned int i = 0; i < v_fail_bins.size(); i++) {
@@ -305,34 +307,6 @@ void displacement(vector<struct bin> &v_bins)
         reassignment(v_bins);
 }
 
-static void _retrieve_src_dst_bins(vector<struct bin> &v_bins, 
-                struct bin &src_bin, struct bin &dst_bin, 
-                int src_bin_id, int dst_bin_id)
-{
-        int flag_src;
-        int flag_dst;
-
-        flag_src = NO;
-        flag_dst = NO;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].flag == SCHED_FAILED && v_bins[i].id == src_bin_id) {
-                        src_bin =  v_bins[i];
-                        flag_src = YES;
-                }
-
-                if (v_bins[i].flag == SCHED_FAILED && v_bins[i].id == dst_bin_id) {
-                        dst_bin =  v_bins[i];
-                        flag_dst = YES;
-                }
-        }
-
-        if (flag_src == YES && flag_dst == YES)
-                return;
-        printf("ERR! Could not retrive src and dst bin from v_fail_itms!\n");
-        exit(0);
-}
-
 static int _search_for_swap(vector<struct bin> &v_bins, 
                 pair<struct item, int> fail_src_itm, 
                 pair<struct item, int> fail_dst_itm)
@@ -378,37 +352,86 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         return NO;
 }
 
-void _swap(struct bin &src_bin, struct bin &dst_bin, int src_tc_id, int dst_tc_id)
+void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, 
+                int src_bin_id, int dst_bin_id)
 {
         struct item src_tc;
         struct item dst_tc;
+        vector<struct bin> tmp_v_bins;
+
+        tmp_v_bins = v_bins;
 
         src_tc = {0};
         dst_tc = {0};
+        int bin_idx;
 
         /* save src_tc and dst_tc */
-        retrieve_tc_by_id(src_bin, src_tc , src_tc_id);
-        retrieve_tc_by_id(dst_bin, dst_tc , dst_tc_id);
+        retrieve_tc_by_id(tmp_v_bins, src_tc , src_tc_id);
+        retrieve_tc_by_id(tmp_v_bins, dst_tc , dst_tc_id);
 
         /* remove src_tc from src_bin */
-        for (unsigned int i = 0; i < src_bin.v_itms.size(); i++) {
-                if (src_bin.v_itms[i].id == src_tc_id) {
-                        src_bin.v_itms.erase(src_bin.v_itms.begin() + i);
-                        compute_bin_cap_rem(src_bin);
+        for (unsigned int i = 0; i < tmp_v_bins.size(); i++) {
+                if (tmp_v_bins[i].id == src_bin_id) {
+                        for (unsigned int j = 0; j < tmp_v_bins[i].v_itms.size(); j++) {
+                                if (tmp_v_bins[i].v_itms[j].id == src_tc_id) {
+                                        tmp_v_bins[i].v_itms.erase(tmp_v_bins[i].v_itms.begin() + j);
+                                        compute_bin_cap_rem(tmp_v_bins[i]);
+                                        bin_idx = i;
+                                }
+                        }
                 }
         }
 
         /* remove dst_tc from dst_bin */
-        for (unsigned int i = 0; i < dst_bin.v_itms.size(); i++) {
-                if (dst_bin.v_itms[i].id == dst_tc_id) {
-                        dst_bin.v_itms.erase(dst_bin.v_itms.begin() + i);
-                        compute_bin_cap_rem(dst_bin);
+        for (unsigned int i = 0; i < tmp_v_bins.size(); i++) {
+                if (tmp_v_bins[i].id == dst_bin_id) {
+                        for (unsigned int j = 0; j < tmp_v_bins[i].v_itms.size(); j++) {
+                                if (tmp_v_bins[i].v_itms[j].id == dst_tc_id) {
+                                        tmp_v_bins[i].v_itms.erase(tmp_v_bins[i].v_itms.begin() + j);
+                                        compute_bin_cap_rem(tmp_v_bins[i]);
+                                        bin_idx = i;
+                                }
+                        }
                 }
         }
 
-        /* add src_tc to dst_bin and add dst_tc to src_bin */
-        src_bin.v_itms.push_back(dst_tc);
-        dst_bin.v_itms.push_back(src_tc);
+        /* insert dst_tc to src_bin */
+        for (unsigned int i = 0; i < tmp_v_bins.size(); i++) {
+                if (tmp_v_bins[i].id == src_bin_id) {
+                        tmp_v_bins[i].v_itms.push_back(dst_tc);
+                        bin_idx = i;
+
+                        /* copy itm task to v_tasks of bin */
+                        tmp_v_bins[i].v_tasks.clear();
+                        for (unsigned int j = 0; j < tmp_v_bins[i].v_itms.size(); j++)
+                                copy_tc_to_v_tasks_with_pos(tmp_v_bins[i], bin_idx, j);
+
+                        assign_unique_priorities(tmp_v_bins[i]);
+                        copy_back_prio_to_tc(tmp_v_bins[i]);
+                        printf("BEFORE WCRT\n");
+                        print_v_tasks(tmp_v_bins[i]);
+                        wcrt_bin(tmp_v_bins[i], bin_idx);
+
+                        printf("Core %d\n", tmp_v_bins[i].id);
+                        print_v_tasks(tmp_v_bins[i]);
+                }
+        }
+        printf("\nsrc Core %d after swap\n", tmp_v_bins[bin_idx].id);
+        print_core(tmp_v_bins[bin_idx]);
+        exit(0);
+
+        /* insert src_tc to dst_bin */
+        for (unsigned int i = 0; i < tmp_v_bins.size(); i++) {
+                if (tmp_v_bins[i].id == dst_bin_id) {
+                        tmp_v_bins[i].v_itms.push_back(src_tc);
+                        bin_idx = i;
+                        /* test wcrt */
+                        assign_unique_priorities(tmp_v_bins[i]);
+                        wcrt_bin(tmp_v_bins[i], i);
+                }
+        }
+        printf("\ndst Core %d after swap\n", tmp_v_bins[bin_idx].id);
+        print_core(tmp_v_bins[bin_idx]);
 }
 
 void swapping(vector<struct bin> &v_bins)
@@ -418,8 +441,6 @@ void swapping(vector<struct bin> &v_bins)
         int dst_tc_id;
         int src_bin_id;
         int dst_bin_id;
-        struct bin src_bin;
-        struct bin dst_bin;
         vector<pair<struct item, int>> v_fail_itms;
 
         flag = NO;
@@ -427,8 +448,6 @@ void swapping(vector<struct bin> &v_bins)
         dst_bin_id = 0;
         src_tc_id = 0;
         dst_tc_id = 0;
-        src_bin = {0};
-        dst_bin = {0};
 
         /* store fail_bins */
         _store_unsched_itms(v_bins, v_fail_itms, flag);
@@ -450,23 +469,8 @@ void swapping(vector<struct bin> &v_bins)
                                 src_tc_id = v_fail_itms[i].first.id;
                                 dst_tc_id = v_fail_itms[j].first.id;
 
-                                _retrieve_src_dst_bins(v_bins, src_bin, dst_bin, 
-                                                src_bin_id, dst_bin_id);
-
-                                printf("src Core: %d Load %d\n", src_bin.id, src_bin.phi - src_bin.cap_rem);
-                                print_core(src_bin);
-                                printf("dst Core: %d Load %d\n", dst_bin.id, dst_bin.phi - dst_bin.cap_rem);
-                                print_core(dst_bin);
-                                printf("\n");
-
-                                /* test swapping */
-                                _swap(src_bin, dst_bin, src_tc_id, dst_tc_id);
-                                printf("\n after swap\n");
-                                printf("src Core: %d Load %d\n", src_bin.id, src_bin.phi - src_bin.cap_rem);
-                                print_core(src_bin);
-                                printf("dst Core: %d Load %d\n", dst_bin.id, dst_bin.phi - dst_bin.cap_rem);
-                                print_core(dst_bin);
-                                printf("\n");
+                                /* swap */
+                                _swap(v_bins, src_tc_id, dst_tc_id, src_bin_id, dst_bin_id);
                                 exit(0);
                         }
                 }
