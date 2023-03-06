@@ -85,4 +85,6 @@ void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 
 void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id);
 
+void retrieve_tc_by_id(struct bin &b, struct item &tc , int tc_id);
+
 #endif /* MODEL_H */

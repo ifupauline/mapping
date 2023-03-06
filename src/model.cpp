@@ -160,3 +160,12 @@ void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)
                 }
         }
 }
+
+void retrieve_tc_by_id(struct bin &b, struct item &tc , int tc_id)
+{
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                if (b.v_itms[i].id == tc_id) {
+                        tc = b.v_itms[i];
+                }
+        }
+}

@@ -117,10 +117,13 @@ void print_task_chains(vector<struct item> &v_itms)
 
 void print_core(struct bin &b)
 {
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                printf("Core %d tau %d p: %-2d  idx: %d sched: %d\n", 
-                                b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
-                                b.v_tasks[i].idx.itm_idx, b.flag);
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                for (unsigned int j = 0; j < b.v_itms[i].tc.v_tasks.size(); j++) {
+                        printf("TC %d tau %d p: %-2d idx: %d sched: %d\n", 
+                                        b.v_itms[i].id, b.v_itms[i].tc.v_tasks[j].id, 
+                                        b.v_itms[i].tc.v_tasks[j].p,
+                                        b.v_tasks[i].idx.itm_idx, b.flag);
+                }
         }
 }
 
