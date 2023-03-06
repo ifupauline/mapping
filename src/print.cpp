@@ -139,6 +139,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                 printf("+==========================================+\n");
                 printf("|Core: %d\n", v_bins[i].id);
                 printf("|Load: %u\n", ctx.prm.phi - v_bins[i].cap_rem);
+                printf("|Lrem: %d\n", v_bins[i].cap_rem);
                 if (v_bins[i].flag == SCHED_OK)
                         printf("|Sched: OK\n");
 

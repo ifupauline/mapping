@@ -1,3 +1,4 @@
+#include "print.h"
 #include "sched_analysis.h"
 
 static int _search_unsched_task(vector<struct task> &v_tasks)
@@ -54,6 +55,12 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
                                 }
                         }
                 }
+        }
+
+        /* update tc load if itm is a fragment */
+        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                v_fail_itms[i].first.tc.u = 0;
+                compute_tc_load(v_fail_itms[i].first);
         }
 }
 
@@ -254,17 +261,12 @@ void displacement(vector<struct bin> &v_bins)
         is_found = NO;
         dst_b = {0};
         fail_itm.first = {0};
+        fail_itm.second = 0;
 
         /* take next unschedulable itm */
         _store_unsched_itms(v_bins, v_fail_itms, flag);
 
         printf("\n");
-
-        /* update tc load if itm is a fragment */
-        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                v_fail_itms[i].first.tc.u = 0;
-                compute_tc_load(v_fail_itms[i].first);
-        }
 
         /* find a schedulable bin that has enough space for the itm to fit */
         for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
@@ -302,4 +304,110 @@ void displacement(vector<struct bin> &v_bins)
 
         /* try priority reassignment for bins that lost an fail_itm */
         reassignment(v_bins);
+}
+
+static void _retrieve_src_dst_bins(vector<struct bin> &v_bins, 
+                struct bin &src_bin, struct bin &dst_bin, 
+                int src_bin_id, int dst_bin_id)
+{
+        int flag_src;
+        int flag_dst;
+
+        flag_src = NO;
+        flag_dst = NO;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_FAILED && v_bins[i].id == src_bin_id) {
+                        src_bin =  v_bins[i];
+                        flag_src = YES;
+                }
+
+                if (v_bins[i].flag == SCHED_FAILED && v_bins[i].id == dst_bin_id) {
+                        dst_bin =  v_bins[i];
+                        flag_dst = YES;
+                }
+        }
+
+        if (flag_src == YES && flag_dst == YES)
+                return;
+        printf("ERR! Could not retrive src and dst bin from v_fail_itms!\n");
+        exit(0);
+}
+
+static int _search_for_swap(vector<struct bin> &v_bins, 
+                pair<struct item, int> fail_src_itm, 
+                pair<struct item, int> fail_dst_itm)
+{
+        int flag_src_dst;
+        int flag_dst_src;
+
+        flag_src_dst = NO;
+        flag_dst_src = NO;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                /* test src -> dst */
+                if (v_bins[i].id == fail_dst_itm.second) {
+                        if (v_bins[i].cap_rem + fail_dst_itm.first.size >= v_bins[i].cap_rem + fail_src_itm.first.size) {
+                                printf("dst Core %d cap_rem: %d\n", v_bins[i].id, v_bins[i].cap_rem);
+                                flag_src_dst = YES;
+                        }
+                }
+        }
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                /* test dst -> src */
+                if (v_bins[i].id == fail_src_itm.second) {
+                        if (v_bins[i].cap_rem + fail_src_itm.first.size >= v_bins[i].cap_rem + fail_dst_itm.first.size)
+                                printf("src Core %d cap_rem: %d\n", v_bins[i].id, v_bins[i].cap_rem);
+                        flag_dst_src = YES;
+                }
+        }
+
+        if (flag_src_dst == YES && flag_dst_src == YES) {
+                printf("Found swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
+                                fail_src_itm.first.id, fail_src_itm.first.size, fail_src_itm.second,
+                                fail_dst_itm.first.id, fail_dst_itm.first.size, fail_dst_itm.second);
+                return YES;
+        }
+        return NO;
+}
+
+void swapping(vector<struct bin> &v_bins)
+{
+        int flag;
+        int src_bin_id;
+        int dst_bin_id;
+        struct bin src_bin;
+        struct bin dst_bin;
+        vector<pair<struct item, int>> v_fail_itms;
+
+        flag = NO;
+        src_bin_id = 0;
+        dst_bin_id = 0;
+        src_bin = {0};
+        dst_bin = {0};
+
+        /* store fail_bins */
+        _store_unsched_itms(v_bins, v_fail_itms, flag);
+
+        /* iterate over unsched itms */
+        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                for (unsigned int j = 0; j < v_fail_itms.size(); j++) {
+                        /* skip itms in same bin */
+                        if (v_fail_itms[j].second == v_fail_itms[i].second)
+                                continue;
+
+                        /* search if swap possible */
+                        flag = _search_for_swap(v_bins, v_fail_itms[i], v_fail_itms[j]);
+
+                        if (flag == YES) {
+                                /* store src and dst bin */
+                                src_bin_id = v_fail_itms[i].second;
+                                dst_bin_id = v_fail_itms[j].second;
+                                _retrieve_src_dst_bins(v_bins, src_bin, dst_bin, 
+                                                src_bin_id, dst_bin_id);
+                        }
+                        /* test swapping */
+                }
+        }
 }

@@ -72,7 +72,7 @@ void copy_back_resp_to_tc(struct bin &b);
 
 void copy_tc_to_v_tasks(struct bin &b, int bin_idx, int itm_idx);
 
-void compute_bin_load(struct bin &b);
+void compute_bin_cap_rem(struct bin &b);
 
 void compute_tc_load(struct item &itm);
 

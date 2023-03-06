@@ -127,7 +127,7 @@ void compute_tc_load(struct item &itm)
                 itm.tc.u += itm.tc.v_tasks[i].u;
 }
 
-void compute_bin_load(struct bin &b)
+void compute_bin_cap_rem(struct bin &b)
 {
         int load;
 
@@ -146,6 +146,7 @@ void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id)
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         if (v_bins[i].v_itms[j].id == itm_id) {
                                 v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
+                                compute_bin_cap_rem(v_bins[i]);
                         }
                 }
         }

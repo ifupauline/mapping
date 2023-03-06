@@ -87,7 +87,7 @@ void wcrt_bin(struct bin &b, int bin_idx)
                 
         copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
-        compute_bin_load(b);
+        compute_bin_cap_rem(b);
 }
 
 int wcrt(vector<struct task> &v_tasks)
