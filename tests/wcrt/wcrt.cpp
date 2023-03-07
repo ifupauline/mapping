@@ -3,11 +3,11 @@
 int main(void)
 {
         int ret;
-        vector<struct task> v_tasks;
         struct task tau_0;
         struct task tau_1;
         struct task tau_2;
         struct task tau_3;
+        vector<struct task> v_tasks;
 
         tau_0.c = 8;
         tau_0.t = 80;
@@ -46,7 +46,7 @@ int main(void)
 
         for (unsigned int i = 0; i < v_tasks.size(); i++)
                 printf("tau %d: p: %d r: %d c: %d t: %d\n", v_tasks[i].id, 
-                                v_tasks[i].p , v_tasks[i].r, v_tasks[i].c, v_tasks[i].t);
-
+                                v_tasks[i].p , v_tasks[i].r, 
+                                v_tasks[i].c, v_tasks[i].t);
         return 0;
 }

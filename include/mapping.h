@@ -74,6 +74,8 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx);
 
+void augmentation(vector<struct bin> &v_bins, struct context &ctx);
+
 /* algorithms */
 void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);

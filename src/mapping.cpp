@@ -1,4 +1,5 @@
 #include "optimization.h"
+#include "augmentation.h"
 #include "sched_analysis.h"
 
 static void _find_single_fit(vector<struct item> &v_itms, 
@@ -29,8 +30,7 @@ static void _find_double_fit(vector<struct item> &v_itms,
                                         v_itms[j].is_allocated == YES) 
                                 continue;
 
-                        if (v_itms[i].size + v_itms[j].size == ctx.prm.phi)
-                        {
+                        if (v_itms[i].size + v_itms[j].size == ctx.prm.phi) {
                                 for (int k = 0; k < ctx.bins_count; k++) {
                                         if (v_bins[k].cap_rem == ctx.prm.phi) {
                                                 add_itm_to_bin(v_bins, 
@@ -197,4 +197,13 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
+}
+
+void augmentation(vector<struct bin> &v_bins, struct context &ctx)
+{
+        printf("+=====================================+\n");
+        printf("| AUGMENTATION                        |\n");
+        printf("+=====================================+\n");
+
+        converge(v_bins, ctx);
 }

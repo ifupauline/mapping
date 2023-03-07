@@ -185,7 +185,7 @@ void assign_new_priorities(struct bin &b, int p, int itm_idx)
         sort_inc_task_id(b.v_tasks);
         /* starting new p */
         p = p + 1;
-        printf("Priorities Reassignment... with p: %d\n", p);
+        //printf("Priorities Reassignment... with p: %d\n", p);
 
         /* assign new priorities */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {

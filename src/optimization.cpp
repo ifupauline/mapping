@@ -220,7 +220,8 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                         if (v_bins[i].flag == SCHED_FAILED) {
                                 printf("ERR! dst Displacement WCRT of Core %d should have succeeded!\n", 
                                                 v_bins[i].id);
-                                printf("Core %d flag %d\n", v_bins[i].id, v_bins[i].flag);
+                                printf("Core %d flag %d\n", 
+                                                v_bins[i].id, v_bins[i].flag);
                                 exit(0);
                         }
                 }
@@ -324,7 +325,6 @@ void displacement(vector<struct bin> &v_bins)
                         is_found = NO;
                 }
         }
-
         /* try priority reassignment for bins that lost an fail_itm */
         reassignment(v_bins);
 }
@@ -345,7 +345,8 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                         continue;
 
                 if (v_bins[i].id == fail_dst_itm.second) {
-                        if (v_bins[i].cap_rem + fail_dst_itm.first.size >= fail_src_itm.first.size) {
+                        if (v_bins[i].cap_rem + fail_dst_itm.first.size >= 
+                                        fail_src_itm.first.size) {
                                 flag_src_dst = YES;
                                 break;
                         }
@@ -358,7 +359,8 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 
                 /* test dst -> src */
                 if (v_bins[i].id == fail_src_itm.second) {
-                        if (v_bins[i].cap_rem + fail_src_itm.first.size >= fail_dst_itm.first.size) {
+                        if (v_bins[i].cap_rem + fail_src_itm.first.size >= 
+                                        fail_dst_itm.first.size) {
                                 flag_dst_src = YES;
                                 break;
                         }
@@ -366,9 +368,10 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         }
 
         if (flag_src_dst == YES && flag_dst_src == YES) {
-                //printf("Found swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
-                //                fail_src_itm.first.id, fail_src_itm.first.size, fail_src_itm.second,
-                //                fail_dst_itm.first.id, fail_dst_itm.first.size, fail_dst_itm.second);
+                printf("Found Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
+                                fail_src_itm.first.id, fail_src_itm.first.size, 
+                                fail_src_itm.second, fail_dst_itm.first.id, 
+                                fail_dst_itm.first.size, fail_dst_itm.second);
                 return YES;
         }
         return NO;
@@ -471,7 +474,9 @@ void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
                 v_bins = tmp_v_bins;
                 printf("<----Swap between src TC %d and dst TC %d Succeeded!---->\n", 
                                 src_tc_id, dst_tc_id);
-        }
+        } else
+                printf("Could not Swap src TC %d and dst TC %d\n\n", 
+                                src_tc_id, dst_tc_id);
 }
 
 void swapping(vector<struct bin> &v_bins)
@@ -500,7 +505,8 @@ void swapping(vector<struct bin> &v_bins)
                                 continue;
 
                         /* search if swap possible */
-                        flag = _search_for_swap(v_bins, v_fail_itms[i], v_fail_itms[j]);
+                        flag = _search_for_swap(v_bins, 
+                                        v_fail_itms[i], v_fail_itms[j]);
 
                         if (flag == YES) {
                                 /* store src and dst bin */
@@ -510,7 +516,8 @@ void swapping(vector<struct bin> &v_bins)
                                 dst_tc_id = v_fail_itms[j].first.id;
 
                                 /* swap */
-                                _swap(v_bins, src_tc_id, dst_tc_id, src_bin_id, dst_bin_id);
+                                _swap(v_bins, src_tc_id, dst_tc_id, 
+                                                src_bin_id, dst_bin_id);
                         }
                 }
         }
