@@ -115,7 +115,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         int x;
-        int rand;
+        //int rand;
         int task_nbr;
         int ncount;
         int lf_size;
@@ -206,9 +206,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
 
-                        rand = _gen_rand(NO, YES);
-                        if (rand == YES && v_itms[i].size <= prm.phi)
-                                continue;
+                        /* if I want more constraints on nbr_cut per tc */
+                        //rand = _gen_rand(NO, YES);
+                        //if (rand == YES && v_itms[i].size <= prm.phi)
+                        //        continue;
 
                         /* sometimes do not add the cut, only for size < phi */
                         if (lf_size > prm.phi || rf_size > prm.phi) {

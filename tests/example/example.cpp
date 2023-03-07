@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 
         /* generate set of task-chains and initialize context */
         gen_tc_set(v_itms, prm, ctx);
+        print_task_chains(v_itms);
 
         /* cmp min bins req */
         init_ctx(v_itms, prm, ctx);

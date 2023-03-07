@@ -160,13 +160,13 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                 assign_unique_priorities(v_fail_bins[i]);
                 wcrt_bin(v_fail_bins[i], i);
                 if (v_fail_bins[i].flag == SCHED_OK) {
+                        dst_b = v_fail_bins[i];
                         printf("Test WCRT for task-chain %d to Core %d OK!\n", 
                                         v_fail_itms[item_idx].first.id, v_fail_bins[i].id);
                         /* store max cap_rem */
                         tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.tc.u;
                         if (tmp_max > max) {
                                 max = tmp_max;
-                                dst_b = v_fail_bins[i];
                         }
                         is_found = YES;
                 }
@@ -187,11 +187,11 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                         }
                         _reassign(v_fail_bins[bin_idx], high_p, itm_idx);
                         if (v_fail_bins[i].flag == SCHED_OK) {
+                                dst_b = v_fail_bins[i];
                                 /* store max cap_rem */
                                 tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.tc.u;
                                 if (tmp_max > max) {
                                         max = tmp_max;
-                                        dst_b = v_fail_bins[i];
                                 }
                                 is_found = YES;
                         }
