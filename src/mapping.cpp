@@ -49,17 +49,10 @@ static void _find_double_fit(vector<struct item> &v_itms,
 
 void generation(vector<struct bin> &v_bins, struct context &ctx)
 {
-        if (ctx.prm.a == BFDU_F) {
-                printf("+=====================================+\n");
-                printf("| GENERATION BFDU_F                   |\n");
-                printf("+=====================================+\n");
-        }
+        printf("+=====================================+\n");
+        printf("| GENERATION                          |\n");
+        printf("+=====================================+\n");
 
-        if (ctx.prm.a == WFDU_F) {
-                printf("+=====================================+\n");
-                printf("| GENERATION WFDU_F                   |\n");
-                printf("+=====================================+\n");
-        }
         for (int i = 0; i < ctx.bins_min; i++)
                 add_bin(v_bins, ctx);
 }
@@ -67,17 +60,9 @@ void generation(vector<struct bin> &v_bins, struct context &ctx)
 void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
-        if (ctx.prm.a == BFDU_F) {
-                printf("+=====================================+\n");
-                printf("| REDUCTION BFDU_F                    |\n");
-                printf("+=====================================+\n");
-        }
-
-        if (ctx.prm.a == WFDU_F) {
-                printf("+=====================================+\n");
-                printf("| REDUCTION WFDU_F                    |\n");
-                printf("+=====================================+\n");
-        }
+        printf("+=====================================+\n");
+        printf("| REDUCTION                           |\n");
+        printf("+=====================================+\n");
 
         clock_t start, end;
         start = clock();
@@ -118,37 +103,19 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
 void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
-        if (ctx.prm.a == BFDU_F) {
-                printf("+=====================================+\n");
-                printf("| SCHEDULABILITY ANALYSIS BFDU_F      |\n");
-                printf("+=====================================+\n");
+        printf("+=====================================+\n");
+        printf("| SCHEDULABILITY ANALYSIS             |\n");
+        printf("+=====================================+\n");
 
-                clock_t start, end;
-                start = clock();
-                wcrt_v_bins(v_bins, ctx);
-                end = clock();
-                ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-                ctx.p.sched_rate_bef = sched_rate(v_bins, ctx);
+        clock_t start, end;
+        start = clock();
+        wcrt_v_bins(v_bins, ctx);
+        end = clock();
+        ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.sched_rate_bef = sched_rate(v_bins, ctx);
 
-                /* init var for priority optimization */
-                ctx.p.sched_imp_prio -= ctx.sched_ok_count;
-        }
-
-        if (ctx.prm.a == WFDU_F) {
-                printf("+=====================================+\n");
-                printf("| SCHEDULABILITY ANALYSIS WFDU_F      |\n");
-                printf("+=====================================+\n");
-
-                clock_t start, end;
-                start = clock();
-                wcrt_v_bins(v_bins, ctx);
-                end = clock();
-                ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-                ctx.p.sched_rate_bef = sched_rate(v_bins, ctx);
-
-                /* init var for priority optimization */
-                ctx.p.sched_imp_prio -= ctx.sched_ok_count;
-        }
+        /* init var for priority optimization */
+        ctx.p.sched_imp_prio -= ctx.sched_ok_count;
 }
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx)
@@ -156,7 +123,6 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| PRIORITY ASSIGNMENT OPTIMIZATION    |\n");
         printf("+=====================================+\n");
-
         clock_t start, end;
         start = clock();
         reassignment(v_bins);
@@ -173,7 +139,6 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| DISPLACEMENT OPTIMIZATION           |\n");
         printf("+=====================================+\n");
-
         start = clock();
         displacement(v_bins);
         end = clock();
@@ -204,6 +169,10 @@ void augmentation(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| AUGMENTATION                        |\n");
         printf("+=====================================+\n");
-
+        clock_t start, end;
+        start = clock();
         converge(v_bins, ctx);
+        end = clock();
+        ctx.p.augm_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.sched_rate_augm = sched_rate(v_bins, ctx);
 }
