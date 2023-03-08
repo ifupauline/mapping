@@ -27,7 +27,6 @@ struct params {
 };
 
 struct perf {
-        float redu_time;
         float alloc_time;
         float wca_time;
         float reass_time;
@@ -65,9 +64,6 @@ struct context {
 
 /* mapping */
 void generation(vector<struct bin> &v_bins, struct context &ctx);
-
-void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
-                struct context &ctx);
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);

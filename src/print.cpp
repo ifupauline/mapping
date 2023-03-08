@@ -19,11 +19,9 @@ static void cores_ratio(vector<struct item> &v_itms, struct context &ctx)
 
 static void execution_time(struct context &ctx)
 {
-        ctx.p.redu_time = ctx.p.redu_time * MSEC;
         ctx.p.alloc_time = ctx.p.alloc_time * MSEC;
-        ctx.p.et = ctx.p.redu_time + ctx.p.alloc_time + ctx.p.wca_time + 
-                ctx.p.reass_time + ctx.p.disp_time + 
-                ctx.p.swap_time;
+        ctx.p.et = ctx.p.alloc_time + ctx.p.wca_time + ctx.p.reass_time + 
+                ctx.p.disp_time + ctx.p.swap_time;
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -370,7 +368,6 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Cuts Count:       %d\n", ctx.cuts_count);
         printf("Fragments Count:  %d\n", ctx.frags_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Reduction Time:                   %f s\n", ctx.p.redu_time);
         printf("Allocation Time:                  %f s\n", ctx.p.alloc_time);
         printf("Schedulability Analysis Time:     %f s\n", ctx.p.wca_time);
         printf("Reassignment Time:                %f s\n", ctx.p.reass_time);

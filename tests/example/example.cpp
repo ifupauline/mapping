@@ -37,9 +37,6 @@ int main(int argc, char **argv)
         /* generation */
         generation(v_bins_bfdu_f, ctx_bfdu_f);
 
-        /* reduction */
-        reduction(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
-
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
