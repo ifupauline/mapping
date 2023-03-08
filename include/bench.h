@@ -3,8 +3,8 @@
 
 #define B_AR 0
 #define B_ET 1
-#define B_LD 2
-#define B_FR 3
+#define B_FR 2
+#define B_LD 3
 #define B_SCHED 4
 
 #define BUFFSIZE 256
@@ -14,8 +14,10 @@
 struct b_stats {
         int phi;
         float mean_ar;
-        float mean_ld;
         float mean_et;
+        float mean_fr;
+        float mean_op;
+        float mean_ld;
         float mean_sched;
 };
 

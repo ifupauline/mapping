@@ -1,0 +1,29 @@
++==============================================================================+
+|Performance Ratios                                                            |
++==============================================================================+
+
+▪ Approximation Ratio (number of cores) M/M*
+
+▪ Execution Time (reduction + allocation + optimization)
+
+▪ Load Distribution (standard deviation)
+
+▪ Fragmentation Rate (number of item fragmented / minimum item to be frag)
+
+▪ Schedulability Rate (before optimization step)
+
+▪ Optimization Gain (priority + displacement + swapping) sched_ok / total cores
+
++==============================================================================+
+|Parameters PHI 100 -> 50 step 2 || 25 iter                                    |
++==============================================================================+
+
++==============================================================================+
+|Parameters N 50 -> 200 step 5  || 25 iter                                     |
++==============================================================================+
+
++==============================================================================+
+|Simulation Configuration                                                      |
++==============================================================================+
+
+-> Number of simulations = 500

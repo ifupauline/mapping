@@ -5,6 +5,7 @@
 void converge(vector<struct bin> &v_bins, struct context &ctx)
 {
         float rate;
+        clock_t start, end;
 
         rate = 0.0;
 
@@ -13,8 +14,17 @@ void converge(vector<struct bin> &v_bins, struct context &ctx)
 
         while (rate != PERCENT) {
                 add_bin(v_bins, ctx);
+
+                start = clock();
                 displacement(v_bins);
+                end = clock();
+                ctx.p.disp_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+
+                start = clock();
                 swapping(v_bins);
+                end = clock();
+                ctx.p.swap_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+
                 rate = sched_rate(v_bins, ctx);
                 rate = rate * PERCENT;
         }

@@ -171,7 +171,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.tc.u;
                 ncount++;
-                printf("%d\n", ncount);
+                //printf("%d\n", ncount);
         }
         printf("\n");
 
@@ -212,9 +212,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         //        continue;
 
                         /* sometimes do not add the cut, only for size < phi */
-                        if (lf_size > prm.phi || rf_size > prm.phi) {
+                        if (lf_size > prm.phi || rf_size > prm.phi)
                                 continue;
-                        } else {
+
+                        else {
                                 v_itms[i].tc.v_cuts.push_back(c);
                                 cut_id++;
                         }

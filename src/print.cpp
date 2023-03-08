@@ -26,6 +26,28 @@ static void execution_time(struct context &ctx)
                 ctx.p.swap_time + ctx.p.augm_time;
 }
 
+static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
+{
+        float sum = 0.0;
+        float mean = 0.0;
+        float sumsqr = 0.0;
+        float variance = 0.0;
+        unsigned int n = v_bins.size();
+
+        for (unsigned int i = 0; i < n; i++) {
+                sum += (ctx.prm.phi - v_bins[i].cap_rem);
+        }
+
+        mean = sum / n;
+
+        for (unsigned int i = 0; i < n; i++) {
+                ctx.p.ld = (ctx.prm.phi - v_bins[i].cap_rem) - mean;
+                sumsqr += ctx.p.ld * ctx.p.ld;
+        }
+        variance = sumsqr / n;
+        ctx.p.ld = sqrt(variance) ;
+}
+
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx)
 {
@@ -71,6 +93,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         }
         execution_time(ctx);
         approximation_ratio(v_itms, ctx);
+        standard_deviation(v_bins, ctx);
 }
 
 void print_task_chains(vector<struct item> &v_itms)

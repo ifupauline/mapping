@@ -34,12 +34,6 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                                                 (float)data[i].phi, data[i].mean_et);
                         break;
 
-                case B_SCHED:
-                        for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, data[i].mean_sched);
-                        break;
-
                 default:
                         printf("Error! Unknown type of data\n");
         }
@@ -62,8 +56,6 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f,
                 printf("WFDU_F.Approximation Ratio        : %f\n\n", v_stts_wfdu_f[i].mean_ar);
                 printf("BFDU_F.Execution Time             : %f\n", v_stts_bfdu_f[i].mean_et);
                 printf("WFDU_F.Execution Time             : %f\n\n", v_stts_wfdu_f[i].mean_et);
-                printf("BFDU_F.Schedulability Rate:       : %f\n", v_stts_bfdu_f[i].mean_sched);
-                printf("WFDU_F.Schedulability Rate:       : %f\n\n", v_stts_wfdu_f[i].mean_sched);
                 printf("\n");
         }
 }

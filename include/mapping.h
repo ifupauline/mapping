@@ -36,6 +36,7 @@ struct perf {
         float swap_time;
         float augm_time;
         float opti_bins;
+        float ld;
         float sched_rate_bef;
         float sched_rate_prio;
         float sched_rate_disp;

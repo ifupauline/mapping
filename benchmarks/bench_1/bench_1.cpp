@@ -2,12 +2,13 @@
 #include "bench.h"
 #include "generator.h"
 
-#define STEP   2
-#define ITER   25
-#define SIMNBR 500
+#define STEP   1
+#define ITER   50
+#define SIMNBR 300
 
 static char const *cmd_gnuplot_ar[] = {};
 static char const *cmd_gnuplot_et[] = {};
+static char const *cmd_gnuplot_ld[] = {};
 static char const *cmd_gnuplot_sched[] = {};
 
 static void bench_1(vector<struct b_stats> &v_stts_bfdu_f, 
@@ -18,7 +19,6 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
         /* params instance */
         prm.n = 100;
         prm.phi = 100;
-        prm.h = YES;
 
         for (int i = 0; i < ITER; i++) {
                 struct b_stats stts_bfdu_f;
@@ -65,6 +65,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                         cmp_stats(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
                         stts_bfdu_f.mean_ar += ctx_bfdu_f.p.opti_bins;
                         stts_wfdu_f.mean_ar += ctx_wfdu_f.p.opti_bins;
+                        stts_bfdu_f.mean_ld += ctx_bfdu_f.p.ld;
+                        stts_wfdu_f.mean_ld += ctx_wfdu_f.p.ld;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.p.e_time;
                         stts_wfdu_f.mean_et += ctx_wfdu_f.p.e_time;               
                         stts_bfdu_f.mean_sched += ctx_bfdu_f.p.sched_rate_bef * PERCENT;
@@ -75,6 +77,8 @@ static void bench_1(vector<struct b_stats> &v_stts_bfdu_f,
                 stts_wfdu_f.mean_ar /= (float)SIMNBR;
                 stts_bfdu_f.mean_et /= (float)SIMNBR;
                 stts_wfdu_f.mean_et /= (float)SIMNBR;
+                stts_bfdu_f.mean_ld /= (float)SIMNBR;
+                stts_wfdu_f.mean_ld /= (float)SIMNBR;
                 stts_bfdu_f.mean_sched /= (float)SIMNBR;
                 stts_wfdu_f.mean_sched /= (float)SIMNBR;
                 v_stts_bfdu_f.push_back(stts_bfdu_f);
@@ -94,6 +98,8 @@ int main(void)
         FILE *gnuplot_wfdu_f_ar = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_bfdu_f_et = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_wfdu_f_et = (FILE*)popen("gnuplot -persistent", "w");
+        FILE *gnuplot_bfdu_f_ld = (FILE*)popen("gnuplot -persistent", "w");
+        FILE *gnuplot_wfdu_f_ld = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_bfdu_f_sched = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_wfdu_f_sched = (FILE*)popen("gnuplot -persistent", "w");
 
@@ -101,6 +107,8 @@ int main(void)
         FILE *wfdu_f_ar = (FILE*)fopen("data.wfdu_f_ar_bench_1", "w");
         FILE *bfdu_f_et = (FILE*)fopen("data.bfdu_f_et_bench_1", "w");
         FILE *wfdu_f_et = (FILE*)fopen("data.wfdu_f_et_bench_1", "w");
+        FILE *bfdu_f_ld = (FILE*)fopen("data.bfdu_f_ld_bench_1", "w");
+        FILE *wfdu_f_ld = (FILE*)fopen("data.wfdu_f_ld_bench_1", "w");
         FILE *bfdu_f_sched = (FILE*)fopen("data.bfdu_f_sched_bench_1", "w");
         FILE *wfdu_f_sched = (FILE*)fopen("data.wfdu_f_sched_bench_1", "w");
 
@@ -108,6 +116,8 @@ int main(void)
         write_data_to_file(wfdu_f_ar, v_stts_wfdu_f, B_AR, ITER);
         write_data_to_file(bfdu_f_et, v_stts_bfdu_f, B_ET, ITER);
         write_data_to_file(wfdu_f_et, v_stts_wfdu_f, B_ET, ITER);
+        write_data_to_file(bfdu_f_ld, v_stts_bfdu_f, B_LD, ITER);
+        write_data_to_file(wfdu_f_ld, v_stts_wfdu_f, B_LD, ITER);
         write_data_to_file(bfdu_f_sched, v_stts_bfdu_f, B_SCHED, ITER);
         write_data_to_file(wfdu_f_sched, v_stts_wfdu_f, B_SCHED, ITER);
 
@@ -133,6 +143,17 @@ int main(void)
         cmd_gnuplot_et[8] = "replot 'data.wfdu_f_et_bench_1' with linespoint lc 7 pointtype 7";
         plot_data(gnuplot_bfdu_f_et, cmd_gnuplot_et, 9);
 
+        cmd_gnuplot_ld[0] = "set title 'Load Distribution'";
+        cmd_gnuplot_ld[1] = "set xrange [100:45]";
+        cmd_gnuplot_ld[2] = "set yrange [0:20]";
+        cmd_gnuplot_ld[3] = "set xlabel 'phi'";
+        cmd_gnuplot_ld[4] = "set ylabel 'standard deviation on U'";
+        cmd_gnuplot_ld[5] = "set datafile separator whitespace";
+        cmd_gnuplot_ld[6] = "plot 'data.bfdu_f_ld_bench_1' with linespoint lc 22 pointtype 22";
+        cmd_gnuplot_ld[7] = "set datafile separator whitespace";
+        cmd_gnuplot_ld[8] = "replot 'data.wfdu_f_ld_bench_1' with linespoint lc 7 pointtype 7";
+        plot_data(gnuplot_bfdu_f_ld, cmd_gnuplot_ld, 9);
+
         cmd_gnuplot_sched[0] = "set title 'Schedulability Rate'";
         cmd_gnuplot_sched[1] = "set xrange [100:45]";
         cmd_gnuplot_sched[2] = "set yrange [0:120]";
@@ -146,9 +167,11 @@ int main(void)
 
         fflush(gnuplot_bfdu_f_ar);
         fflush(gnuplot_bfdu_f_et);
+        fflush(gnuplot_bfdu_f_ld);
         fflush(gnuplot_bfdu_f_sched);
         fclose(gnuplot_wfdu_f_ar);
         fclose(gnuplot_wfdu_f_et);
+        fclose(gnuplot_wfdu_f_ld);
         fclose(gnuplot_wfdu_f_sched);
 
         return 0;
