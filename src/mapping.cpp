@@ -169,10 +169,6 @@ void augmentation(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| AUGMENTATION                        |\n");
         printf("+=====================================+\n");
-        clock_t start, end;
-        start = clock();
         converge(v_bins, ctx);
-        end = clock();
-        ctx.p.augm_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-        ctx.p.sched_rate_augm = sched_rate(v_bins, ctx);
+        ctx.p.sched_rate_aft = sched_rate(v_bins, ctx);
 }

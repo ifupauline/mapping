@@ -20,28 +20,27 @@
 #define PERCENT 100
 
 struct params {
-        int n;
-        int phi;
         int a;
         int h;
+        int n;
+        int phi;
 };
 
 struct perf {
         float redu_time;
         float alloc_time;
-        float e_time;
         float wca_time;
         float reass_time;
         float disp_time;
         float swap_time;
-        float augm_time;
-        float opti_bins;
-        float ld;
+        float cr;
+        float et;
+        float sr;
         float sched_rate_bef;
         float sched_rate_prio;
         float sched_rate_disp;
         float sched_rate_swap;
-        float sched_rate_augm;
+        float sched_rate_aft;
         int sched_imp_prio;
         int sched_imp_disp;
         int sched_imp_swap;

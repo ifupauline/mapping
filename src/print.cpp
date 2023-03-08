@@ -4,48 +4,26 @@
 
 #define MSEC 1000
 
-static void approximation_ratio(vector<struct item> &v_itms, struct context &ctx)
+static void cores_ratio(vector<struct item> &v_itms, struct context &ctx)
 {
         int min_nbr_cuts;
 
         min_nbr_cuts = 0;
 
-        for (unsigned int i = 0; i < v_itms.size(); i++)  {
+        for (unsigned int i = 0; i < v_itms.size(); i++)
                 if (v_itms[i].size > ctx.prm.phi)
                         min_nbr_cuts++;
-        }
-        ctx.p.opti_bins = (float)ctx.bins_count / (float)ctx.bins_min;
+
+        ctx.p.cr = (float)ctx.bins_count / (float)ctx.bins_min;
 }
 
 static void execution_time(struct context &ctx)
 {
         ctx.p.redu_time = ctx.p.redu_time * MSEC;
         ctx.p.alloc_time = ctx.p.alloc_time * MSEC;
-        ctx.p.e_time = ctx.p.redu_time + ctx.p.alloc_time + ctx.p.wca_time + 
+        ctx.p.et = ctx.p.redu_time + ctx.p.alloc_time + ctx.p.wca_time + 
                 ctx.p.reass_time + ctx.p.disp_time + 
-                ctx.p.swap_time + ctx.p.augm_time;
-}
-
-static void standard_deviation(vector<struct bin> &v_bins, struct context &ctx)
-{
-        float sum = 0.0;
-        float mean = 0.0;
-        float sumsqr = 0.0;
-        float variance = 0.0;
-        unsigned int n = v_bins.size();
-
-        for (unsigned int i = 0; i < n; i++) {
-                sum += (ctx.prm.phi - v_bins[i].cap_rem);
-        }
-
-        mean = sum / n;
-
-        for (unsigned int i = 0; i < n; i++) {
-                ctx.p.ld = (ctx.prm.phi - v_bins[i].cap_rem) - mean;
-                sumsqr += ctx.p.ld * ctx.p.ld;
-        }
-        variance = sumsqr / n;
-        ctx.p.ld = sqrt(variance) ;
+                ctx.p.swap_time;
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -92,8 +70,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                 }
         }
         execution_time(ctx);
-        approximation_ratio(v_itms, ctx);
-        standard_deviation(v_bins, ctx);
+        cores_ratio(v_itms, ctx);
 }
 
 void print_task_chains(vector<struct item> &v_itms)
@@ -393,31 +370,37 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Cuts Count:       %d\n", ctx.cuts_count);
         printf("Fragments Count:  %d\n", ctx.frags_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Reduction Time:                     %f s\n", ctx.p.redu_time);
-        printf("Allocation Time:                    %f s\n", ctx.p.alloc_time);
-        printf("Schedulability Analysis Time:       %f s\n", ctx.p.wca_time);
-        printf("Priority Optimization Time:         %f s\n", ctx.p.reass_time);
-        printf("Displacement Optimization Time:     %f s\n", ctx.p.disp_time);
-        printf("Swapping Optimization Time:         %f s\n", ctx.p.swap_time);
-        printf("Augmentation Time:                  %f s\n", ctx.p.augm_time);
+        printf("Reduction Time:                   %f s\n", ctx.p.redu_time);
+        printf("Allocation Time:                  %f s\n", ctx.p.alloc_time);
+        printf("Schedulability Analysis Time:     %f s\n", ctx.p.wca_time);
+        printf("Reassignment Time:                %f s\n", ctx.p.reass_time);
+        printf("Displacement Time:                %f s\n", ctx.p.disp_time);
+        printf("Swapping Time:                    %f s\n", ctx.p.swap_time);
         printf("------------------------------------------------------------------------>\n");
-        printf("Total Execution Time:               %f s\n", ctx.p.e_time);
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Rate :               %-3.3f\n", 
-                        ctx.p.sched_rate_bef * PERCENT);
-        printf("Schedulability Rate (prio):         %-3.3f  +%-2d cores\n", 
+        printf("Schedulability Rate (prio):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio);
-        printf("Schedulability Rate (disp):         %-3.3f  +%-2d cores\n", 
+        printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
-        printf("Schedulability Rate (swap):         %-3.3f  +%-2d cores\n", 
+        printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
         printf("------------------------------------------------------------------------>\n");
-        printf("Optimization Gain:                  %-3.3f\n", 
+        printf("New Added Cores (allocation):     %-2d\n", ctx.cycl_count);
+        printf("New Added Cores (augmentation):   %-2d\n", ctx.bins_count - (ctx.cycl_count + ctx.bins_min));
+        printf("------------------------------------------------------------------------>\n");
+        printf("\n+===========================================+\n");
+        printf("| PERFORMANCE METRICS                       |\n");
+        printf("+===========================================+\n");
+        printf("------------------------------------------------------------------------>\n");
+        printf("Cores Ratio:                      %-3.3f\n", ctx.p.cr);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Execution Time:                   %-3.3f sec\n", ctx.p.et);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Schedulability Ratio (alloc):     %-3.3f\n", ctx.p.sched_rate_bef * PERCENT);
+        printf("Schedulability Ratio (optim):     %-3.3f  +%-3.3f\n", ctx.p.sched_rate_swap * PERCENT, 
                         (ctx.p.sched_rate_swap * PERCENT - ctx.p.sched_rate_bef * PERCENT));
+        printf("Schedulability Ratio (augme)      %-2.2f  +%-3.3f\n", ctx.p.sched_rate_aft * PERCENT,
+                        (ctx.p.sched_rate_aft * PERCENT - ctx.p.sched_rate_swap * PERCENT));
         printf("------------------------------------------------------------------------>\n");
-        printf("New Added Cores (alloc):       %-2d\n", ctx.cycl_count);
-        printf("New Added Cores (augme):       %-2d\n", ctx.bins_count - (ctx.cycl_count + ctx.bins_min));
-        printf("Approximation Ratio:           %f\n", ctx.p.opti_bins);
-        printf("Schedulability Rate:           %-3.3f\n", ctx.p.sched_rate_augm * PERCENT);
-        printf("------------------------------------------------------------------------>\n");
+       
 }

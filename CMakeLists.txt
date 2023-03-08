@@ -9,6 +9,6 @@ include_directories(include)
 project(bpp-ifc)
 
 add_subdirectory(src)
+add_subdirectory(exp/phi)
 add_subdirectory(tests/wcrt)
 add_subdirectory(tests/example)
-add_subdirectory(benchmarks/bench_1)
