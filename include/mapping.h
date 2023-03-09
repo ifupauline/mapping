@@ -18,6 +18,7 @@
 
 #define C       100
 #define PERCENT 100
+#define MSEC    1000
 
 struct params {
         int a;
@@ -27,13 +28,13 @@ struct params {
 };
 
 struct perf {
-        float alloc_time;
+        float cr;
+        float et;
+        float allo_time;
         float wcrt_time;
         float reass_time;
         float disp_time;
         float swap_time;
-        float cr;
-        float et;
         float sched_rate_allo;
         float sched_rate_prio;
         float sched_rate_disp;

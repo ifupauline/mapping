@@ -4,13 +4,13 @@
 
 #define STEP   2
 #define ITER   26
-#define SIMNBR 100
+#define SIMNBR 1000
 
 static char const *cmd_gnuplot_cr[] = {};
 static char const *cmd_gnuplot_et[] = {};
 static char const *cmd_gnuplot_sr[] = {};
 
-static void phi(vector<struct b_stats> &v_stts_bfdu_f)
+static void phi_h(vector<struct b_stats> &v_stts_bfdu_f)
 {
         struct params prm;
         struct context ctx;
@@ -25,7 +25,8 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f)
         ctx = {0};
 
         /* params instance */
-        prm.n = 50;
+        prm.n = 100;
+        prm.h = YES;
         prm.phi = 102;
 
         for (int i = 0; i < ITER; i++) {
@@ -59,11 +60,12 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f)
                         optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
                         augmentation(v_bins_bfdu_f, ctx_bfdu_f);
+                        printf("PHI: %d ITER: %d SIM: %d\n", prm.phi, i, j);
 
                         /* stats */
                         cmp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
                         stts_bfdu_f.mean_cr += ctx_bfdu_f.p.cr;
-                        stts_bfdu_f.mean_et += ctx_bfdu_f.p.et * 1000;
+                        stts_bfdu_f.mean_et += ctx_bfdu_f.p.et * MSEC;
                         stts_bfdu_f.mean_sr_allo += ctx_bfdu_f.p.sched_rate_allo;               
                         stts_bfdu_f.mean_sr_opti += ctx_bfdu_f.p.sched_rate_opti;               
                         stts_bfdu_f.mean_sr_augm += ctx_bfdu_f.p.sched_rate_augm;               
@@ -82,18 +84,18 @@ int main(void)
 {
         vector<struct b_stats> v_stts_bfdu_f;
 
-        phi(v_stts_bfdu_f);
+        phi_h(v_stts_bfdu_f);
         print_b_stats(v_stts_bfdu_f, ITER);
 
         FILE *gnuplot_bfdu_f_cr = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_bfdu_f_et = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_bfdu_f_sr = (FILE*)popen("gnuplot -persistent", "w");
 
-        FILE *bfdu_f_cr = (FILE*)fopen("data.bfdu_f_cr_phi", "w");
-        FILE *bfdu_f_et = (FILE*)fopen("data.bfdu_f_et_phi", "w");
-        FILE *bfdu_f_sr_allo = (FILE*)fopen("data.bfdu_f_sr_allo_phi", "w");
-        FILE *bfdu_f_sr_opti = (FILE*)fopen("data.bfdu_f_sr_opti_phi", "w");
-        FILE *bfdu_f_sr_augm = (FILE*)fopen("data.bfdu_f_sr_augm_phi", "w");
+        FILE *bfdu_f_cr = (FILE*)fopen("data.bfdu_f_cr_phi_h", "w");
+        FILE *bfdu_f_et = (FILE*)fopen("data.bfdu_f_et_phi_h", "w");
+        FILE *bfdu_f_sr_allo = (FILE*)fopen("data.bfdu_f_sr_allo_phi_h", "w");
+        FILE *bfdu_f_sr_opti = (FILE*)fopen("data.bfdu_f_sr_opti_phi_h", "w");
+        FILE *bfdu_f_sr_augm = (FILE*)fopen("data.bfdu_f_sr_augm_phi_h", "w");
 
         write_data_to_file(bfdu_f_cr, v_stts_bfdu_f, B_CR, ITER);
         write_data_to_file(bfdu_f_et, v_stts_bfdu_f, B_ET, ITER);
@@ -101,33 +103,33 @@ int main(void)
         write_data_to_file(bfdu_f_sr_opti, v_stts_bfdu_f, B_SR_OPTI, ITER);
         write_data_to_file(bfdu_f_sr_augm, v_stts_bfdu_f, B_SR_AUGM, ITER);
 
-        cmd_gnuplot_cr[0] = "set title 'Cores Ratio'";
+        cmd_gnuplot_cr[0] = "set title 'Cores Ratio H'";
         cmd_gnuplot_cr[1] = "set xrange [45:105]";
-        cmd_gnuplot_cr[2] = "set yrange [1:1.8]";
+        cmd_gnuplot_cr[2] = "set yrange [1:1.5]";
         cmd_gnuplot_cr[3] = "set xlabel 'phi'";
         cmd_gnuplot_cr[4] = "set ylabel 'M/M*'";
         cmd_gnuplot_cr[5] = "set datafile separator whitespace";
-        cmd_gnuplot_cr[6] = "plot 'data.bfdu_f_cr_phi' with linespoint lc 7 pointtype 7";
+        cmd_gnuplot_cr[6] = "plot 'data.bfdu_f_cr_phi_h' with linespoint lc 7 pointtype 7";
         plot_data(gnuplot_bfdu_f_cr, cmd_gnuplot_cr, 7);
 
-        cmd_gnuplot_et[0] = "set title 'Execution Time (ms)'";
+        cmd_gnuplot_et[0] = "set title 'Execution Time H (ms)'";
         cmd_gnuplot_et[1] = "set xrange [45:105]";
-        cmd_gnuplot_et[2] = "set yrange [0:60]";
+        cmd_gnuplot_et[2] = "set yrange [0:110]";
         cmd_gnuplot_et[3] = "set xlabel 'phi'";
         cmd_gnuplot_et[4] = "set ylabel 'milliseconds'";
         cmd_gnuplot_et[5] = "set datafile separator whitespace";
-        cmd_gnuplot_et[6] = "plot 'data.bfdu_f_et_phi' with linespoint lc 7 pointtype 7";
+        cmd_gnuplot_et[6] = "plot 'data.bfdu_f_et_phi_h' with linespoint lc 7 pointtype 7";
         plot_data(gnuplot_bfdu_f_et, cmd_gnuplot_et, 7);
 
-        cmd_gnuplot_sr[0] = "set title 'Schedulability Rate'";
+        cmd_gnuplot_sr[0] = "set title 'Schedulability Rate H'";
         cmd_gnuplot_sr[1] = "set xrange [45:105]";
         cmd_gnuplot_sr[2] = "set yrange [0:120]";
         cmd_gnuplot_sr[3] = "set xlabel 'phi'";
         cmd_gnuplot_sr[4] = "set ylabel 'rate'";
         cmd_gnuplot_sr[5] = "set datafile separator whitespace";
-        cmd_gnuplot_sr[6] = "plot 'data.bfdu_f_sr_augm_phi' with linespoint lc 7 pointtype 7";
-        cmd_gnuplot_sr[7] = "replot 'data.bfdu_f_sr_allo_phi' with linespoint lc 3 pointtype 7";
-        cmd_gnuplot_sr[8] = "replot 'data.bfdu_f_sr_opti_phi' with linespoint lc 6 pointtype 7";
+        cmd_gnuplot_sr[6] = "plot 'data.bfdu_f_sr_augm_phi_h' with linespoint lc 7 pointtype 7";
+        cmd_gnuplot_sr[7] = "replot 'data.bfdu_f_sr_allo_phi_h' with linespoint lc 3 pointtype 7";
+        cmd_gnuplot_sr[8] = "replot 'data.bfdu_f_sr_opti_phi_h' with linespoint lc 6 pointtype 7";
         plot_data(gnuplot_bfdu_f_sr, cmd_gnuplot_sr, 9);
 
         return 0;

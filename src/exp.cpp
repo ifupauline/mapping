@@ -75,7 +75,7 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)
                 printf("| PHI: %d         |\n", v_stts_bfdu_f[i].phi);
                 printf("+===============+\n");
                 printf("BFDU_F.Cores Ratio                      : %f\n", v_stts_bfdu_f[i].mean_cr);
-                printf("BFDU_F.Total Execution Time             : %f\n", v_stts_bfdu_f[i].mean_et);
+                printf("BFDU_F.Execution Time                   : %f\n", v_stts_bfdu_f[i].mean_et);
                 printf("BFDU_F.Schedulability Rate (allo)       : %f\n", v_stts_bfdu_f[i].mean_sr_allo);
                 printf("BFDU_F.Schedulability Rate (opti)       : %f\n", v_stts_bfdu_f[i].mean_sr_opti);
                 printf("BFDU_F.Schedulability Rate (augm)       : %f\n", v_stts_bfdu_f[i].mean_sr_augm);

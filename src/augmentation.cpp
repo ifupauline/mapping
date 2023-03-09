@@ -16,7 +16,7 @@ void converge(vector<struct bin> &v_bins, struct context &ctx)
                 start = clock();
                 add_bin(v_bins, ctx);
                 end = clock();
-                ctx.p.alloc_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.allo_time += ((float) (end - start)) / CLOCKS_PER_SEC;
 
                 start = clock();
                 displacement(v_bins);

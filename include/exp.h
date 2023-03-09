@@ -3,11 +3,13 @@
 
 #define B_CR      0
 #define B_ET      1
-#define B_SR_ALLO 2
-#define B_SR_AUGM 3
-#define B_SR_OPTI 4
+#define B_ET_ALLO 2
+#define B_ET_OPTI 3
+#define B_SR_ALLO 4
+#define B_SR_AUGM 5
+#define B_SR_OPTI 6
 
-#define BUFFSIZE 256
+#define BUFFSIZE  256
 
 #include "mapping.h"
 

@@ -165,9 +165,8 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                                         v_fail_itms[item_idx].first.id, v_fail_bins[i].id);
                         /* store max cap_rem */
                         tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.tc.u;
-                        if (tmp_max > max) {
+                        if (tmp_max > max)
                                 max = tmp_max;
-                        }
                         is_found = YES;
                 }
 
@@ -190,9 +189,8 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                                 dst_b = v_fail_bins[i];
                                 /* store max cap_rem */
                                 tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.tc.u;
-                                if (tmp_max > max) {
+                                if (tmp_max > max)
                                         max = tmp_max;
-                                }
                                 is_found = YES;
                         }
                 }

@@ -24,7 +24,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 start = clock();
                 bfdu_f(v_itms, v_bins, ctx);
                 end = clock();
-                ctx.p.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == WFDU_F) {
@@ -36,7 +36,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 start = clock();
                 wfdu_f(v_itms, v_bins, ctx);
                 end = clock();
-                ctx.p.alloc_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 }
 
