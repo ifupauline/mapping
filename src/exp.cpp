@@ -29,6 +29,13 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                                                 data[i].mean_cr);
                         break;
 
+                case B_CC: 
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%f %f\n", 
+                                                (float)data[i].phi, 
+                                                data[i].mean_cc);
+                        break;
+
                 case B_ET:
                         for (int i = 0; i < size; i++)
                                 fprintf(filename, "%f %f\n", 
@@ -74,8 +81,9 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)
                 printf("+===============+\n");
                 printf("| PHI: %d         |\n", v_stts_bfdu_f[i].phi);
                 printf("+===============+\n");
-                printf("BFDU_F.Cores Ratio                      : %f\n", v_stts_bfdu_f[i].mean_cr);
-                printf("BFDU_F.Execution Time                   : %f\n", v_stts_bfdu_f[i].mean_et);
+                printf("BFDU_F.Cores Ratio Average              : %f\n", v_stts_bfdu_f[i].mean_cr);
+                printf("BFDU_F.Cores Average                    : %f\n", v_stts_bfdu_f[i].mean_cc);
+                printf("BFDU_F.Execution Time Average           : %f\n", v_stts_bfdu_f[i].mean_et);
                 printf("BFDU_F.Schedulability Rate (allo)       : %f\n", v_stts_bfdu_f[i].mean_sr_allo);
                 printf("BFDU_F.Schedulability Rate (opti)       : %f\n", v_stts_bfdu_f[i].mean_sr_opti);
                 printf("BFDU_F.Schedulability Rate (augm)       : %f\n", v_stts_bfdu_f[i].mean_sr_augm);

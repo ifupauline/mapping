@@ -2,12 +2,13 @@
 #define BENCH_H
 
 #define B_CR      0
-#define B_ET      1
-#define B_ET_ALLO 2
-#define B_ET_OPTI 3
-#define B_SR_ALLO 4
-#define B_SR_AUGM 5
-#define B_SR_OPTI 6
+#define B_CC      1
+#define B_ET      2
+#define B_ET_ALLO 3
+#define B_ET_OPTI 4
+#define B_SR_ALLO 5
+#define B_SR_AUGM 6
+#define B_SR_OPTI 7
 
 #define BUFFSIZE  256
 
@@ -15,6 +16,7 @@
 
 struct b_stats {
         int phi;
+        float mean_cc;
         float mean_cr;
         float mean_et;
         float mean_sr_allo;
