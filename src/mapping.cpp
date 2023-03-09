@@ -45,13 +45,12 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         printf("| SCHEDULABILITY ANALYSIS             |\n");
         printf("+=====================================+\n");
-
         clock_t start, end;
         start = clock();
         wcrt_v_bins(v_bins, ctx);
         end = clock();
-        ctx.p.wca_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-        ctx.p.sched_rate_bef = sched_rate(v_bins, ctx);
+        ctx.p.wcrt_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
 
         /* init var for priority optimization */
         ctx.p.sched_imp_prio -= ctx.sched_ok_count;
@@ -60,7 +59,7 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 void optimization(vector<struct bin> &v_bins, struct context &ctx)
 {
         printf("+=====================================+\n");
-        printf("| PRIORITY ASSIGNMENT OPTIMIZATION    |\n");
+        printf("| REASSIGNMENT OPTIMIZATION           |\n");
         printf("+=====================================+\n");
         clock_t start, end;
         start = clock();
@@ -109,5 +108,5 @@ void augmentation(vector<struct bin> &v_bins, struct context &ctx)
         printf("| AUGMENTATION                        |\n");
         printf("+=====================================+\n");
         converge(v_bins, ctx);
-        ctx.p.sched_rate_aft = sched_rate(v_bins, ctx);
+        ctx.p.sched_rate_augm = sched_rate(v_bins, ctx);
 }

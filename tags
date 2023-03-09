@@ -81,10 +81,12 @@ ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	637;"	d	f
 AUGMENTATION_H	include/augmentation.h	2;"	d
 BENCH_H	include/exp.h	2;"	d
 BFDU_F	include/mapping.h	16;"	d
-BUFFSIZE	include/exp.h	8;"	d
+BUFFSIZE	include/exp.h	10;"	d
 B_CR	include/exp.h	4;"	d
 B_ET	include/exp.h	5;"	d
-B_SR	include/exp.h	6;"	d
+B_SR_ALLO	include/exp.h	6;"	d
+B_SR_AUGM	include/exp.h	7;"	d
+B_SR_OPTI	include/exp.h	8;"	d
 C	include/mapping.h	19;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -592,9 +594,7 @@ _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const s
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_best_cut	src/bfdu_f.cpp	/^static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
-_find_double_fit	src/mapping.cpp	/^static void _find_double_fit(vector<struct item> &v_itms, $/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
-_find_single_fit	src/mapping.cpp	/^static void _find_single_fit(vector<struct item> &v_itms, $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_worst_cut	src/wfdu_f.cpp	/^static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _fixpoint	src/sched_analysis.cpp	/^static void _fixpoint(vector<struct task> &hp_tasks, struct task &tau, $/;"	f	file:
@@ -720,7 +720,9 @@ main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 mean_cr	include/exp.h	/^        float mean_cr;$/;"	m	struct:b_stats
 mean_et	include/exp.h	/^        float mean_et;$/;"	m	struct:b_stats
-mean_sr	include/exp.h	/^        float mean_sr;$/;"	m	struct:b_stats
+mean_sr_allo	include/exp.h	/^        float mean_sr_allo;$/;"	m	struct:b_stats
+mean_sr_augm	include/exp.h	/^        float mean_sr_augm;$/;"	m	struct:b_stats
+mean_sr_opti	include/exp.h	/^        float mean_sr_opti;$/;"	m	struct:b_stats
 n	include/mapping.h	/^        int n;$/;"	m	struct:params
 nbr_cut	include/model.h	/^        int nbr_cut;$/;"	m	struct:item
 optimization	src/mapping.cpp	/^void optimization(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
@@ -746,8 +748,6 @@ qnxnto	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxn
 r	include/model.h	/^        int r;$/;"	m	struct:task
 reass_time	include/mapping.h	/^        float reass_time;$/;"	m	struct:perf
 reassignment	src/optimization.cpp	/^void reassignment(vector<struct bin> &v_bins)$/;"	f
-redu_time	include/mapping.h	/^        float redu_time;$/;"	m	struct:perf
-reduction	src/mapping.cpp	/^void reduction(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 replace_bin_by_id	src/model.cpp	/^void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)$/;"	f
 retrieve_tc_by_id	src/model.cpp	/^void retrieve_tc_by_id(vector<struct bin> &v_bins, struct item &tc, int tc_id)$/;"	f
 rf_size	src/bfdu_f.cpp	/^        int rf_size;$/;"	m	struct:best_cut	file:
@@ -758,18 +758,19 @@ sched_imp_prio	include/mapping.h	/^        int sched_imp_prio;$/;"	m	struct:perf
 sched_imp_swap	include/mapping.h	/^        int sched_imp_swap;$/;"	m	struct:perf
 sched_ok_count	include/mapping.h	/^        int sched_ok_count;$/;"	m	struct:context
 sched_rate	src/sched_analysis.cpp	/^float sched_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
-sched_rate_aft	include/mapping.h	/^        float sched_rate_aft;$/;"	m	struct:perf
-sched_rate_bef	include/mapping.h	/^        float sched_rate_bef;$/;"	m	struct:perf
+sched_rate_allo	include/mapping.h	/^        float sched_rate_allo;$/;"	m	struct:perf
+sched_rate_augm	include/mapping.h	/^        float sched_rate_augm;$/;"	m	struct:perf
 sched_rate_disp	include/mapping.h	/^        float sched_rate_disp;$/;"	m	struct:perf
+sched_rate_opti	include/mapping.h	/^        float sched_rate_opti;$/;"	m	struct:perf
 sched_rate_prio	include/mapping.h	/^        float sched_rate_prio;$/;"	m	struct:perf
 sched_rate_swap	include/mapping.h	/^        float sched_rate_swap;$/;"	m	struct:perf
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+schedulability_rate	src/print.cpp	/^static void schedulability_rate(struct context &ctx)$/;"	f	file:
 size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_itms)$/;"	f
 sort_inc_bin_cap_rem	src/model.cpp	/^void sort_inc_bin_cap_rem(vector<struct bin> &v_bins)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f
 sort_inc_task_priority	src/model.cpp	/^void sort_inc_task_priority(vector<struct task> &v_tasks)$/;"	f
-sr	include/mapping.h	/^        float sr;$/;"	m	struct:perf
 swap_time	include/mapping.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/optimization.cpp	/^void swapping(vector<struct bin> &v_bins)$/;"	f
 t	include/model.h	/^        int t;$/;"	m	struct:task
@@ -792,9 +793,9 @@ v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:task
 v_tasks_lf	include/model.h	/^        vector<struct task> v_tasks_lf;$/;"	m	struct:cut
 v_tasks_rf	include/model.h	/^        vector<struct task> v_tasks_rf;$/;"	m	struct:cut
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
-wca_time	include/mapping.h	/^        float wca_time;$/;"	m	struct:perf
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
 wcrt_bin	src/sched_analysis.cpp	/^void wcrt_bin(struct bin &b, int bin_idx)$/;"	f
+wcrt_time	include/mapping.h	/^        float wcrt_time;$/;"	m	struct:perf
 wcrt_v_bins	src/sched_analysis.cpp	/^void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 wfdu_f	src/wfdu_f.cpp	/^void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 worst_cut	src/wfdu_f.cpp	/^struct worst_cut {$/;"	s	file:

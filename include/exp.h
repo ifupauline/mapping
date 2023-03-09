@@ -1,9 +1,11 @@
 #ifndef BENCH_H
 #define BENCH_H
 
-#define B_CR 0
-#define B_ET 1
-#define B_SR 2
+#define B_CR      0
+#define B_ET      1
+#define B_SR_ALLO 2
+#define B_SR_AUGM 3
+#define B_SR_OPTI 4
 
 #define BUFFSIZE 256
 
@@ -12,8 +14,10 @@
 struct b_stats {
         int phi;
         float mean_cr;
-        float mean_sr;
         float mean_et;
+        float mean_sr_allo;
+        float mean_sr_opti;
+        float mean_sr_augm;
 };
 
 void concatenate(char p[], char q[]);

@@ -28,18 +28,18 @@ struct params {
 
 struct perf {
         float alloc_time;
-        float wca_time;
+        float wcrt_time;
         float reass_time;
         float disp_time;
         float swap_time;
         float cr;
         float et;
-        float sr;
-        float sched_rate_bef;
+        float sched_rate_allo;
         float sched_rate_prio;
         float sched_rate_disp;
         float sched_rate_swap;
-        float sched_rate_aft;
+        float sched_rate_opti;
+        float sched_rate_augm;
         int sched_imp_prio;
         int sched_imp_disp;
         int sched_imp_swap;

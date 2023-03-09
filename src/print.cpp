@@ -19,9 +19,15 @@ static void cores_ratio(vector<struct item> &v_itms, struct context &ctx)
 
 static void execution_time(struct context &ctx)
 {
-        ctx.p.alloc_time = ctx.p.alloc_time * MSEC;
-        ctx.p.et = ctx.p.alloc_time + ctx.p.wca_time + ctx.p.reass_time + 
+        ctx.p.et = ctx.p.alloc_time + ctx.p.wcrt_time + ctx.p.reass_time + 
                 ctx.p.disp_time + ctx.p.swap_time;
+}
+
+static void schedulability_rate(struct context &ctx)
+{
+        ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
+        ctx.p.sched_rate_opti = ctx.p.sched_rate_swap * PERCENT;
+        ctx.p.sched_rate_augm = ctx.p.sched_rate_augm * PERCENT;
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -67,8 +73,9 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                         ctx.tasks_count++;
                 }
         }
-        execution_time(ctx);
         cores_ratio(v_itms, ctx);
+        schedulability_rate(ctx);
+        execution_time(ctx);
 }
 
 void print_task_chains(vector<struct item> &v_itms)
@@ -369,11 +376,10 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Fragments Count:  %d\n", ctx.frags_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Allocation Time:                  %f s\n", ctx.p.alloc_time);
-        printf("Schedulability Analysis Time:     %f s\n", ctx.p.wca_time);
+        printf("Schedulability Analysis Time:     %f s\n", ctx.p.wcrt_time);
         printf("Reassignment Time:                %f s\n", ctx.p.reass_time);
         printf("Displacement Time:                %f s\n", ctx.p.disp_time);
         printf("Swapping Time:                    %f s\n", ctx.p.swap_time);
-        printf("------------------------------------------------------------------------>\n");
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (prio):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio);
@@ -391,13 +397,12 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("Cores Ratio:                      %-3.3f\n", ctx.p.cr);
         printf("------------------------------------------------------------------------>\n");
-        printf("Execution Time:                   %-3.3f sec\n", ctx.p.et);
+        printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
+        printf("Schedulability Rate (opti):       %-3.3f  +%-3.3f\n", ctx.p.sched_rate_opti, 
+                        (ctx.p.sched_rate_opti - ctx.p.sched_rate_allo));
+        printf("Schedulability Rate (augm)        %-2.2f  +%-3.3f\n", ctx.p.sched_rate_augm,
+                        (ctx.p.sched_rate_augm - ctx.p.sched_rate_opti));
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Ratio (alloc):     %-3.3f\n", ctx.p.sched_rate_bef * PERCENT);
-        printf("Schedulability Ratio (optim):     %-3.3f  +%-3.3f\n", ctx.p.sched_rate_swap * PERCENT, 
-                        (ctx.p.sched_rate_swap * PERCENT - ctx.p.sched_rate_bef * PERCENT));
-        printf("Schedulability Ratio (augme)      %-2.2f  +%-3.3f\n", ctx.p.sched_rate_aft * PERCENT,
-                        (ctx.p.sched_rate_aft * PERCENT - ctx.p.sched_rate_swap * PERCENT));
+        printf("Total Execution Time:             %-3.3f sec\n", ctx.p.et);
         printf("------------------------------------------------------------------------>\n");
-       
 }

@@ -465,7 +465,7 @@ void displacement(vector<struct bin> &v_bins)
                         printf("Could not displace task-chain %-3d from Core %-3d\n\n", 
                                         v_fail_itms[i].first.id, v_fail_itms[i].second);
 
-                else if (is_found == YES){
+                else if (is_found == YES) {
                         /* displace */
                         fail_itm.first = {0};
                         fail_itm.second = 0;
