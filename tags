@@ -155,14 +155,17 @@ ARCHITECTURE_ID	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cp
 AUGMENTATION_H	include/augmentation.h	2;"	d
 BENCH_H	include/exp.h	2;"	d
 BFDU_F	include/mapping.h	16;"	d
-BUFFSIZE	include/exp.h	12;"	d
+BUFFSIZE	include/exp.h	15;"	d
+B_CC	include/exp.h	5;"	d
+B_CC_ALLO	include/exp.h	8;"	d
+B_CC_OPTI	include/exp.h	7;"	d
 B_CR	include/exp.h	4;"	d
-B_ET	include/exp.h	5;"	d
-B_ET_ALLO	include/exp.h	6;"	d
-B_ET_OPTI	include/exp.h	7;"	d
-B_SR_ALLO	include/exp.h	8;"	d
-B_SR_AUGM	include/exp.h	9;"	d
-B_SR_OPTI	include/exp.h	10;"	d
+B_ET	include/exp.h	6;"	d
+B_ET_ALLO	include/exp.h	9;"	d
+B_ET_OPTI	include/exp.h	10;"	d
+B_SR_ALLO	include/exp.h	11;"	d
+B_SR_AUGM	include/exp.h	12;"	d
+B_SR_OPTI	include/exp.h	13;"	d
 C	include/mapping.h	19;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi_h/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -1154,6 +1157,8 @@ c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:be
 c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
 c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
 cap_rem	include/model.h	/^        int cap_rem;$/;"	m	struct:bin
+cmd_gnuplot_cc	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_cc[] = {};$/;"	v	file:
+cmd_gnuplot_cc	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_cc[] = {};$/;"	v	file:
 cmd_gnuplot_cr	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_cr	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
@@ -1273,6 +1278,9 @@ main	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int mai
 main	exp/phi_nh/phi_nh.cpp	/^int main(void)$/;"	f
 main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
+mean_cc	include/exp.h	/^        float mean_cc;$/;"	m	struct:b_stats
+mean_cc_allo	include/exp.h	/^        float mean_cc_allo;$/;"	m	struct:b_stats
+mean_cc_opti	include/exp.h	/^        float mean_cc_opti;$/;"	m	struct:b_stats
 mean_cr	include/exp.h	/^        float mean_cr;$/;"	m	struct:b_stats
 mean_et	include/exp.h	/^        float mean_et;$/;"	m	struct:b_stats
 mean_sr_allo	include/exp.h	/^        float mean_sr_allo;$/;"	m	struct:b_stats

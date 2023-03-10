@@ -67,6 +67,8 @@ static void phi_h(vector<struct b_stats> &v_stts_bfdu_f)
                         cmp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
                         stts_bfdu_f.mean_cr += ctx_bfdu_f.p.cr;
                         stts_bfdu_f.mean_cc += (float)ctx_bfdu_f.bins_count;
+                        stts_bfdu_f.mean_cc_opti += (float)ctx_bfdu_f.bins_min;
+                        stts_bfdu_f.mean_cc_allo += (float)(ctx_bfdu_f.cycl_count + ctx_bfdu_f.bins_min);
                         stts_bfdu_f.mean_et += ctx_bfdu_f.p.et * MSEC;
                         stts_bfdu_f.mean_sr_allo += ctx_bfdu_f.p.sched_rate_allo;               
                         stts_bfdu_f.mean_sr_opti += ctx_bfdu_f.p.sched_rate_opti;               
@@ -75,6 +77,8 @@ static void phi_h(vector<struct b_stats> &v_stts_bfdu_f)
                 /* mean */
                 stts_bfdu_f.mean_cr /= (float)SIMNBR;
                 stts_bfdu_f.mean_cc /= (float)SIMNBR;
+                stts_bfdu_f.mean_cc_opti /= (float)SIMNBR;
+                stts_bfdu_f.mean_cc_allo /= (float)SIMNBR;
                 stts_bfdu_f.mean_et /= (float)SIMNBR;
                 stts_bfdu_f.mean_sr_allo /= (float)SIMNBR;
                 stts_bfdu_f.mean_sr_opti /= (float)SIMNBR;
@@ -97,6 +101,8 @@ int main(void)
 
         FILE *bfdu_f_cr = (FILE*)fopen("data.bfdu_f_cr_phi_h", "w");
         FILE *bfdu_f_cc = (FILE*)fopen("data.bfdu_f_cc_phi_h", "w");
+        FILE *bfdu_f_cc_opti = (FILE*)fopen("data.bfdu_f_cc_opti_phi_h", "w");
+        FILE *bfdu_f_cc_allo = (FILE*)fopen("data.bfdu_f_cc_allo_phi_h", "w");
         FILE *bfdu_f_et = (FILE*)fopen("data.bfdu_f_et_phi_h", "w");
         FILE *bfdu_f_sr_allo = (FILE*)fopen("data.bfdu_f_sr_allo_phi_h", "w");
         FILE *bfdu_f_sr_opti = (FILE*)fopen("data.bfdu_f_sr_opti_phi_h", "w");
@@ -104,6 +110,8 @@ int main(void)
 
         write_data_to_file(bfdu_f_cr, v_stts_bfdu_f, B_CR, ITER);
         write_data_to_file(bfdu_f_cc, v_stts_bfdu_f, B_CC, ITER);
+        write_data_to_file(bfdu_f_cc_opti, v_stts_bfdu_f, B_CC_OPTI, ITER);
+        write_data_to_file(bfdu_f_cc_allo, v_stts_bfdu_f, B_CC_ALLO, ITER);
         write_data_to_file(bfdu_f_et, v_stts_bfdu_f, B_ET, ITER);
         write_data_to_file(bfdu_f_sr_allo, v_stts_bfdu_f, B_SR_ALLO, ITER);
         write_data_to_file(bfdu_f_sr_opti, v_stts_bfdu_f, B_SR_OPTI, ITER);
@@ -125,7 +133,9 @@ int main(void)
         cmd_gnuplot_cc[4] = "set ylabel 'cores'";
         cmd_gnuplot_cc[5] = "set datafile separator whitespace";
         cmd_gnuplot_cc[6] = "plot 'data.bfdu_f_cc_phi_nh' with linespoint lc 7 pointtype 7";
-        plot_data(gnuplot_bfdu_f_cc, cmd_gnuplot_cc, 7);
+        cmd_gnuplot_cc[7] = "replot 'data.bfdu_f_cc_opti_phi_nh' with linespoint lc 3 pointtype 7";
+        cmd_gnuplot_cc[8] = "replot 'data.bfdu_f_cc_allo_phi_nh' with linespoint lc 6 pointtype 7";
+        plot_data(gnuplot_bfdu_f_cc, cmd_gnuplot_cc, 9);
 
         cmd_gnuplot_et[0] = "set title 'Execution Time H (ms)'";
         cmd_gnuplot_et[1] = "set xrange [45:105]";
@@ -155,6 +165,8 @@ int main(void)
         fclose(bfdu_f_cr);
         fclose(bfdu_f_cc);
         fclose(bfdu_f_et);
+        fclose(bfdu_f_cc_opti);
+        fclose(bfdu_f_cc_allo);
         fclose(bfdu_f_sr_allo);
         fclose(bfdu_f_sr_opti);
         fclose(bfdu_f_sr_augm);

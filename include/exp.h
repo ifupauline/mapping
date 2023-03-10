@@ -4,11 +4,13 @@
 #define B_CR      0
 #define B_CC      1
 #define B_ET      2
-#define B_ET_ALLO 3
-#define B_ET_OPTI 4
-#define B_SR_ALLO 5
-#define B_SR_AUGM 6
-#define B_SR_OPTI 7
+#define B_CC_OPTI 3
+#define B_CC_ALLO 4
+#define B_ET_ALLO 5
+#define B_ET_OPTI 6
+#define B_SR_ALLO 7
+#define B_SR_AUGM 8
+#define B_SR_OPTI 9
 
 #define BUFFSIZE  256
 
@@ -19,6 +21,8 @@ struct b_stats {
         float mean_cc;
         float mean_cr;
         float mean_et;
+        float mean_cc_opti;
+        float mean_cc_allo;
         float mean_sr_allo;
         float mean_sr_opti;
         float mean_sr_augm;
