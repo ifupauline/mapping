@@ -379,7 +379,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Displacement Time:                %f s\n", ctx.p.disp_time);
         printf("Swapping Time:                    %f s\n", ctx.p.swap_time);
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Rate (prio):       %-3.3f  +%-2d cores\n", 
+        printf("Schedulability Rate (reas):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_prio * PERCENT, ctx.p.sched_imp_prio);
         printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);

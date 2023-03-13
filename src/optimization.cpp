@@ -236,7 +236,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                 }
         }
 
-        if (flag_src_dst == YES && flag_dst_src == YES) {
+        if (flag_src_dst == YES || flag_dst_src == YES) {
                 printf("Found Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
                                 fail_src_itm.first.id, fail_src_itm.first.size, 
                                 fail_src_itm.second, fail_dst_itm.first.id, 
