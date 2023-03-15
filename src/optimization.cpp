@@ -64,6 +64,22 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
         }
 }
 
+static int _check_if_dual_frag(struct bin &b, int src_itm_id, 
+                int src_bin_id, int src_itm_frag_id)
+{
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                if (src_itm_id == b.v_itms[i].id)
+                        continue;
+
+                if (src_itm_frag_id > -1 && src_itm_frag_id == b.v_itms[i].frag_id) {
+                        printf("src tc %d Core %d is dual fragment with dst tc %d Core %d !\n", 
+                                        src_itm_id, src_bin_id, b.v_itms[i].id, b.id);
+                        return YES;
+                }
+        }
+        return NO;
+}
+
 static void _reassign(struct bin &b, int &p, int itm_idx)
 {
         int flag;
@@ -208,12 +224,23 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         flag_src_dst = NO;
         flag_dst_src = NO;
 
+        /* test src -> dst */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                /* test src -> dst */
                 if (v_bins[i].id == fail_src_itm.second)
                         continue;
 
                 if (v_bins[i].id == fail_dst_itm.second) {
+                        /* first check if dual frag present in dst bin */
+                        int ret = _check_if_dual_frag(v_bins[i], 
+                                        fail_src_itm.first.id, fail_src_itm.second, 
+                                        fail_src_itm.first.frag_id);
+
+                        /* TODO for now just skip */
+                        if (ret == YES) {
+                                flag_src_dst = NO;
+                                break;
+                        }
+
                         if (v_bins[i].cap_rem + fail_dst_itm.first.size >= 
                                         fail_src_itm.first.size) {
                                 flag_src_dst = YES;
@@ -222,12 +249,24 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                 }
         }
 
+        /* test dst -> src */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].id == fail_dst_itm.second)
                         continue;
 
-                /* test dst -> src */
                 if (v_bins[i].id == fail_src_itm.second) {
+                        /* first check if dual frag present in dst bin */
+                        int ret = _check_if_dual_frag(v_bins[i], 
+                                        fail_dst_itm.first.id, fail_dst_itm.second, 
+                                        fail_dst_itm.first.frag_id);
+
+                        /* TODO for now just skip */
+                        if (ret == YES) {
+                                flag_dst_src = NO;
+                                break;
+                        }
+                                
+
                         if (v_bins[i].cap_rem + fail_src_itm.first.size >= 
                                         fail_dst_itm.first.size) {
                                 flag_dst_src = YES;
@@ -236,7 +275,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                 }
         }
 
-        if (flag_src_dst == YES || flag_dst_src == YES) {
+        if (flag_src_dst == YES && flag_dst_src == YES) {
                 printf("Found Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
                                 fail_src_itm.first.id, fail_src_itm.first.size, 
                                 fail_src_itm.second, fail_dst_itm.first.id, 
@@ -338,7 +377,7 @@ static void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
                                 flag_dst = YES;
                 }
         }
-        if (flag_src == YES && flag_dst == YES) {
+        if (flag_src == YES || flag_dst == YES) {
                 v_bins.clear();
                 v_bins = tmp_v_bins;
                 printf("<----Swap between src TC %d and dst TC %d Succeeded!---->\n", 
@@ -419,8 +458,11 @@ void reassignment(vector<struct bin> &v_bins)
         }
 }
 
+
+
 void displacement(vector<struct bin> &v_bins)
 {
+        int ret;
         int flag;
         int is_found;
         struct bin dst_b;
@@ -428,6 +470,7 @@ void displacement(vector<struct bin> &v_bins)
         vector<struct bin> v_fail_bins;
         vector<pair<struct item, int>> v_fail_itms;
 
+        ret = NO;
         flag = NO;
         is_found = NO;
         dst_b = {0};
@@ -446,6 +489,15 @@ void displacement(vector<struct bin> &v_bins)
                 /* create a vector bin for each item to test */
                 v_fail_bins.clear();
                 for (unsigned int j = 0; j < v_bins.size(); j++) {
+                        /* check if dst bin has the dual fragment of current itm */
+                        ret = _check_if_dual_frag(v_bins[j], 
+                                        v_fail_itms[i].first.id, v_fail_itms[i].second, 
+                                        v_fail_itms[i].first.frag_id);
+
+                        /* TODO for now just skip */
+                        if (ret == YES)
+                                continue;
+
                         if (v_bins[j].flag == SCHED_OK && flag == YES && 
                                         v_bins[j].cap_rem >= v_fail_itms[i].first.tc.u) {
                                 /* add bin in v_bi and add itm to v_bi */
@@ -472,7 +524,7 @@ void displacement(vector<struct bin> &v_bins)
                         is_found = NO;
                 }
         }
-        /* try priority reassignment for bins that lost an fail_itm */
+        /* try priority reassignment for bins that lost a fail_itm */
         reassignment(v_bins);
 }
 

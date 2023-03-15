@@ -10,6 +10,8 @@ struct best_cut {
         struct cut c;
 };
 
+static int frag_id_count = 1;
+
 static vector<struct item> frags_bfdu_f;
 
 static struct best_cut cut = {0};
@@ -174,6 +176,7 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         /* creates first itm with left fragment*/
         ctx.itms_count++;
         itm_lf.id = ctx.itms_count;
+        itm_lf.frag_id = frag_id_count;
         itm_lf.is_allocated = YES;
         itm_lf.is_frag = YES;
         itm_lf.is_fragmented = NO;
@@ -184,6 +187,7 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         /* creates second itm with right fragment*/
         ctx.itms_count++;
         itm_rf.id = ctx.itms_count;
+        itm_rf.frag_id = frag_id_count;
         itm_rf.is_allocated = YES;
         itm_rf.is_frag = YES;
         itm_rf.is_fragmented = NO;
@@ -208,6 +212,8 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         /* add fragments to their respective bins */
         add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx);
         add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx);
+
+        frag_id_count++;
 }
 
 void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 

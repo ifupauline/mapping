@@ -46,9 +46,6 @@ int main(int argc, char **argv)
         /* optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
-        /* augmentation */
-        augmentation(v_bins_bfdu_f, ctx_bfdu_f);
-
         /* results */
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);

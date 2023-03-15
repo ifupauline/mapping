@@ -387,7 +387,6 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
         printf("------------------------------------------------------------------------>\n");
         printf("New Added Cores (allocation):     %-2d\n", ctx.cycl_count);
-        printf("New Added Cores (augmentation):   %-2d\n", ctx.bins_count - (ctx.cycl_count + ctx.bins_min));
         printf("------------------------------------------------------------------------>\n");
         printf("\n+===========================================+\n");
         printf("| PERFORMANCE METRICS                       |\n");
@@ -398,8 +397,6 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
         printf("Schedulability Rate (opti):       %-3.3f  +%-3.3f\n", ctx.p.sched_rate_opti, 
                         (ctx.p.sched_rate_opti - ctx.p.sched_rate_allo));
-        printf("Schedulability Rate (augm)        %-2.2f  +%-3.3f\n", ctx.p.sched_rate_augm,
-                        (ctx.p.sched_rate_augm - ctx.p.sched_rate_opti));
         printf("------------------------------------------------------------------------>\n");
         printf("Total Execution Time:             %-3.3f ms\n", ctx.p.et * MSEC);
         printf("------------------------------------------------------------------------>\n");

@@ -2,15 +2,9 @@
 #define BENCH_H
 
 #define B_CR      0
-#define B_CC      1
-#define B_ET      2
-#define B_CC_OPTI 3
-#define B_CC_ALLO 4
-#define B_ET_ALLO 5
-#define B_ET_OPTI 6
-#define B_SR_ALLO 7
-#define B_SR_AUGM 8
-#define B_SR_OPTI 9
+#define B_ET      1
+#define B_SR_ALLO 2
+#define B_SR_OPTI 3
 
 #define BUFFSIZE  256
 
@@ -18,14 +12,10 @@
 
 struct b_stats {
         int phi;
-        float mean_cc;
         float mean_cr;
         float mean_et;
-        float mean_cc_opti;
-        float mean_cc_allo;
         float mean_sr_allo;
         float mean_sr_opti;
-        float mean_sr_augm;
 };
 
 void concatenate(char p[], char q[]);

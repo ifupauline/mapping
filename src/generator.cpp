@@ -141,6 +141,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 itm.tc.u = 0;
                 task_nbr = _gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.nbr_cut = task_nbr - 1;
+                itm.frag_id = -1;
                 itm.is_frag = NO;
                 itm.is_fragmented = NO;
                 itm.is_allocated = NO;
