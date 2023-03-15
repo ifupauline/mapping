@@ -4,12 +4,32 @@
 
 #define STEP   2
 #define ITER   26
-#define SIMNBR 5
+#define SIMNBR 1000
 
 static char const *cmd_gnuplot_cr[] = {};
 static char const *cmd_gnuplot_et[] = {};
 static char const *cmd_gnuplot_sr[] = {};
-static char const *cmd_gnuplot_reas[] = {};
+static char const *cmd_gnuplot_op[] = {};
+
+static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)
+{
+        float sum_reas;
+        float sum_disp;
+        float sum_swap;
+
+        sum_reas = 0.0;
+        sum_disp = 0.0;
+        sum_swap = 0.0;
+
+        for (unsigned int i = 0; i < v_stts_bfdu_f.size(); i++) {
+                sum_reas += v_stts_bfdu_f[i].mean_reas;
+                sum_disp += v_stts_bfdu_f[i].mean_disp;
+                sum_swap += v_stts_bfdu_f[i].mean_swap;
+        }
+        v_stts_bfdu_f[0].total_mean_reas = sum_reas / ITER;
+        v_stts_bfdu_f[0].total_mean_disp = sum_disp / ITER;
+        v_stts_bfdu_f[0].total_mean_swap = sum_swap / ITER;
+}
 
 static void phi_nh(vector<struct b_stats> &v_stts_bfdu_f)
 {
@@ -26,7 +46,7 @@ static void phi_nh(vector<struct b_stats> &v_stts_bfdu_f)
         ctx = {0};
 
         /* params instance */
-        prm.n = 50;
+        prm.n = 100;
         prm.h = NO;
         prm.phi = 102;
 
@@ -82,6 +102,7 @@ static void phi_nh(vector<struct b_stats> &v_stts_bfdu_f)
                 stts_bfdu_f.mean_swap /= (float)SIMNBR;
                 v_stts_bfdu_f.push_back(stts_bfdu_f);
         }
+        _cmp_avr_mean(v_stts_bfdu_f);
 }
 
 int main(void)
@@ -98,20 +119,19 @@ int main(void)
 
         FILE *bfdu_f_cr = (FILE*)fopen("data.bfdu_f_cr_phi_nh", "w");
         FILE *bfdu_f_et = (FILE*)fopen("data.bfdu_f_et_phi_nh", "w");
+        FILE *bfdu_f_op = (FILE*)fopen("data.bfdu_f_op_phi_nh", "w");
         FILE *bfdu_f_sr_allo = (FILE*)fopen("data.bfdu_f_sr_allo_phi_nh", "w");
         FILE *bfdu_f_sr_opti = (FILE*)fopen("data.bfdu_f_sr_opti_phi_nh", "w");
-        FILE *bfdu_f_reas = (FILE*)fopen("data.bfdu_f_reas_phi_nh", "w");
 
         write_data_to_file(bfdu_f_cr, v_stts_bfdu_f, B_CR, ITER);
         write_data_to_file(bfdu_f_et, v_stts_bfdu_f, B_ET, ITER);
+        write_data_to_file(bfdu_f_op, v_stts_bfdu_f, B_OPT, ITER);
         write_data_to_file(bfdu_f_sr_allo, v_stts_bfdu_f, B_SR_ALLO, ITER);
         write_data_to_file(bfdu_f_sr_opti, v_stts_bfdu_f, B_SR_OPTI, ITER);
 
-        write_data_to_file(bfdu_f_reas, v_stts_bfdu_f, B_REAS, ITER);
-
         cmd_gnuplot_cr[0] = "set title 'Cores Ratio NH'";
         cmd_gnuplot_cr[1] = "set xrange [45:105]";
-        cmd_gnuplot_cr[2] = "set yrange [1:1.7]";
+        cmd_gnuplot_cr[2] = "set yrange [1:1.06]";
         cmd_gnuplot_cr[3] = "set xlabel 'phi'";
         cmd_gnuplot_cr[4] = "set ylabel 'M/M*'";
         cmd_gnuplot_cr[5] = "set datafile separator whitespace";
@@ -120,7 +140,7 @@ int main(void)
 
         cmd_gnuplot_et[0] = "set title 'Execution Time NH (ms)'";
         cmd_gnuplot_et[1] = "set xrange [45:105]";
-        cmd_gnuplot_et[2] = "set yrange [0:600]";
+        cmd_gnuplot_et[2] = "set yrange [0:80]";
         cmd_gnuplot_et[3] = "set xlabel 'phi'";
         cmd_gnuplot_et[4] = "set ylabel 'milliseconds'";
         cmd_gnuplot_et[5] = "set datafile separator whitespace";
@@ -129,7 +149,7 @@ int main(void)
 
         cmd_gnuplot_sr[0] = "set title 'Schedulability Rate NH'";
         cmd_gnuplot_sr[1] = "set xrange [45:105]";
-        cmd_gnuplot_sr[2] = "set yrange [0:120]";
+        cmd_gnuplot_sr[2] = "set yrange [0:100]";
         cmd_gnuplot_sr[3] = "set xlabel 'phi'";
         cmd_gnuplot_sr[4] = "set ylabel 'rate'";
         cmd_gnuplot_sr[5] = "set datafile separator whitespace";
@@ -137,22 +157,25 @@ int main(void)
         cmd_gnuplot_sr[7] = "replot 'data.bfdu_f_sr_opti_phi_nh' with linespoint lc 6 pointtype 7";
         plot_data(gnuplot_bfdu_f_sr, cmd_gnuplot_sr, 8);
 
-        cmd_gnuplot_reas[0] = "set title 'Optimization Gain NH '";
-        cmd_gnuplot_reas[1] = "set style data histogram";
-        cmd_gnuplot_reas[2] = "set style fill solid";
-        cmd_gnuplot_reas[3] = "set style histogram clustered";
-        cmd_gnuplot_reas[4] = "set xlabel 'phi'";
-        cmd_gnuplot_reas[5] = "set ylabel 'gain'";
-        cmd_gnuplot_reas[6] = "plot 'data.bfdu_f_reas_phi_nh' using 2:xtic(1) title 'reas', 'data.bfdu_f_reas_phi_nh' using 3:xtic(1) title 'disp'\
-                               ,'data.bfdu_f_reas_phi_nh' using 4:xtic(1) title 'swap'";
-        plot_data(gnuplot_bfdu_f_op, cmd_gnuplot_reas, 7);
+        cmd_gnuplot_op[0] = "set title 'Optimization Gain NH '";
+        cmd_gnuplot_op[1] = "set style data histogram";
+        cmd_gnuplot_op[2] = "set style fill solid";
+        cmd_gnuplot_op[3] = "set style histogram clustered";
+        cmd_gnuplot_op[4] = "set ylabel 'score'";
+        cmd_gnuplot_op[5] = "set yrange [0:20]";
+        cmd_gnuplot_op[6] = "plot 'data.bfdu_f_op_phi_nh' using 2:xtic(1) title 'reas',\
+                             'data.bfdu_f_op_phi_nh' using 3:xtic(1) title 'disp',\
+                             'data.bfdu_f_op_phi_nh' using 4:xtic(1) title 'swap'";
+        plot_data(gnuplot_bfdu_f_op, cmd_gnuplot_op, 7);
 
         fflush(gnuplot_bfdu_f_cr);
         fflush(gnuplot_bfdu_f_et);
         fflush(gnuplot_bfdu_f_sr);
+        fflush(gnuplot_bfdu_f_op);
 
         fclose(bfdu_f_cr);
         fclose(bfdu_f_et);
+        fclose(bfdu_f_op);
         fclose(bfdu_f_sr_allo);
         fclose(bfdu_f_sr_opti);
 

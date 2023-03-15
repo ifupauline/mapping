@@ -155,29 +155,24 @@ ARCHITECTURE_ID	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cp
 AUGMENTATION_H	include/augmentation.h	2;"	d
 BENCH_H	include/exp.h	2;"	d
 BFDU_F	include/mapping.h	16;"	d
-BUFFSIZE	include/exp.h	12;"	d
+BUFFSIZE	include/exp.h	10;"	d
 B_CR	include/exp.h	4;"	d
-B_DISP	include/exp.h	9;"	d
 B_ET	include/exp.h	5;"	d
-B_REAS	include/exp.h	8;"	d
+B_OPT	include/exp.h	8;"	d
 B_SR_ALLO	include/exp.h	6;"	d
 B_SR_OPTI	include/exp.h	7;"	d
-B_SWAP	include/exp.h	10;"	d
 C	include/mapping.h	19;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_BINARY_DIR	exp/phi_h/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi_nh/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/example/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	exp/phi_h/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/phi_nh/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/example/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_SOURCE_DIR	exp/phi_h/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	exp/phi_nh/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/example/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -817,7 +812,6 @@ DEC	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
 DEC	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
 EQUALS	Makefile	/^EQUALS = =$/;"	m
-EQUALS	exp/phi_h/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/phi_nh/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
@@ -829,7 +823,6 @@ HEX	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ID_VOID_MAIN	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
-ITER	exp/phi_h/phi_h.cpp	6;"	d	file:
 ITER	exp/phi_nh/phi_nh.cpp	6;"	d	file:
 MAPPING_H	include/mapping.h	2;"	d
 MAXMAXTU	src/generator.cpp	14;"	d	file:
@@ -986,7 +979,6 @@ PLATFORM_ID	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	50
 PRECISION	src/generator.cpp	5;"	d	file:
 PRINT_H	include/print.h	2;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	exp/phi_h/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/phi_nh/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/example/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -995,12 +987,10 @@ SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
 SCHED_OK	include/sched_analysis.h	8;"	d
 SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	exp/phi_h/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/phi_nh/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/example/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SIMNBR	exp/phi_h/phi_h.cpp	7;"	d	file:
 SIMNBR	exp/phi_nh/phi_nh.cpp	7;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	291;"	d	file:
@@ -1090,7 +1080,6 @@ SIMULATE_VERSION_PATCH	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId
 SIMULATE_VERSION_PATCH	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	67;"	d	file:
 SIMULATE_VERSION_PATCH	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	105;"	d	file:
 SIMULATE_VERSION_PATCH	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	67;"	d	file:
-STEP	exp/phi_h/phi_h.cpp	5;"	d	file:
 STEP	exp/phi_nh/phi_nh.cpp	5;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	417;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	402;"	d	file:
@@ -1111,6 +1100,7 @@ _assign_unique_priorities	src/sched_analysis.cpp	/^static void _assign_unique_pr
 _bff	src/bfdu_f.cpp	/^static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
 _check_if_dual_frag	src/optimization.cpp	/^static int _check_if_dual_frag(struct bin &b, int src_itm_id, $/;"	f	file:
 _check_params	src/generator.cpp	/^void _check_params(struct params &prm)$/;"	f
+_cmp_avr_mean	exp/phi_nh/phi_nh.cpp	/^static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_bin_cap_rem	src/model.cpp	/^static int _cmp_inc_bin_cap_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
@@ -1155,12 +1145,9 @@ c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:be
 c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
 c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
 cap_rem	include/model.h	/^        int cap_rem;$/;"	m	struct:bin
-cmd_gnuplot_cr	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_cr	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
-cmd_gnuplot_et	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
-cmd_gnuplot_reas	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_reas[] = {};$/;"	v	file:
-cmd_gnuplot_sr	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
+cmd_gnuplot_op	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_op[] = {};$/;"	v	file:
 cmd_gnuplot_sr	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 compute_bin_cap_rem	src/model.cpp	/^void compute_bin_cap_rem(struct bin &b)$/;"	f
@@ -1273,7 +1260,6 @@ lf_size	src/wfdu_f.cpp	/^        int lf_size;$/;"	m	struct:worst_cut	file:
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
-main	exp/phi_h/phi_h.cpp	/^int main(void)$/;"	f
 main	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
 main	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
@@ -1297,7 +1283,6 @@ perf	include/mapping.h	/^struct perf {$/;"	s
 phi	include/exp.h	/^        int phi;$/;"	m	struct:b_stats
 phi	include/mapping.h	/^        int phi;$/;"	m	struct:params
 phi	include/model.h	/^        int phi;$/;"	m	struct:bin
-phi_h	exp/phi_h/phi_h.cpp	/^static void phi_h(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 phi_nh	exp/phi_nh/phi_nh.cpp	/^static void phi_nh(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 plot_data	src/exp.cpp	/^void plot_data(FILE *gnuplot_pipe, char const *commands_gnuplot[], int cmd_nbr)$/;"	f
 print_b_stats	src/exp.cpp	/^void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)$/;"	f
@@ -1353,6 +1338,9 @@ task_chain	include/model.h	/^struct task_chain {$/;"	s
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
 tasks_count	include/mapping.h	/^        int tasks_count;$/;"	m	struct:context
 tc	include/model.h	/^        struct task_chain tc;$/;"	m	struct:item	typeref:struct:item::task_chain
+total_mean_disp	include/exp.h	/^        float total_mean_disp;$/;"	m	struct:b_stats
+total_mean_reas	include/exp.h	/^        float total_mean_reas;$/;"	m	struct:b_stats
+total_mean_swap	include/exp.h	/^        float total_mean_swap;$/;"	m	struct:b_stats
 u	include/model.h	/^        int u;$/;"	m	struct:task
 u	include/model.h	/^        int u;$/;"	m	struct:task_chain
 v_cuts	include/model.h	/^        vector<struct cut> v_cuts;$/;"	m	struct:task_chain

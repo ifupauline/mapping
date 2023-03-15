@@ -24,51 +24,37 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
         switch (type) {
                 case B_CR: 
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, 
+                                fprintf(filename, "%d %f\n", 
+                                                data[i].phi, 
                                                 data[i].mean_cr);
                         break;
 
                 case B_ET:
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, 
+                                fprintf(filename, "%d %f\n", 
+                                                data[i].phi, 
                                                 data[i].mean_et);
                         break;
 
                 case B_SR_ALLO:
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, 
+                                fprintf(filename, "%d %f\n", 
+                                                data[i].phi, 
                                                 data[i].mean_sr_allo);
                         break;
 
                 case B_SR_OPTI:
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, 
+                                fprintf(filename, "%d %f\n", 
+                                                data[i].phi, 
                                                 data[i].mean_sr_opti);
                         break;
 
-                case B_REAS:
-                        for (int i = 0; i < size; i++)
-                                fprintf(filename, "%d %f %f %f\n", 
-                                                data[i].phi, 
-                                                data[i].mean_reas, data[i].mean_disp, data[i].mean_swap);
-                        break;
-
-                case B_DISP:
-                        for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, 
-                                                data[i].mean_disp);
-                        break;
-
-                case B_SWAP:
-                        for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f\n", 
-                                                (float)data[i].phi, 
-                                                data[i].mean_swap);
+                case B_OPT:
+                                fprintf(filename, "%s %f %f %f\n", "Average",
+                                                data[0].total_mean_reas, 
+                                                data[0].total_mean_disp, 
+                                                data[0].total_mean_swap);
                         break;
 
                 default:
@@ -92,6 +78,9 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)
                 printf("BFDU_F.Execution Time                   : %f\n", v_stts_bfdu_f[i].mean_et);
                 printf("BFDU_F.Schedulability Rate (allo)       : %f\n", v_stts_bfdu_f[i].mean_sr_allo);
                 printf("BFDU_F.Schedulability Rate (opti)       : %f\n", v_stts_bfdu_f[i].mean_sr_opti);
+                printf("BFDU_F.Optimization Gain:  (reas)       : %f\n",v_stts_bfdu_f[i].mean_reas);
+                printf("BFDU_F.Optimization Gain:  (disp)       : %f\n",v_stts_bfdu_f[i].mean_disp);
+                printf("BFDU_F.Optimization Gain:  (swap)       : %f\n",v_stts_bfdu_f[i].mean_swap);
                 printf("\n");
         }
 }

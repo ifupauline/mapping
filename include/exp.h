@@ -5,9 +5,7 @@
 #define B_ET      1
 #define B_SR_ALLO 2
 #define B_SR_OPTI 3
-#define B_REAS    4
-#define B_DISP    5
-#define B_SWAP    6
+#define B_OPT     4
 
 #define BUFFSIZE  256
 
@@ -22,6 +20,9 @@ struct b_stats {
         float mean_swap;
         float mean_sr_allo;
         float mean_sr_opti;
+        float total_mean_reas;
+        float total_mean_disp;
+        float total_mean_swap;
 };
 
 void concatenate(char p[], char q[]);

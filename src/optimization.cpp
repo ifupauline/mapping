@@ -2,6 +2,8 @@
 
 #include "sched_analysis.h"
 
+#define MAX_DISP_COUNT 5
+
 static int _search_unsched_task(vector<struct task> &v_tasks)
 {
         int high_p;
@@ -486,58 +488,58 @@ void displacement(vector<struct bin> &v_bins)
 
         while (1) {
                 state = NO;
-        /* find a schedulable bin that has enough space for the itm to fit */
-        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                printf("Try to displace task-chain %-3d from Core %-3d\n", 
-                                v_fail_itms[i].first.id, v_fail_itms[i].second);
-                /* create a vector bin for each item to test */
-                v_fail_bins.clear();
-                for (unsigned int j = 0; j < v_bins.size(); j++) {
-                        /* check if dst bin has the dual fragment of current itm */
-                        ret = _check_if_dual_frag(v_bins[j], 
-                                        v_fail_itms[i].first.id, v_fail_itms[i].second, 
-                                        v_fail_itms[i].first.frag_id);
-
-                        /* TODO for now just skip */
-                        if (ret == YES)
-                                continue;
-
-                        if (v_bins[j].flag == SCHED_OK && flag == YES && 
-                                        v_bins[j].cap_rem >= v_fail_itms[i].first.tc.u) {
-                                /* add bin in v_bi and add itm to v_bi */
-                                v_fail_bins.push_back(v_bins[j]);
-                                v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);
-                                v_fail_bins.back().v_tasks.clear();
-                        }
-                }
-
-                /* test dst bins and save best bin */
-                is_found = _search_for_displace(v_fail_bins, v_fail_itms, i, dst_b);
-
-                /* if bin not found continue */
-                if (is_found == NO)
-                        printf("Could not displace task-chain %-3d from Core %-3d\n\n", 
+                /* find a schedulable bin that has enough space for the itm to fit */
+                for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                        printf("Try to displace task-chain %-3d from Core %-3d\n", 
                                         v_fail_itms[i].first.id, v_fail_itms[i].second);
+                        /* create a vector bin for each item to test */
+                        v_fail_bins.clear();
+                        for (unsigned int j = 0; j < v_bins.size(); j++) {
+                                /* check if dst bin has the dual fragment of current itm */
+                                ret = _check_if_dual_frag(v_bins[j], 
+                                                v_fail_itms[i].first.id, v_fail_itms[i].second, 
+                                                v_fail_itms[i].first.frag_id);
 
-                else if (is_found == YES) {
-                        if (v_fail_itms[i].first.disp_count == 5) {
-                                state = NO;
-                        } else {
-                        /* displace */
-                        fail_itm.first = {0};
-                        fail_itm.second = 0;
-                        fail_itm = v_fail_itms[i];
-                        v_fail_itms[i].first.disp_count++;
-                        _displace(v_bins, fail_itm, dst_b);
-                        is_found = NO;
-                        state = YES;
+                                /* TODO for now just skip */
+                                if (ret == YES)
+                                        continue;
+
+                                if (v_bins[j].flag == SCHED_OK && flag == YES && 
+                                                v_bins[j].cap_rem >= v_fail_itms[i].first.tc.u) {
+                                        /* add bin in v_bi and add itm to v_bi */
+                                        v_fail_bins.push_back(v_bins[j]);
+                                        v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);
+                                        v_fail_bins.back().v_tasks.clear();
+                                }
+                        }
+
+                        /* test dst bins and save best bin */
+                        is_found = _search_for_displace(v_fail_bins, v_fail_itms, i, dst_b);
+
+                        /* if bin not found continue */
+                        if (is_found == NO)
+                                printf("Could not displace task-chain %-3d from Core %-3d\n\n", 
+                                                v_fail_itms[i].first.id, v_fail_itms[i].second);
+
+                        else if (is_found == YES) {
+                                if (v_fail_itms[i].first.disp_count == MAX_DISP_COUNT)
+                                        state = NO;
+                                else {
+                                        /* displace */
+                                        fail_itm.first = {0};
+                                        fail_itm.second = 0;
+                                        fail_itm = v_fail_itms[i];
+                                        v_fail_itms[i].first.disp_count++;
+                                        _displace(v_bins, fail_itm, dst_b);
+                                        is_found = NO;
+                                        state = YES;
+                                }
                         }
                 }
-        }
-        /* try priority reassignment for bins that lost a fail_itm */
-        reassignment(v_bins);
+                /* try priority reassignment for bins that lost a fail_itm */
+                reassignment(v_bins);
 
-        if (state == NO)
+                if (state == NO)
                         break;
         }
 }
