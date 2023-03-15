@@ -176,6 +176,7 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         /* creates first itm with left fragment*/
         ctx.itms_count++;
         itm_lf.id = ctx.itms_count;
+        itm_lf.disp_count = 0;
         itm_lf.frag_id = frag_id_count;
         itm_lf.is_allocated = YES;
         itm_lf.is_frag = YES;
@@ -187,6 +188,7 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         /* creates second itm with right fragment*/
         ctx.itms_count++;
         itm_rf.id = ctx.itms_count;
+        itm_rf.disp_count = 0;
         itm_rf.frag_id = frag_id_count;
         itm_rf.is_allocated = YES;
         itm_rf.is_frag = YES;

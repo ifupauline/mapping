@@ -43,6 +43,7 @@ struct item {
         int size;
         int nbr_cut;
         int frag_id;
+        int disp_count;
         int is_frag;
         int is_allocated;
         int is_fragmented;

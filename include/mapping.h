@@ -41,6 +41,9 @@ struct perf {
         float sched_rate_swap;
         float sched_rate_opti;
         float sched_rate_augm;
+        float reas_gain;
+        float disp_gain;
+        float swap_gain;
         int sched_imp_prio;
         int sched_imp_disp;
         int sched_imp_swap;

@@ -2,6 +2,8 @@
 
 #include "sched_analysis.h"
 
+#define MAX_DISP_COUNT 5
+
 static int _search_unsched_task(vector<struct task> &v_tasks)
 {
         int high_p;
@@ -184,6 +186,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                         if (tmp_max > max)
                                 max = tmp_max;
                         is_found = YES;
+                        v_fail_itms[item_idx].first.disp_count++;
                 }
 
                 /* search for failed task with highest priority and _reassign */
@@ -208,6 +211,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                                 if (tmp_max > max)
                                         max = tmp_max;
                                 is_found = YES;
+                                v_fail_itms[item_idx].first.disp_count++;
                         }
                 }
         }
@@ -265,7 +269,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                                 flag_dst_src = NO;
                                 break;
                         }
-                                
+
 
                         if (v_bins[i].cap_rem + fail_src_itm.first.size >= 
                                         fail_dst_itm.first.size) {
@@ -285,7 +289,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         return NO;
 }
 
-static void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, 
+static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, 
                 int src_bin_id, int dst_bin_id)
 {
         int bin_idx;
@@ -382,9 +386,11 @@ static void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
                 v_bins = tmp_v_bins;
                 printf("<----Swap between src TC %d and dst TC %d Succeeded!---->\n", 
                                 src_tc_id, dst_tc_id);
+                return YES;
         } else
                 printf("Could not Swap src TC %d and dst TC %d\n\n", 
                                 src_tc_id, dst_tc_id);
+        return NO;
 }
 
 static void _displace(vector<struct bin> &v_bins, pair<struct item, 
@@ -458,12 +464,11 @@ void reassignment(vector<struct bin> &v_bins)
         }
 }
 
-
-
 void displacement(vector<struct bin> &v_bins)
 {
         int ret;
         int flag;
+        int state;
         int is_found;
         struct bin dst_b;
         pair<struct item, int> fail_itm;
@@ -472,6 +477,7 @@ void displacement(vector<struct bin> &v_bins)
 
         ret = NO;
         flag = NO;
+        state = NO;
         is_found = NO;
         dst_b = {0};
         fail_itm.first = {0};
@@ -481,62 +487,76 @@ void displacement(vector<struct bin> &v_bins)
         _store_unsched_itms(v_bins, v_fail_itms, flag);
 
         printf("\n");
+        while (1) {
+                state = NO;
+                /* find a schedulable bin that has enough space for the itm to fit */
+                for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                        printf("Try to displace task-chain %-3d from Core %-3d\n", 
+                                        v_fail_itms[i].first.id, v_fail_itms[i].second);
+                        /* create a vector bin for each item to test */
+                        v_fail_bins.clear();
+                        for (unsigned int j = 0; j < v_bins.size(); j++) {
+                                /* check if dst bin has the dual fragment of current itm */
+                                ret = _check_if_dual_frag(v_bins[j], 
+                                                v_fail_itms[i].first.id, v_fail_itms[i].second, 
+                                                v_fail_itms[i].first.frag_id);
 
-        /* find a schedulable bin that has enough space for the itm to fit */
-        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                printf("Try to displace task-chain %-3d from Core %-3d\n", 
-                                v_fail_itms[i].first.id, v_fail_itms[i].second);
-                /* create a vector bin for each item to test */
-                v_fail_bins.clear();
-                for (unsigned int j = 0; j < v_bins.size(); j++) {
-                        /* check if dst bin has the dual fragment of current itm */
-                        ret = _check_if_dual_frag(v_bins[j], 
-                                        v_fail_itms[i].first.id, v_fail_itms[i].second, 
-                                        v_fail_itms[i].first.frag_id);
+                                /* TODO for now just skip */
+                                if (ret == YES)
+                                        continue;
 
-                        /* TODO for now just skip */
-                        if (ret == YES)
-                                continue;
+                                if (v_bins[j].flag == SCHED_OK && flag == YES && 
+                                                v_bins[j].cap_rem >= v_fail_itms[i].first.tc.u) {
+                                        /* add bin in v_bi and add itm to v_bi */
+                                        v_fail_bins.push_back(v_bins[j]);
+                                        v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);
+                                        v_fail_bins.back().v_tasks.clear();
+                                }
+                        }
 
-                        if (v_bins[j].flag == SCHED_OK && flag == YES && 
-                                        v_bins[j].cap_rem >= v_fail_itms[i].first.tc.u) {
-                                /* add bin in v_bi and add itm to v_bi */
-                                v_fail_bins.push_back(v_bins[j]);
-                                v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);
-                                v_fail_bins.back().v_tasks.clear();
+                        /* test dst bins and save best bin */
+                        is_found = _search_for_displace(v_fail_bins, v_fail_itms, i, dst_b);
+
+                        /* if bin not found continue */
+                        if (is_found == NO)
+                                printf("Could not displace task-chain %-3d from Core %-3d\n\n", 
+                                                v_fail_itms[i].first.id, v_fail_itms[i].second);
+
+                        else if (is_found == YES) {
+                                if (v_fail_itms[i].first.disp_count == MAX_DISP_COUNT) {
+                                        state = NO;
+
+                                } else {
+                                        /* displace */
+                                        fail_itm.first = {0};
+                                        fail_itm.second = 0;
+                                        fail_itm = v_fail_itms[i];
+                                        _displace(v_bins, fail_itm, dst_b);
+                                        is_found = NO;
+                                        state = YES;
+                                }
                         }
                 }
+                /* try priority reassignment for bins that lost a fail_itm */
+                reassignment(v_bins);
 
-                /* test dst bins and save best bin */
-                is_found = _search_for_displace(v_fail_bins, v_fail_itms, i, dst_b);
-
-                /* if bin not found continue */
-                if (is_found == NO)
-                        printf("Could not displace task-chain %-3d from Core %-3d\n\n", 
-                                        v_fail_itms[i].first.id, v_fail_itms[i].second);
-
-                else if (is_found == YES) {
-                        /* displace */
-                        fail_itm.first = {0};
-                        fail_itm.second = 0;
-                        fail_itm = v_fail_itms[i];
-                        _displace(v_bins, fail_itm, dst_b);
-                        is_found = NO;
-                }
+                if (state == NO)
+                        break;
         }
-        /* try priority reassignment for bins that lost a fail_itm */
-        reassignment(v_bins);
 }
 
 void swapping(vector<struct bin> &v_bins)
 {
+        int ret;
         int flag;
+        int state;
         int src_tc_id;
         int dst_tc_id;
         int src_bin_id;
         int dst_bin_id;
         vector<pair<struct item, int>> v_fail_itms;
 
+        state = NO;
         flag = NO;
         src_bin_id = 0;
         dst_bin_id = 0;
@@ -546,28 +566,35 @@ void swapping(vector<struct bin> &v_bins)
         /* store fail_bins */
         _store_unsched_itms(v_bins, v_fail_itms, flag);
 
-        /* iterate over unsched itms */
-        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                for (unsigned int j = 0; j < v_fail_itms.size(); j++) {
-                        /* skip itms in same bin */
-                        if (v_fail_itms[j].second == v_fail_itms[i].second)
-                                continue;
+        while (1) {
+                state = NO;
+                /* iterate over unsched itms */
+                for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                        for (unsigned int j = 0; j < v_fail_itms.size(); j++) {
+                                /* skip itms in same bin */
+                                if (v_fail_itms[j].second == v_fail_itms[i].second)
+                                        continue;
 
-                        /* search if swap possible */
-                        flag = _search_for_swap(v_bins, 
-                                        v_fail_itms[i], v_fail_itms[j]);
+                                /* search if swap possible */
+                                flag = _search_for_swap(v_bins, 
+                                                v_fail_itms[i], v_fail_itms[j]);
 
-                        if (flag == YES) {
-                                /* store src and dst bin */
-                                src_bin_id = v_fail_itms[i].second;
-                                dst_bin_id = v_fail_itms[j].second;
-                                src_tc_id = v_fail_itms[i].first.id;
-                                dst_tc_id = v_fail_itms[j].first.id;
+                                if (flag == YES) {
+                                        /* store src and dst bin */
+                                        src_bin_id = v_fail_itms[i].second;
+                                        dst_bin_id = v_fail_itms[j].second;
+                                        src_tc_id = v_fail_itms[i].first.id;
+                                        dst_tc_id = v_fail_itms[j].first.id;
 
-                                /* swap */
-                                _swap(v_bins, src_tc_id, dst_tc_id, 
-                                                src_bin_id, dst_bin_id);
+                                        /* swap */
+                                        ret = _swap(v_bins, src_tc_id, dst_tc_id, 
+                                                        src_bin_id, dst_bin_id);
+                                        if (ret == YES)
+                                                state = YES;
+                                }
                         }
                 }
+                if (state == NO)
+                        break;
         }
 }
