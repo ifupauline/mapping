@@ -50,6 +50,27 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                                                 data[i].mean_sr_opti);
                         break;
 
+                case B_REAS:
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%d %f %f %f\n", 
+                                                data[i].phi, 
+                                                data[i].mean_reas, data[i].mean_disp, data[i].mean_swap);
+                        break;
+
+                case B_DISP:
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%f %f\n", 
+                                                (float)data[i].phi, 
+                                                data[i].mean_disp);
+                        break;
+
+                case B_SWAP:
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%f %f\n", 
+                                                (float)data[i].phi, 
+                                                data[i].mean_swap);
+                        break;
+
                 default:
                         printf("Error! Unknown type of data\n");
         }

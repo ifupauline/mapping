@@ -5,6 +5,9 @@
 #define B_ET      1
 #define B_SR_ALLO 2
 #define B_SR_OPTI 3
+#define B_REAS    4
+#define B_DISP    5
+#define B_SWAP    6
 
 #define BUFFSIZE  256
 
@@ -14,6 +17,9 @@ struct b_stats {
         int phi;
         float mean_cr;
         float mean_et;
+        float mean_reas;
+        float mean_disp;
+        float mean_swap;
         float mean_sr_allo;
         float mean_sr_opti;
 };

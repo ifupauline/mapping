@@ -155,17 +155,14 @@ ARCHITECTURE_ID	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cp
 AUGMENTATION_H	include/augmentation.h	2;"	d
 BENCH_H	include/exp.h	2;"	d
 BFDU_F	include/mapping.h	16;"	d
-BUFFSIZE	include/exp.h	15;"	d
-B_CC	include/exp.h	5;"	d
-B_CC_ALLO	include/exp.h	8;"	d
-B_CC_OPTI	include/exp.h	7;"	d
+BUFFSIZE	include/exp.h	12;"	d
 B_CR	include/exp.h	4;"	d
-B_ET	include/exp.h	6;"	d
-B_ET_ALLO	include/exp.h	9;"	d
-B_ET_OPTI	include/exp.h	10;"	d
-B_SR_ALLO	include/exp.h	11;"	d
-B_SR_AUGM	include/exp.h	12;"	d
-B_SR_OPTI	include/exp.h	13;"	d
+B_DISP	include/exp.h	9;"	d
+B_ET	include/exp.h	5;"	d
+B_REAS	include/exp.h	8;"	d
+B_SR_ALLO	include/exp.h	6;"	d
+B_SR_OPTI	include/exp.h	7;"	d
+B_SWAP	include/exp.h	10;"	d
 C	include/mapping.h	19;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi_h/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -1112,6 +1109,7 @@ __has_include	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	
 _assign_id	src/generator.cpp	/^static void _assign_id(vector<struct item> &v_itms)$/;"	f	file:
 _assign_unique_priorities	src/sched_analysis.cpp	/^static void _assign_unique_priorities(vector<struct bin> &v_bins)$/;"	f	file:
 _bff	src/bfdu_f.cpp	/^static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
+_check_if_dual_frag	src/optimization.cpp	/^static int _check_if_dual_frag(struct bin &b, int src_itm_id, $/;"	f	file:
 _check_params	src/generator.cpp	/^void _check_params(struct params &prm)$/;"	f
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_bin_cap_rem	src/model.cpp	/^static int _cmp_inc_bin_cap_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
@@ -1134,7 +1132,7 @@ _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vect
 _search_for_swap	src/optimization.cpp	/^static int _search_for_swap(vector<struct bin> &v_bins, $/;"	f	file:
 _search_unsched_task	src/optimization.cpp	/^static int _search_unsched_task(vector<struct task> &v_tasks)$/;"	f	file:
 _store_unsched_itms	src/optimization.cpp	/^static void _store_unsched_itms(vector<struct bin> &v_bins, $/;"	f	file:
-_swap	src/optimization.cpp	/^static void _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, $/;"	f	file:
+_swap	src/optimization.cpp	/^static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, $/;"	f	file:
 _wff	src/wfdu_f.cpp	/^static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
 a	include/mapping.h	/^        int a;$/;"	m	struct:params
 add_bin	src/model.cpp	/^void add_bin(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
@@ -1157,12 +1155,11 @@ c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:be
 c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
 c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
 cap_rem	include/model.h	/^        int cap_rem;$/;"	m	struct:bin
-cmd_gnuplot_cc	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_cc[] = {};$/;"	v	file:
-cmd_gnuplot_cc	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_cc[] = {};$/;"	v	file:
 cmd_gnuplot_cr	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_cr	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
+cmd_gnuplot_reas	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_reas[] = {};$/;"	v	file:
 cmd_gnuplot_sr	exp/phi_h/phi_h.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmd_gnuplot_sr	exp/phi_nh/phi_nh.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
@@ -1187,11 +1184,16 @@ d	include/model.h	/^        int d;$/;"	m	struct:task
 delete_itm_by_id	src/model.cpp	/^void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id)$/;"	f
 diff	src/bfdu_f.cpp	/^        int diff;$/;"	m	struct:best_cut	file:
 diff	src/wfdu_f.cpp	/^        int diff;$/;"	m	struct:worst_cut	file:
+disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:item
+disp_gain	include/mapping.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/mapping.h	/^        float disp_time;$/;"	m	struct:perf
 displacement	src/optimization.cpp	/^void displacement(vector<struct bin> &v_bins)$/;"	f
 et	include/mapping.h	/^        float et;$/;"	m	struct:perf
 execution_time	src/print.cpp	/^static void execution_time(struct context &ctx)$/;"	f	file:
 flag	include/model.h	/^        int flag;$/;"	m	struct:bin
+frag_id	include/model.h	/^        int frag_id;$/;"	m	struct:item
+frag_id_count	src/bfdu_f.cpp	/^static int frag_id_count = 1;$/;"	v	file:
+frag_id_count	src/wfdu_f.cpp	/^static int frag_id_count = 1;$/;"	v	file:
 frags_bfdu_f	src/bfdu_f.cpp	/^static vector<struct item> frags_bfdu_f;$/;"	v	file:
 frags_count	include/mapping.h	/^        int frags_count;$/;"	m	struct:context
 frags_wfdu_f	src/wfdu_f.cpp	/^static vector<struct item> frags_wfdu_f;$/;"	v	file:
@@ -1278,14 +1280,13 @@ main	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int mai
 main	exp/phi_nh/phi_nh.cpp	/^int main(void)$/;"	f
 main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
-mean_cc	include/exp.h	/^        float mean_cc;$/;"	m	struct:b_stats
-mean_cc_allo	include/exp.h	/^        float mean_cc_allo;$/;"	m	struct:b_stats
-mean_cc_opti	include/exp.h	/^        float mean_cc_opti;$/;"	m	struct:b_stats
 mean_cr	include/exp.h	/^        float mean_cr;$/;"	m	struct:b_stats
+mean_disp	include/exp.h	/^        float mean_disp;$/;"	m	struct:b_stats
 mean_et	include/exp.h	/^        float mean_et;$/;"	m	struct:b_stats
+mean_reas	include/exp.h	/^        float mean_reas;$/;"	m	struct:b_stats
 mean_sr_allo	include/exp.h	/^        float mean_sr_allo;$/;"	m	struct:b_stats
-mean_sr_augm	include/exp.h	/^        float mean_sr_augm;$/;"	m	struct:b_stats
 mean_sr_opti	include/exp.h	/^        float mean_sr_opti;$/;"	m	struct:b_stats
+mean_swap	include/exp.h	/^        float mean_swap;$/;"	m	struct:b_stats
 n	include/mapping.h	/^        int n;$/;"	m	struct:params
 nbr_cut	include/model.h	/^        int nbr_cut;$/;"	m	struct:item
 optimization	src/mapping.cpp	/^void optimization(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
@@ -1312,6 +1313,7 @@ qnxnto	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxn
 qnxnto	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 qnxnto	exp/phi_nh/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 r	include/model.h	/^        int r;$/;"	m	struct:task
+reas_gain	include/mapping.h	/^        float reas_gain;$/;"	m	struct:perf
 reass_time	include/mapping.h	/^        float reass_time;$/;"	m	struct:perf
 reassignment	src/optimization.cpp	/^void reassignment(vector<struct bin> &v_bins)$/;"	f
 replace_bin_by_id	src/model.cpp	/^void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)$/;"	f
@@ -1337,6 +1339,7 @@ sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_
 sort_inc_bin_cap_rem	src/model.cpp	/^void sort_inc_bin_cap_rem(vector<struct bin> &v_bins)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f
 sort_inc_task_priority	src/model.cpp	/^void sort_inc_task_priority(vector<struct task> &v_tasks)$/;"	f
+swap_gain	include/mapping.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/mapping.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/optimization.cpp	/^void swapping(vector<struct bin> &v_bins)$/;"	f
 t	include/model.h	/^        int t;$/;"	m	struct:task
