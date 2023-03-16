@@ -30,6 +30,7 @@ struct params {
 struct perf {
         float cr;
         float et;
+        float fr;
         float allo_time;
         float wcrt_time;
         float reass_time;
@@ -40,7 +41,6 @@ struct perf {
         float sched_rate_disp;
         float sched_rate_swap;
         float sched_rate_opti;
-        float sched_rate_augm;
         float reas_gain;
         float disp_gain;
         float swap_gain;
@@ -75,8 +75,6 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx);
-
-void augmentation(vector<struct bin> &v_bins, struct context &ctx);
 
 /* algorithms */
 void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 

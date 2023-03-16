@@ -7,9 +7,10 @@
 static int _search_unsched_task(vector<struct task> &v_tasks)
 {
         int high_p;
-        int flag = NO;
+        int flag;
         vector<int> v_p;
 
+        flag = NO;
         high_p = -1;
 
         for (unsigned int i = 0; i < v_tasks.size(); i++) {

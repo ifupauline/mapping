@@ -25,10 +25,10 @@ static void schedulability_rate(struct context &ctx)
 {
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
         ctx.p.sched_rate_opti = ctx.p.sched_rate_swap * PERCENT;
-        ctx.p.sched_rate_augm = ctx.p.sched_rate_augm * PERCENT;
         ctx.p.reas_gain = (ctx.p.sched_rate_prio * PERCENT) - ctx.p.sched_rate_allo;
         ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - (ctx.p.sched_rate_prio * PERCENT);
         ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - (ctx.p.sched_rate_disp * PERCENT);
+        ctx.p.fr = ((float)ctx.cuts_count / (float)ctx.prm.n) * PERCENT;
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -397,6 +397,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("+===========================================+\n");
         printf("------------------------------------------------------------------------>\n");
         printf("M/M*:                             %-3.3f\n", ctx.p.cr);
+        printf("Fragmentation Rate:               %-3.3f\n", ctx.p.fr);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (bef):        %-3.3f\n", ctx.p.sched_rate_allo);
         printf("Schedulability Rate (aft):        %-3.3f\n", ctx.p.sched_rate_swap * PERCENT);

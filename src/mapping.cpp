@@ -1,5 +1,4 @@
 #include "optimization.h"
-#include "augmentation.h"
 #include "sched_analysis.h"
 
 void generation(vector<struct bin> &v_bins, struct context &ctx)
@@ -100,13 +99,4 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
-}
-
-void augmentation(vector<struct bin> &v_bins, struct context &ctx)
-{
-        printf("+=====================================+\n");
-        printf("| AUGMENTATION                        |\n");
-        printf("+=====================================+\n");
-        converge(v_bins, ctx);
-        ctx.p.sched_rate_augm = sched_rate(v_bins, ctx);
 }

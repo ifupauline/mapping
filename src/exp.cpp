@@ -36,6 +36,13 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                                                 data[i].mean_et);
                         break;
 
+                case B_FR:
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%d %f\n", 
+                                                data[i].phi, 
+                                                data[i].mean_fr);
+                        break;
+
                 case B_SR_ALLO:
                         for (int i = 0; i < size; i++)
                                 fprintf(filename, "%d %f\n", 
@@ -51,9 +58,12 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                         break;
 
                 case B_OPT:
-                                fprintf(filename, "%s %f %f %f\n", "Average",
+                                fprintf(filename, "%s %f %f %f %f\n", "Average",
                                                 data[0].total_mean_reas, 
                                                 data[0].total_mean_disp, 
+                                                data[0].total_mean_swap,
+                                                data[0].total_mean_reas +
+                                                data[0].total_mean_disp +
                                                 data[0].total_mean_swap);
                         break;
 

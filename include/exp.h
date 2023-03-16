@@ -3,9 +3,10 @@
 
 #define B_CR      0
 #define B_ET      1
-#define B_SR_ALLO 2
-#define B_SR_OPTI 3
-#define B_OPT     4
+#define B_FR      2
+#define B_SR_ALLO 3
+#define B_SR_OPTI 4
+#define B_OPT     5
 
 #define BUFFSIZE  256
 
@@ -15,6 +16,7 @@ struct b_stats {
         int phi;
         float mean_cr;
         float mean_et;
+        float mean_fr;
         float mean_reas;
         float mean_disp;
         float mean_swap;
