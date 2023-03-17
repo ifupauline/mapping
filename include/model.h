@@ -44,6 +44,7 @@ struct item {
         int nbr_cut;
         int frag_id;
         int disp_count;
+        int swap_count;
         int is_frag;
         int is_allocated;
         int is_fragmented;
@@ -85,8 +86,14 @@ void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id,
 
 void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 
-void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id);
+struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id);
 
-void retrieve_tc_by_id(vector<struct bin> &v_bins, struct item &tc , int tc_id);
+struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id);
+
+int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
+
+void delete_itm_by_id(struct bin &b, int itm_id);
+
+void insert_itm_to_core(struct bin &b, struct item &itm);
 
 #endif /* MODEL_H */

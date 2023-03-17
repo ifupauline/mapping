@@ -138,17 +138,10 @@ void compute_bin_cap_rem(struct bin &b)
                 load += b.v_itms[i].size;
 
         b.cap_rem = b.phi - load;
-}
 
-void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id)
-{
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        if (v_bins[i].v_itms[j].id == itm_id) {
-                                v_bins[i].v_itms.erase(v_bins[i].v_itms.begin() + j);
-                                compute_bin_cap_rem(v_bins[i]);
-                        }
-                }
+        if (b.cap_rem < 0) {
+                printf("Core: %d cap_rem: %d\n", b.id, b.cap_rem);
+                exit(0);
         }
 }
 
@@ -162,14 +155,59 @@ void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)
         }
 }
 
-void retrieve_tc_by_id(vector<struct bin> &v_bins, struct item &tc, int tc_id)
+struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         if (v_bins[i].v_itms[j].id == tc_id) {
-                                tc = v_bins[i].v_itms[j];
-                                return;
+                                return v_bins[i].v_itms[j];
                         }
                 }
+        }
+        printf("ERR! Could not retrieve tc %d by id!\n", tc_id);
+        exit(0);
+}
+
+struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == bin_id)
+                        return v_bins[i];
+        }
+        printf("ERR! Could not retrieve core by id!\n");
+        exit(0);
+}
+
+int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == bin_id)
+                        return i;
+        }
+        return -1;
+}
+
+void insert_itm_to_core(struct bin &b, struct item &itm)
+{
+        b.v_itms.push_back(itm);
+        printf("Added TC %d to Core %d\n", itm.id, b.id);
+        compute_bin_cap_rem(b);
+}
+
+void delete_itm_by_id(struct bin &b, int itm_id)
+{
+        int flag = NO;
+        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
+                if (b.v_itms[j].id == itm_id) {
+                        b.v_itms.erase(b.v_itms.begin() + j);
+                        printf("Removed TC %d from Core %d\n", itm_id, b.id);
+                        compute_bin_cap_rem(b);
+                        flag = YES;
+                }
+        }
+        if (flag == NO) {
+                printf("ERR! TC %d not removed from Core %d\n", itm_id, b.id);
+                print_core(b);
+                exit(0);
         }
 }

@@ -830,7 +830,8 @@ MAXN	src/generator.cpp	8;"	d	file:
 MAXPHI	src/generator.cpp	11;"	d	file:
 MAXTASKNBR	src/generator.cpp	20;"	d	file:
 MAXWCET	src/generator.cpp	17;"	d	file:
-MAX_DISP_COUNT	src/optimization.cpp	5;"	d	file:
+MAX_DISP_COUNT	src/optimization.cpp	6;"	d	file:
+MAX_SWAP_COUNT	src/optimization.cpp	7;"	d	file:
 MINMAXTU	src/generator.cpp	13;"	d	file:
 MINN	src/generator.cpp	7;"	d	file:
 MINPHI	src/generator.cpp	10;"	d	file:
@@ -1118,7 +1119,7 @@ _gen_non_harmonic_task	src/generator.cpp	/^static void _gen_non_harmonic_task(st
 _gen_rand	src/generator.cpp	/^static int _gen_rand(int min, int max) $/;"	f	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _reassign	src/optimization.cpp	/^static void _reassign(struct bin &b, int &p, int itm_idx)$/;"	f	file:
-_reassign_by_bin_id	src/optimization.cpp	/^static void _reassign_by_bin_id(vector<struct bin> &v_bins, int bin_id)$/;"	f	file:
+_reassign_bin	src/optimization.cpp	/^static void _reassign_bin(struct bin &b)$/;"	f	file:
 _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_fail_bins, $/;"	f	file:
 _search_for_swap	src/optimization.cpp	/^static int _search_for_swap(vector<struct bin> &v_bins, $/;"	f	file:
 _search_unsched_task	src/optimization.cpp	/^static int _search_unsched_task(vector<struct task> &v_tasks)$/;"	f	file:
@@ -1168,7 +1169,7 @@ cut	src/wfdu_f.cpp	/^static struct worst_cut cut = {0};$/;"	v	typeref:struct:wor
 cuts_count	include/mapping.h	/^        int cuts_count;$/;"	m	struct:context
 cycl_count	include/mapping.h	/^        int cycl_count;$/;"	m	struct:context
 d	include/model.h	/^        int d;$/;"	m	struct:task
-delete_itm_by_id	src/model.cpp	/^void delete_itm_by_id(vector<struct bin> &v_bins, int itm_id)$/;"	f
+delete_itm_by_id	src/model.cpp	/^void delete_itm_by_id(struct bin &b, int itm_id)$/;"	f
 diff	src/bfdu_f.cpp	/^        int diff;$/;"	m	struct:best_cut	file:
 diff	src/wfdu_f.cpp	/^        int diff;$/;"	m	struct:worst_cut	file:
 disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:item
@@ -1187,6 +1188,7 @@ frags_count	include/mapping.h	/^        int frags_count;$/;"	m	struct:context
 frags_wfdu_f	src/wfdu_f.cpp	/^static vector<struct item> frags_wfdu_f;$/;"	v	file:
 gen_tc_set	src/generator.cpp	/^void gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f
 generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 get_frags_bfdu_f	src/bfdu_f.cpp	/^vector<struct item> *get_frags_bfdu_f(void)$/;"	f
 get_frags_wfdu_f	src/wfdu_f.cpp	/^vector<struct item> *get_frags_wfdu_f(void)$/;"	f
 h	include/mapping.h	/^        int h;$/;"	m	struct:params
@@ -1248,6 +1250,7 @@ info_version_internal	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId
 info_version_internal	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";$/;"	v
 init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)$/;"	f
 input	src/generator.cpp	/^void input(int argc, char **argv, struct params &prm)$/;"	f
+insert_itm_to_core	src/model.cpp	/^void insert_itm_to_core(struct bin &b, struct item &itm)$/;"	f
 is_allocated	include/model.h	/^        int is_allocated;$/;"	m	struct:item
 is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:item
 is_fragmented	include/model.h	/^        int is_fragmented;$/;"	m	struct:item
@@ -1304,7 +1307,8 @@ reas_gain	include/mapping.h	/^        float reas_gain;$/;"	m	struct:perf
 reass_time	include/mapping.h	/^        float reass_time;$/;"	m	struct:perf
 reassignment	src/optimization.cpp	/^void reassignment(vector<struct bin> &v_bins)$/;"	f
 replace_bin_by_id	src/model.cpp	/^void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)$/;"	f
-retrieve_tc_by_id	src/model.cpp	/^void retrieve_tc_by_id(vector<struct bin> &v_bins, struct item &tc, int tc_id)$/;"	f
+retrieve_core_by_id	src/model.cpp	/^struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
+retrieve_tc_by_id	src/model.cpp	/^struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id)$/;"	f
 rf_size	src/bfdu_f.cpp	/^        int rf_size;$/;"	m	struct:best_cut	file:
 rf_size	src/wfdu_f.cpp	/^        int rf_size;$/;"	m	struct:worst_cut	file:
 sched_failed_count	include/mapping.h	/^        int sched_failed_count;$/;"	m	struct:context
@@ -1325,6 +1329,7 @@ sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_
 sort_inc_bin_cap_rem	src/model.cpp	/^void sort_inc_bin_cap_rem(vector<struct bin> &v_bins)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f
 sort_inc_task_priority	src/model.cpp	/^void sort_inc_task_priority(vector<struct task> &v_tasks)$/;"	f
+swap_count	include/model.h	/^        int swap_count;$/;"	m	struct:item
 swap_gain	include/mapping.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/mapping.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/optimization.cpp	/^void swapping(vector<struct bin> &v_bins)$/;"	f

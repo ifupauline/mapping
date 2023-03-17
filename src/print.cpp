@@ -131,10 +131,12 @@ void print_v_tasks(struct bin &b)
 
 void print_core(struct bin &b)
 {
+        printf("Core: %d Lrem: %d\n", b.id, b.cap_rem);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].tc.v_tasks.size(); j++) {
-                        printf("TC %-3d tau %d p: %-2d idx: %d sched: %d\n", 
-                                        b.v_itms[i].id, b.v_itms[i].tc.v_tasks[j].id, 
+                        printf("TC %-3d size: %d tau %d p: %-2d idx: %d sched: %d\n", 
+                                        b.v_itms[i].id, b.v_itms[i].size,
+                                        b.v_itms[i].tc.v_tasks[j].id, 
                                         b.v_itms[i].tc.v_tasks[j].p,
                                         b.v_tasks[i].idx.itm_idx, b.flag);
                 }

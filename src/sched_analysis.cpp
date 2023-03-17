@@ -79,11 +79,17 @@ void wcrt_bin(struct bin &b, int bin_idx)
 
         /* test wcrt */
         ret = wcrt(b.v_tasks);
-        if (ret == SCHED_OK) 
+        if (ret == SCHED_OK) {
+                printf("WCRT Core: %d OK!\n", b.id);
                 b.flag = SCHED_OK;
+
+        }
         
-        else if (ret == SCHED_FAILED)
+        else if (ret == SCHED_FAILED) {
+                printf("WCRT Core: %d FAILED!\n", b.id);
                 b.flag = SCHED_FAILED;
+        }
+                
                 
         copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
