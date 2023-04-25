@@ -12,11 +12,6 @@ int main(int argc, char **argv)
         vector<struct item> v_itms_bfdu_f;
         vector<struct bin> v_bins_bfdu_f;
 
-        /* TODO 
-         * - improve reduction
-         * - fix bench1.cpp
-         */
-
         /* parameters */
         input(argc, argv, prm);
 
@@ -36,6 +31,8 @@ int main(int argc, char **argv)
 
         /* generation */
         generation(v_bins_bfdu_f, ctx_bfdu_f);
+        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
+        exit(0);
 
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);

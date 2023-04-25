@@ -45,6 +45,7 @@ struct item {
         int frag_id;
         int disp_count;
         int swap_count;
+        int is_let;
         int is_frag;
         int is_allocated;
         int is_fragmented;

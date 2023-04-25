@@ -87,12 +87,12 @@ void print_task_chains(vector<struct item> &v_itms)
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 printf("====================================\n");
-                printf("tc.id: %d u: %f tasks_nbr: %lu\n", 
-                                v_itms[i].id, v_itms[i].tc.u, v_itms[i].tc.v_tasks.size());
+                printf("tc.id: %d u: %.3f tasks_nbr: %lu\n", 
+                                v_itms[i].id, v_itms[i].tc.u / PERMILL, v_itms[i].tc.v_tasks.size());
                 printf("====================================\n");
                 for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
-                        printf("tau %d: u: %02f c: %02d t: %d\n",
-                                        j, v_itms[i].tc.v_tasks[j].u, 
+                        printf("tau %d: u: %.3f c: %-5d t: %d\n",
+                                        j, v_itms[i].tc.v_tasks[j].u / PERMILL, 
                                         v_itms[i].tc.v_tasks[j].c, 
                                         v_itms[i].tc.v_tasks[j].t);
                         tasknbr++;
@@ -169,6 +169,33 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                         if (v_bins[i].v_itms[j].is_frag == YES) {
                                 printf("|--------------------------------------------------------------|\n");
                                 printf("|Frag-task-chain: %u size %u\n", 
+                                                v_bins[i].v_itms[j].id, 
+                                                v_bins[i].v_itms[j].size);
+                                printf("|--------------------------------------------------------------|\n");
+                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                        printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].id, 
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].u / PERMILL,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].p,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].c,
+                                                        v_bins[i].v_itms[j].tc.v_tasks[k].t);
+
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
+                                                printf(" ---------------> deadline  missed!");
+                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
+                                                        v_bins[i].flag == SCHED_OK) {
+                                                printf("\nERR! \n");
+                                                exit(0);
+
+                                        } else
+                                                printf("\n");
+                                }
+
+                        } else if (v_bins[i].v_itms[j].is_let == YES){
+
+                                printf("|--------------------------------------------------------------|\n");
+                                printf("|LET: %u size %u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
                                 printf("|--------------------------------------------------------------|\n");
