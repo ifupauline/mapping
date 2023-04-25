@@ -2,8 +2,8 @@
 #include "print.h"
 #include "generator.h"
 
-#define STEP   2
-#define ITER   26
+#define STEP   20
+#define ITER   25
 #define SIMNBR 1000
 
 static char const *cmd_gnuplot_cr[] = {};
@@ -46,7 +46,7 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
 
         /* params instance */
         prm.n = 100;
-        prm.phi = 102;
+        prm.phi = 1000;
 
         for (int i = 0; i < ITER; i++) {
                 prm.phi -= STEP;

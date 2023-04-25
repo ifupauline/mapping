@@ -16,7 +16,7 @@ static int _search_unsched_task(vector<struct task> &v_tasks)
         high_p = -1;
 
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                if (v_tasks[i].r  == -1) {
+                if (v_tasks[i].r  > v_tasks[i].t) {
                         v_p.push_back(v_tasks[i].p);
                         flag = YES;
                 }
@@ -49,7 +49,7 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1) {
+                                if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
                                         fail_itm.first = {0};
                                         fail_itm.second = 0;
                                         fail_itm.first = v_bins[i].v_itms[j];

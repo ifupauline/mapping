@@ -2,29 +2,34 @@
 #include "sched_analysis.h"
 
 /* params */
-#define PRECISION  0.40
+#define PRECISION  0.50
 
+/* number of task-chains */
 #define MINN       5
 #define MAXN       10000
 
+/* filling limit of a core */
 #define MINPHI     C/2
 #define MAXPHI     C
 
+/* permils */
 #define MINMAXTU   1
-#define MAXMAXTU   20
+#define MAXMAXTU   150
 
-#define MINWCET    1
-#define MAXWCET    20
+/* microsecs */
+#define MINWCET    100
+#define MAXWCET    20000
 
+/* min max number of tasks in a chain */
 #define MINTASKNBR 2
-#define MAXTASKNBR 20
+#define MAXTASKNBR 10
 
 /* harmonic chains table */
 static int harm[4][5] = {
-        {4, 8, 16, 32, 64},
-        {5, 10, 25, 50, 100},
-        {5, 15, 30, 60, 120},
-        {10, 20, 40, 80, 160},
+        {4000, 8000, 16000, 32000, 64000},
+        {5000, 10000, 25000, 50000, 100000},
+        {5000, 15000, 30000, 60000, 120000},
+        {10000, 20000, 40000, 80000, 160000},
 };
 
 static int _gen_rand(int min, int max) 
@@ -65,8 +70,10 @@ void _check_params(struct params &prm)
 static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
 {
         tau.u = _gen_rand(MINMAXTU, MAXMAXTU);
+        tau.u = tau.u / PERMILL;
         tau.c = _gen_rand(MINWCET, MAXWCET);
-        tau.t = ceilf(((float)tau.c/(float)tau.u) * PERCENT);
+        tau.t = ceilf(tau.c/tau.u);
+        tau.u = tau.u * PERMILL;
         tau.d = tau.t; /* implicit deadline */
         tau.r = 0;
         tau.p = i + 1; /* 1 is highest priority */
@@ -85,7 +92,7 @@ static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int 
                 y  = _gen_rand(0, 4);
                 real_t = harm[x][y];
                 real_c = _gen_rand(MINWCET, MAXWCET);
-                real_u = (real_c/real_t) * PERCENT;
+                real_u = (real_c/real_t) * PERMILL;
 
                 /* c is minimum 1 */
                 if (real_c < 1)
@@ -94,7 +101,7 @@ static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int 
                 if (real_u > MAXMAXTU || real_u < MINMAXTU)
                         continue;
 
-                tau.u = ceil((real_c/real_t) * PERCENT);
+                tau.u = ceil((real_c/real_t) * PERMILL);
                 tau.c = ceil(real_c);
                 tau.t = real_t;
 
@@ -174,7 +181,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.tc.u;
                 ncount++;
-                //printf("%d\n", ncount);
+                printf("%d\n", ncount);
         }
         printf("\n");
 

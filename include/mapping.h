@@ -16,7 +16,8 @@
 #define BFDU_F 1
 #define WFDU_F 2
 
-#define C       100
+#define C       1000
+#define PERMILL 1000
 #define PERCENT 100
 #define MSEC    1000
 

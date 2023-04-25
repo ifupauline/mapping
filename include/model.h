@@ -20,7 +20,7 @@ struct task {
         int p;
         int r;
         int id;
-        int u;
+        float u;
         struct t_pos idx;
 };
 
@@ -32,7 +32,7 @@ struct cut {
 };
 
 struct task_chain {
-        int u;
+        float u;
         vector<struct task> v_tasks;
         vector<struct cut> v_cuts;
 };
