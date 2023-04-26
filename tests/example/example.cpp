@@ -32,7 +32,6 @@ int main(int argc, char **argv)
         /* generation */
         generation(v_bins_bfdu_f, ctx_bfdu_f);
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
-        exit(0);
 
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
@@ -48,6 +47,8 @@ int main(int argc, char **argv)
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+
+        compute_gcd(v_bins_bfdu_f[0].v_tasks);
 
         return 0;
 }

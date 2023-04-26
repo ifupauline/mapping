@@ -28,7 +28,7 @@
 #define MINTASKNBR 2
 #define MAXTASKNBR 10
 
-/* harmonic chains table */
+/* harmonic chains table TODO should be based on WATERS challenge model */
 static int harm[4][5] = {
         {4000, 8000, 16000, 32000, 64000},
         {5000, 10000, 25000, 50000, 100000},
@@ -309,8 +309,10 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
 
 void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx)
 {
+        struct item let;
+
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                struct item let;
+                let = {0};
                 _init_let_task(let, ctx);
                 ctx.itms_count++;
                 add_itm_to_bin(v_bins, let, v_bins[i].id, ctx);

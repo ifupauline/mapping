@@ -825,23 +825,26 @@ ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ID_VOID_MAIN	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ITER	exp/phi/phi.cpp	6;"	d	file:
 MAPPING_H	include/mapping.h	2;"	d
-MAXMAXTU	src/generator.cpp	14;"	d	file:
-MAXN	src/generator.cpp	8;"	d	file:
-MAXPHI	src/generator.cpp	11;"	d	file:
-MAXTASKNBR	src/generator.cpp	20;"	d	file:
-MAXWCET	src/generator.cpp	17;"	d	file:
+MAXLETWCET	src/generator.cpp	25;"	d	file:
+MAXMAXTU	src/generator.cpp	17;"	d	file:
+MAXN	src/generator.cpp	9;"	d	file:
+MAXPHI	src/generator.cpp	13;"	d	file:
+MAXTASKNBR	src/generator.cpp	29;"	d	file:
+MAXWCET	src/generator.cpp	21;"	d	file:
 MAX_DISP_COUNT	src/optimization.cpp	6;"	d	file:
 MAX_SWAP_COUNT	src/optimization.cpp	7;"	d	file:
-MINMAXTU	src/generator.cpp	13;"	d	file:
-MINN	src/generator.cpp	7;"	d	file:
-MINPHI	src/generator.cpp	10;"	d	file:
-MINTASKNBR	src/generator.cpp	19;"	d	file:
-MINWCET	src/generator.cpp	16;"	d	file:
+MINLETWCET	src/generator.cpp	24;"	d	file:
+MINMAXTU	src/generator.cpp	16;"	d	file:
+MINN	src/generator.cpp	8;"	d	file:
+MINPHI	src/generator.cpp	12;"	d	file:
+MINTASKNBR	src/generator.cpp	28;"	d	file:
+MINWCET	src/generator.cpp	20;"	d	file:
 MODEL_H	include/model.h	2;"	d
-MSEC	include/mapping.h	21;"	d
+MSEC	include/mapping.h	22;"	d
 NO	include/mapping.h	12;"	d
 OPTIMIZATION_H	include/optimization.h	2;"	d
-PERCENT	include/mapping.h	20;"	d
+PERCENT	include/mapping.h	21;"	d
+PERMILL	include/mapping.h	20;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	427;"	d	file:
@@ -1118,6 +1121,7 @@ _gen_harmonic_task	src/generator.cpp	/^static void _gen_harmonic_task(struct tas
 _gen_non_harmonic_task	src/generator.cpp	/^static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)$/;"	f	file:
 _gen_rand	src/generator.cpp	/^static int _gen_rand(int min, int max) $/;"	f	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
+_init_let_task	src/generator.cpp	/^static void _init_let_task(struct item &let, struct context &ctx)$/;"	f	file:
 _reassign	src/optimization.cpp	/^static void _reassign(struct bin &b, int &p, int itm_idx)$/;"	f	file:
 _reassign_bin	src/optimization.cpp	/^static void _reassign_bin(struct bin &b)$/;"	f	file:
 _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_fail_bins, $/;"	f	file:
@@ -1153,6 +1157,7 @@ cmd_gnuplot_op	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_op[] = {};$/;"	v
 cmd_gnuplot_sr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 compute_bin_cap_rem	src/model.cpp	/^void compute_bin_cap_rem(struct bin &b)$/;"	f
+compute_gcd	src/model.cpp	/^int compute_gcd(vector<struct task> &v_tasks)$/;"	f
 compute_tc_load	src/model.cpp	/^void compute_tc_load(struct item &itm)$/;"	f
 concatenate	src/exp.cpp	/^void concatenate(char p[], char q[]) {$/;"	f
 const	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	10;"	d	file:
@@ -1251,9 +1256,11 @@ info_version_internal	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId
 init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)$/;"	f
 input	src/generator.cpp	/^void input(int argc, char **argv, struct params &prm)$/;"	f
 insert_itm_to_core	src/model.cpp	/^void insert_itm_to_core(struct bin &b, struct item &itm)$/;"	f
+insert_let_tasks	src/generator.cpp	/^void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 is_allocated	include/model.h	/^        int is_allocated;$/;"	m	struct:item
 is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:item
 is_fragmented	include/model.h	/^        int is_fragmented;$/;"	m	struct:item
+is_let	include/model.h	/^        int is_let;$/;"	m	struct:item
 item	include/model.h	/^struct item {$/;"	s
 itm_idx	include/model.h	/^        int itm_idx;$/;"	m	struct:t_pos
 itms_count	include/mapping.h	/^        int itms_count;$/;"	m	struct:context
@@ -1347,8 +1354,8 @@ tc	include/model.h	/^        struct task_chain tc;$/;"	m	struct:item	typeref:str
 total_mean_disp	include/exp.h	/^        float total_mean_disp;$/;"	m	struct:b_stats
 total_mean_reas	include/exp.h	/^        float total_mean_reas;$/;"	m	struct:b_stats
 total_mean_swap	include/exp.h	/^        float total_mean_swap;$/;"	m	struct:b_stats
-u	include/model.h	/^        int u;$/;"	m	struct:task
-u	include/model.h	/^        int u;$/;"	m	struct:task_chain
+u	include/model.h	/^        float u;$/;"	m	struct:task
+u	include/model.h	/^        float u;$/;"	m	struct:task_chain
 v_cuts	include/model.h	/^        vector<struct cut> v_cuts;$/;"	m	struct:task_chain
 v_itms	include/model.h	/^        vector<struct item> v_itms;$/;"	m	struct:bin
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:bin

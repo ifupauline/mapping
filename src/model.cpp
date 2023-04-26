@@ -145,6 +145,22 @@ void compute_bin_cap_rem(struct bin &b)
         }
 }
 
+int compute_gcd(vector<struct task> &v_tasks)
+{
+        int gcd;
+        vector<int> vec_t;
+
+        for (unsigned int i = 0; i < v_tasks.size(); i++) {
+                vec_t.push_back(v_tasks[i].t);
+        }
+
+        gcd =__gcd(vec_t[0], vec_t[1]);
+        for (unsigned int i = 2; i < vec_t.size(); i++) {
+                gcd = __gcd(gcd, vec_t[i]);
+        }
+        return gcd;
+}
+
 void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {

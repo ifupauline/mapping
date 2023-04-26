@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include<bits/stdc++.h>
 
 using namespace std;
 
@@ -62,6 +63,7 @@ struct bin {
 };
 
 /* OPERATIONS ON DATA STRUCTURES */
+
 void sort_inc_task_priority(vector<struct task> &v_tasks);
 
 void sort_inc_task_id(vector<struct task> &v_tasks);
@@ -79,6 +81,8 @@ void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx);
 void compute_bin_cap_rem(struct bin &b);
 
 void compute_tc_load(struct item &itm);
+
+int compute_gcd(vector<struct task> &v_tasks);
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
