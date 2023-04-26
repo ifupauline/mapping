@@ -1,3 +1,5 @@
+#include "let.h"
+#include "print.h" /* tmp */
 #include "mapping.h"
 
 struct best_cut {
@@ -17,40 +19,39 @@ static vector<struct item> frags_bfdu_f;
 static struct best_cut cut = {0};
 
 static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,
-                struct context &ctx)
+                struct context &ctx, int &best_load, int &gcd)
 {
         int best_rem = ctx.prm.phi;
         int bin_id;
         int tmp;
+        int tmp_load;
         int is_found;
 
         bin_id = 0;
+        tmp_load = 0;
         tmp = 0;
         is_found = NO;
         best_rem = ctx.prm.phi;
 
+        if (itm.size > ctx.prm.phi)
+                return -2;
+
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (itm.size <= v_bins[i].cap_rem) {
-                        tmp = v_bins[i].cap_rem - itm.size;
+                tmp_load = check_if_fit(v_bins[i], itm, ctx, gcd);
+                if (tmp_load <= v_bins[i].phi) {
+                        tmp = v_bins[i].cap_rem - tmp_load;
 
                         if (tmp < best_rem) {
                                 best_rem = tmp;
+                                best_load = tmp_load;
                                 bin_id = v_bins[i].id;
                         }
                         is_found = YES;
                         continue;
                 }
-                if (itm.size > ctx.prm.phi) 
-                        is_found = -2;
         }
         if (is_found == YES) 
                 return bin_id;
-
-        else if (is_found == NO) 
-                return -1;
-
-        else if (is_found == -2) 
-                return -2;
 
         return -1;
 }
@@ -212,8 +213,8 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         frags_bfdu_f.push_back(itm_rf);
 
         /* add fragments to their respective bins */
-        add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx);
-        add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx);
+        //add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx);
+        //add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx);
 
         frag_id_count++;
 }
@@ -222,7 +223,15 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 struct context &ctx)
 {
         int ret;
+        int load;
+        int gcd;
+        int bin_id;
         int alloc_count;
+
+        ret = 0;
+        gcd = 0;
+        load = 0;
+        bin_id = 0;
 
         /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");
@@ -231,23 +240,28 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         while(alloc_count != ctx.prm.n) {
                 alloc_count = 0;
                 for (int i = 0; i < ctx.prm.n; i++) {
+
                         if (v_itms[i].is_allocated == YES) 
                                 continue;
 
                         /* find best bin to fit itm */
-                        ret = _find_best_bin(v_bins, v_itms[i], ctx);
+                        ret = _find_best_bin(v_bins, v_itms[i], ctx, load, gcd);
 
                         /* bin found add itm to it */
                         if (ret > -1) {
                                 printf("Best Bin to accomodate Item %d is Bin %d\n", 
                                                 v_itms[i].id, ret);
-                                add_itm_to_bin(v_bins, v_itms[i], ret, ctx);
+                                bin_id = ret;
+                                add_itm_to_bin(v_bins, v_itms[i], bin_id, ctx, load, gcd);
                                 v_itms[i].is_allocated = YES;
+                                continue;
 
                                 /* no bin was found */
                         } else if (ret == -1) {
                                 printf("No Bin was found to accomodate Item %d\n", 
                                                 v_itms[i].id);
+                                print_cores(v_bins, ctx);
+                                exit(0);
 
                                 ret = _find_best_cut(v_bins, v_itms[i], ctx);
                                 if (ret == YES) {
@@ -293,6 +307,8 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 alloc_count++;
                 }
         }
+        print_cores(v_bins, ctx);
+        exit(0);
 }
 
 vector<struct item> *get_frags_bfdu_f(void)

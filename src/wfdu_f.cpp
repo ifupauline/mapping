@@ -227,8 +227,8 @@ static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         frags_wfdu_f.push_back(itm_rf);
 
         /* add fragments to their respective bins */
-        add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx);
-        add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx);
+        //add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx);
+        //add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx);
 
         frag_id_count++;
 }
@@ -256,7 +256,7 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         if (ret > -1) {
                                 printf("Worst Bin to accomodate Item %d is Bin %d\n", 
                                                 v_itms[i].id, ret);
-                                add_itm_to_bin(v_bins, v_itms[i], ret, ctx);
+                                //add_itm_to_bin(v_bins, v_itms[i], ret, ctx);
                                 v_itms[i].is_allocated = YES;
 
                                 /* no bin was found */

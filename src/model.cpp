@@ -1,7 +1,6 @@
+#include "let.h"
 #include "model.h"
 #include "print.h"
-#include "mapping.h"
-#include "optimization.h"
 #include "sched_analysis.h"
 
 static int _cmp_inc_task_priority(const struct task &a, const struct task &b)
@@ -50,6 +49,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 
         tmp_bin.id = ctx.bins_count;
         tmp_bin.flag = SCHED_OK;
+        tmp_bin.load = 0;
         tmp_bin.cap_rem = ctx.prm.phi;
         tmp_bin.phi = ctx.prm.phi;
         v_bins.push_back(tmp_bin);
@@ -58,18 +58,20 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 }
 
 void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
-                struct context &ctx)
+                struct context &ctx, int &load, int &gcd)
 {
         for (int i = 0; i < ctx.bins_count; i++) {
                 if (v_bins[i].id == bin_id) {
-                        if (v_bins[i].cap_rem < itm.size) {
+                        if (v_bins[i].phi < load) {
                                 printf("ERR Bin %d Overflow with itm.size %d\n", 
                                                 v_bins[i].id, itm.size);
                                 exit(0);
                         }
-                        itm.is_allocated = YES;
+                        v_bins[i].load = load;
+                        v_bins[i].cap_rem = v_bins[i].phi - load;
                         v_bins[i].v_itms.push_back(itm);
-                        v_bins[i].cap_rem -= itm.size;
+                        update_let(v_bins[i], gcd);
+                        itm.is_allocated = YES;
 
                         if (itm.is_frag == NO) {
                                 printf("Item %d added in Bin %d\n\n", 
@@ -127,6 +129,12 @@ void compute_tc_load(struct item &itm)
                 itm.tc.u += itm.tc.v_tasks[i].u;
 }
 
+void compute_bin_load(struct bin &b, int &load)
+{
+        for (unsigned int i = 0; i < b.v_itms.size(); i++)
+                load += b.v_itms[i].size;
+}
+
 void compute_bin_cap_rem(struct bin &b)
 {
         int load;
@@ -148,16 +156,18 @@ void compute_bin_cap_rem(struct bin &b)
 int compute_gcd(vector<struct task> &v_tasks)
 {
         int gcd;
-        vector<int> vec_t;
+        vector<int> v_t;
 
-        for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                vec_t.push_back(v_tasks[i].t);
-        }
+        gcd = 0;
 
-        gcd =__gcd(vec_t[0], vec_t[1]);
-        for (unsigned int i = 2; i < vec_t.size(); i++) {
-                gcd = __gcd(gcd, vec_t[i]);
-        }
+        for (unsigned int i = 0; i < v_tasks.size(); i++)
+                v_t.push_back(v_tasks[i].t);
+
+        gcd =__gcd(v_t[0], v_t[1]);
+
+        for (unsigned int i = 2; i < v_t.size(); i++)
+                gcd = __gcd(gcd, v_t[i]);
+
         return gcd;
 }
 
@@ -226,4 +236,11 @@ void delete_itm_by_id(struct bin &b, int itm_id)
                 print_core(b);
                 exit(0);
         }
+}
+
+void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
+                vector<struct task> &src_v_tasks)
+{
+        for (unsigned int i = 0; i < src_v_tasks.size(); i++)
+                dst_v_tasks.push_back(src_v_tasks[i]);
 }

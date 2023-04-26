@@ -134,11 +134,11 @@ void print_core(struct bin &b)
         printf("Core: %d Lrem: %d\n", b.id, b.cap_rem);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].tc.v_tasks.size(); j++) {
-                        printf("TC %-3d size: %d tau %d p: %-2d idx: %d sched: %d\n", 
+                        printf("TC %-3d size: %-3d tau %-3d p: %-3d idx: %-3d sched: %d\n", 
                                         b.v_itms[i].id, b.v_itms[i].size,
                                         b.v_itms[i].tc.v_tasks[j].id, 
                                         b.v_itms[i].tc.v_tasks[j].p,
-                                        b.v_tasks[i].idx.itm_idx, b.flag);
+                                        b.v_itms[i].tc.v_tasks[j].idx.itm_idx, b.flag);
                 }
         }
 }
@@ -156,7 +156,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 printf("+==============================================================+\n");
                 printf("|Core: %d\n", v_bins[i].id);
-                printf("|Load: %.3f\n", (ctx.prm.phi - (float)v_bins[i].cap_rem) / PERMILL);
+                printf("|Load: %.3f\n", (float)v_bins[i].load / PERMILL);
                 printf("|Lrem: %.3f\n", ((float)v_bins[i].cap_rem / PERMILL));
                 if (v_bins[i].flag == SCHED_OK)
                         printf("|Sched: OK\n");
@@ -168,7 +168,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         if (v_bins[i].v_itms[j].is_frag == YES) {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|Frag-task-chain: %u size %u\n", 
+                                printf("|FRAG-TC: %-3u size %-3u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
                                 printf("|--------------------------------------------------------------|\n");
@@ -195,7 +195,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                         } else if (v_bins[i].v_itms[j].is_let == YES){
 
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|LET: %u size %u\n", 
+                                printf("|LET: %-3u size %-3u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
                                 printf("|--------------------------------------------------------------|\n");
@@ -221,7 +221,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         } else {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|task-chain: %u size %u\n", 
+                                printf("|TC:  %-3u size %-3u\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size);
 

@@ -1,33 +1,6 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-/* precision for wcet generation */
-#define PRECISION  0.50
-
-/* number of task-chains */
-#define MINN       5
-#define MAXN       10000
-
-/* filling limit of a core */
-#define MINPHI     C/2
-#define MAXPHI     C
-
-/* permils */
-#define MINMAXTU   1
-#define MAXMAXTU   150
-
-/* microsecs */
-#define MINWCET    100
-#define MAXWCET    20000
-
-/* microsecs range based on paper Biondi and Di Natale */
-#define MINLETWCET 1
-#define MAXLETWCET 165
-
-/* min max number of tasks in a chain */
-#define MINTASKNBR 2
-#define MAXTASKNBR 10
-
 /* harmonic chains table TODO should be based on WATERS challenge model */
 static int harm[4][5] = {
         {4000, 8000, 16000, 32000, 64000},
@@ -36,22 +9,13 @@ static int harm[4][5] = {
         {10000, 20000, 40000, 80000, 160000},
 };
 
-static int _gen_rand(int min, int max) 
-{
-        random_device rd;
-        mt19937 gen(rd());
-        uniform_int_distribution<> distr(min, max);
-
-        return distr(gen);
-}
-
 static void _assign_id(vector<struct item> &v_itms)
 {
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].id = i;
 }
 
-void _check_params(struct params &prm)
+static void _check_params(struct params &prm)
 {
         if (prm.n < MINN || prm.n > MAXN) {
                 printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
@@ -71,40 +35,11 @@ void _check_params(struct params &prm)
         }
 }
 
-static void _init_let_task(struct item &let, struct context &ctx)
-{
-                struct task tau_let;
-
-                tau_let = {0};
-
-                let.size = 0;
-                let.id = ctx.itms_count;
-                let.tc.u = 0;
-                let.nbr_cut = 0;
-                let.frag_id = -1;
-                let.disp_count = 0;
-                let.swap_count = 0;
-                let.is_let = YES;
-                let.is_frag = NO;
-                let.is_fragmented = NO;
-                let.is_allocated = NO;
-
-                tau_let.c = 0;
-                tau_let.t = 0;
-                tau_let.d = tau_let.t;
-                tau_let.r = 0;
-                tau_let.u = 0;
-                tau_let.p = 0;
-                tau_let.id = 0;
-                let.tc.v_tasks.push_back(tau_let);
-                let.tc.u += tau_let.u;
-}
-
 static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
 {
-        tau.u = _gen_rand(MINMAXTU, MAXMAXTU);
+        tau.u = gen_rand(MINMAXTU, MAXMAXTU);
         tau.u = tau.u / PERMILL;
-        tau.c = _gen_rand(MINWCET, MAXWCET);
+        tau.c = gen_rand(MINWCET, MAXWCET);
         tau.t = ceilf(tau.c/tau.u);
         tau.u = tau.u * PERMILL;
         tau.d = tau.t; /* implicit deadline */
@@ -122,9 +57,9 @@ static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int 
         float udiff;
 
         while (1) {
-                y  = _gen_rand(0, 4);
+                y  = gen_rand(0, 4);
                 real_t = harm[x][y];
-                real_c = _gen_rand(MINWCET, MAXWCET);
+                real_c = gen_rand(MINWCET, MAXWCET);
                 real_u = (real_c/real_t) * PERMILL;
 
                 if (real_u > MAXMAXTU || real_u < MINMAXTU)
@@ -175,7 +110,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct item itm;
                 itm.id = ncount;
                 itm.tc.u = 0;
-                task_nbr = _gen_rand(MINTASKNBR, MAXTASKNBR);
+                task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.nbr_cut = task_nbr - 1;
                 itm.frag_id = -1;
                 itm.disp_count = 0;
@@ -184,7 +119,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 itm.is_frag = NO;
                 itm.is_fragmented = NO;
                 itm.is_allocated = NO;
-                x = _gen_rand(0, 3);
+                x = gen_rand(0, 3);
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;
@@ -268,6 +203,17 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         return 0;
 }
 
+int gen_rand(int min, int max) 
+{
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<> distr(min, max);
+
+        return distr(gen);
+}
+
+
+
 void input(int argc, char **argv, struct params &prm)
 {
         if (argc != 4) {
@@ -305,19 +251,6 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
 
         printf("Total Utilization of Task-Chains: %u\n", ctx.itms_size);
         printf("Minimum Number of Cores Required: %u\n", ctx.bins_min);
-}
-
-void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx)
-{
-        struct item let;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                let = {0};
-                _init_let_task(let, ctx);
-                ctx.itms_count++;
-                add_itm_to_bin(v_bins, let, v_bins[i].id, ctx);
-                let.is_allocated = YES;
-        }
 }
 
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,

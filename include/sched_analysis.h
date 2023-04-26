@@ -3,7 +3,7 @@
 
 #include <random>
 
-#include "mapping.h"
+#include "model.h"
 
 #define SCHED_OK     1
 #define SCHED_FAILED 2

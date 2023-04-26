@@ -5,7 +5,67 @@
 #include <algorithm>
 #include<bits/stdc++.h>
 
+/* algorithms */
+#define BFDU_F 1
+#define WFDU_F 2
+
+/* booleans */
+#define NO  0
+#define YES 1
+
+#define C       1000
+#define PERMILL 1000
+#define PERCENT 100
+#define MSEC    1000
+
 using namespace std;
+
+/* CONTEXT */
+struct params {
+        int a;
+        int h;
+        int n;
+        int phi;
+};
+
+struct perf {
+        float cr;
+        float et;
+        float fr;
+        float allo_time;
+        float wcrt_time;
+        float reass_time;
+        float disp_time;
+        float swap_time;
+        float sched_rate_allo;
+        float sched_rate_prio;
+        float sched_rate_disp;
+        float sched_rate_swap;
+        float sched_rate_opti;
+        float reas_gain;
+        float disp_gain;
+        float swap_gain;
+        int sched_imp_prio;
+        int sched_imp_disp;
+        int sched_imp_swap;
+};
+
+struct context {
+        int bins_min;
+        int bins_count;
+        int cycl_count;
+        int itms_count;
+        int itms_nbr;
+        int itms_size;
+        int alloc_count;
+        int frags_count;
+        int cuts_count;
+        int tasks_count;
+        int sched_ok_count;
+        int sched_failed_count;
+        struct perf p;
+        struct params prm;
+};
 
 /* TASK MODEL */
 struct t_pos {
@@ -57,6 +117,7 @@ struct bin {
         int id;
         int phi;
         int flag;
+        int load;
         int cap_rem;
         vector<struct item> v_itms;
         vector<struct task> v_tasks;
@@ -78,6 +139,8 @@ void copy_back_resp_to_tc(struct bin &b);
 
 void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx);
 
+void compute_bin_load(struct bin &b, int &load);
+
 void compute_bin_cap_rem(struct bin &b);
 
 void compute_tc_load(struct item &itm);
@@ -87,7 +150,7 @@ int compute_gcd(vector<struct task> &v_tasks);
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
 void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
-                struct context &ctx);
+                struct context &ctx, int &load, int &gcd);
 
 void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 
@@ -100,5 +163,8 @@ int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
 void delete_itm_by_id(struct bin &b, int itm_id);
 
 void insert_itm_to_core(struct bin &b, struct item &itm);
+
+void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
+                vector<struct task> &src_v_tasks);
 
 #endif /* MODEL_H */

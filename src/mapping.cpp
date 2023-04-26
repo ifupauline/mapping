@@ -1,4 +1,5 @@
-#include "generator.h"
+#include "let.h"
+#include "mapping.h"
 #include "optimization.h"
 #include "sched_analysis.h"
 
@@ -11,7 +12,7 @@ void generation(vector<struct bin> &v_bins, struct context &ctx)
         for (int i = 0; i < ctx.bins_min; i++)
                 add_bin(v_bins, ctx);
 
-        //insert_let_tasks(v_bins, ctx);
+        insert_let_tasks(v_bins, ctx);
 }
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
