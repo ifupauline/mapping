@@ -137,18 +137,16 @@ void compute_bin_load(struct bin &b, int &load)
 
 void compute_bin_load_rem(struct bin &b)
 {
-        int load;
-
-        load = 0;
+        b.load = 0;
         b.load_rem = 0;
 
         for (unsigned int i = 0; i < b.v_itms.size(); i++)
-                load += b.v_itms[i].size;
+                b.load += b.v_itms[i].size;
 
-        b.load_rem = b.phi - load;
+        b.load_rem = b.phi - b.load;
 
         if (b.load_rem < 0) {
-                printf("Core: %d cap_rem: %d\n", b.id, b.load_rem);
+                printf("Core: %d load_rem: %d\n", b.id, b.load_rem);
                 exit(0);
         }
 }
@@ -156,20 +154,26 @@ void compute_bin_load_rem(struct bin &b)
 int compute_gcd(vector<struct task> &v_tasks)
 {
         int gcd;
-        vector<int> v_t;
 
         gcd = 0;
 
-        for (unsigned int i = 0; i < v_tasks.size(); i++)
-                v_t.push_back(v_tasks[i].t);
-
-        gcd =__gcd(v_t[0], v_t[1]);
-
-        if (v_t.size() == 2)
+        /* if there is only one task (cut) gcd = t */
+        if (v_tasks.size() == 1) {
+                gcd = v_tasks[0].t;
                 return gcd;
+        }
 
-        for (unsigned int i = 2; i < v_t.size(); i++)
-                gcd = __gcd(gcd, v_t[i]);
+        /* if there is only 2 values return gcd */
+        if (v_tasks.size() == 2) {
+                gcd =__gcd(v_tasks[0].t, v_tasks[1].t);
+                return gcd;
+        }
+
+        /* cmp gcd for array */
+        gcd =__gcd(v_tasks[0].t, v_tasks[1].t);
+
+        for (unsigned int i = 2; i < v_tasks.size(); i++)
+                gcd = __gcd(gcd, v_tasks[i].t);
 
         return gcd;
 }

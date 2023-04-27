@@ -13,6 +13,9 @@
 #define NO  0
 #define YES 1
 
+#define LEFT  0
+#define RIGHT 1
+
 #define C       1000
 #define PERMILL 1000
 #define PERCENT 100

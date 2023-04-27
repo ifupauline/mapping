@@ -81,7 +81,7 @@ void update_let(struct bin &b, int gcd)
         //printf("LET Item size:   %d\n", b.v_itms[0].size);
 }
 
-int check_if_fit(struct bin &b, struct item &itm, struct context &ctx, int &gcd)
+int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
 {
         int target_binload;
         int total_binload;
@@ -111,13 +111,74 @@ int check_if_fit(struct bin &b, struct item &itm, struct context &ctx, int &gcd)
         compute_bin_load(tmp_b, target_binload);
         total_binload = itm.size + target_binload;
 
-        if (total_binload > ctx.prm.phi) {
+        if (total_binload > b.phi) {
                 printf("Item %d of size %d cannot fit in Bin %d with potential load: %d\n", 
                                 itm.id, itm.size, b.id, total_binload);
 
         } else {
                 printf("Item %d of size %d can fit in Bin %d with potential load: %d\n\n", 
                                 itm.id, itm.size, b.id, total_binload);
+        }
+        return total_binload;
+}
+
+int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int side)
+{
+        struct bin tmp_b;
+        int total_binload;
+        int target_binload;
+        vector<struct task> v_tasks;
+
+        gcd = 0;
+        tmp_b = b;
+        total_binload = 0;
+        target_binload = 0;
+
+        /* copy tasks of left fragment */
+        if (side == LEFT)
+                add_tasks_to_v_tasks(v_tasks, c.v_tasks_lf);
+
+        /* copy tasks of right fragment */
+        if (side == RIGHT)
+                add_tasks_to_v_tasks(v_tasks, c.v_tasks_rf);
+
+        for (unsigned int i = 0; i < tmp_b.v_itms.size(); i++) {
+                if (tmp_b.v_itms[i].is_let == YES)
+                        continue;
+                add_tasks_to_v_tasks(v_tasks, tmp_b.v_itms[i].v_tasks);
+        }
+
+        /* cmp gcd */
+        gcd = compute_gcd(v_tasks);
+
+        /* update let item and let task */
+        update_let(tmp_b, gcd);
+
+        /* compute total bin load */
+        compute_bin_load(tmp_b, target_binload);
+
+        if (side == LEFT) {
+                total_binload = c.c_pair.first + target_binload;
+                if (total_binload > b.phi) {
+                        printf("Left Cut %d of size %d cannot fit in Bin %d with potential load: %d\n", 
+                                        c.id, c.c_pair.first, b.id, total_binload);
+
+                } else {
+                        printf("Left Cut %d of size %d can fit in Bin %d with potential load: %d\n\n", 
+                                        c.id, c.c_pair.first, b.id, total_binload);
+                }
+        }
+
+        if (side == RIGHT) {
+                total_binload = c.c_pair.second + target_binload;
+                if (total_binload > b.phi) {
+                        printf("Right Cut %d of size %d cannot fit in Bin %d with potential load: %d\n", 
+                                        c.id, c.c_pair.second, b.id, total_binload);
+
+                } else {
+                        printf("Right Cut %d of size %d can fit in Bin %d with potential load: %d\n\n", 
+                                        c.id, c.c_pair.second, b.id, total_binload);
+                }
         }
         return total_binload;
 }

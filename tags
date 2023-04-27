@@ -161,7 +161,7 @@ B_FR	include/exp.h	6;"	d
 B_OPT	include/exp.h	9;"	d
 B_SR_ALLO	include/exp.h	7;"	d
 B_SR_OPTI	include/exp.h	8;"	d
-C	include/model.h	16;"	d
+C	include/model.h	19;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -824,6 +824,7 @@ HEX	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ID_VOID_MAIN	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ITER	exp/phi/phi.cpp	6;"	d	file:
+LEFT	include/model.h	16;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
 MAXLETWCET	include/generator.h	29;"	d
@@ -841,11 +842,11 @@ MINPHI	include/generator.h	16;"	d
 MINTASKNBR	include/generator.h	32;"	d
 MINWCET	include/generator.h	24;"	d
 MODEL_H	include/model.h	2;"	d
-MSEC	include/model.h	19;"	d
+MSEC	include/model.h	22;"	d
 NO	include/model.h	13;"	d
 OPTIMIZATION_H	include/optimization.h	2;"	d
-PERCENT	include/model.h	18;"	d
-PERMILL	include/model.h	17;"	d
+PERCENT	include/model.h	21;"	d
+PERMILL	include/model.h	20;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	427;"	d	file:
@@ -984,6 +985,7 @@ PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
 PRECISION	include/generator.h	9;"	d
 PRINT_H	include/print.h	2;"	d
+RIGHT	include/model.h	17;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/phi/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -1108,7 +1110,7 @@ _check_if_dual_frag	src/optimization.cpp	/^static int _check_if_dual_frag(struct
 _check_params	src/generator.cpp	/^static void _check_params(struct params &prm)$/;"	f	file:
 _cmp_avr_mean	exp/phi/phi.cpp	/^static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
-_cmp_inc_bin_cap_rem	src/model.cpp	/^static int _cmp_inc_bin_cap_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
+_cmp_inc_bin_load_rem	src/model.cpp	/^static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
 _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const struct task &a, const struct task &b)$/;"	f	file:
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
@@ -1151,18 +1153,18 @@ c	include/model.h	/^        int c;$/;"	m	struct:task
 c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:best_cut::cut	file:
 c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
 c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
-cap_rem	include/model.h	/^        int cap_rem;$/;"	m	struct:bin
-check_if_fit	src/let.cpp	/^int check_if_fit(struct bin &b, struct item &itm, struct context &ctx, int &gcd)$/;"	f
+check_if_fit_cut	src/let.cpp	/^int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int side)$/;"	f
+check_if_fit_itm	src/let.cpp	/^int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)$/;"	f
 cmd_gnuplot_cr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
 cmd_gnuplot_fr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_fr[] = {};$/;"	v	file:
 cmd_gnuplot_op	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_op[] = {};$/;"	v	file:
 cmd_gnuplot_sr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
-compute_bin_cap_rem	src/model.cpp	/^void compute_bin_cap_rem(struct bin &b)$/;"	f
 compute_bin_load	src/model.cpp	/^void compute_bin_load(struct bin &b, int &load)$/;"	f
+compute_bin_load_rem	src/model.cpp	/^void compute_bin_load_rem(struct bin &b)$/;"	f
 compute_gcd	src/model.cpp	/^int compute_gcd(vector<struct task> &v_tasks)$/;"	f
-compute_tc_load	src/model.cpp	/^void compute_tc_load(struct item &itm)$/;"	f
+compute_itm_load	src/model.cpp	/^void compute_itm_load(struct item &itm)$/;"	f
 concatenate	src/exp.cpp	/^void concatenate(char p[], char q[]) {$/;"	f
 const	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	10;"	d	file:
 const	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	10;"	d	file:
@@ -1195,6 +1197,7 @@ frag_id_count	src/wfdu_f.cpp	/^static int frag_id_count = 1;$/;"	v	file:
 frags_bfdu_f	src/bfdu_f.cpp	/^static vector<struct item> frags_bfdu_f;$/;"	v	file:
 frags_count	include/model.h	/^        int frags_count;$/;"	m	struct:context
 frags_wfdu_f	src/wfdu_f.cpp	/^static vector<struct item> frags_wfdu_f;$/;"	v	file:
+gcd	include/model.h	/^        int gcd;$/;"	m	struct:item
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
 gen_tc_set	src/generator.cpp	/^void gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f
 generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
@@ -1274,6 +1277,7 @@ itms_size	include/model.h	/^        int itms_size;$/;"	m	struct:context
 lf_size	src/bfdu_f.cpp	/^        int lf_size;$/;"	m	struct:best_cut	file:
 lf_size	src/wfdu_f.cpp	/^        int lf_size;$/;"	m	struct:worst_cut	file:
 load	include/model.h	/^        int load;$/;"	m	struct:bin
+load_rem	include/model.h	/^        int load_rem;$/;"	m	struct:bin
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
@@ -1339,7 +1343,7 @@ schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<st
 schedulability_rate	src/print.cpp	/^static void schedulability_rate(struct context &ctx)$/;"	f	file:
 size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_itms)$/;"	f
-sort_inc_bin_cap_rem	src/model.cpp	/^void sort_inc_bin_cap_rem(vector<struct bin> &v_bins)$/;"	f
+sort_inc_bin_load_rem	src/model.cpp	/^void sort_inc_bin_load_rem(vector<struct bin> &v_bins)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f
 sort_inc_task_priority	src/model.cpp	/^void sort_inc_task_priority(vector<struct task> &v_tasks)$/;"	f
 swap_count	include/model.h	/^        int swap_count;$/;"	m	struct:item
@@ -1353,20 +1357,17 @@ target_bin_lf	src/wfdu_f.cpp	/^        int target_bin_lf;$/;"	m	struct:worst_cut
 target_bin_rf	src/bfdu_f.cpp	/^        int target_bin_rf;$/;"	m	struct:best_cut	file:
 target_bin_rf	src/wfdu_f.cpp	/^        int target_bin_rf;$/;"	m	struct:worst_cut	file:
 task	include/model.h	/^struct task {$/;"	s
-task_chain	include/model.h	/^struct task_chain {$/;"	s
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
 tasks_count	include/model.h	/^        int tasks_count;$/;"	m	struct:context
-tc	include/model.h	/^        struct task_chain tc;$/;"	m	struct:item	typeref:struct:item::task_chain
 total_mean_disp	include/exp.h	/^        float total_mean_disp;$/;"	m	struct:b_stats
 total_mean_reas	include/exp.h	/^        float total_mean_reas;$/;"	m	struct:b_stats
 total_mean_swap	include/exp.h	/^        float total_mean_swap;$/;"	m	struct:b_stats
 u	include/model.h	/^        float u;$/;"	m	struct:task
-u	include/model.h	/^        float u;$/;"	m	struct:task_chain
 update_let	src/let.cpp	/^void update_let(struct bin &b, int gcd)$/;"	f
-v_cuts	include/model.h	/^        vector<struct cut> v_cuts;$/;"	m	struct:task_chain
+v_cuts	include/model.h	/^        vector<struct cut> v_cuts;$/;"	m	struct:item
 v_itms	include/model.h	/^        vector<struct item> v_itms;$/;"	m	struct:bin
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:bin
-v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:task_chain
+v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:item
 v_tasks_lf	include/model.h	/^        vector<struct task> v_tasks_lf;$/;"	m	struct:cut
 v_tasks_rf	include/model.h	/^        vector<struct task> v_tasks_rf;$/;"	m	struct:cut
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
