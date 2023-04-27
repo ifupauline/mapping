@@ -30,8 +30,8 @@ static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
         is_found = NO;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (itm.size <= v_bins[i].cap_rem) {
-                        tmp = v_bins[i].cap_rem - itm.size;
+                if (itm.size <= v_bins[i].load_rem) {
+                        tmp = v_bins[i].load_rem - itm.size;
 
                         if (tmp > worst_rem) {
                                 worst_rem = tmp;
@@ -106,11 +106,11 @@ static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
 
                 for (unsigned int j = 0; j < v_bins.size(); j++) {
                         /* check if fragment can be placed in a bin */
-                        if (l_val <= v_bins[j].cap_rem) {
+                        if (l_val <= v_bins[j].load_rem) {
                                 is_l_val_found = YES;
 
                                 /* compute the remaining */
-                                l_diff = v_bins[j].cap_rem - l_val; 
+                                l_diff = v_bins[j].load_rem - l_val; 
 
                                 /* save the bin for worst fit */
                                 if (l_diff > l_worst_diff) {
@@ -134,11 +134,11 @@ static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                                 continue;
 
                         /* check if fragment can be placed in a bin */
-                        if (r_val <= v_bins[j].cap_rem) {
+                        if (r_val <= v_bins[j].load_rem) {
                                 is_r_val_found = YES;
 
                                 /* compute the remaining */
-                                r_diff = v_bins[j].cap_rem - r_val;
+                                r_diff = v_bins[j].load_rem - r_val;
 
                                 /* save the bin for worst fit */
                                 if (r_diff > r_worst_diff) {

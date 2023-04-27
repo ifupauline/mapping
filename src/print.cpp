@@ -131,7 +131,7 @@ void print_v_tasks(struct bin &b)
 
 void print_core(struct bin &b)
 {
-        printf("Core: %d Lrem: %d\n", b.id, b.cap_rem);
+        printf("Core: %d Lrem: %d\n", b.id, b.load_rem);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
                         printf("TC %-3d size: %-3d tau %-3d p: %-3d idx: %-3d sched: %d\n", 
@@ -151,13 +151,13 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT CORE WFDU_F                   |\n");
         printf("+=====================================+\n\n");
-        sort_inc_bin_cap_rem(v_bins);
+        sort_inc_bin_load_rem(v_bins);
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 printf("+==============================================================+\n");
                 printf("|Core: %d\n", v_bins[i].id);
                 printf("|Load: %.3f\n", (float)v_bins[i].load / PERMILL);
-                printf("|Lrem: %.3f\n", ((float)v_bins[i].cap_rem / PERMILL));
+                printf("|Lrem: %.3f\n", ((float)v_bins[i].load_rem / PERMILL));
                 if (v_bins[i].flag == SCHED_OK)
                         printf("|Sched: OK\n");
 

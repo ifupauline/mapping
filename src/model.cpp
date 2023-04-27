@@ -18,9 +18,9 @@ static int _cmp_dec_itm_size(const struct item &a, const struct item &b)
         return a.size > b.size;
 }
 
-static int _cmp_inc_bin_cap_rem(const struct bin &a, const struct bin &b)
+static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)
 {
-        return a.cap_rem < b.cap_rem;
+        return a.load_rem < b.load_rem;
 }
 
 void sort_inc_task_priority(vector<struct task> &v_tasks)
@@ -38,9 +38,9 @@ void sort_dec_itm_size(vector<struct item> &v_itms)
         sort(v_itms.begin(), v_itms.end(), _cmp_dec_itm_size);
 }
 
-void sort_inc_bin_cap_rem(vector<struct bin> &v_bins)
+void sort_inc_bin_load_rem(vector<struct bin> &v_bins)
 {
-        sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_cap_rem);
+        sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_load_rem);
 }
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx)
@@ -50,7 +50,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         tmp_bin.id = ctx.bins_count;
         tmp_bin.flag = SCHED_OK;
         tmp_bin.load = 0;
-        tmp_bin.cap_rem = ctx.prm.phi;
+        tmp_bin.load_rem = ctx.prm.phi;
         tmp_bin.phi = ctx.prm.phi;
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
@@ -69,7 +69,7 @@ void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id,
                         }
                         itm.is_allocated = YES;
                         v_bins[i].load = load;
-                        v_bins[i].cap_rem = v_bins[i].phi - load;
+                        v_bins[i].load_rem = v_bins[i].phi - load;
                         v_bins[i].v_itms.push_back(itm);
                         update_let(v_bins[i], gcd);
 
@@ -123,7 +123,7 @@ void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
         sort_inc_task_id(b.v_tasks);
 }
 
-void compute_tc_load(struct item &itm)
+void compute_itm_load(struct item &itm)
 {
         for (unsigned int i = 0; i < itm.v_tasks.size(); i++)
                 itm.size += itm.v_tasks[i].u;
@@ -135,20 +135,20 @@ void compute_bin_load(struct bin &b, int &load)
                 load += b.v_itms[i].size;
 }
 
-void compute_bin_cap_rem(struct bin &b)
+void compute_bin_load_rem(struct bin &b)
 {
         int load;
 
         load = 0;
-        b.cap_rem = 0;
+        b.load_rem = 0;
 
         for (unsigned int i = 0; i < b.v_itms.size(); i++)
                 load += b.v_itms[i].size;
 
-        b.cap_rem = b.phi - load;
+        b.load_rem = b.phi - load;
 
-        if (b.cap_rem < 0) {
-                printf("Core: %d cap_rem: %d\n", b.id, b.cap_rem);
+        if (b.load_rem < 0) {
+                printf("Core: %d cap_rem: %d\n", b.id, b.load_rem);
                 exit(0);
         }
 }
@@ -220,7 +220,7 @@ void insert_itm_to_core(struct bin &b, struct item &itm)
 {
         b.v_itms.push_back(itm);
         printf("Added TC %d to Core %d\n", itm.id, b.id);
-        compute_bin_cap_rem(b);
+        compute_bin_load_rem(b);
 }
 
 void delete_itm_by_id(struct bin &b, int itm_id)
@@ -230,7 +230,7 @@ void delete_itm_by_id(struct bin &b, int itm_id)
                 if (b.v_itms[j].id == itm_id) {
                         b.v_itms.erase(b.v_itms.begin() + j);
                         printf("Removed TC %d from Core %d\n", itm_id, b.id);
-                        compute_bin_cap_rem(b);
+                        compute_bin_load_rem(b);
                         flag = YES;
                 }
         }

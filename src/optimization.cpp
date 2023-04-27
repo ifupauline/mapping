@@ -65,7 +65,7 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
         /* update tc load if itm is a fragment */
         for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
                 v_fail_itms[i].first.size = 0;
-                compute_tc_load(v_fail_itms[i].first);
+                compute_itm_load(v_fail_itms[i].first);
         }
 }
 
@@ -181,7 +181,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                         printf("Test WCRT for task-chain %d to Core %d OK!\n", 
                                         v_fail_itms[item_idx].first.id, v_fail_bins[i].id);
                         /* store max cap_rem */
-                        tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.size;
+                        tmp_max = v_fail_bins[i].load_rem - v_fail_itms[item_idx].first.size;
                         if (tmp_max > max)
                                 max = tmp_max;
                         is_found = YES;
@@ -205,7 +205,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                         if (v_fail_bins[i].flag == SCHED_OK) {
                                 dst_b = v_fail_bins[i];
                                 /* store max cap_rem */
-                                tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.size;
+                                tmp_max = v_fail_bins[i].load_rem - v_fail_itms[item_idx].first.size;
                                 if (tmp_max > max)
                                         max = tmp_max;
                                 is_found = YES;
@@ -242,7 +242,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                                 break;
                         }
 
-                        if (v_bins[i].cap_rem + fail_dst_itm.first.size >= 
+                        if (v_bins[i].load_rem + fail_dst_itm.first.size >= 
                                         fail_src_itm.first.size) {
                                 flag_src_dst = YES;
                                 break;
@@ -268,7 +268,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                         }
 
 
-                        if (v_bins[i].cap_rem + fail_src_itm.first.size >= 
+                        if (v_bins[i].load_rem + fail_src_itm.first.size >= 
                                         fail_dst_itm.first.size) {
                                 flag_dst_src = YES;
                                 break;
@@ -474,7 +474,7 @@ void displacement(vector<struct bin> &v_bins)
                                         continue;
 
                                 if (v_bins[j].flag == SCHED_OK && flag == YES && 
-                                                v_bins[j].cap_rem >= v_fail_itms[i].first.size) {
+                                                v_bins[j].load_rem >= v_fail_itms[i].first.size) {
                                         /* add bin in v_bi and add itm to v_bi */
                                         v_fail_bins.push_back(v_bins[j]);
                                         v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);

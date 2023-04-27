@@ -114,7 +114,7 @@ struct bin {
         int phi;
         int flag;
         int load;
-        int cap_rem;
+        int load_rem;
         vector<struct item> v_itms;
         vector<struct task> v_tasks;
 };
@@ -127,7 +127,7 @@ void sort_inc_task_id(vector<struct task> &v_tasks);
 
 void sort_dec_itm_size(vector<struct item> &v_itms);
 
-void sort_inc_bin_cap_rem(vector<struct bin> &v_bins);
+void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
 
 void copy_back_prio_to_tc(struct bin &b);
 
@@ -137,9 +137,9 @@ void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx);
 
 void compute_bin_load(struct bin &b, int &load);
 
-void compute_bin_cap_rem(struct bin &b);
+void compute_itm_load(struct item &itm);
 
-void compute_tc_load(struct item &itm);
+void compute_bin_load_rem(struct bin &b);
 
 int compute_gcd(vector<struct task> &v_tasks);
 
