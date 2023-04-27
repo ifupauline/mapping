@@ -88,30 +88,30 @@ void print_task_chains(vector<struct item> &v_itms)
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 printf("====================================\n");
                 printf("tc.id: %d u: %.3f tasks_nbr: %lu\n", 
-                                v_itms[i].id, v_itms[i].tc.u / PERMILL, v_itms[i].tc.v_tasks.size());
+                                v_itms[i].id, (float)v_itms[i].size / PERMILL, v_itms[i].v_tasks.size());
                 printf("====================================\n");
-                for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
                         printf("tau %d: u: %.3f c: %-5d t: %d\n",
-                                        j, v_itms[i].tc.v_tasks[j].u / PERMILL, 
-                                        v_itms[i].tc.v_tasks[j].c, 
-                                        v_itms[i].tc.v_tasks[j].t);
+                                        j, v_itms[i].v_tasks[j].u / PERMILL, 
+                                        v_itms[i].v_tasks[j].c, 
+                                        v_itms[i].v_tasks[j].t);
                         tasknbr++;
                 }
                 printf("------------------------------------\n");
-                for (unsigned int j = 0; j < v_itms[i].tc.v_cuts.size(); j++) {
-                        printf("cut: %d {%02d, %02d} ", v_itms[i].tc.v_cuts[j].id, 
-                                        v_itms[i].tc.v_cuts[j].c_pair.first, 
-                                        v_itms[i].tc.v_cuts[j].c_pair.second);
+                for (unsigned int j = 0; j < v_itms[i].v_cuts.size(); j++) {
+                        printf("cut: %d {%02d, %02d} ", v_itms[i].v_cuts[j].id, 
+                                        v_itms[i].v_cuts[j].c_pair.first, 
+                                        v_itms[i].v_cuts[j].c_pair.second);
                         printf("lf: ");
 
-                        for (unsigned int k = 0; k < v_itms[i].tc.v_cuts[j].v_tasks_lf.size(); k++)
-                                printf("%d", v_itms[i].tc.v_cuts[j].v_tasks_lf[k].id);
+                        for (unsigned int k = 0; k < v_itms[i].v_cuts[j].v_tasks_lf.size(); k++)
+                                printf("%d", v_itms[i].v_cuts[j].v_tasks_lf[k].id);
 
                         printf(" ");
                         printf("rf: ");
 
-                        for (unsigned int k = 0; k < v_itms[i].tc.v_cuts[j].v_tasks_rf.size(); k++)
-                                printf("%d", v_itms[i].tc.v_cuts[j].v_tasks_rf[k].id);
+                        for (unsigned int k = 0; k < v_itms[i].v_cuts[j].v_tasks_rf.size(); k++)
+                                printf("%d", v_itms[i].v_cuts[j].v_tasks_rf[k].id);
 
                         printf("\n");
                 }
@@ -133,12 +133,12 @@ void print_core(struct bin &b)
 {
         printf("Core: %d Lrem: %d\n", b.id, b.cap_rem);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                for (unsigned int j = 0; j < b.v_itms[i].tc.v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
                         printf("TC %-3d size: %-3d tau %-3d p: %-3d idx: %-3d sched: %d\n", 
                                         b.v_itms[i].id, b.v_itms[i].size,
-                                        b.v_itms[i].tc.v_tasks[j].id, 
-                                        b.v_itms[i].tc.v_tasks[j].p,
-                                        b.v_itms[i].tc.v_tasks[j].idx.itm_idx, b.flag);
+                                        b.v_itms[i].v_tasks[j].id, 
+                                        b.v_itms[i].v_tasks[j].p,
+                                        b.v_itms[i].v_tasks[j].idx.itm_idx, b.flag);
                 }
         }
 }
@@ -168,22 +168,23 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         if (v_bins[i].v_itms[j].is_frag == YES) {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|FRAG-TC: %-3u size %-3u\n", 
+                                printf("|FRAG-TC: %-3u size %-3u gcd: %-3u\n", 
                                                 v_bins[i].v_itms[j].id, 
-                                                v_bins[i].v_itms[j].size);
+                                                v_bins[i].v_itms[j].size,
+                                                v_bins[i].v_itms[j].gcd);
                                 printf("|--------------------------------------------------------------|\n");
-                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].id, 
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].u / PERMILL,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].p,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].r,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].c,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                                        v_bins[i].v_itms[j].v_tasks[k].id, 
+                                                        v_bins[i].v_itms[j].v_tasks[k].u / PERMILL,
+                                                        v_bins[i].v_itms[j].v_tasks[k].p,
+                                                        v_bins[i].v_itms[j].v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].v_tasks[k].c,
+                                                        v_bins[i].v_itms[j].v_tasks[k].t);
 
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
+                                        if (v_bins[i].v_itms[j].v_tasks[k].r > v_bins[i].v_itms[j].v_tasks[k].t)
                                                 printf(" ---------------> deadline  missed!");
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
+                                        if (v_bins[i].v_itms[j].v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR! \n");
                                                 exit(0);
@@ -195,22 +196,23 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                         } else if (v_bins[i].v_itms[j].is_let == YES){
 
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|LET: %-3u size %-3u\n", 
+                                printf("|LET: %-3u size %-3u gcd %-3u\n", 
                                                 v_bins[i].v_itms[j].id, 
-                                                v_bins[i].v_itms[j].size);
+                                                v_bins[i].v_itms[j].size,
+                                                v_bins[i].v_itms[j].gcd);
                                 printf("|--------------------------------------------------------------|\n");
-                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].id, 
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].u / PERMILL,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].p,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].r,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].c,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                                        v_bins[i].v_itms[j].v_tasks[k].id, 
+                                                        v_bins[i].v_itms[j].v_tasks[k].u / PERMILL,
+                                                        v_bins[i].v_itms[j].v_tasks[k].p,
+                                                        v_bins[i].v_itms[j].v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].v_tasks[k].c,
+                                                        v_bins[i].v_itms[j].v_tasks[k].t);
 
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
+                                        if (v_bins[i].v_itms[j].v_tasks[k].r > v_bins[i].v_itms[j].v_tasks[k].t)
                                                 printf(" ---------------> deadline  missed!");
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
+                                        if (v_bins[i].v_itms[j].v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR! \n");
                                                 exit(0);
@@ -221,23 +223,24 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         } else {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|TC:  %-3u size %-3u\n", 
+                                printf("|TC:  %-3u size %-3u gcd %-3u\n", 
                                                 v_bins[i].v_itms[j].id, 
-                                                v_bins[i].v_itms[j].size);
+                                                v_bins[i].v_itms[j].size,
+                                                v_bins[i].v_itms[j].gcd);
 
                                 printf("|--------------------------------------------------------------|\n");
-                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
+                                for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].id, 
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].u / PERMILL,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].p,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].r,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].c,
-                                                        v_bins[i].v_itms[j].tc.v_tasks[k].t);
+                                                        v_bins[i].v_itms[j].v_tasks[k].id, 
+                                                        v_bins[i].v_itms[j].v_tasks[k].u / PERMILL,
+                                                        v_bins[i].v_itms[j].v_tasks[k].p,
+                                                        v_bins[i].v_itms[j].v_tasks[k].r,
+                                                        v_bins[i].v_itms[j].v_tasks[k].c,
+                                                        v_bins[i].v_itms[j].v_tasks[k].t);
 
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t)
+                                        if (v_bins[i].v_itms[j].v_tasks[k].r > v_bins[i].v_itms[j].v_tasks[k].t)
                                                 printf(" ---------------> deadline  missed!");
-                                        if (v_bins[i].v_itms[j].tc.v_tasks[k].r == -1 && 
+                                        if (v_bins[i].v_itms[j].v_tasks[k].r == -1 && 
                                                         v_bins[i].flag == SCHED_OK) {
                                                 printf("\nERR!\n");
                                                 exit(0);

@@ -12,7 +12,7 @@ static struct task *_get_let_task(struct bin &b)
                 if (b.v_itms[i].is_let == YES)
                         idx = i;
         }
-        return &b.v_itms[idx].tc.v_tasks[0];
+        return &b.v_itms[idx].v_tasks[0];
 }
 
 static void _init_let_task(struct item &let, struct context &ctx)
@@ -22,7 +22,7 @@ static void _init_let_task(struct item &let, struct context &ctx)
         t = {0};
 
         let.size = 0;
-        let.tc.u = 0;
+        let.size = 0;
         let.nbr_cut = 0;
         let.frag_id = -1;
         let.disp_count = 0;
@@ -41,7 +41,7 @@ static void _init_let_task(struct item &let, struct context &ctx)
         t.p = 1; /* always highest priority */
         t.id = 0;
 
-        let.tc.v_tasks.push_back(t);
+        let.v_tasks.push_back(t);
 }
 
 void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx)
@@ -52,7 +52,7 @@ void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx)
                 let = {0};
                 _init_let_task(let, ctx);
                 ctx.itms_count++;
-                add_itm_to_bin(v_bins, let, v_bins[i].id, ctx, let.size, let.tc.v_tasks[0].t);
+                add_itm_to_bin(v_bins, let, v_bins[i].id, ctx, let.size, let.v_tasks[0].t);
                 let.is_allocated = YES;
         }
 }
@@ -69,9 +69,9 @@ void update_let(struct bin &b, int gcd)
 
         /* update let item */
         b.v_itms[0].size = let->u;
-        b.v_itms[0].tc.u = let->u;
-        b.v_itms[0].tc.v_tasks.clear();
-        b.v_itms[0].tc.v_tasks.push_back(*let);
+        b.v_itms[0].gcd = gcd;
+        b.v_itms[0].v_tasks.clear();
+        b.v_itms[0].v_tasks.push_back(*let);
 
         //printf("Update LET\n");
         //printf("LET wcet:        %d\n", let->c);
@@ -79,7 +79,6 @@ void update_let(struct bin &b, int gcd)
         //printf("LET deadline:    %d\n", let->d);
         //printf("LET utilization: %f\n", let->u);
         //printf("LET Item size:   %d\n", b.v_itms[0].size);
-        //printf("LET Item tc.u:   %f\n", b.v_itms[0].tc.u);
 }
 
 int check_if_fit(struct bin &b, struct item &itm, struct context &ctx, int &gcd)
@@ -94,12 +93,12 @@ int check_if_fit(struct bin &b, struct item &itm, struct context &ctx, int &gcd)
         total_binload = 0;
         tmp_b = b;
 
-        printf("Trying to fit Item %d in Bin %d\n", itm.id, b.id);
-
         /* copy v_tasks */
-        add_tasks_to_v_tasks(v_tasks, itm.tc.v_tasks);
+        add_tasks_to_v_tasks(v_tasks, itm.v_tasks);
         for (unsigned int i = 0; i < tmp_b.v_itms.size(); i++) {
-                add_tasks_to_v_tasks(v_tasks, tmp_b.v_itms[i].tc.v_tasks);
+                if (tmp_b.v_itms[i].is_let == YES)
+                        continue;
+                add_tasks_to_v_tasks(v_tasks, tmp_b.v_itms[i].v_tasks);
         }
 
         /* cmp gcd */

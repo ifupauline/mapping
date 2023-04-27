@@ -109,7 +109,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         while (ncount != prm.n) {
                 struct item itm;
                 itm.id = ncount;
-                itm.tc.u = 0;
+                itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.nbr_cut = task_nbr - 1;
                 itm.frag_id = -1;
@@ -133,17 +133,17 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                                 printf("ERR! input params!\n");
                                 exit(0);
                         }
-                        itm.tc.v_tasks.push_back(tau);
-                        itm.tc.u += tau.u;
+                        itm.v_tasks.push_back(tau);
+                        itm.size += tau.u;
                 }
-                if (itm.tc.u > C)
+                if (itm.size > C)
                         continue;
 
-                if (wcrt(itm.tc.v_tasks) == SCHED_FAILED)
+                if (wcrt(itm.v_tasks) == SCHED_FAILED)
                         continue;
 
                 v_itms.push_back(itm);
-                v_itms[ncount].size = itm.tc.u;
+                v_itms[ncount].size = itm.size;
                 ncount++;
                 printf("%d\n", ncount);
         }
@@ -154,31 +154,31 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 /* iterate over tasks */
                 count = 0;
                 cut_id = 0;
-                for (unsigned int j = 0; j < v_itms[i].tc.v_tasks.size() - 1; j++) {
+                for (unsigned int j = 0; j < v_itms[i].v_tasks.size() - 1; j++) {
                         struct cut c;
-                        lf_size += v_itms[i].tc.v_tasks[j].u;
-                        rf_size = v_itms[i].tc.u - lf_size;
+                        lf_size += v_itms[i].v_tasks[j].u;
+                        rf_size = v_itms[i].size - lf_size;
                         c.id = cut_id;
                         c.c_pair.first = lf_size;
                         c.c_pair.second = rf_size;
 
                         if (lf_size > prm.phi || rf_size > prm.phi) {
                                 count++;
-                                if (count == v_itms[i].tc.v_tasks.size() - 1)
+                                if (count == v_itms[i].v_tasks.size() - 1)
                                         return -1;
                         } 
 
                         /* copy tasks to left fragment */
                         for (unsigned int k = j; k >= 0; k--) {
-                                c.v_tasks_lf.push_back(v_itms[i].tc.v_tasks[k]);
+                                c.v_tasks_lf.push_back(v_itms[i].v_tasks[k]);
                                 /* for the first task */
                                 if (k == 0)
                                         break;
                         }
 
                         /* copy tasks to right fragment */
-                        for (unsigned int k = j + 1; k <= v_itms[i].tc.v_tasks.size() - 1; k++)
-                                c.v_tasks_rf.push_back(v_itms[i].tc.v_tasks[k]);
+                        for (unsigned int k = j + 1; k <= v_itms[i].v_tasks.size() - 1; k++)
+                                c.v_tasks_rf.push_back(v_itms[i].v_tasks[k]);
 
                         /* if I want more constraints on nbr_cut per tc */
                         //rand = _gen_rand(NO, YES);
@@ -190,7 +190,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                                 continue;
 
                         else {
-                                v_itms[i].tc.v_cuts.push_back(c);
+                                v_itms[i].v_cuts.push_back(c);
                                 cut_id++;
                         }
                 }
@@ -199,6 +199,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         }
         sort_dec_itm_size(v_itms);
         _assign_id(v_itms);
+
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+        }
 
         return 0;
 }
@@ -211,8 +215,6 @@ int gen_rand(int min, int max)
 
         return distr(gen);
 }
-
-
 
 void input(int argc, char **argv, struct params &prm)
 {

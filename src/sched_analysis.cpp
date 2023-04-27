@@ -199,8 +199,8 @@ void assign_new_priorities(struct bin &b, int p, int itm_idx)
                         continue;
 
                 if (b.v_tasks[i].p < p) {
-                        for (unsigned int j = 0; j < b.v_itms[itm_idx].tc.v_tasks.size(); j++) {
-                                if (b.v_itms[itm_idx].tc.v_tasks[j].p == p) {
+                        for (unsigned int j = 0; j < b.v_itms[itm_idx].v_tasks.size(); j++) {
+                                if (b.v_itms[itm_idx].v_tasks[j].p == p) {
                                         //printf("priority %d already assigned\n", p);
                                         p++;
                                 }

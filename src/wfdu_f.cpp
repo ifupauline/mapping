@@ -89,7 +89,7 @@ static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                 return -1;
 
         /* check for a cut */
-        for (unsigned int i = 0; i < itm.tc.v_cuts.size(); i++) {
+        for (unsigned int i = 0; i < itm.v_cuts.size(); i++) {
                 is_l_val_found = NO;
                 is_r_val_found = NO;
 
@@ -99,8 +99,8 @@ static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                 l_diff = ctx.prm.phi;
                 r_diff = ctx.prm.phi;
 
-                l_val = itm.tc.v_cuts[i].c_pair.first;
-                r_val = itm.tc.v_cuts[i].c_pair.second;
+                l_val = itm.v_cuts[i].c_pair.first;
+                r_val = itm.v_cuts[i].c_pair.second;
 
                 tmp_cut = {0};
 
@@ -115,8 +115,8 @@ static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                                 /* save the bin for worst fit */
                                 if (l_diff > l_worst_diff) {
                                         l_worst_diff = l_diff;
-                                        tmp_cut.id = itm.tc.v_cuts[i].id;
-                                        tmp_cut.c.v_tasks_lf = itm.tc.v_cuts[i].v_tasks_lf;
+                                        tmp_cut.id = itm.v_cuts[i].id;
+                                        tmp_cut.c.v_tasks_lf = itm.v_cuts[i].v_tasks_lf;
                                         tmp_cut.target_bin_lf = v_bins[j].id;
                                         tmp_cut.lf_size = l_val;
                                 }
@@ -143,8 +143,8 @@ static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,
                                 /* save the bin for worst fit */
                                 if (r_diff > r_worst_diff) {
                                         r_worst_diff = r_diff;
-                                        tmp_cut.id = itm.tc.v_cuts[i].id;
-                                        tmp_cut.c.v_tasks_rf = itm.tc.v_cuts[i].v_tasks_rf;
+                                        tmp_cut.id = itm.v_cuts[i].id;
+                                        tmp_cut.c.v_tasks_rf = itm.v_cuts[i].v_tasks_rf;
                                         tmp_cut.target_bin_rf = v_bins[j].id;
                                         tmp_cut.rf_size = r_val;
                                 }
@@ -198,7 +198,7 @@ static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_lf.is_fragmented = NO;
         itm_lf.nbr_cut = 0;
         itm_lf.size = cut.lf_size;
-        itm_lf.tc.v_tasks = cut.c.v_tasks_lf;
+        itm_lf.v_tasks = cut.c.v_tasks_lf;
 
         /* creates second itm with right fragment*/
         ctx.itms_count++;
@@ -210,7 +210,7 @@ static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_rf.is_fragmented = NO;
         itm_rf.nbr_cut = 0;
         itm_rf.size = cut.rf_size;
-        itm_rf.tc.v_tasks = cut.c.v_tasks_rf;
+        itm_rf.v_tasks = cut.c.v_tasks_rf;
 
         printf("\nLeft Fragment %d has been created from Item %d with size %d\n", 
                         itm_lf.id, itm.id, itm_lf.size);

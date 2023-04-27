@@ -92,16 +92,11 @@ struct cut {
         vector<struct task> v_tasks_rf;
 };
 
-struct task_chain {
-        float u;
-        vector<struct task> v_tasks;
-        vector<struct cut> v_cuts;
-};
-
 /* BIN-PACKING MODEL */
 struct item {
         int id;
         int size;
+        int gcd;
         int nbr_cut;
         int frag_id;
         int disp_count;
@@ -110,7 +105,8 @@ struct item {
         int is_frag;
         int is_allocated;
         int is_fragmented;
-        struct task_chain tc;
+        vector<struct task> v_tasks;
+        vector<struct cut> v_cuts;
 };
 
 struct bin {

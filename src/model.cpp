@@ -67,11 +67,11 @@ void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id,
                                                 v_bins[i].id, itm.size);
                                 exit(0);
                         }
+                        itm.is_allocated = YES;
                         v_bins[i].load = load;
                         v_bins[i].cap_rem = v_bins[i].phi - load;
                         v_bins[i].v_itms.push_back(itm);
                         update_let(v_bins[i], gcd);
-                        itm.is_allocated = YES;
 
                         if (itm.is_frag == NO) {
                                 printf("Item %d added in Bin %d\n\n", 
@@ -95,7 +95,7 @@ void copy_back_prio_to_tc(struct bin &b)
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 itm_idx = b.v_tasks[i].idx.itm_idx;
                 task_idx = b.v_tasks[i].idx.task_idx;
-                b.v_itms[itm_idx].tc.v_tasks[task_idx].p = b.v_tasks[i].p;
+                b.v_itms[itm_idx].v_tasks[task_idx].p = b.v_tasks[i].p;
         }
 }
 
@@ -107,14 +107,14 @@ void copy_back_resp_to_tc(struct bin &b)
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 itm_idx = b.v_tasks[i].idx.itm_idx;
                 task_idx = b.v_tasks[i].idx.task_idx;
-                b.v_itms[itm_idx].tc.v_tasks[task_idx].r = b.v_tasks[i].r;
+                b.v_itms[itm_idx].v_tasks[task_idx].r = b.v_tasks[i].r;
         }
 }
 
 void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
 {
-        for (unsigned int i = 0; i < b.v_itms[itm_idx].tc.v_tasks.size(); i++) {
-                b.v_tasks.push_back(b.v_itms[itm_idx].tc.v_tasks[i]);
+        for (unsigned int i = 0; i < b.v_itms[itm_idx].v_tasks.size(); i++) {
+                b.v_tasks.push_back(b.v_itms[itm_idx].v_tasks[i]);
                 b.v_tasks.back().idx.bin_idx = bin_idx;
                 b.v_tasks.back().idx.itm_idx = itm_idx;
                 b.v_tasks.back().idx.task_idx = i;
@@ -125,8 +125,8 @@ void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
 
 void compute_tc_load(struct item &itm)
 {
-        for (unsigned int i = 0; i < itm.tc.v_tasks.size(); i++)
-                itm.tc.u += itm.tc.v_tasks[i].u;
+        for (unsigned int i = 0; i < itm.v_tasks.size(); i++)
+                itm.size += itm.v_tasks[i].u;
 }
 
 void compute_bin_load(struct bin &b, int &load)
@@ -164,6 +164,9 @@ int compute_gcd(vector<struct task> &v_tasks)
                 v_t.push_back(v_tasks[i].t);
 
         gcd =__gcd(v_t[0], v_t[1]);
+
+        if (v_t.size() == 2)
+                return gcd;
 
         for (unsigned int i = 2; i < v_t.size(); i++)
                 gcd = __gcd(gcd, v_t[i]);

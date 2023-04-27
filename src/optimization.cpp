@@ -48,8 +48,8 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
         /* take next unschedulable itm */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        for (unsigned int k = 0; k < v_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                if (v_bins[i].v_itms[j].tc.v_tasks[k].r > v_bins[i].v_itms[j].tc.v_tasks[k].t) {
+                        for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
+                                if (v_bins[i].v_itms[j].v_tasks[k].r > v_bins[i].v_itms[j].v_tasks[k].t) {
                                         fail_itm.first = {0};
                                         fail_itm.second = 0;
                                         fail_itm.first = v_bins[i].v_itms[j];
@@ -64,7 +64,7 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
 
         /* update tc load if itm is a fragment */
         for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                v_fail_itms[i].first.tc.u = 0;
+                v_fail_itms[i].first.size = 0;
                 compute_tc_load(v_fail_itms[i].first);
         }
 }
@@ -136,7 +136,7 @@ static void _reassign_bin(struct bin &b)
         p = -1;
         /* detect bin not schedulable */
         for (unsigned int j = 0; j < b.v_itms.size(); j++) {
-                p = _search_unsched_task(b.v_itms[j].tc.v_tasks);
+                p = _search_unsched_task(b.v_itms[j].v_tasks);
 
                 /* if no unscheduled task found go to next itm */
                 if (p == -1) 
@@ -181,7 +181,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                         printf("Test WCRT for task-chain %d to Core %d OK!\n", 
                                         v_fail_itms[item_idx].first.id, v_fail_bins[i].id);
                         /* store max cap_rem */
-                        tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.tc.u;
+                        tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.size;
                         if (tmp_max > max)
                                 max = tmp_max;
                         is_found = YES;
@@ -190,9 +190,9 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                 /* search for failed task with highest priority and _reassign */
                 if (v_fail_bins[i].flag == SCHED_FAILED) {
                         for (unsigned int j = 0; j < v_fail_bins[i].v_itms.size(); j++) {
-                                for (unsigned int k = 0; k < v_fail_bins[i].v_itms[j].tc.v_tasks.size(); k++) {
-                                        if (v_fail_bins[i].v_itms[j].tc.v_tasks[k].r  == -1) {
-                                                p = v_fail_bins[i].v_itms[j].tc.v_tasks[k].p;
+                                for (unsigned int k = 0; k < v_fail_bins[i].v_itms[j].v_tasks.size(); k++) {
+                                        if (v_fail_bins[i].v_itms[j].v_tasks[k].r  == -1) {
+                                                p = v_fail_bins[i].v_itms[j].v_tasks[k].p;
                                                 if (p < high_p) {
                                                         high_p = p;
                                                         bin_idx = i;
@@ -205,7 +205,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                         if (v_fail_bins[i].flag == SCHED_OK) {
                                 dst_b = v_fail_bins[i];
                                 /* store max cap_rem */
-                                tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.tc.u;
+                                tmp_max = v_fail_bins[i].cap_rem - v_fail_itms[item_idx].first.size;
                                 if (tmp_max > max)
                                         max = tmp_max;
                                 is_found = YES;
@@ -419,7 +419,7 @@ void reassignment(vector<struct bin> &v_bins)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_FAILED) {
                         for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                                p = _search_unsched_task(v_bins[i].v_itms[j].tc.v_tasks);
+                                p = _search_unsched_task(v_bins[i].v_itms[j].v_tasks);
 
                                 /* if no unscheduled task found go to next itm */
                                 if (p == -1) 
@@ -474,7 +474,7 @@ void displacement(vector<struct bin> &v_bins)
                                         continue;
 
                                 if (v_bins[j].flag == SCHED_OK && flag == YES && 
-                                                v_bins[j].cap_rem >= v_fail_itms[i].first.tc.u) {
+                                                v_bins[j].cap_rem >= v_fail_itms[i].first.size) {
                                         /* add bin in v_bi and add itm to v_bi */
                                         v_fail_bins.push_back(v_bins[j]);
                                         v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);
