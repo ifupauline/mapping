@@ -35,6 +35,10 @@ struct perf {
         float cr;
         float et;
         float fr;
+        float let;
+        float sys;
+        float unu;
+        float maxu;
         float allo_time;
         float wcrt_time;
         float reass_time;
@@ -148,7 +152,7 @@ int compute_gcd(vector<struct task> &v_tasks);
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
-void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
+void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
                 struct context &ctx, int &load, int &gcd);
 
 void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);

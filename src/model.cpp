@@ -46,7 +46,9 @@ void sort_inc_bin_load_rem(vector<struct bin> &v_bins)
 void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 {
         struct bin tmp_bin;
+        struct item let;
 
+        /* create and insert bin */
         tmp_bin.id = ctx.bins_count;
         tmp_bin.flag = SCHED_OK;
         tmp_bin.load = 0;
@@ -55,9 +57,16 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
         printf("Bin %d Created\n", ctx.bins_count - 1);
+
+        /* create and insert let task */
+        let = {0};
+        init_let_task(let, ctx);
+        ctx.itms_count++;
+        add_itm_to_v_bins(v_bins, let, tmp_bin.id, ctx, let.size, let.v_tasks[0].t);
+        let.is_allocated = YES;
 }
 
-void add_itm_to_bin(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
+void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
                 struct context &ctx, int &load, int &gcd)
 {
         for (int i = 0; i < ctx.bins_count; i++) {

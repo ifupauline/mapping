@@ -23,8 +23,8 @@ static void _check_params(struct params &prm)
         }
 
         if (prm.phi < MINPHI || prm.phi > MAXPHI) {
-                printf("Invalid params: prm.phi rule -> [prm.phi < %d]\n\n", 
-                                MAXPHI);
+                printf("Invalid params: prm.phi rule -> [%d <= prm.phi <= %d]\n\n", 
+                                MINPHI, MAXPHI);
                 exit(0);
         }
 
@@ -185,14 +185,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         //if (rand == YES && v_itms[i].size <= prm.phi)
                         //        continue;
 
-                        /* sometimes do not add the cut, only for size < phi */
-                        if (lf_size > prm.phi || rf_size > prm.phi)
-                                continue;
-
-                        else {
-                                v_itms[i].v_cuts.push_back(c);
-                                cut_id++;
-                        }
+                        v_itms[i].v_cuts.push_back(c);
+                        cut_id++;
                 }
                 lf_size = 0;
                 rf_size = 0;

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
 
         /* optimization */
-        optimization(v_bins_bfdu_f, ctx_bfdu_f);
+        //optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
         /* results */
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);

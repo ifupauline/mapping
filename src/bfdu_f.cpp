@@ -95,7 +95,6 @@ static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
 
         /* check for a cut */
         for (unsigned int i = 0; i < itm.v_cuts.size(); i++) {
-                printf("\n\nITERATION %d------------------------>\n", i);
                 is_l_val_found = NO;
                 is_r_val_found = NO;
 
@@ -106,16 +105,18 @@ static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                 r_best_rem = ctx.prm.phi;
 
                 tmp_cut = {0};
+                tmp_cut.target_bin_lf = -1;
+                tmp_cut.target_bin_rf = -1;
 
                 /* left value */
                 for (unsigned int j = 0; j < v_bins.size(); j++) {
                         /* check if fragment can be placed in a bin */
                         tmp_load = check_if_fit_cut(v_bins[j], itm.v_cuts[i], tmp_gcd, LEFT);
-                        if (tmp_load <= v_bins[i].phi) {
+                        if (tmp_load <= v_bins[j].phi) {
                                 is_l_val_found = YES;
 
                                 /* compute the remaining */
-                                l_tmp_rem = v_bins[i].phi - tmp_load;
+                                l_tmp_rem = v_bins[j].phi - tmp_load;
 
                                 /* save the bin for best fit */
                                 if (l_tmp_rem < l_best_rem) {
@@ -142,7 +143,7 @@ static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
 
                         /* check if fragment can be placed in a bin */
                         tmp_load = check_if_fit_cut(v_bins[j], itm.v_cuts[i], tmp_gcd, RIGHT);
-                        if (tmp_load <= v_bins[i].phi) {
+                        if (tmp_load <= v_bins[j].phi) {
                                 is_r_val_found = YES;
 
                                 /* compute the remaining */
@@ -173,19 +174,11 @@ static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                                 tmp_min = tmp_cut.diff;
                                 cut = tmp_cut;
                                 is_best_found = YES;
-                                printf("l_best_rem: %d\n", l_best_rem);
-                                printf("r_best_rem: %d\n", r_best_rem);
-                                printf("tmp_min: %d\n", tmp_min);
                         }
                 }
         }
 
         if (is_best_found == YES) {
-                printf("Best Min Rem %d\n", cut.diff);
-                printf("best_l_load: %d best_l_gcd: %d\n", cut.best_l_load, cut.best_l_gcd);
-                printf("best_r_load: %d best_r_gcd: %d\n", cut.best_r_load, cut.best_r_gcd);
-                printf("Item %d Best Left Cut %d Bin %d\n", itm.id, cut.id, cut.target_bin_lf);
-                printf("Item %d Best Right Cut %d Bin %d\n\n\n\n", itm.id, cut.id, cut.target_bin_rf);
                 return YES;
 
         } else
@@ -201,28 +194,30 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         /* creates first itm with left fragment*/
         ctx.itms_count++;
         itm_lf.id = ctx.itms_count;
-        itm_lf.disp_count = 0;
-        itm_lf.frag_id = frag_id_count;
-        itm_lf.is_allocated = YES;
-        itm_lf.is_frag = YES;
-        itm_lf.is_fragmented = NO;
-        itm_lf.is_let = NO;
-        itm_lf.nbr_cut = 0;
         itm_lf.size = cut.lf_size;
+        itm_lf.frag_id = frag_id_count;
+        itm_lf.disp_count = 0;
+        itm_lf.swap_count = 0;
+        itm_lf.is_let = NO;
+        itm_lf.is_frag = YES;
+        itm_lf.is_allocated = YES;
+        itm_lf.is_fragmented = NO;
+        itm_lf.nbr_cut = 0;
         itm_lf.v_tasks = cut.c.v_tasks_lf;
         itm_lf.gcd = compute_gcd(cut.c.v_tasks_lf);
 
         /* creates second itm with right fragment*/
         ctx.itms_count++;
         itm_rf.id = ctx.itms_count;
-        itm_rf.disp_count = 0;
-        itm_rf.frag_id = frag_id_count;
-        itm_rf.is_allocated = YES;
-        itm_rf.is_frag = YES;
-        itm_rf.is_fragmented = NO;
-        itm_rf.is_let = NO;
-        itm_rf.nbr_cut = 0;
         itm_rf.size = cut.rf_size;
+        itm_rf.frag_id = frag_id_count;
+        itm_rf.disp_count = 0;
+        itm_rf.swap_count = 0;
+        itm_rf.is_let = NO;
+        itm_rf.is_frag = YES;
+        itm_rf.is_allocated = YES;
+        itm_rf.is_fragmented = NO;
+        itm_rf.nbr_cut = 0;
         itm_rf.v_tasks = cut.c.v_tasks_rf;
         itm_rf.gcd = compute_gcd(cut.c.v_tasks_rf);
 
@@ -241,8 +236,8 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         frags_bfdu_f.push_back(itm_rf);
 
         /* add fragments to their respective bins */
-        add_itm_to_bin(v_bins, itm_lf, cut.target_bin_lf, ctx, cut.best_l_load, cut.best_l_gcd);
-        add_itm_to_bin(v_bins, itm_rf, cut.target_bin_rf, ctx, cut.best_r_load, cut.best_r_gcd);
+        add_itm_to_v_bins(v_bins, itm_lf, cut.target_bin_lf, ctx, cut.best_l_load, cut.best_l_gcd);
+        add_itm_to_v_bins(v_bins, itm_rf, cut.target_bin_rf, ctx, cut.best_r_load, cut.best_r_gcd);
 
         frag_id_count++;
 }
@@ -256,9 +251,6 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         int bin_id;
         int alloc_count;
 
-        ret = 0;
-        bin_id = 0;
-
         /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, BFDU_F\n");
@@ -266,9 +258,11 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         while(alloc_count != ctx.prm.n) {
                 alloc_count = 0;
                 for (int i = 0; i < ctx.prm.n; i++) {
+                        ret = 0;
                         gcd = 0;
                         load = 0;
                         cut = {0};
+                        bin_id = 0;
                         if (v_itms[i].is_allocated == YES) 
                                 continue;
 
@@ -277,10 +271,10 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
                         /* bin found add itm to it */
                         if (ret > -1) {
-                                printf("Best Bin to accomodate Item %d is Bin %d with GCD %d\n", 
-                                                v_itms[i].id, ret, gcd);
+                                printf("Best Bin to accomodate Item %d is Bin %d\n", 
+                                                v_itms[i].id, ret);
                                 bin_id = ret;
-                                add_itm_to_bin(v_bins, v_itms[i], bin_id, ctx, load, gcd);
+                                add_itm_to_v_bins(v_bins, v_itms[i], bin_id, ctx, load, gcd);
                                 v_itms[i].is_allocated = YES;
                                 continue;
 
@@ -300,7 +294,6 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 } 
                                 if (ret == NO) {
                                         printf("No Cut was found to accomodate Item %d\n\n", v_itms[i].id);
-                                        exit(0);
                                         add_bin(v_bins, ctx);
                                         ctx.cycl_count++;
                                         continue;
@@ -322,7 +315,6 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 } 
                                 if (ret == NO) {
                                         printf("No Cut was found to accomodate Item %d\n\n", v_itms[i].id);
-                                        exit(0);
                                         add_bin(v_bins, ctx);
                                         ctx.cycl_count++;
                                         continue;
@@ -335,8 +327,6 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 alloc_count++;
                 }
         }
-        print_cores(v_bins, ctx);
-        exit(0);
 }
 
 vector<struct item> *get_frags_bfdu_f(void)

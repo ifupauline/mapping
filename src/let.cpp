@@ -15,13 +15,12 @@ static struct task *_get_let_task(struct bin &b)
         return &b.v_itms[idx].v_tasks[0];
 }
 
-static void _init_let_task(struct item &let, struct context &ctx)
+void init_let_task(struct item &let, struct context &ctx)
 {
         struct task t;
 
         t = {0};
 
-        let.size = 0;
         let.size = 0;
         let.nbr_cut = 0;
         let.frag_id = -1;
@@ -44,19 +43,6 @@ static void _init_let_task(struct item &let, struct context &ctx)
         let.v_tasks.push_back(t);
 }
 
-void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx)
-{
-        struct item let;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                let = {0};
-                _init_let_task(let, ctx);
-                ctx.itms_count++;
-                add_itm_to_bin(v_bins, let, v_bins[i].id, ctx, let.size, let.v_tasks[0].t);
-                let.is_allocated = YES;
-        }
-}
-
 void update_let(struct bin &b, int gcd)
 {
         struct task *let;
@@ -72,13 +58,6 @@ void update_let(struct bin &b, int gcd)
         b.v_itms[0].gcd = gcd;
         b.v_itms[0].v_tasks.clear();
         b.v_itms[0].v_tasks.push_back(*let);
-
-        //printf("Update LET\n");
-        //printf("LET wcet:        %d\n", let->c);
-        //printf("LET period:      %d\n", let->t);
-        //printf("LET deadline:    %d\n", let->d);
-        //printf("LET utilization: %f\n", let->u);
-        //printf("LET Item size:   %d\n", b.v_itms[0].size);
 }
 
 int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)

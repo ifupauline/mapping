@@ -11,8 +11,6 @@ void generation(vector<struct bin> &v_bins, struct context &ctx)
 
         for (int i = 0; i < ctx.bins_min; i++)
                 add_bin(v_bins, ctx);
-
-        insert_let_tasks(v_bins, ctx);
 }
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
@@ -57,14 +55,10 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
         /* init var for priority optimization */
         ctx.p.sched_imp_prio -= ctx.sched_ok_count;
-}
 
-void optimization(vector<struct bin> &v_bins, struct context &ctx)
-{
         printf("+=====================================+\n");
         printf("| REASSIGNMENT OPTIMIZATION           |\n");
         printf("+=====================================+\n");
-        clock_t start, end;
         start = clock();
         reassignment(v_bins);
         end = clock();
@@ -76,10 +70,14 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /* init var for displacement */
         ctx.p.sched_imp_disp -= ctx.sched_ok_count;
+}
 
+void optimization(vector<struct bin> &v_bins, struct context &ctx)
+{
         printf("+=====================================+\n");
         printf("| DISPLACEMENT OPTIMIZATION           |\n");
         printf("+=====================================+\n");
+        clock_t start, end;
         start = clock();
         displacement(v_bins);
         end = clock();

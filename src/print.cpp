@@ -2,7 +2,7 @@
 #include "mapping.h"
 #include "sched_analysis.h"
 
-static void cores_ratio(vector<struct item> &v_itms, struct context &ctx)
+static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)
 {
         int min_nbr_cuts;
 
@@ -15,13 +15,13 @@ static void cores_ratio(vector<struct item> &v_itms, struct context &ctx)
         ctx.p.cr = (float)ctx.bins_count / (float)ctx.bins_min;
 }
 
-static void execution_time(struct context &ctx)
+static void _execution_time(struct context &ctx)
 {
         ctx.p.et = ctx.p.allo_time + ctx.p.wcrt_time + ctx.p.reass_time + 
                 ctx.p.disp_time + ctx.p.swap_time;
 }
 
-static void schedulability_rate(struct context &ctx)
+static void _schedulability_rate(struct context &ctx)
 {
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
         ctx.p.sched_rate_opti = ctx.p.sched_rate_swap * PERCENT;
@@ -29,6 +29,27 @@ static void schedulability_rate(struct context &ctx)
         ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - (ctx.p.sched_rate_prio * PERCENT);
         ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - (ctx.p.sched_rate_disp * PERCENT);
         ctx.p.fr = ((float)ctx.cuts_count / (float)ctx.prm.n) * PERCENT;
+}
+
+static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)
+{
+        ctx.p.let = 0.0;
+        ctx.p.sys = 0.0;
+        ctx.p.unu = 0.0;
+        ctx.p.maxu = 0.0;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                ctx.p.sys += v_bins[i].load;
+                ctx.p.unu += v_bins[i].load_rem;
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        if (v_bins[i].v_itms[j].is_let == YES) 
+                                ctx.p.let += v_bins[i].v_itms[j].size;
+                }
+        }
+        ctx.p.let /= PERMILL;
+        ctx.p.sys /= PERMILL;
+        ctx.p.unu /= PERMILL;
+        ctx.p.maxu = ctx.bins_count * ((float)ctx.prm.phi / (float)PERMILL);
 }
 
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
@@ -74,9 +95,10 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                         ctx.tasks_count++;
                 }
         }
-        cores_ratio(v_itms, ctx);
-        schedulability_rate(ctx);
-        execution_time(ctx);
+        _cores_ratio(v_itms, ctx);
+        _schedulability_rate(ctx);
+        _execution_time(ctx);
+        _utilization_rate(v_bins, ctx);
 }
 
 void print_task_chains(vector<struct item> &v_itms)
@@ -439,6 +461,9 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Reassignment Gain:                +%-3.3f\n", ctx.p.reas_gain);
         printf("Displacement Gain:                +%-3.3f\n", ctx.p.disp_gain);
         printf("Swapping Gain:                    +%-3.3f\n", ctx.p.swap_gain);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Total SYS Utilization             %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);
+        printf("Total LET Utilization             %-3.3f\n", (ctx.p.let / ctx.p.maxu) * PERCENT);
         printf("------------------------------------------------------------------------>\n");
         printf("Total Execution Time:             %-3.3f ms\n", ctx.p.et * MSEC);
         printf("------------------------------------------------------------------------>\n");

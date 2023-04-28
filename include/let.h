@@ -3,7 +3,7 @@
 
 #include "model.h"
 
-void insert_let_tasks(vector<struct bin> &v_bins, struct context &ctx);
+void init_let_task(struct item &let, struct context &ctx);
 
 void update_let(struct bin &b, int gcd);
 

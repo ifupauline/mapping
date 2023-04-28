@@ -33,7 +33,7 @@ static void _fixpoint(vector<struct task> &hp_tasks, struct task &tau,
         tmp = tau.c;
 
         if (tau.c > tau.t) {
-                printf("ERROR Execution Time of tau %d > Period\n\n", tau.id);
+                printf("ERROR Execution Time %d of tau %d > Period %d\n\n", tau.c, tau.id, tau.t);
                 exit(0);
         }
 
@@ -65,35 +65,6 @@ static void _fixpoint(vector<struct task> &hp_tasks, struct task &tau,
                 }
                 return;
         }
-}
-
-void wcrt_bin(struct bin &b, int bin_idx)
-{
-        int ret;
-
-        ret = -1;
-        b.v_tasks.clear();
-
-        for (unsigned int i = 0; i < b.v_itms.size(); i++)
-                copy_tc_to_v_tasks_with_pos(b, bin_idx, i);
-
-        /* test wcrt */
-        ret = wcrt(b.v_tasks);
-        if (ret == SCHED_OK) {
-                printf("WCRT Core: %d OK!\n", b.id);
-                b.flag = SCHED_OK;
-
-        }
-        
-        else if (ret == SCHED_FAILED) {
-                printf("WCRT Core: %d FAILED!\n", b.id);
-                b.flag = SCHED_FAILED;
-        }
-                
-                
-        copy_back_prio_to_tc(b);
-        copy_back_resp_to_tc(b);
-        compute_bin_load_rem(b);
 }
 
 int wcrt(vector<struct task> &v_tasks)
@@ -133,6 +104,34 @@ int wcrt(vector<struct task> &v_tasks)
                 exit(0);
         }
         return -1;
+}
+
+void wcrt_bin(struct bin &b, int bin_idx)
+{
+        int ret;
+
+        ret = -1;
+        b.v_tasks.clear();
+
+        for (unsigned int i = 0; i < b.v_itms.size(); i++)
+                copy_tc_to_v_tasks_with_pos(b, bin_idx, i);
+
+        /* test wcrt */
+        ret = wcrt(b.v_tasks);
+        if (ret == SCHED_OK) {
+                printf("WCRT Core: %d OK!\n", b.id);
+                b.flag = SCHED_OK;
+
+        }
+        
+        else if (ret == SCHED_FAILED) {
+                printf("WCRT Core: %d FAILED!\n", b.id);
+                b.flag = SCHED_FAILED;
+        }
+
+        copy_back_prio_to_tc(b);
+        copy_back_resp_to_tc(b);
+        compute_bin_load_rem(b);
 }
 
 void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx)
