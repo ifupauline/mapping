@@ -18,6 +18,12 @@ void wcrt_bin(struct bin &b, int bin_idx);
 
 void wcrt_v_bins(vector<struct bin> &v_bins, struct context &ctx);
 
+void reassign(struct bin &b, int &p, int itm_idx);
+
+void reassign_bin(struct bin &b);
+
+void reassignment(vector<struct bin> &v_bins);
+
 float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
 
 #endif /* SCHED_ANALYSIS_H */

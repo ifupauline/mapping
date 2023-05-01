@@ -6,37 +6,6 @@
 #define MAX_DISP_COUNT 10
 #define MAX_SWAP_COUNT 10
 
-static int _search_unsched_task(vector<struct task> &v_tasks)
-{
-        int high_p;
-        int flag;
-        vector<int> v_p;
-
-        flag = NO;
-        high_p = -1;
-
-        for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                if (v_tasks[i].r  > v_tasks[i].t) {
-                        v_p.push_back(v_tasks[i].p);
-                        flag = YES;
-                }
-        }
-
-        if (flag == NO)
-                return -1;
-
-        else if (flag == YES) {
-                /* look for unched task with highest priority */
-                for (unsigned int i = 0; i < v_p.size(); i++) {
-                        high_p = v_p[i];
-                        if (high_p > v_p[i + 1])
-                                high_p = v_p[i + 1];
-                }
-                return high_p;
-        }
-        return -1;
-}
-
 static void _store_unsched_itms(vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_fail_itms, int &flag)
 {
@@ -85,66 +54,7 @@ static int _check_if_dual_frag(struct bin &b, int src_itm_id,
         return NO;
 }
 
-static void _reassign(struct bin &b, int &p, int itm_idx)
-{
-        int flag;
-        struct bin b_tmp;
 
-        flag = -1;
-        b_tmp = b;
-
-        assign_new_priorities(b_tmp, p, itm_idx);
-
-        /* test if schedulable */
-        flag = wcrt(b_tmp.v_tasks);
-        b_tmp.flag = flag;
-        copy_back_resp_to_tc(b_tmp);
-        copy_back_prio_to_tc(b_tmp);
-
-        if (flag == SCHED_OK) {
-                b = b_tmp;
-                printf("Core %d SCHED_OK with new priority assignment\n", 
-                                b_tmp.id);
-                for (unsigned int i = 0; i < b_tmp.v_tasks.size(); i++) {
-                        if (b_tmp.v_tasks[i].r > b_tmp.v_tasks[i].t) {
-                                printf("p: %d tau.id: %d r: %d t: %d\n", 
-                                                b_tmp.v_tasks[i].p, 
-                                                b_tmp.v_tasks[i].id, 
-                                                b_tmp.v_tasks[i].r, 
-                                                b_tmp.v_tasks[i].t);
-                                printf("ERR! wcrt should have failed\n");
-                                exit(0);
-                        }
-                }
-                return;
-
-        } else if (flag == SCHED_FAILED) {
-                //printf("Core %d SCHED_FAILED with new priority assignment\n\n", 
-                //                b_tmp.id);
-                return;
-
-        } else {
-                printf("ERR! priority reassignment\n");
-                exit(0);
-        }
-}
-
-static void _reassign_bin(struct bin &b)
-{
-        int p;
-
-        p = -1;
-        /* detect bin not schedulable */
-        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
-                p = _search_unsched_task(b.v_itms[j].v_tasks);
-
-                /* if no unscheduled task found go to next itm */
-                if (p == -1) 
-                        continue;
-                else
-                        _reassign(b, p, j);
-        }
-}
 
 static int _search_for_displace(vector<struct bin> &v_fail_bins, 
                 vector<pair<struct item, int>> &v_fail_itms, int item_idx, 
@@ -201,7 +111,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                                         }
                                 }
                         }
-                        _reassign(v_fail_bins[bin_idx], high_p, itm_idx);
+                        reassign(v_fail_bins[bin_idx], high_p, itm_idx);
                         if (v_fail_bins[i].flag == SCHED_OK) {
                                 dst_b = v_fail_bins[i];
                                 /* store max cap_rem */
@@ -337,10 +247,10 @@ static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
 
         /* try to reassign priority */
         if (src_bin.flag == SCHED_FAILED)
-                _reassign_bin(src_bin);
+                reassign_bin(src_bin);
 
         if (dst_bin.flag == SCHED_FAILED)
-                _reassign_bin(src_bin);
+                reassign_bin(src_bin);
 
         if (src_bin.flag == SCHED_OK || dst_bin.flag == SCHED_OK) {
                 v_bins[src_bin_idx] = src_bin;
@@ -408,27 +318,6 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                 }
         }
         printf("\n");
-}
-
-void reassignment(vector<struct bin> &v_bins)
-{
-        int p;
-
-        p = -1;
-        /* detect bin not schedulable */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].flag == SCHED_FAILED) {
-                        for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                                p = _search_unsched_task(v_bins[i].v_itms[j].v_tasks);
-
-                                /* if no unscheduled task found go to next itm */
-                                if (p == -1) 
-                                        continue;
-                                else
-                                        _reassign(v_bins[i], p, j);
-                        }
-                }
-        }
 }
 
 void displacement(vector<struct bin> &v_bins)

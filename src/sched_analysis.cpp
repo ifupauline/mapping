@@ -16,6 +16,37 @@ static void _assign_unique_priorities(vector<struct bin> &v_bins)
         }
 }
 
+static int _search_unsched_task(vector<struct task> &v_tasks)
+{
+        int high_p;
+        int flag;
+        vector<int> v_p;
+
+        flag = NO;
+        high_p = -1;
+
+        for (unsigned int i = 0; i < v_tasks.size(); i++) {
+                if (v_tasks[i].r  > v_tasks[i].t) {
+                        v_p.push_back(v_tasks[i].p);
+                        flag = YES;
+                }
+        }
+
+        if (flag == NO)
+                return -1;
+
+        else if (flag == YES) {
+                /* look for unched task with highest priority */
+                for (unsigned int i = 0; i < v_p.size(); i++) {
+                        high_p = v_p[i];
+                        if (high_p > v_p[i + 1])
+                                high_p = v_p[i + 1];
+                }
+                return high_p;
+        }
+        return -1;
+}
+
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
                 struct task &tau, int &r_prev)
 {
@@ -207,6 +238,88 @@ void assign_new_priorities(struct bin &b, int p, int itm_idx)
                         b.v_tasks[i].p = p;
                         //printf("tau %d p: %d itm_idx: %d\n", b.v_tasks[i].id, b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx);
                         p = p + 1;
+                }
+        }
+}
+
+void reassign(struct bin &b, int &p, int itm_idx)
+{
+        int flag;
+        struct bin b_tmp;
+
+        flag = -1;
+        b_tmp = b;
+
+        assign_new_priorities(b_tmp, p, itm_idx);
+
+        /* test if schedulable */
+        flag = wcrt(b_tmp.v_tasks);
+        b_tmp.flag = flag;
+        copy_back_resp_to_tc(b_tmp);
+        copy_back_prio_to_tc(b_tmp);
+
+        if (flag == SCHED_OK) {
+                b = b_tmp;
+                printf("Core %d SCHED_OK with new priority assignment\n", 
+                                b_tmp.id);
+                for (unsigned int i = 0; i < b_tmp.v_tasks.size(); i++) {
+                        if (b_tmp.v_tasks[i].r > b_tmp.v_tasks[i].t) {
+                                printf("p: %d tau.id: %d r: %d t: %d\n", 
+                                                b_tmp.v_tasks[i].p, 
+                                                b_tmp.v_tasks[i].id, 
+                                                b_tmp.v_tasks[i].r, 
+                                                b_tmp.v_tasks[i].t);
+                                printf("ERR! wcrt should have failed\n");
+                                exit(0);
+                        }
+                }
+                return;
+
+        } else if (flag == SCHED_FAILED) {
+                //printf("Core %d SCHED_FAILED with new priority assignment\n\n", 
+                //                b_tmp.id);
+                return;
+
+        } else {
+                printf("ERR! priority reassignment\n");
+                exit(0);
+        }
+}
+
+void reassign_bin(struct bin &b)
+{
+        int p;
+
+        p = -1;
+        /* detect bin not schedulable */
+        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
+                p = _search_unsched_task(b.v_itms[j].v_tasks);
+
+                /* if no unscheduled task found go to next itm */
+                if (p == -1) 
+                        continue;
+                else
+                        reassign(b, p, j);
+        }
+}
+
+void reassignment(vector<struct bin> &v_bins)
+{
+        int p;
+
+        p = -1;
+        /* detect bin not schedulable */
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_FAILED) {
+                        for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                                p = _search_unsched_task(v_bins[i].v_itms[j].v_tasks);
+
+                                /* if no unscheduled task found go to next itm */
+                                if (p == -1) 
+                                        continue;
+                                else
+                                        reassign(v_bins[i], p, j);
+                        }
                 }
         }
 }

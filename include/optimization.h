@@ -3,8 +3,6 @@
 
 #include "model.h"
 
-void reassignment(vector<struct bin> &v_bins);
-
 void displacement(vector<struct bin> &v_bins);
 
 void swapping(vector<struct bin> &v_bins);
