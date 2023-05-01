@@ -113,6 +113,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.nbr_cut = task_nbr - 1;
                 itm.frag_id = -1;
+                itm.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
                 itm.disp_count = 0;
                 itm.swap_count = 0;
                 itm.is_let = NO;

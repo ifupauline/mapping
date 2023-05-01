@@ -54,6 +54,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         tmp_bin.load = 0;
         tmp_bin.load_rem = ctx.prm.phi;
         tmp_bin.phi = ctx.prm.phi;
+        tmp_bin.memcost = 0;
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
         printf("Bin %d Created\n", ctx.bins_count - 1);
@@ -67,7 +68,7 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 }
 
 void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
-                struct context &ctx, int &load, int &gcd)
+                struct context &ctx, int load, int gcd)
 {
         for (int i = 0; i < ctx.bins_count; i++) {
                 if (v_bins[i].id == bin_id) {
@@ -80,6 +81,7 @@ void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id,
                         v_bins[i].load = load;
                         v_bins[i].load_rem = v_bins[i].phi - load;
                         v_bins[i].v_itms.push_back(itm);
+                        compute_bin_memcost(v_bins[i]);
                         update_let(v_bins[i], gcd);
 
                         if (itm.is_frag == NO) {
@@ -156,6 +158,23 @@ void compute_bin_load_rem(struct bin &b)
 
         if (b.load_rem < 0) {
                 printf("Core: %d load_rem: %d\n", b.id, b.load_rem);
+                exit(0);
+        }
+}
+
+void compute_bin_memcost(struct bin &b)
+{
+        b.memcost = 0;
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                /* let task has no memcost */
+                if (b.v_itms[i].is_let == YES)
+                        continue;
+
+                b.memcost += b.v_itms[i].memcost;
+        }
+
+        if (b.memcost < 0) {
+                printf("Core: %d memcost: %d\n", b.id, b.memcost);
                 exit(0);
         }
 }

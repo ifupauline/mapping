@@ -12,10 +12,6 @@
 #define MINN       1
 #define MAXN       10000
 
-/* filling limit of a core */
-#define MINPHI     C/2
-#define MAXPHI     C
-
 /* permils */
 #define MINMAXTU   1
 #define MAXMAXTU   150
@@ -23,10 +19,6 @@
 /* microsecs */
 #define MINWCET    100
 #define MAXWCET    20000
-
-/* microsecs range based on paper Biondi and Di Natale */
-#define MINLETWCET 1
-#define MAXLETWCET 165
 
 /* min max number of tasks in a chain */
 #define MINTASKNBR 2

@@ -17,9 +17,17 @@
 #define RIGHT 1
 
 #define C       1000
+#define MINPHI  C/2
+#define MAXPHI  C
+
+/* units */
 #define PERMILL 1000
 #define PERCENT 100
 #define MSEC    1000
+
+/* mem cost of tc */
+#define MINMEMCOST 0 /* no shared memory used */
+#define MAXMEMCOST 3
 
 using namespace std;
 
@@ -106,6 +114,7 @@ struct item {
         int gcd;
         int nbr_cut;
         int frag_id;
+        int memcost;
         int disp_count;
         int swap_count;
         int is_let;
@@ -122,6 +131,7 @@ struct bin {
         int flag;
         int load;
         int load_rem;
+        int memcost;
         vector<struct item> v_itms;
         vector<struct task> v_tasks;
 };
@@ -148,12 +158,14 @@ void compute_itm_load(struct item &itm);
 
 void compute_bin_load_rem(struct bin &b);
 
+void compute_bin_memcost(struct bin &b);
+
 int compute_gcd(vector<struct task> &v_tasks);
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
 
 void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
-                struct context &ctx, int &load, int &gcd);
+                struct context &ctx, int load, int gcd);
 
 void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 

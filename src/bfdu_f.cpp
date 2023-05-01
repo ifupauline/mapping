@@ -1,5 +1,4 @@
 #include "let.h"
-#include "print.h" /* tmp */
 #include "mapping.h"
 
 struct best_cut {
@@ -111,7 +110,8 @@ static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                 /* left value */
                 for (unsigned int j = 0; j < v_bins.size(); j++) {
                         /* check if fragment can be placed in a bin */
-                        tmp_load = check_if_fit_cut(v_bins[j], itm.v_cuts[i], tmp_gcd, LEFT);
+                        tmp_load = check_if_fit_cut(v_bins[j], itm.v_cuts[i], 
+                                        tmp_gcd, itm.memcost, LEFT);
                         if (tmp_load <= v_bins[j].phi) {
                                 is_l_val_found = YES;
 
@@ -142,7 +142,8 @@ static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,
                                 continue;
 
                         /* check if fragment can be placed in a bin */
-                        tmp_load = check_if_fit_cut(v_bins[j], itm.v_cuts[i], tmp_gcd, RIGHT);
+                        tmp_load = check_if_fit_cut(v_bins[j], itm.v_cuts[i], 
+                                        tmp_gcd, itm.memcost, RIGHT);
                         if (tmp_load <= v_bins[j].phi) {
                                 is_r_val_found = YES;
 
@@ -196,6 +197,10 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_lf.id = ctx.itms_count;
         itm_lf.size = cut.lf_size;
         itm_lf.frag_id = frag_id_count;
+        if (itm.memcost == 0)
+                itm_lf.memcost = 1;
+        else
+                itm_lf.memcost = itm.memcost;
         itm_lf.disp_count = 0;
         itm_lf.swap_count = 0;
         itm_lf.is_let = NO;
@@ -211,6 +216,10 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_rf.id = ctx.itms_count;
         itm_rf.size = cut.rf_size;
         itm_rf.frag_id = frag_id_count;
+        if (itm.memcost == 0)
+                itm_rf.memcost = 1;
+        else
+                itm_rf.memcost = itm.memcost;
         itm_rf.disp_count = 0;
         itm_rf.swap_count = 0;
         itm_rf.is_let = NO;

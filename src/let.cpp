@@ -24,6 +24,7 @@ void init_let_task(struct item &let, struct context &ctx)
         let.size = 0;
         let.nbr_cut = 0;
         let.frag_id = -1;
+        let.memcost = 0;
         let.disp_count = 0;
         let.swap_count = 0;
         let.is_let = YES;
@@ -32,7 +33,7 @@ void init_let_task(struct item &let, struct context &ctx)
         let.is_allocated = NO;
         let.id = ctx.itms_count;
 
-        t.c = gen_rand(MINLETWCET, MAXLETWCET);
+        t.c = 0;
         t.t = 0;
         t.d = t.t;
         t.r = 0;
@@ -49,6 +50,29 @@ void update_let(struct bin &b, int gcd)
 
         /* update let task */
         let = _get_let_task(b);
+        switch (b.memcost) {
+                case 0:
+                        let->c = 0;
+                        break;
+                case 1: 
+                        let->c = gen_rand(5, 33);
+                        break;
+                case 2:
+                        let->c = gen_rand(34, 66);
+                        break;
+                case 3: 
+                        let->c = gen_rand(67, 99);
+                        break;
+                case 4:
+                        let->c = gen_rand(100, 132);
+                        break;
+                case 5:
+                        let->c = gen_rand(133, 165);
+
+                default:
+                        let->c = 165;
+                        break;
+        }
         let->t = gcd;
         let->d = let->t;
         let->u = ceil(((float)let->c / (float)let->t) * PERMILL);
@@ -62,15 +86,19 @@ void update_let(struct bin &b, int gcd)
 
 int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
 {
-        int target_binload;
-        int total_binload;
         struct bin tmp_b;
+        int total_binload;
+        int target_binload;
         vector<struct task> v_tasks;
 
         gcd = 0;
-        target_binload = 0;
-        total_binload = 0;
         tmp_b = b;
+        total_binload = 0;
+        target_binload = 0;
+
+        /* add itm memcost to bin memcost */
+        compute_bin_memcost(tmp_b);
+        tmp_b.memcost += itm.memcost;
 
         /* copy v_tasks */
         add_tasks_to_v_tasks(v_tasks, itm.v_tasks);
@@ -101,7 +129,7 @@ int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
         return total_binload;
 }
 
-int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int side)
+int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int memcost, int side)
 {
         struct bin tmp_b;
         int total_binload;
@@ -112,6 +140,12 @@ int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int side)
         tmp_b = b;
         total_binload = 0;
         target_binload = 0;
+
+        /* add itm memcost to bin memcost */
+        if (memcost == 0)
+                memcost = 1;
+        compute_bin_memcost(tmp_b);
+        tmp_b.memcost += memcost;
 
         /* copy tasks of left fragment */
         if (side == LEFT)

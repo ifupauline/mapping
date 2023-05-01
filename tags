@@ -827,26 +827,28 @@ ITER	exp/phi/phi.cpp	6;"	d	file:
 LEFT	include/model.h	16;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
-MAXLETWCET	include/generator.h	29;"	d
-MAXMAXTU	include/generator.h	21;"	d
+MAXLETWCET	include/let.h	8;"	d
+MAXMAXTU	include/generator.h	17;"	d
+MAXMEMCOST	include/model.h	30;"	d
 MAXN	include/generator.h	13;"	d
-MAXPHI	include/generator.h	17;"	d
-MAXTASKNBR	include/generator.h	33;"	d
-MAXWCET	include/generator.h	25;"	d
+MAXPHI	include/model.h	21;"	d
+MAXTASKNBR	include/generator.h	25;"	d
+MAXWCET	include/generator.h	21;"	d
 MAX_DISP_COUNT	src/optimization.cpp	6;"	d	file:
 MAX_SWAP_COUNT	src/optimization.cpp	7;"	d	file:
-MINLETWCET	include/generator.h	28;"	d
-MINMAXTU	include/generator.h	20;"	d
+MINLETWCET	include/let.h	7;"	d
+MINMAXTU	include/generator.h	16;"	d
+MINMEMCOST	include/model.h	29;"	d
 MINN	include/generator.h	12;"	d
-MINPHI	include/generator.h	16;"	d
-MINTASKNBR	include/generator.h	32;"	d
-MINWCET	include/generator.h	24;"	d
+MINPHI	include/model.h	20;"	d
+MINTASKNBR	include/generator.h	24;"	d
+MINWCET	include/generator.h	20;"	d
 MODEL_H	include/model.h	2;"	d
-MSEC	include/model.h	22;"	d
+MSEC	include/model.h	26;"	d
 NO	include/model.h	13;"	d
 OPTIMIZATION_H	include/optimization.h	2;"	d
-PERCENT	include/model.h	21;"	d
-PERMILL	include/model.h	20;"	d
+PERCENT	include/model.h	25;"	d
+PERMILL	include/model.h	24;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	427;"	d	file:
@@ -1160,7 +1162,7 @@ c	include/model.h	/^        int c;$/;"	m	struct:task
 c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:best_cut::cut	file:
 c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
 c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
-check_if_fit_cut	src/let.cpp	/^int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int side)$/;"	f
+check_if_fit_cut	src/let.cpp	/^int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int memcost, int side)$/;"	f
 check_if_fit_itm	src/let.cpp	/^int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)$/;"	f
 cmd_gnuplot_cr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
@@ -1170,6 +1172,7 @@ cmd_gnuplot_sr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 compute_bin_load	src/model.cpp	/^void compute_bin_load(struct bin &b, int &load)$/;"	f
 compute_bin_load_rem	src/model.cpp	/^void compute_bin_load_rem(struct bin &b)$/;"	f
+compute_bin_memcost	src/model.cpp	/^void compute_bin_memcost(struct bin &b)$/;"	f
 compute_gcd	src/model.cpp	/^int compute_gcd(vector<struct task> &v_tasks)$/;"	f
 compute_itm_load	src/model.cpp	/^void compute_itm_load(struct item &itm)$/;"	f
 concatenate	src/exp.cpp	/^void concatenate(char p[], char q[]) {$/;"	f
@@ -1302,6 +1305,8 @@ mean_reas	include/exp.h	/^        float mean_reas;$/;"	m	struct:b_stats
 mean_sr_allo	include/exp.h	/^        float mean_sr_allo;$/;"	m	struct:b_stats
 mean_sr_opti	include/exp.h	/^        float mean_sr_opti;$/;"	m	struct:b_stats
 mean_swap	include/exp.h	/^        float mean_swap;$/;"	m	struct:b_stats
+memcost	include/model.h	/^        int memcost;$/;"	m	struct:bin
+memcost	include/model.h	/^        int memcost;$/;"	m	struct:item
 n	include/model.h	/^        int n;$/;"	m	struct:params
 nbr_cut	include/model.h	/^        int nbr_cut;$/;"	m	struct:item
 optimization	src/mapping.cpp	/^void optimization(vector<struct bin> &v_bins, struct context &ctx)$/;"	f

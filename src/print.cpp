@@ -95,6 +95,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                         ctx.tasks_count++;
                 }
         }
+
         _cores_ratio(v_itms, ctx);
         _schedulability_rate(ctx);
         _execution_time(ctx);
@@ -108,10 +109,11 @@ void print_task_chains(vector<struct item> &v_itms)
         tasknbr = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
-                printf("====================================\n");
-                printf("tc.id: %d u: %.3f tasks_nbr: %lu\n", 
-                                v_itms[i].id, (float)v_itms[i].size / PERMILL, v_itms[i].v_tasks.size());
-                printf("====================================\n");
+                printf("=============================================\n");
+                printf("tc.id: %d u: %.3f tasks_nbr: %lu memcost: %d\n", 
+                                v_itms[i].id, (float)v_itms[i].size / PERMILL, 
+                                v_itms[i].v_tasks.size(), v_itms[i].memcost);
+                printf("=============================================\n");
                 for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
                         printf("tau %d: u: %.3f c: %-5d t: %d\n",
                                         j, v_itms[i].v_tasks[j].u / PERMILL, 
@@ -119,7 +121,7 @@ void print_task_chains(vector<struct item> &v_itms)
                                         v_itms[i].v_tasks[j].t);
                         tasknbr++;
                 }
-                printf("------------------------------------\n");
+                printf("---------------------------------------------\n");
                 for (unsigned int j = 0; j < v_itms[i].v_cuts.size(); j++) {
                         printf("cut: %d {%02d, %02d} ", v_itms[i].v_cuts[j].id, 
                                         v_itms[i].v_cuts[j].c_pair.first, 
@@ -137,7 +139,7 @@ void print_task_chains(vector<struct item> &v_itms)
 
                         printf("\n");
                 }
-                printf("------------------------------------\n");
+                printf("---------------------------------------------\n");
                 printf("\n\n");
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
@@ -146,9 +148,9 @@ void print_task_chains(vector<struct item> &v_itms)
 
 void print_v_tasks(struct bin &b)
 {
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                printf("tau %d :p %d sched %d\n", b.v_tasks[i].id, b.v_tasks[i].p, b.flag);
-        }
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++)
+                printf("tau %d :p %d sched %d\n", 
+                                b.v_tasks[i].id, b.v_tasks[i].p, b.flag);
 }
 
 void print_core(struct bin &b)
@@ -175,11 +177,15 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n\n");
         sort_inc_bin_load_rem(v_bins);
 
+        for (unsigned int i = 0; i < v_bins.size(); i++)
+                compute_bin_memcost(v_bins[i]);
+
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 printf("+==============================================================+\n");
                 printf("|Core: %d\n", v_bins[i].id);
                 printf("|Load: %.3f\n", (float)v_bins[i].load / PERMILL);
                 printf("|Lrem: %.3f\n", ((float)v_bins[i].load_rem / PERMILL));
+                printf("|Memc: %d\n", v_bins[i].memcost);
                 if (v_bins[i].flag == SCHED_OK)
                         printf("|Sched: OK\n");
 
@@ -190,10 +196,11 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         if (v_bins[i].v_itms[j].is_frag == YES) {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|FRAG-TC: %-3u size %-3u gcd: %-3u\n", 
+                                printf("|FRAG-TC: %-3d size %-3d gcd: %-3d memcost: %d\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size,
-                                                v_bins[i].v_itms[j].gcd);
+                                                v_bins[i].v_itms[j].gcd,
+                                                v_bins[i].v_itms[j].memcost);
                                 printf("|--------------------------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
@@ -218,7 +225,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                         } else if (v_bins[i].v_itms[j].is_let == YES){
 
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|LET: %-3u size %-3u gcd %-3u\n", 
+                                printf("|LET: %-3d size %-3d gcd %-3d\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size,
                                                 v_bins[i].v_itms[j].gcd);
@@ -245,10 +252,11 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         } else {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|TC:  %-3u size %-3u gcd %-3u\n", 
+                                printf("|TC:  %-3d size %-3d gcd %-3d memcost %d\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size,
-                                                v_bins[i].v_itms[j].gcd);
+                                                v_bins[i].v_itms[j].gcd,
+                                                v_bins[i].v_itms[j].memcost);
 
                                 printf("|--------------------------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
