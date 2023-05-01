@@ -40,6 +40,7 @@ void init_let_task(struct item &let, struct context &ctx)
         t.u = 0;
         t.p = 1; /* always highest priority */
         t.id = 0;
+        t.is_let = YES;
 
         let.v_tasks.push_back(t);
 }

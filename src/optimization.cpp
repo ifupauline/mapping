@@ -84,7 +84,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
 
         for (unsigned int i = 0; i < v_fail_bins.size(); i++) {
                 /* test wcrt for dst bin */
-                assign_unique_priorities(v_fail_bins[i]);
+                base_assignment(v_fail_bins[i]);
                 wcrt_bin(v_fail_bins[i], i);
                 if (v_fail_bins[i].flag == SCHED_OK) {
                         dst_b = v_fail_bins[i];
@@ -231,7 +231,7 @@ static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
         for (unsigned int j = 0; j < src_bin.v_itms.size(); j++)
                 copy_tc_to_v_tasks_with_pos(src_bin, src_bin_idx, j);
 
-        assign_unique_priorities(src_bin);
+        base_assignment(src_bin);
         copy_back_prio_to_tc(src_bin);
         wcrt_bin(src_bin, src_bin_idx);
 
@@ -240,7 +240,7 @@ static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
         for (unsigned int j = 0; j < dst_bin.v_itms.size(); j++)
                 copy_tc_to_v_tasks_with_pos(dst_bin, dst_bin_idx, j);
 
-        assign_unique_priorities(dst_bin);
+        base_assignment(dst_bin);
         copy_back_prio_to_tc(dst_bin);
         wcrt_bin(dst_bin, dst_bin_idx);
 
@@ -282,7 +282,7 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                                                         fail_itm.first.id, v_bins[i].id);
                                         delete_itm_by_id(v_bins[i], fail_itm.first.id);
 
-                                        assign_unique_priorities(v_bins[i]);
+                                        base_assignment(v_bins[i]);
                                         wcrt_bin(v_bins[i], i);
                                         if (v_bins[i].flag == SCHED_OK)
                                                 printf("Core %d WCRT after removal of TC %d OK!\n", 

@@ -85,7 +85,7 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
                         stts_bfdu_f.mean_cr += ctx_bfdu_f.p.cr;
                         stts_bfdu_f.mean_fr += ctx_bfdu_f.p.fr;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.p.et * MSEC;
-                        stts_bfdu_f.mean_sr_allo += ctx_bfdu_f.p.sched_rate_allo;               
+                        stts_bfdu_f.mean_sr_allo += ctx_bfdu_f.p.sched_rate_base;               
                         stts_bfdu_f.mean_sr_opti += ctx_bfdu_f.p.sched_rate_opti;               
                         stts_bfdu_f.mean_reas += ctx_bfdu_f.p.reas_gain;
                         stts_bfdu_f.mean_disp += ctx_bfdu_f.p.disp_gain;

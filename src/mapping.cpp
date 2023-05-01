@@ -48,28 +48,12 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
         printf("+=====================================+\n");
         clock_t start, end;
         start = clock();
-        wcrt_v_bins(v_bins, ctx);
+        sched_analysis(v_bins, ctx);
         end = clock();
-        ctx.p.wcrt_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-        ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
-
-        /* init var for priority optimization */
-        ctx.p.sched_imp_prio -= ctx.sched_ok_count;
-
-        printf("+=====================================+\n");
-        printf("| REASSIGNMENT OPTIMIZATION           |\n");
-        printf("+=====================================+\n");
-        start = clock();
-        reassignment(v_bins);
-        end = clock();
-        ctx.p.reass_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-        ctx.p.sched_rate_prio = sched_rate(v_bins, ctx);
+        ctx.p.schd_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 
         /*compute improvement */
-        ctx.p.sched_imp_prio = ctx.p.sched_imp_prio + ctx.sched_ok_count;
-
-        /* init var for displacement */
-        ctx.p.sched_imp_disp -= ctx.sched_ok_count;
+        ctx.p.sched_imp_reas = ctx.p.sched_imp_reas + ctx.sched_ok_count;
 }
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx)
@@ -85,10 +69,8 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.sched_rate_disp = sched_rate(v_bins, ctx);
 
         /*compute improvement */
+        ctx.p.sched_imp_disp -= ctx.sched_ok_count;
         ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
-
-        /* init var for swapping */
-        ctx.p.sched_imp_swap -= ctx.sched_ok_count;
 
         printf("+=====================================+\n");
         printf("| SWAPPING OPTIMIZATION               |\n");
@@ -100,5 +82,6 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.sched_rate_swap = sched_rate(v_bins, ctx);
 
         /*compute improvement */
+        ctx.p.sched_imp_swap -= ctx.sched_ok_count;
         ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
 }

@@ -124,6 +124,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 
                 for (int i = 0; i < task_nbr; i++) {
                         struct task tau;
+                        tau.is_let = NO;
 
                         if (prm.h == NO)
                                 _gen_non_harmonic_task(tau, prm, i);
