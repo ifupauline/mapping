@@ -1,35 +1,5 @@
+#include "print.h"
 #include "sched_analysis.h"
-
-static int _search_unsched_task(vector<struct task> &v_tasks)
-{
-        int high_p;
-        int flag;
-        vector<int> v_p;
-
-        flag = NO;
-        high_p = -1;
-
-        for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                if (v_tasks[i].r  > v_tasks[i].t) {
-                        v_p.push_back(v_tasks[i].p);
-                        flag = YES;
-                }
-        }
-
-        if (flag == NO)
-                return -1;
-
-        else if (flag == YES) {
-                /* look for unched task with highest priority */
-                for (unsigned int i = 0; i < v_p.size(); i++) {
-                        high_p = v_p[i];
-                        if (high_p > v_p[i + 1])
-                                high_p = v_p[i + 1];
-                }
-                return high_p;
-        }
-        return -1;
-}
 
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
                 struct task &tau, int &r_prev)
@@ -79,6 +49,109 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
                         exit(0);
                 }
                 return;
+        }
+}
+
+static void _reassign(struct bin &b, int p, int itm_idx)
+{
+        /* starting new p */
+        int newp;
+        vector<int> v_p;
+
+        newp = p + 1;
+
+        /* store hp */
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                if (b.v_tasks[i].is_let == YES)
+                        continue;
+                if (b.v_tasks[i].idx.itm_idx == itm_idx)
+                        continue;
+
+                if (b.v_tasks[i].p < p) {
+                        v_p.push_back(b.v_tasks[i].p);
+                }
+        }
+        /* sort in decreasing order of priority to start with lowest hp */
+        sort_dec_int(v_p);
+
+        /* reassign */
+        for (unsigned int z = 0; z < v_p.size(); z++) {
+                for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                        if (b.v_tasks[i].is_let == YES)
+                                continue;
+                        if (b.v_tasks[i].idx.itm_idx == itm_idx)
+                                continue;
+
+                        if (b.v_tasks[i].p == v_p[z]) {
+                                for (unsigned int j = i; j < b.v_tasks.size(); j++) {
+                                        if (b.v_tasks[j].p == p)
+                                                continue;
+                                        if (b.v_tasks[j].idx.itm_idx == itm_idx && b.v_tasks[j].p < p)
+                                                continue;
+                                        b.v_tasks[j].p = newp;
+                                        newp++;
+                                }
+                        }
+                }
+                /* TODO save priorities */
+                b.flag = wcrt(b.v_tasks);
+                if (b.flag == SCHED_OK) {
+                        copy_back_prio_to_tc(b);
+                        copy_back_resp_to_tc(b);
+                        printf("Core %d SCHED_OK with reassignment\n", b.id);
+                        return;
+
+                } else {
+                        b.flag = SCHED_FAILED;
+                        return;
+                }
+        }
+}
+
+void base_assignment(struct bin &b)
+{
+        int p;
+
+        p = 2;
+
+        sort_inc_task_id(b.v_tasks);
+
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                if (b.v_tasks[i].is_let == YES) {
+                        b.v_tasks[i].p = 1;
+                        continue;
+                }
+                b.v_tasks[i].p = p;
+                p++;
+        }
+        b.flag = wcrt(b.v_tasks);
+        copy_back_prio_to_tc(b);
+        copy_back_resp_to_tc(b);
+}
+
+void reassignment(struct bin &b)
+{
+        struct bin tmp_b;
+        sort_inc_task_priority(b.v_tasks);
+
+        /* iterate in descending order */
+        for (unsigned int i = b.v_tasks.size() - 1; i > 0; i--) {
+                if (b.v_tasks[i].p == 0) {
+                        printf("\nERR! Core %d tau %d p %d idx %d\n", 
+                                        b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
+                                        b.v_tasks[i].idx.itm_idx);
+                        exit(0);
+                }
+                if (b.v_tasks[i].r > b.v_tasks[i].t) {
+                        tmp_b = {0};
+                        tmp_b = b;
+                        /* priority swapping */
+                        _reassign(tmp_b, b.v_tasks[i].p, tmp_b.v_tasks[i].idx.itm_idx);
+                        if (tmp_b.flag == SCHED_OK) {
+                                b = tmp_b;
+                                return;
+                        }
+                }
         }
 }
 
@@ -143,7 +216,6 @@ void wcrt_bin(struct bin &b, int bin_idx)
                 printf("WCRT Core: %d FAILED!\n", b.id);
                 b.flag = SCHED_FAILED;
         }
-
         copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
         compute_bin_load_rem(b);
@@ -168,187 +240,9 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].flag == SCHED_FAILED) {
                         printf("Core %d SCHED_FAILED\n", v_bins[i].id);
-                        reassign_bin(v_bins[i]);
+                        reassignment(v_bins[i]);
                 } else
                         printf("Core %d SCHED_OK\n", v_bins[i].id);
         }
         ctx.p.sched_rate_reas = sched_rate(v_bins, ctx);
-}
-
-float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
-{
-        float sched_rate;
-
-        sched_rate = 0.0;
-        ctx.sched_ok_count = 0;
-        ctx.sched_failed_count = 0;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].flag == SCHED_OK)
-                        ctx.sched_ok_count++;
-        }
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].flag == SCHED_FAILED)
-                        ctx.sched_failed_count++;
-        }
-
-        sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
-
-        return sched_rate;
-}
-
-void base_assignment(struct bin &b)
-{
-        int p;
-
-        p = 2;
-
-        sort_inc_task_id(b.v_tasks);
-
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                if (b.v_tasks[i].is_let == YES)
-                        continue;
-                b.v_tasks[i].p = p;
-                p++;
-        }
-        b.flag = wcrt(b.v_tasks);
-        copy_back_prio_to_tc(b);
-        copy_back_resp_to_tc(b);
-}
-
-void assign_new_priorities(struct bin &b, int p, int itm_idx)
-{
-        sort_inc_task_id(b.v_tasks);
-        /* starting new p */
-        p = p + 1;
-        //printf("Priorities Reassignment... with p: %d\n", p);
-
-        /* assign new priorities */
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                if (b.v_tasks[i].idx.itm_idx == (int)itm_idx)
-                        continue;
-
-                if (b.v_tasks[i].p < p) {
-                        for (unsigned int j = 0; j < b.v_itms[itm_idx].v_tasks.size(); j++) {
-                                if (b.v_itms[itm_idx].v_tasks[j].p == p) {
-                                        //printf("priority %d already assigned\n", p);
-                                        p++;
-                                }
-                        }
-                        b.v_tasks[i].p = p;
-                        //printf("tau %d p: %d itm_idx: %d\n", b.v_tasks[i].id, b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx);
-                        p = p + 1;
-                }
-        }
-}
-
-void reassign(struct bin &b, int &p, int itm_idx)
-{
-        int flag;
-        struct bin b_tmp;
-
-        flag = -1;
-        b_tmp = b;
-
-        assign_new_priorities(b_tmp, p, itm_idx);
-
-        /* test if schedulable */
-        flag = wcrt(b_tmp.v_tasks);
-        b_tmp.flag = flag;
-        copy_back_resp_to_tc(b_tmp);
-        copy_back_prio_to_tc(b_tmp);
-
-        if (flag == SCHED_OK) {
-                b = b_tmp;
-                printf("Core %d SCHED_OK with new priority assignment\n", 
-                                b_tmp.id);
-                for (unsigned int i = 0; i < b_tmp.v_tasks.size(); i++) {
-                        if (b_tmp.v_tasks[i].r > b_tmp.v_tasks[i].t) {
-                                printf("p: %d tau.id: %d r: %d t: %d\n", 
-                                                b_tmp.v_tasks[i].p, 
-                                                b_tmp.v_tasks[i].id, 
-                                                b_tmp.v_tasks[i].r, 
-                                                b_tmp.v_tasks[i].t);
-                                printf("ERR! wcrt should have failed\n");
-                                exit(0);
-                        }
-                }
-                return;
-
-        } else if (flag == SCHED_FAILED) {
-                //printf("Core %d SCHED_FAILED with new priority assignment\n\n", 
-                //                b_tmp.id);
-                return;
-
-        } else {
-                printf("ERR! priority reassignment\n");
-                exit(0);
-        }
-
-}
-
-void reassign_bin(struct bin &b)
-{
-        int p;
-        int flag;
-        struct bin b_tmp;
-
-        p = -1;
-        /* detect bin not schedulable */
-        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
-                p = _search_unsched_task(b.v_itms[j].v_tasks);
-
-                /* if no unscheduled task found go to next itm */
-                if (p == -1) 
-                        continue;
-                else {
-                        flag = -1;
-                        b_tmp = b;
-
-                        assign_new_priorities(b_tmp, p, j);
-
-                        /* test if schedulable */
-                        flag = wcrt(b_tmp.v_tasks);
-                        b_tmp.flag = flag;
-                        copy_back_resp_to_tc(b_tmp);
-                        copy_back_prio_to_tc(b_tmp);
-
-                        if (flag == SCHED_OK) {
-                                b = b_tmp;
-                                printf("Core %d SCHED_OK with new priority assignment\n", 
-                                                b_tmp.id);
-                                for (unsigned int i = 0; i < b_tmp.v_tasks.size(); i++) {
-                                        if (b_tmp.v_tasks[i].r > b_tmp.v_tasks[i].t) {
-                                                printf("p: %d tau.id: %d r: %d t: %d\n", 
-                                                                b_tmp.v_tasks[i].p, 
-                                                                b_tmp.v_tasks[i].id, 
-                                                                b_tmp.v_tasks[i].r, 
-                                                                b_tmp.v_tasks[i].t);
-                                                printf("ERR! wcrt should have failed\n");
-                                                exit(0);
-                                        }
-                                }
-                                return;
-
-                        } else if (flag == SCHED_FAILED) {
-                                //printf("Core %d SCHED_FAILED with new priority assignment\n\n", 
-                                //                b_tmp.id);
-                                return;
-
-                        } else {
-                                printf("ERR! priority reassignment\n");
-                                exit(0);
-                        }
-
-                }
-        }
-}
-
-void reassignment(vector<struct bin> &v_bins)
-{
-        /* detect bin not schedulable */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                reassign_bin(v_bins[i]);
-        }
 }

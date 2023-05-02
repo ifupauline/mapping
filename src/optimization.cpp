@@ -111,7 +111,7 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                                         }
                                 }
                         }
-                        reassign(v_fail_bins[bin_idx], high_p, itm_idx);
+                        //reassign(v_fail_bins[bin_idx], high_p, itm_idx);
                         if (v_fail_bins[i].flag == SCHED_OK) {
                                 dst_b = v_fail_bins[i];
                                 /* store max cap_rem */
@@ -247,10 +247,10 @@ static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id,
 
         /* try to reassign priority */
         if (src_bin.flag == SCHED_FAILED)
-                reassign_bin(src_bin);
+                reassignment(src_bin);
 
         if (dst_bin.flag == SCHED_FAILED)
-                reassign_bin(src_bin);
+                reassignment(src_bin);
 
         if (src_bin.flag == SCHED_OK || dst_bin.flag == SCHED_OK) {
                 v_bins[src_bin_idx] = src_bin;
@@ -395,7 +395,7 @@ void displacement(vector<struct bin> &v_bins)
                         }
                 }
                 /* try priority reassignment for bins that lost a fail_itm */
-                reassignment(v_bins);
+                //reassignment(v_bins);
 
                 if (state == NO)
                         break;

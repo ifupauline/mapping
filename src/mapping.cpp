@@ -1,4 +1,4 @@
-#include "let.h"
+#include "print.h"
 #include "mapping.h"
 #include "optimization.h"
 #include "sched_analysis.h"
@@ -16,12 +16,11 @@ void generation(vector<struct bin> &v_bins, struct context &ctx)
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
+        clock_t start, end;
         if (ctx.prm.a == BFDU_F) {
                 printf("+=====================================+\n");
                 printf("| ALLOCATION BFDU_F                   |\n");
                 printf("+=====================================+\n");
-
-                clock_t start, end;
                 start = clock();
                 bfdu_f(v_itms, v_bins, ctx);
                 end = clock();
@@ -32,8 +31,6 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("+=====================================+\n");
                 printf("| ALLOCATION WFDU_F                   |\n");
                 printf("+=====================================+\n");
-
-                clock_t start, end;
                 start = clock();
                 wfdu_f(v_itms, v_bins, ctx);
                 end = clock();
@@ -43,10 +40,10 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
 void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
+        clock_t start, end;
         printf("+=====================================+\n");
         printf("| SCHEDULABILITY ANALYSIS             |\n");
         printf("+=====================================+\n");
-        clock_t start, end;
         start = clock();
         sched_analysis(v_bins, ctx);
         end = clock();
@@ -58,10 +55,10 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx)
 {
+        clock_t start, end;
         printf("+=====================================+\n");
         printf("| DISPLACEMENT OPTIMIZATION           |\n");
         printf("+=====================================+\n");
-        clock_t start, end;
         start = clock();
         displacement(v_bins);
         end = clock();

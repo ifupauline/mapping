@@ -51,6 +51,29 @@ static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.maxu = ctx.bins_count * ((float)ctx.prm.phi / (float)PERMILL);
 }
 
+float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
+{
+        float sched_rate;
+
+        sched_rate = 0.0;
+        ctx.sched_ok_count = 0;
+        ctx.sched_failed_count = 0;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_OK)
+                        ctx.sched_ok_count++;
+        }
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_FAILED)
+                        ctx.sched_failed_count++;
+        }
+
+        sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+
+        return sched_rate;
+}
+
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx)
 {
@@ -147,9 +170,10 @@ void print_task_chains(vector<struct item> &v_itms)
 
 void print_v_tasks(struct bin &b)
 {
+        printf("Core: %d Lrem: %d\n", b.id, b.load_rem);
         for (unsigned int i = 0; i < b.v_tasks.size(); i++)
-                printf("tau %d :p %d sched %d\n", 
-                                b.v_tasks[i].id, b.v_tasks[i].p, b.flag);
+                printf("tau %d p %d idx %d\n", 
+                                b.v_tasks[i].id, b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx);
 }
 
 void print_core(struct bin &b)
@@ -174,7 +198,6 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT CORE WFDU_F                   |\n");
         printf("+=====================================+\n\n");
-        sort_inc_bin_load_rem(v_bins);
 
         for (unsigned int i = 0; i < v_bins.size(); i++)
                 compute_bin_memcost(v_bins[i]);
@@ -444,7 +467,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("New Added Cores:                  %-2d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_base);
+        printf("Schedulability Rate (base):       %-3.3f\n", ctx.p.sched_rate_base);
         printf("Schedulability Rate (reas):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_reas * PERCENT, ctx.p.sched_imp_reas);
         //printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
@@ -459,9 +482,9 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("M/M*:                             %-3.3f\n", ctx.p.cr);
         printf("Fragmentation Rate:               %-3.3f\n", ctx.p.fr);
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Rate (bef):        %-3.3f\n", ctx.p.sched_rate_base);
+        printf("Schedulability Rate (base):        %-3.3f\n", ctx.p.sched_rate_base);
         //printf("Schedulability Rate (aft):        %-3.3f\n", ctx.p.sched_rate_swap * PERCENT);
-        printf("Reassignment Gain:                +%-3.3f\n", ctx.p.reas_gain);
+        printf("Reassignment SR Gain:             +%-3.3f\n", ctx.p.reas_gain);
         printf("------------------------------------------------------------------------>\n");
         //printf("Total Optimization Gain:          +%-3.3f\n", 
         //                (ctx.p.sched_rate_opti - ctx.p.sched_rate_allo));

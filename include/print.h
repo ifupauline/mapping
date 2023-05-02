@@ -3,6 +3,8 @@
 
 #include "model.h"
 
+float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
+
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx);
 

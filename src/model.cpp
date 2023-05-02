@@ -23,6 +23,16 @@ static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)
         return a.load_rem < b.load_rem;
 }
 
+static int _cmp_dec_int(const int &a, const int &b)
+{
+        return a > b;
+}
+
+void sort_dec_int(vector<int> &v_int)
+{
+        sort(v_int.begin(), v_int.end(), _cmp_dec_int);
+}
+
 void sort_inc_task_priority(vector<struct task> &v_tasks)
 {
         sort(v_tasks.begin(), v_tasks.end(), _cmp_inc_task_priority);
@@ -103,6 +113,9 @@ void copy_back_prio_to_tc(struct bin &b)
         int itm_idx;
         int task_idx;
 
+        itm_idx = 0;
+        task_idx = 0;
+
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 itm_idx = b.v_tasks[i].idx.itm_idx;
                 task_idx = b.v_tasks[i].idx.task_idx;
@@ -115,6 +128,9 @@ void copy_back_resp_to_tc(struct bin &b)
         int itm_idx;
         int task_idx;
 
+        itm_idx = 0;
+        task_idx = 0;
+
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 itm_idx = b.v_tasks[i].idx.itm_idx;
                 task_idx = b.v_tasks[i].idx.task_idx;
@@ -125,10 +141,10 @@ void copy_back_resp_to_tc(struct bin &b)
 void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
 {
         for (unsigned int i = 0; i < b.v_itms[itm_idx].v_tasks.size(); i++) {
+                b.v_itms[itm_idx].v_tasks[i].idx.bin_idx = bin_idx;
+                b.v_itms[itm_idx].v_tasks[i].idx.itm_idx = itm_idx;
+                b.v_itms[itm_idx].v_tasks[i].idx.task_idx = i;
                 b.v_tasks.push_back(b.v_itms[itm_idx].v_tasks[i]);
-                b.v_tasks.back().idx.bin_idx = bin_idx;
-                b.v_tasks.back().idx.itm_idx = itm_idx;
-                b.v_tasks.back().idx.task_idx = i;
         }
         /* sort tasks by id */
         sort_inc_task_id(b.v_tasks);

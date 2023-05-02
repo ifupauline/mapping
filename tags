@@ -1110,6 +1110,7 @@ _bff	src/bfdu_f.cpp	/^static void _bff(vector<struct item> &v_itms, vector<struc
 _check_if_dual_frag	src/optimization.cpp	/^static int _check_if_dual_frag(struct bin &b, int src_itm_id, $/;"	f	file:
 _check_params	src/generator.cpp	/^static void _check_params(struct params &prm)$/;"	f	file:
 _cmp_avr_mean	exp/phi/phi.cpp	/^static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
+_cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_bin_load_rem	src/model.cpp	/^static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
@@ -1127,10 +1128,10 @@ _gen_harmonic_task	src/generator.cpp	/^static void _gen_harmonic_task(struct tas
 _gen_non_harmonic_task	src/generator.cpp	/^static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)$/;"	f	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
+_reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_fail_bins, $/;"	f	file:
 _search_for_swap	src/optimization.cpp	/^static int _search_for_swap(vector<struct bin> &v_bins, $/;"	f	file:
-_search_unsched_task	src/sched_analysis.cpp	/^static int _search_unsched_task(vector<struct task> &v_tasks)$/;"	f	file:
 _store_unsched_itms	src/optimization.cpp	/^static void _store_unsched_itms(vector<struct bin> &v_bins, $/;"	f	file:
 _swap	src/optimization.cpp	/^static int _swap(vector<struct bin> &v_bins, int src_tc_id, int dst_tc_id, $/;"	f	file:
 _utilization_rate	src/print.cpp	/^static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f	file:
@@ -1142,7 +1143,6 @@ add_tasks_to_v_tasks	src/model.cpp	/^void add_tasks_to_v_tasks(vector<struct tas
 allo_time	include/model.h	/^        float allo_time;$/;"	m	struct:perf
 alloc_count	include/model.h	/^        int alloc_count;$/;"	m	struct:context
 allocation	src/mapping.cpp	/^void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
-assign_new_priorities	src/sched_analysis.cpp	/^void assign_new_priorities(struct bin &b, int p, int itm_idx)$/;"	f
 b_stats	include/exp.h	/^struct b_stats {$/;"	s
 base_assignment	src/sched_analysis.cpp	/^void base_assignment(struct bin &b)$/;"	f
 best_cut	src/bfdu_f.cpp	/^struct best_cut {$/;"	s	file:
@@ -1331,9 +1331,7 @@ qnxnto	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* qn
 qnxnto	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 r	include/model.h	/^        int r;$/;"	m	struct:task
 reas_gain	include/model.h	/^        float reas_gain;$/;"	m	struct:perf
-reassign	src/sched_analysis.cpp	/^void reassign(struct bin &b, int &p, int itm_idx)$/;"	f
-reassign_bin	src/sched_analysis.cpp	/^void reassign_bin(struct bin &b)$/;"	f
-reassignment	src/sched_analysis.cpp	/^void reassignment(vector<struct bin> &v_bins)$/;"	f
+reassignment	src/sched_analysis.cpp	/^void reassignment(struct bin &b)$/;"	f
 replace_bin_by_id	src/model.cpp	/^void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)$/;"	f
 retrieve_core_by_id	src/model.cpp	/^struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 retrieve_tc_by_id	src/model.cpp	/^struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id)$/;"	f
@@ -1354,6 +1352,7 @@ sched_rate_reas	include/model.h	/^        float sched_rate_reas;$/;"	m	struct:pe
 sched_rate_swap	include/model.h	/^        float sched_rate_swap;$/;"	m	struct:perf
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 size	include/model.h	/^        int size;$/;"	m	struct:item
+sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
 sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_itms)$/;"	f
 sort_inc_bin_load_rem	src/model.cpp	/^void sort_inc_bin_load_rem(vector<struct bin> &v_bins)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f

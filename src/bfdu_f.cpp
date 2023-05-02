@@ -1,4 +1,5 @@
 #include "let.h"
+#include "print.h"
 #include "mapping.h"
 
 struct best_cut {
@@ -336,6 +337,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 alloc_count++;
                 }
         }
+        sort_inc_bin_load_rem(v_bins);
 }
 
 vector<struct item> *get_frags_bfdu_f(void)

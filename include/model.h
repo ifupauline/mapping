@@ -137,6 +137,7 @@ struct bin {
 };
 
 /* OPERATIONS ON DATA STRUCTURES */
+void sort_dec_int(vector<int> &v_int);
 
 void sort_inc_task_priority(vector<struct task> &v_tasks);
 
