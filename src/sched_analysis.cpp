@@ -170,6 +170,8 @@ static void _reassignment(struct bin &b)
                         }
                 }
         }
+        if (b.flag == SCHED_OK)
+                printf("Core %d SCHED_OK\n", b.id);
 }
 
 int wcrt(vector<struct task> &v_tasks)
@@ -242,7 +244,7 @@ void priority_assignment(struct bin &b)
 {
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
-                printf("Core %d SCHED_FAILED\n", b.id);
+                //printf("Core %d SCHED_FAILED\n", b.id);
                 _reassignment(b);
         } else
                 printf("Core %d SCHED_OK\n", b.id);
@@ -257,4 +259,5 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 priority_assignment(v_bins[i]);
 
         ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
+        ctx.p.sched_imp_allo = ctx.sched_ok_count;
 }

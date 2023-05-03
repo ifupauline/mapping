@@ -1,5 +1,3 @@
-#include <bits/stdc++.h>
-
 #include "let.h"
 #include "print.h"
 #include "sched_analysis.h"
@@ -59,14 +57,10 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                 vector<pair<struct item, int>> &v_fail_itms, int item_idx, 
                 struct bin &dst_b)
 {
-        int p;
-        int high_p;
         int max;
         int tmp_max;
         int is_found;
 
-        p = -1;
-        high_p = INT_MAX;
         max = -1;
         tmp_max = 0;
         is_found = NO;
@@ -77,39 +71,16 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
         for (unsigned int i = 0; i < v_fail_bins.size(); i++) {
                 /* test wcrt for dst bin */
                 priority_assignment(v_fail_bins[i]);
-                wcrt_bin(v_fail_bins[i], i);
                 if (v_fail_bins[i].flag == SCHED_OK) {
                         dst_b = v_fail_bins[i];
-                        printf("Test WCRT for task-chain %d to Core %d OK!\n", 
+                        printf("Test WCRT for TC %d to Core %d OK!\n", 
                                         v_fail_itms[item_idx].first.id, v_fail_bins[i].id);
                         /* store max cap_rem */
                         tmp_max = v_fail_bins[i].load_rem - v_fail_itms[item_idx].first.size;
-                        if (tmp_max > max)
+                        if (tmp_max > max) {
                                 max = tmp_max;
+                        }
                         is_found = YES;
-                }
-
-                /* search for failed task with highest priority and _reassign */
-                if (v_fail_bins[i].flag == SCHED_FAILED) {
-                        for (unsigned int j = 0; j < v_fail_bins[i].v_itms.size(); j++) {
-                                for (unsigned int k = 0; k < v_fail_bins[i].v_itms[j].v_tasks.size(); k++) {
-                                        if (v_fail_bins[i].v_itms[j].v_tasks[k].r  == -1) {
-                                                p = v_fail_bins[i].v_itms[j].v_tasks[k].p;
-                                                if (p < high_p) {
-                                                        high_p = p;
-                                                }
-                                        }
-                                }
-                        }
-                        //reassign(v_fail_bins[bin_idx], high_p, itm_idx);
-                        if (v_fail_bins[i].flag == SCHED_OK) {
-                                dst_b = v_fail_bins[i];
-                                /* store max cap_rem */
-                                tmp_max = v_fail_bins[i].load_rem - v_fail_itms[item_idx].first.size;
-                                if (tmp_max > max)
-                                        max = tmp_max;
-                                is_found = YES;
-                        }
                 }
         }
         return is_found;
@@ -260,19 +231,11 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                 if (v_bins[i].id == fail_itm.second) {
                         for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
                                 if (v_bins[i].v_itms[j].id == fail_itm.first.id) {
-                                        printf("Removing task-chain %d from Core %d\n", 
-                                                        fail_itm.first.id, v_bins[i].id);
                                         delete_itm_by_id(v_bins[i], fail_itm.first.id);
-
+                                        copy_v_tc_to_v_tasks_with_pos(v_bins);
                                         priority_assignment(v_bins[i]);
-                                        wcrt_bin(v_bins[i], i);
-                                        if (v_bins[i].flag == SCHED_OK)
-                                                printf("Core %d WCRT after removal of TC %d OK!\n", 
-                                                                v_bins[i].id, fail_itm.first.id);
-
-                                        if (v_bins[i].flag == SCHED_FAILED)
-                                                printf("Core %d WCRT after removal of TC %d FAILED!\n", 
-                                                                v_bins[i].id, fail_itm.first.id);
+                                        printf("Removed TC %d from Core %d\n", 
+                                                        fail_itm.first.id, v_bins[i].id);
                                 }
                         }
                 }
@@ -281,14 +244,12 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
         /* insert fail_itm to target bin by bin copy */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].id == dst_b.id) {
-                        printf("Inserting task-chain %d in Core %d\n", 
-                                        fail_itm.first.id, v_bins[i].id);
                         replace_bin_by_id(v_bins, dst_b);
-                        wcrt_bin(v_bins[i], i);
-                        if (v_bins[i].flag == SCHED_OK) {
-                                printf("Core %d WCRT after insertion of TC %d OK!\n", 
-                                                v_bins[i].id, fail_itm.first.id);
-                        }
+                        copy_v_tc_to_v_tasks_with_pos(v_bins);
+                        priority_assignment(v_bins[i]);
+                        fail_itm.second = v_bins[i].id; /* update bin id of itm */
+                        printf("Inserted TC %d in Core %d\n", 
+                                        fail_itm.first.id, v_bins[i].id);
 
                         if (v_bins[i].flag == SCHED_FAILED) {
                                 printf("ERR! dst Displacement WCRT of Core %d should have succeeded!\n", 
@@ -299,93 +260,15 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                         }
                 }
         }
-        printf("\n");
-}
-
-void _displacement(vector<struct bin> &v_bins)
-{
-        int ret;
-        int flag;
-        int state;
-        int is_found;
-        struct bin dst_b;
-        pair<struct item, int> fail_itm;
-        vector<struct bin> v_fail_bins;
-        vector<pair<struct item, int>> v_fail_itms;
-
-        ret = NO;
-        flag = NO;
-        state = NO;
-        is_found = NO;
-        dst_b = {0};
-        fail_itm.first = {0};
-        fail_itm.second = 0;
-
-        /* take next unschedulable itm */
-        _store_unsched_itms(v_bins, v_fail_itms, flag);
-
-        printf("\n");
-
-        while (1) {
-                state = NO;
-                /* find a schedulable bin that has enough space for the itm to fit */
-                for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                        printf("Try to displace task-chain %-3d from Core %-3d\n", 
-                                        v_fail_itms[i].first.id, v_fail_itms[i].second);
-                        /* create a vector bin for each item to test */
-                        v_fail_bins.clear();
-                        for (unsigned int j = 0; j < v_bins.size(); j++) {
-                                /* check if dst bin has the dual fragment of current itm */
-                                ret = _check_if_dual_frag(v_bins[j], 
-                                                v_fail_itms[i].first.id, v_fail_itms[i].second, 
-                                                v_fail_itms[i].first.frag_id);
-
-                                /* TODO for now do not allow same frags in same bin */
-                                if (ret == YES)
-                                        continue;
-
-                                if (v_bins[j].flag == SCHED_OK && flag == YES && 
-                                                v_bins[j].load_rem >= v_fail_itms[i].first.size) {
-                                        /* add bin in v_bi and add itm to v_bi */
-                                        v_fail_bins.push_back(v_bins[j]);
-                                        v_fail_bins.back().v_itms.push_back(v_fail_itms[i].first);
-                                        v_fail_bins.back().v_tasks.clear();
-                                }
-                        }
-
-                        /* test dst bins and save best bin */
-                        is_found = _search_for_displace(v_fail_bins, v_fail_itms, i, dst_b);
-
-                        /* if bin not found continue */
-                        if (is_found == NO)
-                                printf("Could not displace task-chain %-3d from Core %-3d\n\n", 
-                                                v_fail_itms[i].first.id, v_fail_itms[i].second);
-
-                        else if (is_found == YES) {
-                                if (v_fail_itms[i].first.disp_count == MAX_DISP_COUNT)
-                                        state = NO;
-                                else {
-                                        /* displace */
-                                        fail_itm.first = {0};
-                                        fail_itm.second = 0;
-                                        fail_itm = v_fail_itms[i];
-                                        v_fail_itms[i].first.disp_count++;
-                                        _displace(v_bins, fail_itm, dst_b);
-                                        is_found = NO;
-                                        state = YES;
-                                }
-                        }
-                }
-
-                if (state == NO)
-                        break;
-        }
+        printf("<---------------- DISPLACEMENT SUCCESS ---------------->\n\n\n");
 }
 
 void displacement(vector<struct bin> &v_bins)
 {
         int ret;
+        int gcd;
         int flag;
+        int load;
         int state;
         int is_found;
         struct bin dst_b;
@@ -397,16 +280,16 @@ void displacement(vector<struct bin> &v_bins)
         flag = NO;
         state = NO;
         is_found = NO;
+        load = 0;
+        gcd = 0;
         dst_b = {0};
         fail_itm.first = {0};
         fail_itm.second = 0;
 
         /* take next unschedulable itm */
         _store_unsched_itms(v_bins, v_fail_itms, flag);
-        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
-                printf("TC %d from Core %d unfeasible\n", v_fail_itms[i].first.id, v_fail_itms[i].second);
-        }
-
+        for (unsigned int i = 0; i < v_fail_itms.size(); i++)
+                printf("TC %-3d from Core %-3d unfeasible\n", v_fail_itms[i].first.id, v_fail_itms[i].second);
         printf("\n");
 
         while (1) {
@@ -417,6 +300,10 @@ void displacement(vector<struct bin> &v_bins)
                                         v_fail_itms[i].first.id, v_fail_itms[i].second);
                         v_fail_bins.clear();
                         for (unsigned int j = 0; j < v_bins.size(); j++) {
+                                /* if item moved too many times skip */
+                                if (v_fail_itms[i].first.disp_count == MAX_DISP_COUNT)
+                                        continue;
+
                                 /* check if dst bin has the dual fragment of current itm */
                                 ret = _check_if_dual_frag(v_bins[j], 
                                                 v_fail_itms[i].first.id, v_fail_itms[i].second, 
@@ -427,20 +314,36 @@ void displacement(vector<struct bin> &v_bins)
                                         continue;
 
                                 /* search for bins that can accomodate fail itm */
-                                if (v_bins[j].flag == SCHED_OK && flag == YES) {
-                                        /* check if itm fit */
-                                        int tmp_load = 0;
-                                        int tmp_gcd = 0;
-                                        tmp_load = check_if_fit_itm(v_bins[j], v_fail_itms[i].first, tmp_gcd);
+                                if (v_bins[j].flag == SCHED_OK && flag == YES && 
+                                                /* make sure it is not a bin of a fail_itm which became feasible */
+                                                v_bins[j].id != v_fail_itms[i].second) {
 
-                                        if (tmp_load <= v_bins[j].phi) {
-                                                printf("Found Core %d where TC %d can be displaced\n", 
-                                                        v_bins[j].id, v_fail_itms[i].first.id);
+                                        /* check if itm fit */
+                                        load = check_if_fit_itm(v_bins[j], v_fail_itms[i].first, gcd);
+
+                                        if (load <= v_bins[j].phi) {
+                                                /* add fail itm to potential bin */
+                                                v_fail_bins.push_back(v_bins[j]);
+                                                add_itm_to_bin(v_fail_bins.back(), v_fail_itms[i].first, load, gcd);
+                                                /* test dst bins and save best bin */
+                                                is_found = _search_for_displace(v_fail_bins, v_fail_itms, i, dst_b);
                                         }
                                 }
                         }
+                        /* if bin not found continue */
+                        if (is_found == YES) {
+                                /* displace */
+                                fail_itm.first = {0};
+                                fail_itm.second = 0;
+                                fail_itm = v_fail_itms[i];
+                                v_fail_itms[i].first.disp_count++;
+                                _displace(v_bins, fail_itm, dst_b);
+                                is_found = NO;
+                                state = YES;
+                        }
                 }
-                exit(0);
+                if (state == NO)
+                        break;
         }
 }
 

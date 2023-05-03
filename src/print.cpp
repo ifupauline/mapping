@@ -23,7 +23,7 @@ static void _execution_time(struct context &ctx)
 static void _schedulability_rate(struct context &ctx)
 {
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
-        ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - (ctx.p.sched_rate_allo * PERCENT);
+        ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - ctx.p.sched_rate_allo;
         ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - (ctx.p.sched_rate_disp * PERCENT);
         ctx.p.fr = ((float)ctx.cuts_count / (float)ctx.prm.n) * PERCENT;
 }
@@ -176,7 +176,7 @@ void print_v_tasks(struct bin &b)
 
 void print_core(struct bin &b)
 {
-        printf("Core: %d Lrem: %d\n", b.id, b.load_rem);
+        printf("Core: %d Load: %d Lrem: %d MemCost %d\n", b.id, b.load, b.load_rem, b.memcost);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
                         printf("TC %-3d size: %-3d tau %-3d p: %-3d idx: %-3d sched: %d\n", 
@@ -459,7 +459,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
         printf("Schedulability Analysis Time:     %-3.3f ms\n", ctx.p.schd_time * PERMILL);
-        //printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
+        printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         //printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
         printf("------------------------------------------------------------------------>\n");
         printf("New Added Cores:                  %-2d\n", ctx.cycl_count);
@@ -483,7 +483,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         //printf("Total Optimization Gain:          +%-3.3f\n", 
         //                (ctx.p.sched_rate_opti - ctx.p.sched_rate_allo));
         //printf("------------------------------------------------------------------------>\n");
-        //printf("Displacement Gain:                +%-3.3f\n", ctx.p.disp_gain);
+        printf("Displacement SR Gain:             +%-3.3f\n", ctx.p.disp_gain);
         //printf("Swapping Gain:                    +%-3.3f\n", ctx.p.swap_gain);
         printf("------------------------------------------------------------------------>\n");
         printf("Total SYS Utilization             %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);

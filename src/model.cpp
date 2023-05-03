@@ -77,6 +77,32 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         let.is_allocated = YES;
 }
 
+void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)
+{
+
+        if (b.phi < load) {
+                printf("ERR Bin %d Overflow with itm.size %d\n", 
+                                b.id, itm.size);
+                exit(0);
+        }
+        itm.is_allocated = YES;
+        b.load = load;
+        b.load_rem = b.phi - load;
+        b.v_itms.push_back(itm);
+        compute_bin_memcost(b);
+        update_let(b, gcd);
+        b.v_tasks.clear();
+
+        //if (itm.is_frag == NO) {
+        //        printf("Item %d added in Bin %d\n\n", itm.id, b.id);
+        //        return;
+
+        //} else {
+        //        printf("Fragment %d added in Bin %d\n\n", itm.id, b.id);
+        //        return;
+        //}
+}
+
 void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
                 struct context &ctx, int load, int gcd)
 {
@@ -93,6 +119,7 @@ void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id,
                         v_bins[i].v_itms.push_back(itm);
                         compute_bin_memcost(v_bins[i]);
                         update_let(v_bins[i], gcd);
+                        v_bins[i].v_tasks.clear();
 
                         if (itm.is_frag == NO) {
                                 printf("Item %d added in Bin %d\n\n", 
@@ -282,12 +309,26 @@ void insert_itm_to_core(struct bin &b, struct item &itm)
 
 void delete_itm_by_id(struct bin &b, int itm_id)
 {
-        int flag = NO;
-        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
-                if (b.v_itms[j].id == itm_id) {
-                        b.v_itms.erase(b.v_itms.begin() + j);
-                        printf("Removed TC %d from Core %d\n", itm_id, b.id);
+        int gcd;
+        int flag;
+        vector<struct task> v_tasks;
+
+        gcd = 0;
+        flag = NO;
+
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                if (b.v_itms[i].id == itm_id) {
+                        b.v_itms.erase(b.v_itms.begin() + i);
+                        b.v_tasks.clear();
+                        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
+                                if (b.v_itms[j].is_let == YES)
+                                        continue;
+                                add_tasks_to_v_tasks(v_tasks, b.v_itms[j].v_tasks);
+                        }
+                        gcd = compute_gcd(v_tasks);
+                        update_let(b, gcd);
                         compute_bin_load_rem(b);
+                        compute_bin_memcost(b);
                         flag = YES;
                 }
         }

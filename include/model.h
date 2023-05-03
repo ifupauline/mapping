@@ -57,6 +57,7 @@ struct perf {
         float sched_rate_opti;
         float disp_gain;
         float swap_gain;
+        int sched_imp_allo;
         int sched_imp_disp;
         int sched_imp_swap;
 };
@@ -163,6 +164,8 @@ void compute_bin_memcost(struct bin &b);
 int compute_gcd(vector<struct task> &v_tasks);
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
+
+void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd);
 
 void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
                 struct context &ctx, int load, int gcd);

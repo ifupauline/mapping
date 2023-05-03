@@ -834,8 +834,8 @@ MAXN	include/generator.h	13;"	d
 MAXPHI	include/model.h	21;"	d
 MAXTASKNBR	include/generator.h	25;"	d
 MAXWCET	include/generator.h	21;"	d
-MAX_DISP_COUNT	src/optimization.cpp	7;"	d	file:
-MAX_SWAP_COUNT	src/optimization.cpp	8;"	d	file:
+MAX_DISP_COUNT	src/optimization.cpp	5;"	d	file:
+MAX_SWAP_COUNT	src/optimization.cpp	6;"	d	file:
 MINLETWCET	include/let.h	7;"	d
 MINMAXTU	include/generator.h	16;"	d
 MINMEMCOST	include/model.h	29;"	d
@@ -1118,7 +1118,6 @@ _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &
 _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const struct task &a, const struct task &b)$/;"	f	file:
 _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
-_displacement	src/optimization.cpp	/^void _displacement(vector<struct bin> &v_bins)$/;"	f
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_best_cut	src/bfdu_f.cpp	/^static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
@@ -1142,6 +1141,7 @@ _utilization_rate	src/print.cpp	/^static void _utilization_rate(vector<struct bi
 _wff	src/wfdu_f.cpp	/^static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
 add_bin	src/model.cpp	/^void add_bin(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+add_itm_to_bin	src/model.cpp	/^void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)$/;"	f
 add_itm_to_v_bins	src/model.cpp	/^void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, $/;"	f
 add_tasks_to_v_tasks	src/model.cpp	/^void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, $/;"	f
 allo_time	include/model.h	/^        float allo_time;$/;"	m	struct:perf
@@ -1342,6 +1342,7 @@ rf_size	src/wfdu_f.cpp	/^        int rf_size;$/;"	m	struct:worst_cut	file:
 schd_time	include/model.h	/^        float schd_time;$/;"	m	struct:perf
 sched_analysis	src/sched_analysis.cpp	/^void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 sched_failed_count	include/model.h	/^        int sched_failed_count;$/;"	m	struct:context
+sched_imp_allo	include/model.h	/^        int sched_imp_allo;$/;"	m	struct:perf
 sched_imp_disp	include/model.h	/^        int sched_imp_disp;$/;"	m	struct:perf
 sched_imp_swap	include/model.h	/^        int sched_imp_swap;$/;"	m	struct:perf
 sched_ok_count	include/model.h	/^        int sched_ok_count;$/;"	m	struct:context

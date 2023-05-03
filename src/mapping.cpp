@@ -63,7 +63,7 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.sched_rate_disp = sched_rate(v_bins, ctx);
 
         /*compute improvement */
-        ctx.p.sched_imp_disp -= ctx.sched_ok_count;
+        ctx.p.sched_imp_disp -= ctx.p.sched_imp_allo;
         ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
 
         //printf("+=====================================+\n");

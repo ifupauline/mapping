@@ -118,14 +118,14 @@ int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
         compute_bin_load(tmp_b, target_binload);
         total_binload = itm.size + target_binload;
 
-        if (total_binload > b.phi) {
-                printf("Item %d of size %d cannot fit in Bin %d with potential load: %d\n", 
-                                itm.id, itm.size, b.id, total_binload);
+        //if (total_binload > b.phi) {
+        //        printf("Item %d of size %d cannot fit in Bin %d with potential load: %d\n", 
+        //                        itm.id, itm.size, b.id, total_binload);
 
-        } else {
-                printf("Item %d of size %d can fit in Bin %d with potential load: %d\n\n", 
-                                itm.id, itm.size, b.id, total_binload);
-        }
+        //} else {
+        //        printf("Item %d of size %d can fit in Bin %d with potential load: %d\n\n", 
+        //                        itm.id, itm.size, b.id, total_binload);
+        //}
         return total_binload;
 }
 
@@ -170,26 +170,26 @@ int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int memcost, int si
 
         if (side == LEFT) {
                 total_binload = c.c_pair.first + target_binload;
-                if (total_binload > b.phi) {
-                        printf("Left Cut %d of size %d cannot fit in Bin %d with potential load: %d\n", 
-                                        c.id, c.c_pair.first, b.id, total_binload);
+                //if (total_binload > b.phi) {
+                //        printf("Left Cut %d of size %d cannot fit in Bin %d with potential load: %d\n", 
+                //                        c.id, c.c_pair.first, b.id, total_binload);
 
-                } else {
-                        printf("Left Cut %d of size %d can fit in Bin %d with potential load: %d\n\n", 
-                                        c.id, c.c_pair.first, b.id, total_binload);
-                }
+                //} else {
+                //        printf("Left Cut %d of size %d can fit in Bin %d with potential load: %d\n\n", 
+                //                        c.id, c.c_pair.first, b.id, total_binload);
+                //}
         }
 
         if (side == RIGHT) {
                 total_binload = c.c_pair.second + target_binload;
-                if (total_binload > b.phi) {
-                        printf("Right Cut %d of size %d cannot fit in Bin %d with potential load: %d\n", 
-                                        c.id, c.c_pair.second, b.id, total_binload);
+                //if (total_binload > b.phi) {
+                //        printf("Right Cut %d of size %d cannot fit in Bin %d with potential load: %d\n", 
+                //                        c.id, c.c_pair.second, b.id, total_binload);
 
-                } else {
-                        printf("Right Cut %d of size %d can fit in Bin %d with potential load: %d\n\n", 
-                                        c.id, c.c_pair.second, b.id, total_binload);
-                }
+                //} else {
+                //        printf("Right Cut %d of size %d can fit in Bin %d with potential load: %d\n\n", 
+                //                        c.id, c.c_pair.second, b.id, total_binload);
+                //}
         }
         return total_binload;
 }
