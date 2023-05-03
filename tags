@@ -1129,6 +1129,7 @@ _gen_non_harmonic_task	src/generator.cpp	/^static void _gen_non_harmonic_task(st
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
 _reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx)$/;"	f	file:
+_save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct bin &b)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_fail_bins, $/;"	f	file:
 _search_for_swap	src/optimization.cpp	/^static int _search_for_swap(vector<struct bin> &v_bins, $/;"	f	file:
@@ -1344,7 +1345,7 @@ sched_imp_disp	include/model.h	/^        int sched_imp_disp;$/;"	m	struct:perf
 sched_imp_reas	include/model.h	/^        int sched_imp_reas;$/;"	m	struct:perf
 sched_imp_swap	include/model.h	/^        int sched_imp_swap;$/;"	m	struct:perf
 sched_ok_count	include/model.h	/^        int sched_ok_count;$/;"	m	struct:context
-sched_rate	src/sched_analysis.cpp	/^float sched_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+sched_rate	src/print.cpp	/^float sched_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 sched_rate_base	include/model.h	/^        float sched_rate_base;$/;"	m	struct:perf
 sched_rate_disp	include/model.h	/^        float sched_rate_disp;$/;"	m	struct:perf
 sched_rate_opti	include/model.h	/^        float sched_rate_opti;$/;"	m	struct:perf

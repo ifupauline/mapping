@@ -198,10 +198,7 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_lf.id = ctx.itms_count;
         itm_lf.size = cut.lf_size;
         itm_lf.frag_id = frag_id_count;
-        if (itm.memcost == 0)
-                itm_lf.memcost = 1;
-        else
-                itm_lf.memcost = itm.memcost;
+        itm_lf.memcost = itm.memcost;
         itm_lf.disp_count = 0;
         itm_lf.swap_count = 0;
         itm_lf.is_let = NO;
@@ -217,10 +214,7 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_rf.id = ctx.itms_count;
         itm_rf.size = cut.rf_size;
         itm_rf.frag_id = frag_id_count;
-        if (itm.memcost == 0)
-                itm_rf.memcost = 1;
-        else
-                itm_rf.memcost = itm.memcost;
+        itm_rf.memcost = itm.memcost;
         itm_rf.disp_count = 0;
         itm_rf.swap_count = 0;
         itm_rf.is_let = NO;

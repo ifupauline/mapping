@@ -26,7 +26,7 @@
 #define MSEC    1000
 
 /* mem cost of tc */
-#define MINMEMCOST 0 /* no shared memory used */
+#define MINMEMCOST 1 /* no shared memory used */
 #define MAXMEMCOST 3
 
 using namespace std;

@@ -52,11 +52,9 @@ void update_let(struct bin &b, int gcd)
         /* update let task */
         let = _get_let_task(b);
         switch (b.memcost) {
-                case 0:
-                        let->c = 0;
-                        break;
+
                 case 1: 
-                        let->c = gen_rand(5, 33);
+                        let->c = gen_rand(2, 33);
                         break;
                 case 2:
                         let->c = gen_rand(34, 66);
@@ -69,6 +67,7 @@ void update_let(struct bin &b, int gcd)
                         break;
                 case 5:
                         let->c = gen_rand(133, 165);
+                        break;
 
                 default:
                         let->c = 165;
@@ -143,8 +142,6 @@ int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int memcost, int si
         target_binload = 0;
 
         /* add itm memcost to bin memcost */
-        if (memcost == 0)
-                memcost = 1;
         compute_bin_memcost(tmp_b);
         tmp_b.memcost += memcost;
 
