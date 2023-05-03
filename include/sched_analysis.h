@@ -8,9 +8,7 @@
 #define SCHED_OK     1
 #define SCHED_FAILED 2
 
-void base_assignment(struct bin &b);
-
-void reassignment(struct bin &b);
+void priority_assignment(struct bin &b);
 
 int wcrt(vector<struct task> &v_tasks);
 

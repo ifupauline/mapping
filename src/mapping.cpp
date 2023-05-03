@@ -48,9 +48,6 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
         sched_analysis(v_bins, ctx);
         end = clock();
         ctx.p.schd_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-
-        /*compute improvement */
-        ctx.p.sched_imp_reas = ctx.p.sched_imp_reas + ctx.sched_ok_count;
 }
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx)

@@ -124,7 +124,7 @@ static void _reassign(struct bin &b, int p, int itm_idx)
         }
 }
 
-void base_assignment(struct bin &b)
+static void _base_assignment(struct bin &b)
 {
         int p;
 
@@ -145,7 +145,7 @@ void base_assignment(struct bin &b)
         copy_back_resp_to_tc(b);
 }
 
-void reassignment(struct bin &b)
+static void _reassignment(struct bin &b)
 {
         struct bin tmp_b;
 
@@ -238,28 +238,23 @@ void wcrt_bin(struct bin &b, int bin_idx)
         compute_bin_load_rem(b);
 }
 
+void priority_assignment(struct bin &b)
+{
+        _base_assignment(b);
+        if (b.flag == SCHED_FAILED) {
+                printf("Core %d SCHED_FAILED\n", b.id);
+                _reassignment(b);
+        } else
+                printf("Core %d SCHED_OK\n", b.id);
+}
+
 void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
-        /* base assignment */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                v_bins[i].v_tasks.clear();
+        sort_inc_bin_load_rem(v_bins);
+        copy_v_tc_to_v_tasks_with_pos(v_bins);
 
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
-                        copy_tc_to_v_tasks_with_pos(v_bins[i], i, j);
+        for (unsigned int i = 0; i < v_bins.size(); i++)
+                priority_assignment(v_bins[i]);
 
-                base_assignment(v_bins[i]);
-        }
-
-        ctx.p.sched_rate_base = sched_rate(v_bins, ctx);
-        ctx.p.sched_imp_reas -= ctx.sched_ok_count;
-
-        /* priority swapping reassignment */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].flag == SCHED_FAILED) {
-                        printf("Core %d SCHED_FAILED\n", v_bins[i].id);
-                        reassignment(v_bins[i]);
-                } else
-                        printf("Core %d SCHED_OK\n", v_bins[i].id);
-        }
-        ctx.p.sched_rate_reas = sched_rate(v_bins, ctx);
+        ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
 }

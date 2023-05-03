@@ -17,12 +17,10 @@ struct b_stats {
         float mean_cr;
         float mean_et;
         float mean_fr;
-        float mean_reas;
         float mean_disp;
         float mean_swap;
         float mean_sr_allo;
         float mean_sr_opti;
-        float total_mean_reas;
         float total_mean_disp;
         float total_mean_swap;
 };

@@ -14,20 +14,16 @@ static char const *cmd_gnuplot_op[] = {};
 
 static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)
 {
-        float sum_reas;
         float sum_disp;
         float sum_swap;
 
-        sum_reas = 0.0;
         sum_disp = 0.0;
         sum_swap = 0.0;
 
         for (unsigned int i = 0; i < v_stts_bfdu_f.size(); i++) {
-                sum_reas += v_stts_bfdu_f[i].mean_reas;
                 sum_disp += v_stts_bfdu_f[i].mean_disp;
                 sum_swap += v_stts_bfdu_f[i].mean_swap;
         }
-        v_stts_bfdu_f[0].total_mean_reas = sum_reas / ITER;
         v_stts_bfdu_f[0].total_mean_disp = sum_disp / ITER;
         v_stts_bfdu_f[0].total_mean_swap = sum_swap / ITER;
 }
@@ -85,9 +81,8 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
                         stts_bfdu_f.mean_cr += ctx_bfdu_f.p.cr;
                         stts_bfdu_f.mean_fr += ctx_bfdu_f.p.fr;
                         stts_bfdu_f.mean_et += ctx_bfdu_f.p.et * MSEC;
-                        stts_bfdu_f.mean_sr_allo += ctx_bfdu_f.p.sched_rate_base;               
+                        stts_bfdu_f.mean_sr_allo += ctx_bfdu_f.p.sched_rate_allo;               
                         stts_bfdu_f.mean_sr_opti += ctx_bfdu_f.p.sched_rate_opti;               
-                        stts_bfdu_f.mean_reas += ctx_bfdu_f.p.reas_gain;
                         stts_bfdu_f.mean_disp += ctx_bfdu_f.p.disp_gain;
                         stts_bfdu_f.mean_swap += ctx_bfdu_f.p.swap_gain;
                 }
@@ -97,7 +92,6 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
                 stts_bfdu_f.mean_et /= (float)SIMNBR;
                 stts_bfdu_f.mean_sr_allo /= (float)SIMNBR;
                 stts_bfdu_f.mean_sr_opti /= (float)SIMNBR;
-                stts_bfdu_f.mean_reas /= (float)SIMNBR;
                 stts_bfdu_f.mean_disp /= (float)SIMNBR;
                 stts_bfdu_f.mean_swap /= (float)SIMNBR;
                 v_stts_bfdu_f.push_back(stts_bfdu_f);

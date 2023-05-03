@@ -138,6 +138,15 @@ void copy_back_resp_to_tc(struct bin &b)
         }
 }
 
+void copy_v_tc_to_v_tasks_with_pos(vector<struct bin> &v_bins)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                v_bins[i].v_tasks.clear();
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
+                        copy_tc_to_v_tasks_with_pos(v_bins[i], i, j);
+        }
+}
+
 void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
 {
         for (unsigned int i = 0; i < b.v_itms[itm_idx].v_tasks.size(); i++) {

@@ -58,11 +58,9 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                         break;
 
                 case B_OPT:
-                                fprintf(filename, "%s %f %f %f %f\n", "Average",
-                                                data[0].total_mean_reas, 
+                                fprintf(filename, "%s %f %f %f\n", "Average",
                                                 data[0].total_mean_disp, 
                                                 data[0].total_mean_swap,
-                                                data[0].total_mean_reas +
                                                 data[0].total_mean_disp +
                                                 data[0].total_mean_swap);
                         break;
@@ -87,8 +85,6 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)
                 printf("BFDU_F.Cores Ratio                      : %f\n", v_stts_bfdu_f[i].mean_cr);
                 printf("BFDU_F.Execution Time                   : %f\n", v_stts_bfdu_f[i].mean_et);
                 printf("BFDU_F.Schedulability Rate (allo)       : %f\n", v_stts_bfdu_f[i].mean_sr_allo);
-                printf("BFDU_F.Schedulability Rate (opti)       : %f\n", v_stts_bfdu_f[i].mean_sr_opti);
-                printf("BFDU_F.Optimization Gain:  (reas)       : %f\n",v_stts_bfdu_f[i].mean_reas);
                 printf("BFDU_F.Optimization Gain:  (disp)       : %f\n",v_stts_bfdu_f[i].mean_disp);
                 printf("BFDU_F.Optimization Gain:  (swap)       : %f\n",v_stts_bfdu_f[i].mean_swap);
                 printf("\n");

@@ -51,15 +51,12 @@ struct perf {
         float schd_time;
         float disp_time;
         float swap_time;
-        float sched_rate_base;
-        float sched_rate_reas;
+        float sched_rate_allo;
         float sched_rate_disp;
         float sched_rate_swap;
         float sched_rate_opti;
-        float reas_gain;
         float disp_gain;
         float swap_gain;
-        int sched_imp_reas;
         int sched_imp_disp;
         int sched_imp_swap;
 };
@@ -150,6 +147,8 @@ void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
 void copy_back_prio_to_tc(struct bin &b);
 
 void copy_back_resp_to_tc(struct bin &b);
+
+void copy_v_tc_to_v_tasks_with_pos(vector<struct bin> &v_bins);
 
 void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx);
 
