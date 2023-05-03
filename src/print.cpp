@@ -459,15 +459,14 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
         printf("Schedulability Analysis Time:     %-3.3f ms\n", ctx.p.schd_time * PERMILL);
-        //printf("Reassignment Time:                %-3.3f ms\n", ctx.p.reass_time * PERMILL);
         //printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         //printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
         printf("------------------------------------------------------------------------>\n");
         printf("New Added Cores:                  %-2d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
-        //printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
-        //                ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
+        printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
+                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         //printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
         //                ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
         printf("------------------------------------------------------------------------>\n");

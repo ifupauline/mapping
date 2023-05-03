@@ -834,8 +834,8 @@ MAXN	include/generator.h	13;"	d
 MAXPHI	include/model.h	21;"	d
 MAXTASKNBR	include/generator.h	25;"	d
 MAXWCET	include/generator.h	21;"	d
-MAX_DISP_COUNT	src/optimization.cpp	6;"	d	file:
-MAX_SWAP_COUNT	src/optimization.cpp	7;"	d	file:
+MAX_DISP_COUNT	src/optimization.cpp	7;"	d	file:
+MAX_SWAP_COUNT	src/optimization.cpp	8;"	d	file:
 MINLETWCET	include/let.h	7;"	d
 MINMAXTU	include/generator.h	16;"	d
 MINMEMCOST	include/model.h	29;"	d
@@ -1118,6 +1118,7 @@ _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &
 _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const struct task &a, const struct task &b)$/;"	f	file:
 _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
+_displacement	src/optimization.cpp	/^void _displacement(vector<struct bin> &v_bins)$/;"	f
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_best_cut	src/bfdu_f.cpp	/^static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:

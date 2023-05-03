@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 
+#include "let.h"
 #include "print.h"
 #include "sched_analysis.h"
 
@@ -54,8 +55,6 @@ static int _check_if_dual_frag(struct bin &b, int src_itm_id,
         return NO;
 }
 
-
-
 static int _search_for_displace(vector<struct bin> &v_fail_bins, 
                 vector<pair<struct item, int>> &v_fail_itms, int item_idx, 
                 struct bin &dst_b)
@@ -65,22 +64,15 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
         int max;
         int tmp_max;
         int is_found;
-        int bin_idx;
-        int itm_idx;
 
         p = -1;
         high_p = INT_MAX;
-        bin_idx = 0;
-        itm_idx = 0;
         max = -1;
         tmp_max = 0;
         is_found = NO;
 
         /* copy itm task to v_tasks of bin */
-        for (unsigned int i = 0; i < v_fail_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_fail_bins[i].v_itms.size(); j++)
-                        copy_tc_to_v_tasks_with_pos(v_fail_bins[i], i, j);
-        }
+        copy_v_tc_to_v_tasks_with_pos(v_fail_bins);
 
         for (unsigned int i = 0; i < v_fail_bins.size(); i++) {
                 /* test wcrt for dst bin */
@@ -105,8 +97,6 @@ static int _search_for_displace(vector<struct bin> &v_fail_bins,
                                                 p = v_fail_bins[i].v_itms[j].v_tasks[k].p;
                                                 if (p < high_p) {
                                                         high_p = p;
-                                                        bin_idx = i;
-                                                        itm_idx = j;
                                                 }
                                         }
                                 }
@@ -312,7 +302,7 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
         printf("\n");
 }
 
-void displacement(vector<struct bin> &v_bins)
+void _displacement(vector<struct bin> &v_bins)
 {
         int ret;
         int flag;
@@ -350,7 +340,7 @@ void displacement(vector<struct bin> &v_bins)
                                                 v_fail_itms[i].first.id, v_fail_itms[i].second, 
                                                 v_fail_itms[i].first.frag_id);
 
-                                /* TODO for now just skip */
+                                /* TODO for now do not allow same frags in same bin */
                                 if (ret == YES)
                                         continue;
 
@@ -386,11 +376,71 @@ void displacement(vector<struct bin> &v_bins)
                                 }
                         }
                 }
-                /* try priority reassignment for bins that lost a fail_itm */
-                //reassignment(v_bins);
 
                 if (state == NO)
                         break;
+        }
+}
+
+void displacement(vector<struct bin> &v_bins)
+{
+        int ret;
+        int flag;
+        int state;
+        int is_found;
+        struct bin dst_b;
+        pair<struct item, int> fail_itm;
+        vector<struct bin> v_fail_bins;
+        vector<pair<struct item, int>> v_fail_itms;
+
+        ret = NO;
+        flag = NO;
+        state = NO;
+        is_found = NO;
+        dst_b = {0};
+        fail_itm.first = {0};
+        fail_itm.second = 0;
+
+        /* take next unschedulable itm */
+        _store_unsched_itms(v_bins, v_fail_itms, flag);
+        for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                printf("TC %d from Core %d unfeasible\n", v_fail_itms[i].first.id, v_fail_itms[i].second);
+        }
+
+        printf("\n");
+
+        while (1) {
+                state = NO;
+                /* find a schedulable bin that has enough space for the itm to fit */
+                for (unsigned int i = 0; i < v_fail_itms.size(); i++) {
+                        printf("Try to displace TC %-3d from Core %-3d\n", 
+                                        v_fail_itms[i].first.id, v_fail_itms[i].second);
+                        v_fail_bins.clear();
+                        for (unsigned int j = 0; j < v_bins.size(); j++) {
+                                /* check if dst bin has the dual fragment of current itm */
+                                ret = _check_if_dual_frag(v_bins[j], 
+                                                v_fail_itms[i].first.id, v_fail_itms[i].second, 
+                                                v_fail_itms[i].first.frag_id);
+
+                                /* TODO for now do not allow same frags in same bin */
+                                if (ret == YES)
+                                        continue;
+
+                                /* search for bins that can accomodate fail itm */
+                                if (v_bins[j].flag == SCHED_OK && flag == YES) {
+                                        /* check if itm fit */
+                                        int tmp_load = 0;
+                                        int tmp_gcd = 0;
+                                        tmp_load = check_if_fit_itm(v_bins[j], v_fail_itms[i].first, tmp_gcd);
+
+                                        if (tmp_load <= v_bins[j].phi) {
+                                                printf("Found Core %d where TC %d can be displaced\n", 
+                                                        v_bins[j].id, v_fail_itms[i].first.id);
+                                        }
+                                }
+                        }
+                }
+                exit(0);
         }
 }
 
