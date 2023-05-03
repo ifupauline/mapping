@@ -28,8 +28,6 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
         r_curr = tmp;
 
         if (r_curr > tau.t) {
-                //printf("Current Response Time of tau %d: %d > period %d exit loop\n\n", 
-                //                tau.id, r_curr, tau.t);
                 tau.r = r_curr;
                 ret = SCHED_FAILED;
                 return;
@@ -41,7 +39,6 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
         }
 
         if (r_curr == r_prev) {
-                //printf("WCRT of tau %d: %d\n", tau.id, r_curr);
                 tau.r = r_curr;
                 ret = SCHED_OK;
                 if (tau.r > tau.t) {
@@ -49,6 +46,24 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
                         exit(0);
                 }
                 return;
+        }
+}
+
+static void _save_priorities(struct bin &b)
+{
+        int p;
+
+        p = 2;
+
+        sort_inc_task_priority(b.v_tasks);
+
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                if (b.v_tasks[i].is_let == YES) {
+                        b.v_tasks[i].p = 1;
+                        continue;
+                }
+                b.v_tasks[i].p = p;
+                p++;
         }
 }
 
@@ -93,7 +108,8 @@ static void _reassign(struct bin &b, int p, int itm_idx)
                                 }
                         }
                 }
-                /* TODO save priorities */
+                _save_priorities(b);
+
                 b.flag = wcrt(b.v_tasks);
                 if (b.flag == SCHED_OK) {
                         copy_back_prio_to_tc(b);
@@ -132,6 +148,7 @@ void base_assignment(struct bin &b)
 void reassignment(struct bin &b)
 {
         struct bin tmp_b;
+
         sort_inc_task_priority(b.v_tasks);
 
         /* iterate in descending order */
