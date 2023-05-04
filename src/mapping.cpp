@@ -66,16 +66,18 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.sched_imp_disp -= ctx.p.sched_imp_allo;
         ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
 
-        //printf("+=====================================+\n");
-        //printf("| SWAPPING OPTIMIZATION               |\n");
-        //printf("+=====================================+\n");
-        //start = clock();
-        //swapping(v_bins);
-        //end = clock();
-        //ctx.p.swap_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-        //ctx.p.sched_rate_swap = sched_rate(v_bins, ctx);
+        /* prepare next swamp imp */
+        ctx.p.sched_imp_swap -= ctx.sched_ok_count;
 
-        ///*compute improvement */
-        //ctx.p.sched_imp_swap -= ctx.sched_ok_count;
-        //ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
+        printf("+=====================================+\n");
+        printf("| SWAPPING OPTIMIZATION               |\n");
+        printf("+=====================================+\n");
+        start = clock();
+        swapping(v_bins);
+        end = clock();
+        ctx.p.swap_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.sched_rate_swap = sched_rate(v_bins, ctx);
+
+        /*compute improvement */
+        ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
 }

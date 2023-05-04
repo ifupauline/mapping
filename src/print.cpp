@@ -170,7 +170,7 @@ void print_v_tasks(struct bin &b)
 {
         printf("Core: %d Lrem: %d\n", b.id, b.load_rem);
         for (unsigned int i = 0; i < b.v_tasks.size(); i++)
-                printf("tau %d p %d idx %d\n", 
+                printf("tau %-3d p %-3d idx %-3d\n", 
                                 b.v_tasks[i].id, b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx);
 }
 
@@ -460,15 +460,15 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
         printf("Schedulability Analysis Time:     %-3.3f ms\n", ctx.p.schd_time * PERMILL);
         printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
-        //printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
+        printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
         printf("------------------------------------------------------------------------>\n");
         printf("New Added Cores:                  %-2d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
         printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
-        //printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
-        //                ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
+        printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
+                        ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
         printf("------------------------------------------------------------------------>\n");
         printf("\n+===========================================+\n");
         printf("| PERFORMANCE METRICS                       |\n");
@@ -478,13 +478,13 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Fragmentation Rate:               %-3.3f\n", ctx.p.fr);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
-        //printf("Schedulability Rate (aft):        %-3.3f\n", ctx.p.sched_rate_swap * PERCENT);
+        printf("Schedulability Rate (aft):        %-3.3f\n", ctx.p.sched_rate_swap * PERCENT);
         printf("------------------------------------------------------------------------>\n");
         //printf("Total Optimization Gain:          +%-3.3f\n", 
         //                (ctx.p.sched_rate_opti - ctx.p.sched_rate_allo));
         //printf("------------------------------------------------------------------------>\n");
         printf("Displacement SR Gain:             +%-3.3f\n", ctx.p.disp_gain);
-        //printf("Swapping Gain:                    +%-3.3f\n", ctx.p.swap_gain);
+        printf("Swapping Gain:                    +%-3.3f\n", ctx.p.swap_gain);
         printf("------------------------------------------------------------------------>\n");
         printf("Total SYS Utilization             %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);
         printf("Total LET Utilization             %-3.3f\n", (ctx.p.let / ctx.p.maxu) * PERCENT);

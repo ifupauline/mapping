@@ -244,7 +244,7 @@ void priority_assignment(struct bin &b)
 {
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
-                //printf("Core %d SCHED_FAILED\n", b.id);
+                printf("Core %d SCHED_FAILED\n", b.id);
                 _reassignment(b);
         } else
                 printf("Core %d SCHED_OK\n", b.id);
