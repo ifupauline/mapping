@@ -25,6 +25,7 @@ static void _schedulability_rate(struct context &ctx)
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
         ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - ctx.p.sched_rate_allo;
         ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - (ctx.p.sched_rate_disp * PERCENT);
+        ctx.p.opti_gain = ctx.p.disp_gain + ctx.p.swap_gain;
         ctx.p.fr = ((float)ctx.cuts_count / (float)ctx.prm.n) * PERCENT;
 }
 
@@ -464,12 +465,6 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("New Added Cores:                  %-2d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
-        printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
-                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
-        printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
-                        ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
-        printf("------------------------------------------------------------------------>\n");
         printf("\n+===========================================+\n");
         printf("| PERFORMANCE METRICS                       |\n");
         printf("+===========================================+\n");
@@ -478,13 +473,15 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Fragmentation Rate:               %-3.3f\n", ctx.p.fr);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
-        printf("Schedulability Rate (aft):        %-3.3f\n", ctx.p.sched_rate_swap * PERCENT);
+        printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
+                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
+        printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
+                        ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
         printf("------------------------------------------------------------------------>\n");
-        //printf("Total Optimization Gain:          +%-3.3f\n", 
-        //                (ctx.p.sched_rate_opti - ctx.p.sched_rate_allo));
-        //printf("------------------------------------------------------------------------>\n");
         printf("Displacement SR Gain:             +%-3.3f\n", ctx.p.disp_gain);
         printf("Swapping Gain:                    +%-3.3f\n", ctx.p.swap_gain);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Total Optimization Gain:          +%-3.3f\n", ctx.p.opti_gain);
         printf("------------------------------------------------------------------------>\n");
         printf("Total SYS Utilization             %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);
         printf("Total LET Utilization             %-3.3f\n", (ctx.p.let / ctx.p.maxu) * PERCENT);

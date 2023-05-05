@@ -57,7 +57,7 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         printf("| DISPLACEMENT OPTIMIZATION           |\n");
         printf("+=====================================+\n");
         start = clock();
-        displacement(v_bins);
+        //displacement(v_bins);
         end = clock();
         ctx.p.disp_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         ctx.p.sched_rate_disp = sched_rate(v_bins, ctx);

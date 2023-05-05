@@ -79,7 +79,6 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 
 void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)
 {
-
         if (b.phi < load) {
                 printf("ERR Bin %d Overflow with itm.size %d\n", 
                                 b.id, itm.size);
@@ -92,6 +91,16 @@ void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)
         compute_bin_memcost(b);
         update_let(b, gcd);
         b.v_tasks.clear();
+
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
+                        b.v_itms[i].v_tasks[j].idx.itm_idx = i;
+                        b.v_itms[i].v_tasks[j].idx.task_idx = j;
+                }
+        }
+
+        for (unsigned int i = 0; i < b.v_itms.size(); i++)
+                add_tasks_to_v_tasks(b.v_tasks, b.v_itms[i].v_tasks);
 
         //if (itm.is_frag == NO) {
         //        printf("Item %d added in Bin %d\n\n", itm.id, b.id);
@@ -320,23 +329,31 @@ void delete_itm_by_id(struct bin &b, int itm_id)
                 if (b.v_itms[i].id == itm_id) {
                         b.v_itms.erase(b.v_itms.begin() + i);
                         b.v_tasks.clear();
-                        for (unsigned int j = 0; j < b.v_itms.size(); j++) {
-                                if (b.v_itms[j].is_let == YES)
-                                        continue;
-                                add_tasks_to_v_tasks(v_tasks, b.v_itms[j].v_tasks);
-                        }
-                        gcd = compute_gcd(v_tasks);
-                        update_let(b, gcd);
-                        compute_bin_load_rem(b);
-                        compute_bin_memcost(b);
                         flag = YES;
                 }
         }
+
         if (flag == NO) {
                 printf("ERR! TC %d not removed from Core %d\n", itm_id, b.id);
                 print_core(b);
                 exit(0);
         }
+
+        /* check if there is only LET item */
+        if (b.v_itms.size() == 1)
+                gcd = b.v_itms[0].v_tasks[0].t;
+
+        else {
+                for (unsigned int j = 0; j < b.v_itms.size(); j++) {
+                        if (b.v_itms[j].is_let == YES)
+                                continue;
+                        add_tasks_to_v_tasks(v_tasks, b.v_itms[j].v_tasks);
+                }
+                gcd = compute_gcd(v_tasks);
+        }
+        update_let(b, gcd);
+        compute_bin_load_rem(b);
+        compute_bin_memcost(b);
 }
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 

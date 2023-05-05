@@ -2,8 +2,8 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-#define MAX_DISP_COUNT 10
-#define MAX_SWAP_COUNT 1
+#define MAX_DISP_COUNT 1
+#define MAX_SWAP_COUNT 10
 
 static void _store_unsched_itms(vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_fail_itms, int &flag)
@@ -93,7 +93,8 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         int ret;
         int gcd;
         int load;
-        vector<struct bin> tmp_v_bins;
+        int dst_flag_cap = NO;
+        int src_flag_cap = NO;
 
         ret = 0;
         gcd = 0;
@@ -103,9 +104,6 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 
         /* test src -> dst */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == fail_src_itm.second)
-                        continue;
-
                 if (v_bins[i].id == fail_dst_itm.second) {
                         /* first check if dual frag present in dst bin */
                         ret = _check_if_dual_frag(v_bins[i], 
@@ -123,26 +121,17 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                         load = check_if_fit_itm(dst_bin, fail_src_itm.first, gcd);
 
                         if (load <= dst_bin.phi) {
-                                printf("DST----------\n");
-                                printf("TC %d can fit in Core %d\n", fail_src_itm.first.id, dst_bin.id);
+                                //printf("DST----------\n");
+                                //printf("TC %d can fit in Core %d\n", fail_src_itm.first.id, dst_bin.id);
                                 add_itm_to_bin(dst_bin, fail_src_itm.first, load, gcd);
-
-                                tmp_v_bins.clear();
-                                tmp_v_bins = v_bins;
-                                tmp_v_bins[i] = dst_bin;
-                                copy_v_tc_to_v_tasks_with_pos(tmp_v_bins);
-                                dst_bin = tmp_v_bins[i];
-
                                 priority_assignment(dst_bin);
+                                dst_flag_cap = YES;
                         } 
                 }
         }
 
         /* test dst -> src */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == fail_dst_itm.second)
-                        continue;
-
                 if (v_bins[i].id == fail_src_itm.second) {
                         /* first check if dual frag present in dst bin */
                         ret = _check_if_dual_frag(v_bins[i], 
@@ -163,32 +152,28 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                         load = check_if_fit_itm(src_bin, fail_dst_itm.first, gcd);
 
                         if (load <= src_bin.phi) {
-                                printf("SRC----------\n");
-                                printf("TC %d can fit in Core %d\n", fail_dst_itm.first.id, src_bin.id);
+                                //printf("SRC----------\n");
+                                //printf("TC %d can fit in Core %d\n", fail_dst_itm.first.id, src_bin.id);
                                 add_itm_to_bin(src_bin, fail_dst_itm.first, load, gcd);
-
-                                tmp_v_bins.clear();
-                                tmp_v_bins = v_bins;
-                                tmp_v_bins[i] = src_bin;
-                                copy_v_tc_to_v_tasks_with_pos(tmp_v_bins);
-                                src_bin = tmp_v_bins[i];
-
                                 priority_assignment(src_bin);
+                                src_flag_cap = YES;
                         } 
                 }
         }
 
-        if (dst_bin.flag == SCHED_OK && src_bin.flag == SCHED_OK) {
-                printf("\nFound Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
-                                fail_src_itm.first.id, fail_src_itm.first.size, 
-                                fail_src_itm.second, fail_dst_itm.first.id, 
-                                fail_dst_itm.first.size, fail_dst_itm.second);
+        if (dst_flag_cap == YES && src_flag_cap == YES) {
+                if (dst_bin.flag == SCHED_OK || src_bin.flag == SCHED_OK) {
+                        printf("\nFound Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
+                                        fail_src_itm.first.id, fail_src_itm.first.size, 
+                                        fail_src_itm.second, fail_dst_itm.first.id, 
+                                        fail_dst_itm.first.size, fail_dst_itm.second);
 
-                fail_dst_itm.second = src_bin.id;
-                fail_src_itm.second = dst_bin.id;
-                fail_dst_itm.first.swap_count++;
-                fail_src_itm.first.swap_count++;
-                return YES;
+                        fail_dst_itm.second = src_bin.id;
+                        fail_src_itm.second = dst_bin.id;
+                        fail_dst_itm.first.swap_count++;
+                        fail_src_itm.first.swap_count++;
+                        return YES;
+                }
         }
         return NO;
 }
@@ -197,6 +182,7 @@ void _swap(vector<struct bin> &v_bins, struct bin &dst_bin, struct bin &src_bin)
 {
         replace_bin_by_id(v_bins, dst_bin);
         replace_bin_by_id(v_bins, src_bin);
+        printf("<---------------- SWAP SUCCESS ---------------->\n\n\n");
 }
 
 static void _displace(vector<struct bin> &v_bins, pair<struct item, 
@@ -343,7 +329,8 @@ void swapping(vector<struct bin> &v_bins)
         /* store fail_bins */
         _store_unsched_itms(v_bins, v_fail_itms, flag);
         for (unsigned int i = 0; i < v_fail_itms.size(); i++)
-                printf("TC %-3d from Core %-3d unfeasible\n", v_fail_itms[i].first.id, v_fail_itms[i].second);
+                printf("TC %-3d from Core %-3d unfeasible\n", 
+                                v_fail_itms[i].first.id, v_fail_itms[i].second);
 
         while (1) {
                 state = NO;
@@ -364,13 +351,14 @@ void swapping(vector<struct bin> &v_bins)
                                                 v_fail_itms[j].first.id, v_fail_itms[j].second);
 
                                 /* search if swap is possible */
+                                dst_bin = {0};
+                                src_bin = {0};
+                                flag = NO;
                                 flag = _search_for_swap(v_bins, v_fail_itms[i], 
                                                 v_fail_itms[j], dst_bin, src_bin);
 
                                 if (flag == YES) {
-                                        /* swap */
                                         _swap(v_bins, dst_bin, src_bin);
-                                        printf("<-------------------- SWAP SUCCEDED -------------------->\n\n\n");
                                         state = YES;
                                 }
                         }
