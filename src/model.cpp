@@ -72,8 +72,8 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         /* create and insert let task */
         let = {0};
         init_let_task(let, ctx);
-        ctx.itms_count++;
         add_itm_to_v_bins(v_bins, let, tmp_bin.id, ctx, let.size, let.v_tasks[0].t);
+        ctx.itms_count++;
         let.is_allocated = YES;
 }
 

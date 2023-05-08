@@ -194,7 +194,6 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         struct item itm_rf;
 
         /* creates first itm with left fragment*/
-        ctx.itms_count++;
         itm_lf.id = ctx.itms_count;
         itm_lf.size = cut.lf_size;
         itm_lf.frag_id = frag_id_count;
@@ -209,8 +208,9 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_lf.v_tasks = cut.c.v_tasks_lf;
         itm_lf.gcd = compute_gcd(cut.c.v_tasks_lf);
 
-        /* creates second itm with right fragment*/
         ctx.itms_count++;
+
+        /* creates second itm with right fragment*/
         itm_rf.id = ctx.itms_count;
         itm_rf.size = cut.rf_size;
         itm_rf.frag_id = frag_id_count;
@@ -224,6 +224,8 @@ static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         itm_rf.nbr_cut = 0;
         itm_rf.v_tasks = cut.c.v_tasks_rf;
         itm_rf.gcd = compute_gcd(cut.c.v_tasks_rf);
+
+        ctx.itms_count++;
 
         printf("\nLeft Fragment %d has been created from Item %d with size %d\n", 
                         itm_lf.id, itm.id, itm_lf.size);

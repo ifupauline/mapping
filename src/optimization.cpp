@@ -2,7 +2,7 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-#define MAX_DISP_COUNT 1
+#define MAX_DISP_COUNT 10
 #define MAX_SWAP_COUNT 10
 
 static void _store_unsched_itms(vector<struct bin> &v_bins, 
@@ -16,6 +16,9 @@ static void _store_unsched_itms(vector<struct bin> &v_bins,
         /* take next unschedulable itm */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        /* skip LET */
+                        if (v_bins[i].v_itms[j].is_let == YES)
+                                continue;
                         for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
                                 if (v_bins[i].v_itms[j].v_tasks[k].r > v_bins[i].v_itms[j].v_tasks[k].t) {
                                         fail_itm.first = {0};
@@ -112,7 +115,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 
                         /* TODO for now just skip */
                         if (ret == YES) {
-                                break;
+                                continue;
                         }
 
                         /* check if fit */
@@ -140,7 +143,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 
                         /* TODO for now just skip */
                         if (ret == YES) {
-                                break;
+                                continue;
                         }
 
                         gcd = 0;
@@ -260,6 +263,9 @@ void displacement(vector<struct bin> &v_bins)
                                 v_fail_itms[i].first.id, v_fail_itms[i].second);
         printf("\n");
 
+        if (flag == NO)
+                return;
+
         while (1) {
                 state = NO;
                 /* find a schedulable bin that has enough space for the itm to fit */
@@ -269,7 +275,7 @@ void displacement(vector<struct bin> &v_bins)
                         v_fail_bins.clear();
                         for (unsigned int j = 0; j < v_bins.size(); j++) {
                                 /* if item moved too many times skip */
-                                if (v_fail_itms[i].first.disp_count == MAX_DISP_COUNT)
+                                if (v_fail_itms[i].first.disp_count == MAX_DISP_COUNT) 
                                         continue;
 
                                 /* check if dst bin has the dual fragment of current itm */
@@ -282,7 +288,7 @@ void displacement(vector<struct bin> &v_bins)
                                         continue;
 
                                 /* search for bins that can accomodate fail itm */
-                                if (v_bins[j].flag == SCHED_OK && flag == YES && 
+                                if (v_bins[j].flag == SCHED_OK &&  
                                                 /* make sure it is not a bin of a fail_itm which became feasible */
                                                 v_bins[j].id != v_fail_itms[i].second) {
 
