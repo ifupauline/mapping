@@ -109,7 +109,6 @@ int main(int argc, char **argv)
         vector<struct b_stats> v_stts_bfdu_f;
 
         prm = {0};
-        prm.h = atoi(argv[1]);
 
         phi(v_stts_bfdu_f, prm);
         print_b_stats(v_stts_bfdu_f, ITER);

@@ -12,8 +12,6 @@ void priority_assignment(struct bin &b);
 
 int wcrt(vector<struct task> &v_tasks);
 
-void wcrt_bin(struct bin &b, int bin_idx);
-
 void sched_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
 #endif /* SCHED_ANALYSIS_H */

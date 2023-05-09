@@ -2,10 +2,10 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-#define MAX_DISP_COUNT 1
+#define MAX_DISP_COUNT 10
 #define MAX_SWAP_COUNT 10
 
-static void _store_itms_unf_bins(vector<struct bin> &v_bins, 
+static void _store_itms_disp(vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_itms, int &flag)
 {
         pair<struct item, int> itm;
@@ -37,7 +37,65 @@ static void _store_itms_unf_bins(vector<struct bin> &v_bins,
         }
 }
 
-static int _check_if_dual_frag(struct bin &b, int src_itm_id, 
+static void _store_itms_swap(vector<struct bin> &v_bins, 
+                vector<pair<struct item, int>> &v_itms, int &flag)
+{
+        pair<struct item, int> itm;
+
+        itm.first = {0};
+        itm.second = {0};
+
+        /* take next unschedulable itm */
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        /* skip LET */
+                        if (v_bins[i].v_itms[j].is_let == YES)
+                                continue;
+                        itm.first = {0};
+                        itm.second = 0;
+                        itm.first = v_bins[i].v_itms[j];
+                        itm.second = v_bins[i].id;
+                        v_itms.push_back(itm);
+                        flag = YES;
+                }
+        }
+
+        /* update tc load if itm is a fragment */
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                v_itms[i].first.size = 0;
+                compute_itm_load(v_itms[i].first);
+        }
+}
+
+static void _check_duplicata(vector<struct bin> &v_bins)
+{
+        int count;
+        int curr;
+        vector<int> v_int;
+
+        curr = 0;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
+                        v_int.push_back(v_bins[i].v_itms[j].id);
+        }
+
+        for (unsigned int i = 0; i < v_int.size(); i++) {
+                count = 0;
+                curr = v_int[i];
+                for (unsigned int j = 0; j < v_int.size(); j++) {
+                        if (v_int[j] == curr) {
+                                count++;
+                                if (count > 1) {
+                                        printf("ERR! Found duplicata TC %d", v_int[i]);
+                                        exit(0);
+                                }
+                        }
+                }
+        }
+}
+
+static int _check_dual_frag(struct bin &b, int src_itm_id, 
                 int src_bin_id, int src_itm_frag_id)
 {
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
@@ -61,7 +119,7 @@ static int _search_for_displace(vector<struct bin> &v_dst_bins,
         int tmp_max;
         int is_found;
 
-        max = -1;
+        max = 0;
         tmp_max = 0;
         is_found = NO;
 
@@ -72,14 +130,21 @@ static int _search_for_displace(vector<struct bin> &v_dst_bins,
                 /* test wcrt for dst bin */
                 priority_assignment(v_dst_bins[i]);
                 if (v_dst_bins[i].flag == SCHED_OK) {
-                        dst_b = v_dst_bins[i];
+
                         printf("Test WCRT for TC %d to Core %d OK!\n", 
                                         v_itms[item_idx].first.id, v_dst_bins[i].id);
                         /* store max cap_rem */
-                        tmp_max = v_dst_bins[i].load_rem - v_itms[item_idx].first.size;
-                        if (tmp_max > max)
+                        tmp_max = v_dst_bins[i].load_rem;
+                        if (tmp_max < 0) {
+                                printf("ERR! disp tmp_max: %d\n", tmp_max);
+                                exit(0);
+                        }
+
+                        if (tmp_max > max)  {
                                 max = tmp_max;
-                        is_found = YES;
+                                dst_b = v_dst_bins[i];
+                                is_found = YES;
+                        }
                 }
         }
         return is_found;
@@ -116,7 +181,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                                 dst_flag = YES;
                         }
                         /* first check if dual frag present in dst bin */
-                        ret = _check_if_dual_frag(v_bins[i], 
+                        ret = _check_dual_frag(v_bins[i], 
                                         src_itm.first.id, src_itm.second, 
                                         src_itm.first.frag_id);
 
@@ -144,7 +209,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                                 src_flag = YES;
                         }
                         /* first check if dual frag present in dst bin */
-                        ret = _check_if_dual_frag(v_bins[i], 
+                        ret = _check_dual_frag(v_bins[i], 
                                         dst_itm.first.id, dst_itm.second, 
                                         dst_itm.first.frag_id);
 
@@ -240,7 +305,6 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                         replace_bin_by_id(v_bins, dst_b);
                         copy_v_tc_to_v_tasks_with_pos(v_bins);
                         priority_assignment(v_bins[i]);
-                        itm.second = v_bins[i].id; /* update bin id of itm */
                         dst_bin_idx = i;
 
                         if (v_bins[i].flag == SCHED_FAILED) {
@@ -281,7 +345,7 @@ void displacement(vector<struct bin> &v_bins)
         itm.second = 0;
 
         /* take next unschedulable itm */
-        _store_itms_unf_bins(v_bins, v_itms, flag);
+        _store_itms_disp(v_bins, v_itms, flag);
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 printf("TC %-3d from unfeasible Core %-3d\n", 
                                 v_itms[i].first.id, v_itms[i].second);
@@ -298,12 +362,14 @@ void displacement(vector<struct bin> &v_bins)
                                         v_itms[i].first.id, v_itms[i].second);
                         v_dst_bins.clear();
                         for (unsigned int j = 0; j < v_bins.size(); j++) {
+                                if (v_itms[i].second == v_bins[j].id)
+                                        continue;
                                 /* if item moved too many times skip */
                                 if (v_itms[i].first.disp_count == MAX_DISP_COUNT) 
                                         continue;
 
                                 /* check if dst bin has the dual fragment of current itm */
-                                ret = _check_if_dual_frag(v_bins[j], 
+                                ret = _check_dual_frag(v_bins[j], 
                                                 v_itms[i].first.id, v_itms[i].second, 
                                                 v_itms[i].first.frag_id);
 
@@ -317,29 +383,33 @@ void displacement(vector<struct bin> &v_bins)
                                         load = check_if_fit_itm(v_bins[j], v_itms[i].first, gcd);
 
                                         if (load <= v_bins[j].phi) {
-                                                /* add fail itm to potential bin */
+                                                /* add itm to potential bin */
                                                 v_dst_bins.push_back(v_bins[j]);
                                                 add_itm_to_bin(v_dst_bins.back(), v_itms[i].first, load, gcd);
-                                                /* test dst bins and save best bin */
-                                                is_found = _search_for_displace(v_dst_bins, v_itms, i, dst_b);
                                         }
                                 }
                         }
+                        /* test dst bins and save best bin */
+                        is_found = _search_for_displace(v_dst_bins, v_itms, i, dst_b);
+
                         /* if bin not found continue */
                         if (is_found == YES) {
                                 /* displace */
                                 itm.first = {0};
-                                itm.second = 0;
+                                itm.second = dst_b.id;
                                 itm = v_itms[i];
                                 v_itms[i].first.disp_count++;
+                                v_itms[i].second = dst_b.id;
                                 _displace(v_bins, itm, dst_b);
                                 is_found = NO;
                                 state = YES;
+                                break;
                         }
                 }
                 if (state == NO)
                         break;
         }
+        _check_duplicata(v_bins);
 }
 
 void swapping(vector<struct bin> &v_bins)
@@ -354,7 +424,7 @@ void swapping(vector<struct bin> &v_bins)
         state = NO;
 
         /* store fail_bins */
-        _store_itms_unf_bins(v_bins, v_itms, flag);
+        _store_itms_swap(v_bins, v_itms, flag);
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 printf("TC %-3d from unfeasible Core %-3d\n", 
                                 v_itms[i].first.id, v_itms[i].second);
@@ -390,10 +460,12 @@ void swapping(vector<struct bin> &v_bins)
                                 if (flag == YES) {
                                         _swap(v_bins, dst_bin, src_bin);
                                         state = YES;
+                                        break;
                                 }
                         }
                 }
                 if (state == NO)
                         break;
         }
+        _check_duplicata(v_bins);
 }

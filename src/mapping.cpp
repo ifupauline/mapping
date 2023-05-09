@@ -17,6 +17,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 struct context &ctx)
 {
         clock_t start, end;
+
         if (ctx.prm.a == BFDU_F) {
                 printf("+=====================================+\n");
                 printf("| ALLOCATION BFDU_F                   |\n");

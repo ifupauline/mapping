@@ -10,11 +10,11 @@
 #define WFDU_F 2
 
 /* booleans */
-#define NO  0
-#define YES 1
+#define NO  1
+#define YES 2
 
-#define LEFT  0
-#define RIGHT 1
+#define LEFT  1
+#define RIGHT 2
 
 #define C       1000
 #define MINPHI  C/2
@@ -26,15 +26,18 @@
 #define MSEC    1000
 
 /* mem cost of tc */
-#define MINMEMCOST 1 /* no shared memory used */
+#define MINMEMCOST 1
 #define MAXMEMCOST 3
 
 using namespace std;
 
+extern int wcrt_count;
+extern int syst_state;
+extern float sched_time;
+
 /* CONTEXT */
 struct params {
         int a;
-        int h;
         int n;
         int phi;
 };
@@ -64,12 +67,12 @@ struct perf {
 };
 
 struct context {
+        int itms_nbr;
+        int itms_size;
         int bins_min;
         int bins_count;
         int cycl_count;
         int itms_count;
-        int itms_nbr;
-        int itms_size;
         int alloc_count;
         int frags_count;
         int cuts_count;
@@ -136,15 +139,17 @@ struct bin {
 };
 
 /* OPERATIONS ON DATA STRUCTURES */
-void sort_dec_int(vector<int> &v_int);
-
 void sort_inc_task_priority(vector<struct task> &v_tasks);
 
 void sort_inc_task_id(vector<struct task> &v_tasks);
 
-void sort_dec_itm_size(vector<struct item> &v_itms);
-
 void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
+
+void sort_dec_int(vector<int> &v_int);
+
+void sort_dec_task_priority(vector<struct task> &v_tasks);
+
+void sort_dec_itm_size(vector<struct item> &v_itms);
 
 void copy_back_prio_to_tc(struct bin &b);
 
@@ -180,8 +185,6 @@ struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id);
 int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
 
 void delete_itm_by_id(struct bin &b, int itm_id);
-
-void insert_itm_to_core(struct bin &b, struct item &itm);
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);

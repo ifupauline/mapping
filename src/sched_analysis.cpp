@@ -1,6 +1,10 @@
 #include "print.h"
 #include "sched_analysis.h"
 
+int wcrt_count = 0;
+int syst_state = NO;
+float sched_time = 0;
+
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
                 struct task &tau, int &r_prev)
 {
@@ -18,7 +22,8 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
         tmp = tau.c;
 
         if (tau.c > tau.t) {
-                printf("ERROR Execution Time %d of tau %d > Period %d\n\n", tau.c, tau.id, tau.t);
+                printf("ERROR Execution Time %d of tau %d > Period %d\n\n", 
+                                tau.c, tau.id, tau.t);
                 exit(0);
         }
 
@@ -149,10 +154,10 @@ static void _reassignment(struct bin &b)
 {
         struct bin tmp_b;
 
-        sort_inc_task_priority(b.v_tasks);
+        sort_dec_task_priority(b.v_tasks);
 
         /* iterate in descending order */
-        for (unsigned int i = b.v_tasks.size() - 1; i > 0; i--) {
+        for (unsigned int i = 0; i > b.v_tasks.size(); i++) {
                 if (b.v_tasks[i].p == 0) {
                         printf("\nERR! Core %d tau %d p %d idx %d\n", 
                                         b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
@@ -170,6 +175,7 @@ static void _reassignment(struct bin &b)
                         }
                 }
         }
+        sort_inc_task_priority(b.v_tasks);
         if (b.flag == SCHED_OK)
                 printf("Core %d SCHED_OK\n", b.id);
 }
@@ -180,6 +186,7 @@ int wcrt(vector<struct task> &v_tasks)
         int flag;
         int r_curr;
         int r_prev;
+        clock_t start, end;
         vector<struct task> hp_tasks;
 
         ret = -1;
@@ -189,6 +196,9 @@ int wcrt(vector<struct task> &v_tasks)
         flag = SCHED_OK;
 
         /* compute WCRT for each task */
+        if (syst_state == YES)
+                start = clock();
+
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
                 r_curr = 0;
                 r_prev = 0;
@@ -199,6 +209,12 @@ int wcrt(vector<struct task> &v_tasks)
 
                 if (ret == SCHED_FAILED)
                         flag = SCHED_FAILED;
+        }
+
+        if (syst_state == YES) {
+                end = clock();
+                sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                wcrt_count++;
         }
 
         if (flag == SCHED_OK)
@@ -213,33 +229,6 @@ int wcrt(vector<struct task> &v_tasks)
         return -1;
 }
 
-void wcrt_bin(struct bin &b, int bin_idx)
-{
-        int ret;
-
-        ret = -1;
-        b.v_tasks.clear();
-
-        for (unsigned int i = 0; i < b.v_itms.size(); i++)
-                copy_tc_to_v_tasks_with_pos(b, bin_idx, i);
-
-        /* test wcrt */
-        ret = wcrt(b.v_tasks);
-        if (ret == SCHED_OK) {
-                printf("WCRT Core: %d OK!\n", b.id);
-                b.flag = SCHED_OK;
-
-        }
-
-        else if (ret == SCHED_FAILED) {
-                printf("WCRT Core: %d FAILED!\n", b.id);
-                b.flag = SCHED_FAILED;
-        }
-        copy_back_prio_to_tc(b);
-        copy_back_resp_to_tc(b);
-        compute_bin_load_rem(b);
-}
-
 void priority_assignment(struct bin &b)
 {
         _base_assignment(b);
@@ -252,6 +241,7 @@ void priority_assignment(struct bin &b)
 
 void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
+        syst_state = YES;
         sort_inc_bin_load_rem(v_bins);
         copy_v_tc_to_v_tasks_with_pos(v_bins);
 

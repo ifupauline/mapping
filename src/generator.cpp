@@ -27,25 +27,6 @@ static void _check_params(struct params &prm)
                                 MINPHI, MAXPHI);
                 exit(0);
         }
-
-        if (prm.h != NO && prm.h != YES) {
-                printf("Invalid params: prm.h rule -> [%d -> NO || %d -> YES]\n\n", 
-                                NO, YES);
-                exit(0);
-        }
-}
-
-static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)
-{
-        tau.u = gen_rand(MINMAXTU, MAXMAXTU);
-        tau.u = tau.u / PERMILL;
-        tau.c = gen_rand(MINWCET, MAXWCET);
-        tau.t = ceilf(tau.c/tau.u);
-        tau.u = tau.u * PERMILL;
-        tau.d = tau.t; /* implicit deadline */
-        tau.r = 0;
-        tau.p = i + 1; /* 1 is highest priority */
-        tau.id = i;
 }
 
 static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int x)
@@ -126,15 +107,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         struct task tau;
                         tau.is_let = NO;
 
-                        if (prm.h == NO)
-                                _gen_non_harmonic_task(tau, prm, i);
+                        _gen_harmonic_task(tau, prm, i, x);
 
-                        else if (prm.h == YES)
-                                _gen_harmonic_task(tau, prm, i, x);
-                        else {
-                                printf("ERR! input params!\n");
-                                exit(0);
-                        }
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
                 }
@@ -214,13 +188,12 @@ int gen_rand(int min, int max)
 
 void input(int argc, char **argv, struct params &prm)
 {
-        if (argc != 4) {
+        if (argc != 3) {
                 printf("Wrong Number of Arguments!\n");
                 exit(0);
         }
         prm.n = atoi(argv[1]);
         prm.phi = atoi(argv[2]);
-        prm.h = atoi(argv[3]);
         _check_params(prm);
 }
 
