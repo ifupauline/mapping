@@ -156,11 +156,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         for (unsigned int k = j + 1; k <= v_itms[i].v_tasks.size() - 1; k++)
                                 c.v_tasks_rf.push_back(v_itms[i].v_tasks[k]);
 
-                        /* if I want more constraints on nbr_cut per tc */
-                        //rand = _gen_rand(NO, YES);
-                        //if (rand == YES && v_itms[i].size <= prm.phi)
-                        //        continue;
-
                         v_itms[i].v_cuts.push_back(c);
                         cut_id++;
                 }
@@ -170,9 +165,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         sort_dec_itm_size(v_itms);
         _assign_id(v_itms);
 
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
+        for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
-        }
 
         return 0;
 }

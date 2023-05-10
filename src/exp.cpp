@@ -80,7 +80,7 @@ void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)
 {
         for (int i = 0; i < iter; i++) {
                 printf("+===============+\n");
-                printf("| PHI: %d         |\n", v_stts_bfdu_f[i].phi);
+                printf("| PHI: %d       |\n", v_stts_bfdu_f[i].phi);
                 printf("+===============+\n");
                 printf("BFDU_F.Cores Ratio                      : %f\n", v_stts_bfdu_f[i].mean_cr);
                 printf("BFDU_F.Execution Time                   : %f\n", v_stts_bfdu_f[i].mean_et);

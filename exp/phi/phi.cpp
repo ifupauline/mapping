@@ -34,18 +34,18 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
         struct context ctx_bfdu_f;
         struct b_stats stts_bfdu_f;
         vector<struct bin> v_bins;
+        vector<struct bin> v_bins_bfdu_f;
         vector<struct item> v_itms;
         vector<struct item> v_itms_bfdu_f;
-        vector<struct bin> v_bins_bfdu_f;
 
         ctx = {0};
 
         /* params instance */
         prm.n = 100;
-        prm.phi = 1000;
+        prm.phi = 500;
 
         for (int i = 0; i < ITER; i++) {
-                prm.phi -= STEP;
+                prm.phi += STEP;
                 stts_bfdu_f = {0};
                 stts_bfdu_f.phi = prm.phi;
 
@@ -67,14 +67,9 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
                         v_bins_bfdu_f = v_bins;
 
                         generation(v_bins_bfdu_f, ctx_bfdu_f);
-
                         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
-
                         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
-
                         optimization(v_bins_bfdu_f, ctx_bfdu_f);
-
-                        printf("PHI: %d ITER: %d SIM: %d\n", prm.phi, ITER - i, j);
 
                         /* stats */
                         cmp_stats(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
@@ -99,12 +94,8 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
         _cmp_avr_mean(v_stts_bfdu_f);
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
-        if (argc != 2) {
-                printf("Wrong Number of Parameters -> ./phi 0 (non-harmonics task-chain) 1 (harmonics task-chain)\n");
-                exit(0);
-        }
         struct params prm;
         vector<struct b_stats> v_stts_bfdu_f;
 

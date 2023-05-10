@@ -45,7 +45,7 @@ int main(void)
                 printf("\nSchedulability OK\n");
 
         for (unsigned int i = 0; i < v_tasks.size(); i++)
-                printf("tau %d: p: %d r: %d c: %d t: %d\n", v_tasks[i].id, 
+                printf("tau %-2d: p: %-2d r: %-2d c: %-2d t: %-2d\n", v_tasks[i].id, 
                                 v_tasks[i].p , v_tasks[i].r, 
                                 v_tasks[i].c, v_tasks[i].t);
         return 0;
