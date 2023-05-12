@@ -13,11 +13,6 @@ static int _cmp_inc_task_id(const struct task &a, const struct task &b)
         return a.id < b.id;
 }
 
-static int _cmp_dec_task_priority(const struct task &a, const struct task &b)
-{
-        return a.p > b.p;
-}
-
 static int _cmp_dec_itm_size(const struct item &a, const struct item &b)
 {
         return a.size > b.size;
@@ -46,11 +41,6 @@ void sort_inc_task_priority(vector<struct task> &v_tasks)
 void sort_inc_task_id(vector<struct task> &v_tasks)
 {
         sort(v_tasks.begin(), v_tasks.end(), _cmp_inc_task_id);
-}
-
-void sort_dec_task_priority(vector<struct task> &v_tasks)
-{
-        sort(v_tasks.begin(), v_tasks.end(), _cmp_dec_task_priority);
 }
 
 void sort_dec_itm_size(vector<struct item> &v_itms)

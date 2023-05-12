@@ -451,7 +451,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("Starting Number of Cores:     %-3d\n", ctx.bins_min);
         printf("Actual Number of Cores:       %-3d\n", ctx.bins_count);
-        printf("New Added Cores:             +%-3d\n", ctx.cycl_count);
+        printf("New Added Cores:              +%-3d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Task-Chains Allocated: %-3d\n", ctx.alloc_count + ctx.frags_count);
         printf("Total Number of Tasks: %-3d\n", ctx.tasks_count);

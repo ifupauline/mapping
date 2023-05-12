@@ -14,11 +14,11 @@
 
 /* permils */
 #define MINMAXTU   1
-#define MAXMAXTU   150
+#define MAXMAXTU   200
 
 /* microsecs */
 #define MINWCET    100
-#define MAXWCET    20000
+#define MAXWCET    30000
 
 /* min max number of tasks in a chain */
 #define MINTASKNBR 2

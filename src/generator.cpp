@@ -138,7 +138,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         c.c_pair.first = lf_size;
                         c.c_pair.second = rf_size;
 
-                        if (lf_size > prm.phi || rf_size > prm.phi) {
+                        if (lf_size > prm.phi - 10 || rf_size > prm.phi - 10) {
                                 count++;
                                 if (count == v_itms[i].v_tasks.size() - 1)
                                         return -1;

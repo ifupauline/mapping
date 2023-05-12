@@ -1,8 +1,8 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-int wcrt_count = 0;
 int syst_state = NO;
+int wcrt_count = 0;
 float sched_time = 0;
 
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
@@ -154,10 +154,10 @@ static void _reassignment(struct bin &b)
 {
         struct bin tmp_b;
 
-        sort_dec_task_priority(b.v_tasks);
+        sort_inc_task_priority(b.v_tasks);
 
         /* iterate in descending order */
-        for (unsigned int i = 0; i > b.v_tasks.size(); i++) {
+        for (unsigned int i = b.v_tasks.size() - 1; i > 0; i--) {
                 if (b.v_tasks[i].p == 0) {
                         printf("\nERR! Core %d tau %d p %d idx %d\n", 
                                         b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
@@ -175,7 +175,6 @@ static void _reassignment(struct bin &b)
                         }
                 }
         }
-        sort_inc_task_priority(b.v_tasks);
         if (b.flag == SCHED_OK)
                 printf("Core %d SCHED_OK\n", b.id);
 }

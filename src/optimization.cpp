@@ -5,7 +5,39 @@
 #define MAX_DISP_COUNT 5
 #define MAX_SWAP_COUNT 5
 
-static void _store_itms(vector<struct bin> &v_bins, 
+static void _store_itms_disp(vector<struct bin> &v_bins, 
+                vector<pair<struct item, int>> &v_itms, int &flag)
+{
+        pair<struct item, int> itm;
+
+        itm.first = {0};
+        itm.second = {0};
+
+        /* take next unschedulable itm */
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].flag == SCHED_OK)
+                        continue;
+                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        /* skip LET */
+                        if (v_bins[i].v_itms[j].is_let == YES)
+                                continue;
+                        itm.first = {0};
+                        itm.second = 0;
+                        itm.first = v_bins[i].v_itms[j];
+                        itm.second = v_bins[i].id;
+                        v_itms.push_back(itm);
+                        flag = YES;
+                }
+        }
+
+        /* update tc load if itm is a fragment */
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                v_itms[i].first.size = 0;
+                compute_itm_load(v_itms[i].first);
+        }
+}
+
+static void _store_itms_swap(vector<struct bin> &v_bins, 
                 vector<pair<struct item, int>> &v_itms, int &flag)
 {
         pair<struct item, int> itm;
@@ -313,7 +345,7 @@ void displacement(vector<struct bin> &v_bins)
         itm.second = 0;
 
         /* take next unschedulable itm */
-        _store_itms(v_bins, v_itms, flag);
+        _store_itms_disp(v_bins, v_itms, flag);
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 printf("TC %-3d from unfeasible Core %-3d\n", 
                                 v_itms[i].first.id, v_itms[i].second);
@@ -392,7 +424,7 @@ void swapping(vector<struct bin> &v_bins)
         state = NO;
 
         /* store fail_bins */
-        _store_itms(v_bins, v_itms, flag);
+        _store_itms_swap(v_bins, v_itms, flag);
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 printf("TC %-3d from unfeasible Core %-3d\n", 
                                 v_itms[i].first.id, v_itms[i].second);

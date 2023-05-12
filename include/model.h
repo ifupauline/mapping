@@ -147,8 +147,6 @@ void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
 
 void sort_dec_int(vector<int> &v_int);
 
-void sort_dec_task_priority(vector<struct task> &v_tasks);
-
 void sort_dec_itm_size(vector<struct item> &v_itms);
 
 void copy_back_prio_to_tc(struct bin &b);
