@@ -111,6 +111,16 @@ int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
         /* cmp gcd */
         gcd = compute_gcd(v_tasks);
 
+        /* check if gcd is lower than execution time of let */
+        for (unsigned int i = 0; i < tmp_b.v_itms.size(); i++) {
+                if (tmp_b.v_itms[i].is_let == YES) {
+                        if (gcd < tmp_b.v_itms[i].v_tasks[0].c) {
+                                printf("ERR! gcd < c\n");
+                                return INT_MAX;
+                        }
+                }
+        }
+
         /* update let item and let task */
         update_let(tmp_b, gcd);
 
@@ -161,6 +171,16 @@ int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int memcost, int si
 
         /* cmp gcd */
         gcd = compute_gcd(v_tasks);
+
+        /* check if gcd is lower than execution time of let */
+        for (unsigned int i = 0; i < tmp_b.v_itms.size(); i++) {
+                if (tmp_b.v_itms[i].is_let == YES) {
+                        if (gcd < tmp_b.v_itms[i].v_tasks[0].c) {
+                                printf("ERR! gcd < c\n");
+                                return INT_MAX;
+                        }
+                }
+        }
 
         /* update let item and let task */
         update_let(tmp_b, gcd);

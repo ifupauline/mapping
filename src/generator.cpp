@@ -50,6 +50,9 @@ static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int 
                 tau.c = ceil(real_c);
                 tau.t = real_t;
 
+                if (tau.c >= tau.t)
+                        continue;
+
                 /* if diff too big redo */
                 udiff = tau.u - real_u;
                 if (udiff > PRECISION)
@@ -115,9 +118,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 if (itm.size > C)
                         continue;
 
-                if (wcrt(itm.v_tasks) == SCHED_FAILED)
-                        continue;
-
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.size;
                 ncount++;
@@ -138,11 +138,11 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         c.c_pair.first = lf_size;
                         c.c_pair.second = rf_size;
 
-                        if (lf_size > prm.phi - 10 || rf_size > prm.phi - 10) {
+                        if (lf_size > prm.phi || rf_size > prm.phi) {
                                 count++;
                                 if (count == v_itms[i].v_tasks.size() - 1)
                                         return -1;
-                        } 
+                        }
 
                         /* copy tasks to left fragment */
                         for (unsigned int k = j; k >= 0; k--) {
