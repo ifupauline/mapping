@@ -8,8 +8,6 @@ float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
 void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
                 struct context &ctx);
 
-void print_v_tasks(struct bin &b);
-
 void print_task_chains(vector<struct item> &v_itms);
 
 void print_core(struct bin &b);

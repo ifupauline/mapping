@@ -72,7 +72,7 @@ static void _save_priorities(struct bin &b)
         }
 }
 
-static void _reassign(struct bin &b, int p, int itm_idx)
+static void _reassign(struct bin &b, int p, int itm_idx, int tc_id)
 {
         /* starting new p */
         int newp;
@@ -87,9 +87,11 @@ static void _reassign(struct bin &b, int p, int itm_idx)
                 if (b.v_tasks[i].idx.itm_idx == itm_idx)
                         continue;
 
-                if (b.v_tasks[i].p < p) {
+                if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id)
+                        continue;
+
+                if (b.v_tasks[i].p < p)
                         v_p.push_back(b.v_tasks[i].p);
-                }
         }
         /* sort in decreasing order of priority to start with lowest hp */
         sort_dec_int(v_p);
@@ -135,6 +137,7 @@ static void _base_assignment(struct bin &b)
 
         p = 2;
 
+        /* no need to check for TC belonging to the same TC coze of ordering */
         sort_inc_task_id(b.v_tasks);
 
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
@@ -148,11 +151,17 @@ static void _base_assignment(struct bin &b)
         b.flag = wcrt(b.v_tasks);
         copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
+
 }
 
 static void _reassignment(struct bin &b)
 {
+        int ret;
         struct bin tmp_b;
+
+        ret = NO;
+
+        ret = is_frag_same_tc(b);
 
         sort_inc_task_priority(b.v_tasks);
 
@@ -168,15 +177,16 @@ static void _reassignment(struct bin &b)
                         tmp_b = {0};
                         tmp_b = b;
                         /* priority swapping */
-                        _reassign(tmp_b, b.v_tasks[i].p, tmp_b.v_tasks[i].idx.itm_idx);
+                        _reassign(tmp_b, b.v_tasks[i].p, tmp_b.v_tasks[i].idx.itm_idx, tmp_b.v_tasks[i].tc_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;
-                                return;
+                                if (ret == YES) {
+                                        print_core(b);
+                                        exit(0);
+                                }
                         }
                 }
         }
-        if (b.flag == SCHED_OK)
-                printf("Core %d SCHED_OK\n", b.id);
 }
 
 int wcrt(vector<struct task> &v_tasks)

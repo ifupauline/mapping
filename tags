@@ -811,6 +811,7 @@ DEC	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
 DEC	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
+EPSILON	include/generator.h	9;"	d
 EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/phi/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
@@ -828,21 +829,21 @@ LEFT	include/model.h	16;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
 MAXLETWCET	include/let.h	8;"	d
-MAXMAXTU	include/generator.h	17;"	d
+MAXMAXTU	include/generator.h	18;"	d
 MAXMEMCOST	include/model.h	30;"	d
-MAXN	include/generator.h	13;"	d
+MAXN	include/generator.h	14;"	d
 MAXPHI	include/model.h	21;"	d
-MAXTASKNBR	include/generator.h	25;"	d
-MAXWCET	include/generator.h	21;"	d
+MAXTASKNBR	include/generator.h	26;"	d
+MAXWCET	include/generator.h	22;"	d
 MAX_DISP_COUNT	src/optimization.cpp	5;"	d	file:
 MAX_SWAP_COUNT	src/optimization.cpp	6;"	d	file:
 MINLETWCET	include/let.h	7;"	d
-MINMAXTU	include/generator.h	16;"	d
+MINMAXTU	include/generator.h	17;"	d
 MINMEMCOST	include/model.h	29;"	d
-MINN	include/generator.h	12;"	d
+MINN	include/generator.h	13;"	d
 MINPHI	include/model.h	20;"	d
-MINTASKNBR	include/generator.h	24;"	d
-MINWCET	include/generator.h	20;"	d
+MINTASKNBR	include/generator.h	25;"	d
+MINWCET	include/generator.h	21;"	d
 MODEL_H	include/model.h	2;"	d
 MSEC	include/model.h	26;"	d
 NO	include/model.h	13;"	d
@@ -985,7 +986,7 @@ PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	497;"
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	502;"	d	file:
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"	d	file:
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
-PRECISION	include/generator.h	9;"	d
+PRECISION	include/generator.h	10;"	d
 PRINT_H	include/print.h	2;"	d
 RIGHT	include/model.h	17;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -1107,8 +1108,6 @@ __has_include	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	fi
 __has_include	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 _assign_id	src/generator.cpp	/^static void _assign_id(vector<struct item> &v_itms)$/;"	f	file:
 _base_assignment	src/sched_analysis.cpp	/^static void _base_assignment(struct bin &b)$/;"	f	file:
-_bff	src/bfdu_f.cpp	/^static void _bff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
-_check_if_dual_frag	src/optimization.cpp	/^static int _check_if_dual_frag(struct bin &b, int src_itm_id, $/;"	f	file:
 _check_params	src/generator.cpp	/^static void _check_params(struct params &prm)$/;"	f	file:
 _cmp_avr_mean	exp/phi/phi.cpp	/^static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
@@ -1120,25 +1119,23 @@ _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct item> &v_itm
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
-_find_best_cut	src/bfdu_f.cpp	/^static int _find_best_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
-_find_worst_cut	src/wfdu_f.cpp	/^static int _find_worst_cut(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _fixedpoint	src/sched_analysis.cpp	/^static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau, $/;"	f	file:
 _gen_harmonic_task	src/generator.cpp	/^static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int x)$/;"	f	file:
-_gen_non_harmonic_task	src/generator.cpp	/^static void _gen_non_harmonic_task(struct task &tau, struct params &prm, int i)$/;"	f	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
-_reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx)$/;"	f	file:
+_partitioning	src/generator.cpp	/^static void _partitioning(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
+_reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct bin &b)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct bin &b)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
-_search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_fail_bins, $/;"	f	file:
+_search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_dst_bins, $/;"	f	file:
 _search_for_swap	src/optimization.cpp	/^static int _search_for_swap(vector<struct bin> &v_bins, $/;"	f	file:
-_store_unsched_itms	src/optimization.cpp	/^static void _store_unsched_itms(vector<struct bin> &v_bins, $/;"	f	file:
+_store_itms_disp	src/optimization.cpp	/^static void _store_itms_disp(vector<struct bin> &v_bins, $/;"	f	file:
+_store_itms_swap	src/optimization.cpp	/^static void _store_itms_swap(vector<struct bin> &v_bins, $/;"	f	file:
 _swap	src/optimization.cpp	/^void _swap(vector<struct bin> &v_bins, struct bin &dst_bin, struct bin &src_bin)$/;"	f
 _utilization_rate	src/print.cpp	/^static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f	file:
-_wff	src/wfdu_f.cpp	/^static void _wff(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
 add_bin	src/model.cpp	/^void add_bin(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 add_itm_to_bin	src/model.cpp	/^void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)$/;"	f
@@ -1148,21 +1145,13 @@ allo_time	include/model.h	/^        float allo_time;$/;"	m	struct:perf
 alloc_count	include/model.h	/^        int alloc_count;$/;"	m	struct:context
 allocation	src/mapping.cpp	/^void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 b_stats	include/exp.h	/^struct b_stats {$/;"	s
-best_cut	src/bfdu_f.cpp	/^struct best_cut {$/;"	s	file:
-best_l_gcd	src/bfdu_f.cpp	/^        int best_l_gcd;$/;"	m	struct:best_cut	file:
-best_l_load	src/bfdu_f.cpp	/^        int best_l_load;$/;"	m	struct:best_cut	file:
-best_r_gcd	src/bfdu_f.cpp	/^        int best_r_gcd;$/;"	m	struct:best_cut	file:
-best_r_load	src/bfdu_f.cpp	/^        int best_r_load;$/;"	m	struct:best_cut	file:
 bfdu_f	src/bfdu_f.cpp	/^void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 bin	include/model.h	/^struct bin {$/;"	s
 bin_idx	include/model.h	/^        int bin_idx;$/;"	m	struct:t_pos
 bins_count	include/model.h	/^        int bins_count;$/;"	m	struct:context
 bins_min	include/model.h	/^        int bins_min;$/;"	m	struct:context
 c	include/model.h	/^        int c;$/;"	m	struct:task
-c	src/bfdu_f.cpp	/^        struct cut c;$/;"	m	struct:best_cut	typeref:struct:best_cut::cut	file:
-c	src/wfdu_f.cpp	/^        struct cut c;$/;"	m	struct:worst_cut	typeref:struct:worst_cut::cut	file:
-c_pair	include/model.h	/^        pair<int, int> c_pair;$/;"	m	struct:cut
-check_if_fit_cut	src/let.cpp	/^int check_if_fit_cut(struct bin &b, struct cut &c, int &gcd, int memcost, int side)$/;"	f
+check_duplicata	src/model.cpp	/^void check_duplicata(vector<struct bin> &v_bins)$/;"	f
 check_if_fit_itm	src/let.cpp	/^int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)$/;"	f
 cmd_gnuplot_cr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
 cmd_gnuplot_et	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
@@ -1184,15 +1173,10 @@ copy_back_resp_to_tc	src/model.cpp	/^void copy_back_resp_to_tc(struct bin &b)$/;
 copy_tc_to_v_tasks_with_pos	src/model.cpp	/^void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)$/;"	f
 copy_v_tc_to_v_tasks_with_pos	src/model.cpp	/^void copy_v_tc_to_v_tasks_with_pos(vector<struct bin> &v_bins)$/;"	f
 cr	include/model.h	/^        float cr;$/;"	m	struct:perf
-cut	include/model.h	/^struct cut {$/;"	s
-cut	src/bfdu_f.cpp	/^static struct best_cut cut = {0};$/;"	v	typeref:struct:best_cut	file:
-cut	src/wfdu_f.cpp	/^static struct worst_cut cut = {0};$/;"	v	typeref:struct:worst_cut	file:
 cuts_count	include/model.h	/^        int cuts_count;$/;"	m	struct:context
 cycl_count	include/model.h	/^        int cycl_count;$/;"	m	struct:context
 d	include/model.h	/^        int d;$/;"	m	struct:task
 delete_itm_by_id	src/model.cpp	/^void delete_itm_by_id(struct bin &b, int itm_id)$/;"	f
-diff	src/bfdu_f.cpp	/^        int diff;$/;"	m	struct:best_cut	file:
-diff	src/wfdu_f.cpp	/^        int diff;$/;"	m	struct:worst_cut	file:
 disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:item
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/model.h	/^        float disp_time;$/;"	m	struct:perf
@@ -1200,27 +1184,18 @@ displacement	src/optimization.cpp	/^void displacement(vector<struct bin> &v_bins
 et	include/model.h	/^        float et;$/;"	m	struct:perf
 flag	include/model.h	/^        int flag;$/;"	m	struct:bin
 fr	include/model.h	/^        float fr;$/;"	m	struct:perf
-frag_id	include/model.h	/^        int frag_id;$/;"	m	struct:item
-frag_id_count	src/bfdu_f.cpp	/^static int frag_id_count = 1;$/;"	v	file:
-frag_id_count	src/wfdu_f.cpp	/^static int frag_id_count = 1;$/;"	v	file:
-frags_bfdu_f	src/bfdu_f.cpp	/^static vector<struct item> frags_bfdu_f;$/;"	v	file:
-frags_count	include/model.h	/^        int frags_count;$/;"	m	struct:context
-frags_wfdu_f	src/wfdu_f.cpp	/^static vector<struct item> frags_wfdu_f;$/;"	v	file:
+frag_time	include/model.h	/^        float frag_time;$/;"	m	struct:perf
+fragmentation	src/mapping.cpp	/^void fragmentation(vector<struct item> &v_itms, struct context &ctx)$/;"	f
 gcd	include/model.h	/^        int gcd;$/;"	m	struct:item
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
 gen_tc_set	src/generator.cpp	/^void gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f
 generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
-get_frags_bfdu_f	src/bfdu_f.cpp	/^vector<struct item> *get_frags_bfdu_f(void)$/;"	f
-get_frags_wfdu_f	src/wfdu_f.cpp	/^vector<struct item> *get_frags_wfdu_f(void)$/;"	f
-h	include/model.h	/^        int h;$/;"	m	struct:params
 harm	src/generator.cpp	/^static int harm[4][5] = {$/;"	v	file:
 id	include/model.h	/^        int id;$/;"	m	struct:bin
-id	include/model.h	/^        int id;$/;"	m	struct:cut
 id	include/model.h	/^        int id;$/;"	m	struct:item
 id	include/model.h	/^        int id;$/;"	m	struct:task
-id	src/bfdu_f.cpp	/^        int id;$/;"	m	struct:best_cut	file:
-id	src/wfdu_f.cpp	/^        int id;$/;"	m	struct:worst_cut	file:
+idx	include/model.h	/^        int idx;$/;"	m	struct:item
 idx	include/model.h	/^        struct t_pos idx;$/;"	m	struct:task	typeref:struct:task::t_pos
 info_arch	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v
 info_arch	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v
@@ -1273,20 +1248,17 @@ info_version_internal	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId
 init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)$/;"	f
 init_let_task	src/let.cpp	/^void init_let_task(struct item &let, struct context &ctx)$/;"	f
 input	src/generator.cpp	/^void input(int argc, char **argv, struct params &prm)$/;"	f
-insert_itm_to_core	src/model.cpp	/^void insert_itm_to_core(struct bin &b, struct item &itm)$/;"	f
 is_allocated	include/model.h	/^        int is_allocated;$/;"	m	struct:item
-is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:item
-is_fragmented	include/model.h	/^        int is_fragmented;$/;"	m	struct:item
+is_frag_same_tc	src/model.cpp	/^int is_frag_same_tc(struct bin &b)$/;"	f
 is_let	include/model.h	/^        int is_let;$/;"	m	struct:item
 is_let	include/model.h	/^        int is_let;$/;"	m	struct:task
+is_task_same_v_tasks	src/model.cpp	/^int is_task_same_v_tasks(struct bin &b)$/;"	f
 item	include/model.h	/^struct item {$/;"	s
 itm_idx	include/model.h	/^        int itm_idx;$/;"	m	struct:t_pos
 itms_count	include/model.h	/^        int itms_count;$/;"	m	struct:context
 itms_nbr	include/model.h	/^        int itms_nbr;$/;"	m	struct:context
 itms_size	include/model.h	/^        int itms_size;$/;"	m	struct:context
 let	include/model.h	/^        float let;$/;"	m	struct:perf
-lf_size	src/bfdu_f.cpp	/^        int lf_size;$/;"	m	struct:best_cut	file:
-lf_size	src/wfdu_f.cpp	/^        int lf_size;$/;"	m	struct:worst_cut	file:
 load	include/model.h	/^        int load;$/;"	m	struct:bin
 load_rem	include/model.h	/^        int load_rem;$/;"	m	struct:bin
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
@@ -1295,7 +1267,7 @@ main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc,
 main	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
 main	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
-main	exp/phi/phi.cpp	/^int main(int argc, char **argv)$/;"	f
+main	exp/phi/phi.cpp	/^int main(void)$/;"	f
 main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
@@ -1309,11 +1281,12 @@ mean_swap	include/exp.h	/^        float mean_swap;$/;"	m	struct:b_stats
 memcost	include/model.h	/^        int memcost;$/;"	m	struct:bin
 memcost	include/model.h	/^        int memcost;$/;"	m	struct:item
 n	include/model.h	/^        int n;$/;"	m	struct:params
-nbr_cut	include/model.h	/^        int nbr_cut;$/;"	m	struct:item
+opti_gain	include/model.h	/^        float opti_gain;$/;"	m	struct:perf
 optimization	src/mapping.cpp	/^void optimization(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 p	include/model.h	/^        int p;$/;"	m	struct:task
 p	include/model.h	/^        struct perf p;$/;"	m	struct:context	typeref:struct:context::perf
 params	include/model.h	/^struct params {$/;"	s
+partitioning	src/generator.cpp	/^void partitioning(vector<struct item> &v_itms, struct context &ctx)$/;"	f
 perf	include/model.h	/^struct perf {$/;"	s
 phi	exp/phi/phi.cpp	/^static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)$/;"	f	file:
 phi	include/exp.h	/^        int phi;$/;"	m	struct:b_stats
@@ -1337,8 +1310,6 @@ r	include/model.h	/^        int r;$/;"	m	struct:task
 replace_bin_by_id	src/model.cpp	/^void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)$/;"	f
 retrieve_core_by_id	src/model.cpp	/^struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 retrieve_tc_by_id	src/model.cpp	/^struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id)$/;"	f
-rf_size	src/bfdu_f.cpp	/^        int rf_size;$/;"	m	struct:best_cut	file:
-rf_size	src/wfdu_f.cpp	/^        int rf_size;$/;"	m	struct:worst_cut	file:
 schd_time	include/model.h	/^        float schd_time;$/;"	m	struct:perf
 sched_analysis	src/sched_analysis.cpp	/^void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 sched_failed_count	include/model.h	/^        int sched_failed_count;$/;"	m	struct:context
@@ -1351,6 +1322,7 @@ sched_rate_allo	include/model.h	/^        float sched_rate_allo;$/;"	m	struct:pe
 sched_rate_disp	include/model.h	/^        float sched_rate_disp;$/;"	m	struct:perf
 sched_rate_opti	include/model.h	/^        float sched_rate_opti;$/;"	m	struct:perf
 sched_rate_swap	include/model.h	/^        float sched_rate_swap;$/;"	m	struct:perf
+sched_time	src/sched_analysis.cpp	/^float sched_time = 0;$/;"	v
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
@@ -1363,30 +1335,25 @@ swap_gain	include/model.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/model.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/optimization.cpp	/^void swapping(vector<struct bin> &v_bins)$/;"	f
 sys	include/model.h	/^        float sys;$/;"	m	struct:perf
+syst_state	src/sched_analysis.cpp	/^int syst_state = NO;$/;"	v
 t	include/model.h	/^        int t;$/;"	m	struct:task
 t_pos	include/model.h	/^struct t_pos {$/;"	s
-target_bin_lf	src/bfdu_f.cpp	/^        int target_bin_lf;$/;"	m	struct:best_cut	file:
-target_bin_lf	src/wfdu_f.cpp	/^        int target_bin_lf;$/;"	m	struct:worst_cut	file:
-target_bin_rf	src/bfdu_f.cpp	/^        int target_bin_rf;$/;"	m	struct:best_cut	file:
-target_bin_rf	src/wfdu_f.cpp	/^        int target_bin_rf;$/;"	m	struct:worst_cut	file:
 task	include/model.h	/^struct task {$/;"	s
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
 tasks_count	include/model.h	/^        int tasks_count;$/;"	m	struct:context
+tc_id	include/model.h	/^        int tc_id;$/;"	m	struct:task
 total_mean_disp	include/exp.h	/^        float total_mean_disp;$/;"	m	struct:b_stats
 total_mean_swap	include/exp.h	/^        float total_mean_swap;$/;"	m	struct:b_stats
 u	include/model.h	/^        float u;$/;"	m	struct:task
+uniq_id	include/model.h	/^        int uniq_id;$/;"	m	struct:task
 unu	include/model.h	/^        float unu;$/;"	m	struct:perf
 update_let	src/let.cpp	/^void update_let(struct bin &b, int gcd)$/;"	f
-v_cuts	include/model.h	/^        vector<struct cut> v_cuts;$/;"	m	struct:item
 v_itms	include/model.h	/^        vector<struct item> v_itms;$/;"	m	struct:bin
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:bin
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:item
-v_tasks_lf	include/model.h	/^        vector<struct task> v_tasks_lf;$/;"	m	struct:cut
-v_tasks_rf	include/model.h	/^        vector<struct task> v_tasks_rf;$/;"	m	struct:cut
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 volatile	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
-wcrt_bin	src/sched_analysis.cpp	/^void wcrt_bin(struct bin &b, int bin_idx)$/;"	f
+wcrt_count	src/sched_analysis.cpp	/^int wcrt_count = 0;$/;"	v
 wfdu_f	src/wfdu_f.cpp	/^void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
-worst_cut	src/wfdu_f.cpp	/^struct worst_cut {$/;"	s	file:
 write_data_to_file	src/exp.cpp	/^void write_data_to_file(FILE *filename, vector<struct b_stats> &data,$/;"	f

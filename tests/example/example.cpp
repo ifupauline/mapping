@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
         /* copy instances and select algorithm */
         ctx_bfdu_f = ctx;
-        ctx_bfdu_f.prm.a = BFDU_F;
+        ctx_bfdu_f.prm.a = WFDU_F;
 
         v_itms_bfdu_f = v_itms;
         v_bins_bfdu_f = v_bins;
@@ -38,16 +38,16 @@ int main(int argc, char **argv)
 
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+        printf("Fix WFDU_F\n");
 
         /* schedulability analysis */
         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
-        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
-        exit(0);
 
         /* optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
         /* results */
+        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 

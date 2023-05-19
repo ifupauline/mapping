@@ -67,34 +67,6 @@ static void _store_itms_swap(vector<struct bin> &v_bins,
         }
 }
 
-static void _check_duplicata(vector<struct bin> &v_bins)
-{
-        int count;
-        int curr;
-        vector<int> v_int;
-
-        curr = 0;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
-                        v_int.push_back(v_bins[i].v_itms[j].id);
-        }
-
-        for (unsigned int i = 0; i < v_int.size(); i++) {
-                count = 0;
-                curr = v_int[i];
-                for (unsigned int j = 0; j < v_int.size(); j++) {
-                        if (v_int[j] == curr) {
-                                count++;
-                                if (count > 1) {
-                                        printf("ERR! Found duplicata TC %d", v_int[i]);
-                                        exit(0);
-                                }
-                        }
-                }
-        }
-}
-
 static int _search_for_displace(vector<struct bin> &v_dst_bins, 
                 vector<pair<struct item, int>> &v_itms, int item_idx, 
                 struct bin &dst_b)
@@ -365,7 +337,6 @@ void displacement(vector<struct bin> &v_bins)
                 if (state == NO)
                         break;
         }
-        _check_duplicata(v_bins);
 }
 
 void swapping(vector<struct bin> &v_bins)
@@ -423,5 +394,4 @@ void swapping(vector<struct bin> &v_bins)
                 if (state == NO)
                         break;
         }
-        _check_duplicata(v_bins);
 }

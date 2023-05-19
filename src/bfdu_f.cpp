@@ -66,7 +66,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         ret = _find_best_bin(v_bins, v_itms[i], ctx, load, gcd);
 
                         /* bin found add itm to it */
-                        if (ret > -1) {
+                        if (ret != -1) {
                                 printf("Best Bin to accomodate Item %d is Bin %d\n", 
                                                 v_itms[i].id, ret);
                                 bin_id = ret;
@@ -76,7 +76,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 continue;
 
                                 /* no bin was found */
-                        } else if (ret == -1) {
+                        } else {
                                 printf("No Bin was found to accomodate Item %d\n", 
                                                 v_itms[i].id);
                                 add_bin(v_bins, ctx);

@@ -12,7 +12,7 @@ void fragmentation(vector<struct item> &v_itms, struct context &ctx)
         printf("| FRAGMENTATION                       |\n");
         printf("+=====================================+\n");
         start = clock();
-        task_chains_partitioning(v_itms, ctx);
+        partitioning(v_itms, ctx);
         end = clock();
         ctx.p.frag_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
@@ -63,10 +63,15 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
         sched_analysis(v_bins, ctx);
         end = clock();
         ctx.p.schd_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                is_task_same_v_tasks(v_bins[i]);
+        }
 }
 
 void optimization(vector<struct bin> &v_bins, struct context &ctx)
 {
+        
         clock_t start, end;
         printf("+=====================================+\n");
         printf("| DISPLACEMENT OPTIMIZATION           |\n");

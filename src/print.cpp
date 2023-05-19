@@ -17,7 +17,8 @@ static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)
 
 static void _execution_time(struct context &ctx)
 {
-        ctx.p.et = ctx.p.allo_time + ctx.p.schd_time + ctx.p.disp_time + ctx.p.swap_time;
+        ctx.p.et = ctx.p.frag_time+ ctx.p.allo_time + ctx.p.schd_time + 
+                ctx.p.disp_time + ctx.p.swap_time;
 }
 
 static void _schedulability_rate(struct context &ctx)
@@ -116,26 +117,27 @@ void print_task_chains(vector<struct item> &v_itms)
         printf("Total Number of Task-Chains: %lu\n\n", v_itms.size());
 }
 
-void print_v_tasks(struct bin &b)
-{
-        printf("Core: %d Lrem: %d\n", b.id, b.load_rem);
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++)
-                printf("tau %-3d p %-3d idx %-3d\n", 
-                                b.v_tasks[i].id, b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx);
-}
-
 void print_core(struct bin &b)
 {
         printf("Core: %d Load: %d Lrem: %d MemCost %d\n", b.id, b.load, b.load_rem, b.memcost);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
-                        printf("TC %-3d size: %-3d tau %-3d p: %-3d idx: %-3d sched: %d\n", 
+                        printf("TC %-3d u: %-3d tau %-3d p: %-3d itm_idx: %-3d tc_id: %-3d uniq_id: %-3d sched: %d\n", 
                                         b.v_itms[i].id, b.v_itms[i].size,
                                         b.v_itms[i].v_tasks[j].id, 
                                         b.v_itms[i].v_tasks[j].p,
-                                        b.v_itms[i].v_tasks[j].idx.itm_idx, b.flag);
+                                        b.v_itms[i].v_tasks[j].idx.itm_idx, 
+                                        b.v_itms[i].v_tasks[j].tc_id,
+                                        b.v_itms[i].v_tasks[j].uniq_id, b.flag);
                 }
         }
+        printf("----------------------------------------------------------------------------\n");
+        for (unsigned int i = 0; i < b.v_tasks.size(); i++)
+                printf("tau %-3d u: %-3d p %-3d itm_idx %-3d tc_id: %-3d uniq_id: %-3d\n", 
+                                b.v_tasks[i].id, (int)b.v_tasks[i].u, 
+                                b.v_tasks[i].p, b.v_tasks[i].idx.itm_idx, 
+                                b.v_tasks[i].tc_id, b.v_tasks[i].uniq_id);
+        printf("\n");
 }
 
 void print_cores(vector<struct bin> &v_bins, struct context &ctx)
@@ -236,23 +238,28 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                 printf("| PRINT VECTORS WFDU_F                |\n");
         printf("+=====================================+\n");
 
-        int count_not_alloc;
         int sched_ok;
         int sched_failed;
 
-        count_not_alloc = 0;
         sched_ok = 0;
         sched_failed = 0;
 
-        printf("Vector:\n");
         for (int i = 0; i < ctx.prm.n; i++) {
                 if (v_itms[i].is_allocated == NO) {
+                        printf("ERR! some TC were not allocated!\n");
+                        exit(0);
+                }
+        }
+
+        printf("Vector:\n");
+        for (int i = 0; i < ctx.prm.n; i++) {
+                if (v_itms[i].is_allocated == YES) {
                         printf(" %u ", v_itms[i].size);
-                        count_not_alloc++;
+                        ctx.alloc_count++;
                 }
         }
         printf("\n");
-        printf("Number of Task-Chains not allocated: %u\n", count_not_alloc);
+        printf("Number of Task-Chains allocated: %u\n", ctx.alloc_count);
         printf("\n");
 
         printf("Vector:\n");
@@ -298,13 +305,14 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         if (ctx.prm.a == WFDU_F)
                 printf("a:      WFDU_F\n");
         printf("------------------------------------------------------------------------>\n");
-        printf("Starting Number of Cores:     %-3d\n", ctx.bins_min);
-        printf("Actual Number of Cores:       %-3d\n", ctx.bins_count);
-        printf("New Added Cores:              +%-3d\n", ctx.cycl_count);
+        printf("Initial Number of Cores:       %-3d\n", ctx.bins_min);
+        printf("Current Number of Cores:       %-3d\n", ctx.bins_count);
+        printf("New Added Cores:               +%-3d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Task-Chains Allocated: %-3d\n", ctx.alloc_count + ctx.frags_count);
+        printf("Task-Chains Allocated: %-3d\n", ctx.alloc_count);
         printf("Total Number of Tasks: %-3d\n", ctx.tasks_count);
         printf("------------------------------------------------------------------------>\n");
+        printf("Fragmentation Time:               %-3.3f ms\n", ctx.p.frag_time * PERMILL);
         printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
         printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);

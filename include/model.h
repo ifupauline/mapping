@@ -21,8 +21,8 @@
 #define MAXPHI  C
 
 /* units */
-#define PERMILL 1000
 #define PERCENT 100
+#define PERMILL 1000
 #define MSEC    1000
 
 /* mem cost of tc */
@@ -75,7 +75,6 @@ struct context {
         int cycl_count;
         int itms_count;
         int alloc_count;
-        int frags_count;
         int cuts_count;
         int tasks_count;
         int sched_ok_count;
@@ -98,6 +97,8 @@ struct task {
         int p;
         int r;
         int id;
+        int uniq_id;
+        int tc_id;
         int is_let;
         float u;
         struct t_pos idx;
@@ -176,5 +177,11 @@ void delete_itm_by_id(struct bin &b, int itm_id);
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);
+
+void check_duplicata(vector<struct bin> &v_bins);
+
+int is_frag_same_tc(struct bin &b);
+
+int is_task_same_v_tasks(struct bin &b);
 
 #endif /* MODEL_H */

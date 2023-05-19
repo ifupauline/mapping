@@ -70,8 +70,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         int x;
-        int task_nbr;
         int ncount;
+        int task_nbr;
+        struct item itm;
+        struct task tau;
 
         ncount = 0;
 
@@ -84,7 +86,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 
         /* generate task-chains set */
         while (ncount != prm.n) {
-                struct item itm;
+                itm = {0};
                 itm.id = ncount;
                 itm.idx = 0;
                 itm.size = 0;
@@ -97,16 +99,15 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 x = gen_rand(0, 3);
 
                 for (int i = 0; i < task_nbr; i++) {
-                        struct task tau;
+                        tau = {0};
                         tau.is_let = NO;
+                        tau.tc_id = itm.id;
 
                         _gen_harmonic_task(tau, prm, i, x);
 
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
                 }
-                if (itm.size > 4 * prm.phi)
-                        continue;
 
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.size;
@@ -151,6 +152,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                 idx = 0;
                 for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
                         u_sum += v_tmp_itms[i].v_tasks[j].u;
+                        v_tmp_itms[i].v_tasks[j].tc_id = v_tmp_itms[i].id;
                         v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
                         /* add fragment */
                         if (u_sum >= ctx.prm.phi - EPSILON) {
@@ -169,7 +171,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 v_new_itms.push_back(itm);
                                 j--;
                                 idx++;
-                                cuts++;
+                                ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
@@ -187,7 +189,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.is_allocated = NO;
                                 itm.v_tasks = v_tmp;
                                 v_new_itms.push_back(itm);
-                                cuts++;
+                                ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
@@ -198,6 +200,14 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
         sort_dec_itm_size(v_itms);
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+
+        int uniq_id = 1;
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
+                        v_itms[i].v_tasks[j].uniq_id = uniq_id;
+                        uniq_id++;
+                }
+        }
         printf("Initial Number of TC:   %d\n", ctx.prm.n);
         printf("Current Number of TC:   %ld\n", v_itms.size());
         printf("Number of Cuts: %d\n", cuts);
@@ -225,12 +235,13 @@ void input(int argc, char **argv, struct params &prm)
 
 void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)
 {
+        float frag_time;
+
         ctx.prm = prm;
 
         ctx.cycl_count = 0;
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
-        ctx.frags_count = 0;
         ctx.cuts_count = 0;
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
@@ -239,7 +250,9 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n;
 
+        frag_time = ctx.p.frag_time;
         ctx.p = {0};
+        ctx.p.frag_time = frag_time;
 
         ctx.prm.n = v_itms.size();
         for (int i = 0; i < ctx.prm.n; i++) 
@@ -270,7 +283,7 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         }
 }
 
-void task_chains_partitioning(vector<struct item> &v_itms, struct context &ctx)
+void partitioning(vector<struct item> &v_itms, struct context &ctx)
 {
         _partitioning(v_itms, ctx);
 }
