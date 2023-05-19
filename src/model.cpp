@@ -101,15 +101,6 @@ void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)
 
         for (unsigned int i = 0; i < b.v_itms.size(); i++)
                 add_tasks_to_v_tasks(b.v_tasks, b.v_itms[i].v_tasks);
-
-        //if (itm.is_frag == NO) {
-        //        printf("Item %d added in Bin %d\n\n", itm.id, b.id);
-        //        return;
-
-        //} else {
-        //        printf("Fragment %d added in Bin %d\n\n", itm.id, b.id);
-        //        return;
-        //}
 }
 
 void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
@@ -129,17 +120,8 @@ void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id,
                         compute_bin_memcost(v_bins[i]);
                         update_let(v_bins[i], gcd);
                         v_bins[i].v_tasks.clear();
-
-                        if (itm.is_frag == NO) {
-                                printf("Item %d added in Bin %d\n\n", 
-                                                itm.id, v_bins[i].id);
-                                return;
-
-                        } else {
-                                printf("Fragment %d added in Bin %d\n\n", 
-                                                itm.id, v_bins[i].id);
-                                return;
-                        }
+                        printf("Item %d added in Bin %d\n\n", itm.id, v_bins[i].id);
+                        return;
                 }
         }
 }

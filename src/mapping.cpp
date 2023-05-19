@@ -1,7 +1,21 @@
 #include "print.h"
 #include "mapping.h"
+#include "generator.h"
 #include "optimization.h"
 #include "sched_analysis.h"
+
+void fragmentation(vector<struct item> &v_itms, struct context &ctx)
+{
+        clock_t start, end;
+
+        printf("+=====================================+\n");
+        printf("| FRAGMENTATION                       |\n");
+        printf("+=====================================+\n");
+        start = clock();
+        task_chains_partitioning(v_itms, ctx);
+        end = clock();
+        ctx.p.frag_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+}
 
 void generation(vector<struct bin> &v_bins, struct context &ctx)
 {

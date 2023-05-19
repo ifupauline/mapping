@@ -95,22 +95,6 @@ static void _check_duplicata(vector<struct bin> &v_bins)
         }
 }
 
-static int _check_dual_frag(struct bin &b, int src_itm_id, 
-                int src_bin_id, int src_itm_frag_id)
-{
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (src_itm_id == b.v_itms[i].id)
-                        continue;
-
-                if (src_itm_frag_id > -1 && src_itm_frag_id == b.v_itms[i].frag_id) {
-                        printf("src TC %d Core %d is dual fragment with dst TC %d Core %d !\n", 
-                                        src_itm_id, src_bin_id, b.v_itms[i].id, b.id);
-                        return YES;
-                }
-        }
-        return NO;
-}
-
 static int _search_for_displace(vector<struct bin> &v_dst_bins, 
                 vector<pair<struct item, int>> &v_itms, int item_idx, 
                 struct bin &dst_b)
@@ -155,7 +139,6 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                 pair<struct item, int> &dst_itm, 
                 struct bin &dst_bin, struct bin &src_bin)
 {
-        int ret;
         int gcd;
         int load;
         int dst_flag;
@@ -163,7 +146,6 @@ static int _search_for_swap(vector<struct bin> &v_bins,
         int dst_flag_cap;
         int src_flag_cap;
 
-        ret = 0;
         gcd = 0;
         load = 0;
         dst_bin = {0};
@@ -181,13 +163,6 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                                 dst_flag = YES;
                         }
                         /* first check if dual frag present in dst bin */
-                        ret = _check_dual_frag(v_bins[i], 
-                                        src_itm.first.id, src_itm.second, 
-                                        src_itm.first.frag_id);
-
-                        /* TODO for now just skip */
-                        if (ret == YES)
-                                continue;
 
                         /* check if fit */
                         dst_bin = v_bins[i];
@@ -208,14 +183,6 @@ static int _search_for_swap(vector<struct bin> &v_bins,
                         if (v_bins[i].flag == SCHED_OK) {
                                 src_flag = YES;
                         }
-                        /* first check if dual frag present in dst bin */
-                        ret = _check_dual_frag(v_bins[i], 
-                                        dst_itm.first.id, dst_itm.second, 
-                                        dst_itm.first.frag_id);
-
-                        /* TODO for now just skip */
-                        if (ret == YES)
-                                continue;
 
                         gcd = 0;
                         load = 0;
@@ -323,7 +290,6 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
 
 void displacement(vector<struct bin> &v_bins)
 {
-        int ret;
         int gcd;
         int flag;
         int load;
@@ -334,7 +300,6 @@ void displacement(vector<struct bin> &v_bins)
         vector<struct bin> v_dst_bins;
         vector<pair<struct item, int>> v_itms;
 
-        ret = NO;
         flag = NO;
         state = NO;
         is_found = NO;
@@ -369,15 +334,6 @@ void displacement(vector<struct bin> &v_bins)
                                 /* if item moved too many times skip */
                                 if (v_itms[i].first.disp_count == MAX_DISP_COUNT) 
                                         break;
-
-                                /* check if dst bin has the dual fragment of current itm */
-                                ret = _check_dual_frag(v_bins[j], 
-                                                v_itms[i].first.id, v_itms[i].second, 
-                                                v_itms[i].first.frag_id);
-
-                                /* TODO for now do not allow same frags in same bin */
-                                if (ret == YES)
-                                        continue;
 
                                 /* search for dst bins that can accomodate itm */
                                 /* check if itm fit */

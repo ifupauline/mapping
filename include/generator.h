@@ -6,7 +6,8 @@
 #include "model.h"
 
 /* precision for wcet generation */
-#define PRECISION  0.50
+#define EPSILON    50
+#define PRECISION  0.10
 
 /* number of task-chains */
 #define MINN       1
@@ -14,11 +15,11 @@
 
 /* permils */
 #define MINMAXTU   1
-#define MAXMAXTU   200
+#define MAXMAXTU   500
 
 /* microsecs */
 #define MINWCET    100
-#define MAXWCET    30000
+#define MAXWCET    25000
 
 /* min max number of tasks in a chain */
 #define MINTASKNBR 2
@@ -33,5 +34,7 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm,
 
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
+
+void task_chains_partitioning(vector<struct item> &v_itms, struct context &ctx);
 
 #endif /* GENERATOR_H */

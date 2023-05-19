@@ -70,17 +70,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         int x;
-        //int rand;
         int task_nbr;
-        int lf_size;
-        int rf_size;
-        int cut_id;
         int ncount;
-        unsigned int count;
 
         ncount = 0;
-        lf_size = 0;
-        rf_size = 0;
 
         printf("\n\n");
         printf("+=====================================+\n");
@@ -93,16 +86,13 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         while (ncount != prm.n) {
                 struct item itm;
                 itm.id = ncount;
+                itm.idx = 0;
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
-                itm.nbr_cut = task_nbr - 1;
-                itm.frag_id = -1;
                 itm.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
                 itm.disp_count = 0;
                 itm.swap_count = 0;
                 itm.is_let = NO;
-                itm.is_frag = NO;
-                itm.is_fragmented = NO;
                 itm.is_allocated = NO;
                 x = gen_rand(0, 3);
 
@@ -115,7 +105,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
                 }
-                if (itm.size > C)
+                if (itm.size > 4 * prm.phi)
                         continue;
 
                 v_itms.push_back(itm);
@@ -125,43 +115,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         }
         printf("\n");
 
-        /* generate cuts for each chain */
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                /* iterate over tasks */
-                count = 0;
-                cut_id = 0;
-                for (unsigned int j = 0; j < v_itms[i].v_tasks.size() - 1; j++) {
-                        struct cut c;
-                        lf_size += v_itms[i].v_tasks[j].u;
-                        rf_size = v_itms[i].size - lf_size;
-                        c.id = cut_id;
-                        c.c_pair.first = lf_size;
-                        c.c_pair.second = rf_size;
-
-                        if (lf_size > prm.phi || rf_size > prm.phi) {
-                                count++;
-                                if (count == v_itms[i].v_tasks.size() - 1)
-                                        return -1;
-                        }
-
-                        /* copy tasks to left fragment */
-                        for (unsigned int k = j; k >= 0; k--) {
-                                c.v_tasks_lf.push_back(v_itms[i].v_tasks[k]);
-                                /* for the first task */
-                                if (k == 0)
-                                        break;
-                        }
-
-                        /* copy tasks to right fragment */
-                        for (unsigned int k = j + 1; k <= v_itms[i].v_tasks.size() - 1; k++)
-                                c.v_tasks_rf.push_back(v_itms[i].v_tasks[k]);
-
-                        v_itms[i].v_cuts.push_back(c);
-                        cut_id++;
-                }
-                lf_size = 0;
-                rf_size = 0;
-        }
         sort_dec_itm_size(v_itms);
         _assign_id(v_itms);
 
@@ -169,6 +122,85 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
 
         return 0;
+}
+
+static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
+{
+        int idx;
+        int cuts;
+        int u_sum;
+        struct item itm;
+        vector<struct task> v_tmp;
+        vector<struct item> v_new_itms;
+        vector<struct item> v_tmp_itms;
+
+        idx = 0;
+        cuts = 0;
+        u_sum = 0;
+
+        /* store itms > phi */
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                if (v_itms[i].size >= ctx.prm.phi - EPSILON)
+                        v_tmp_itms.push_back(v_itms[i]);
+                else
+                        v_new_itms.push_back(v_itms[i]);
+        }
+
+        /* fragmentation */
+        for (unsigned int i = 0; i < v_tmp_itms.size(); i++) {
+                idx = 0;
+                for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
+                        u_sum += v_tmp_itms[i].v_tasks[j].u;
+                        v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
+                        /* add fragment */
+                        if (u_sum >= ctx.prm.phi - EPSILON) {
+                                u_sum -= v_tmp_itms[i].v_tasks[j].u;
+                                v_tmp.pop_back();
+                                itm = {0};
+                                itm.id = v_tmp_itms[i].id;
+                                itm.idx = idx;
+                                itm.size = u_sum;
+                                itm.memcost = v_tmp_itms[i].memcost;
+                                itm.disp_count = 0;
+                                itm.swap_count = 0;
+                                itm.is_let = NO;
+                                itm.is_allocated = NO;
+                                itm.v_tasks = v_tmp;
+                                v_new_itms.push_back(itm);
+                                j--;
+                                idx++;
+                                cuts++;
+                                u_sum = 0;
+                                v_tmp.clear();
+                        }
+
+                        /* add last fragment */
+                        if (j == v_tmp_itms[i].v_tasks.size() - 1) {
+                                itm = {0};
+                                itm.id = v_tmp_itms[i].id;
+                                itm.idx = idx;
+                                itm.size = u_sum;
+                                itm.memcost = v_tmp_itms[i].memcost;
+                                itm.disp_count = 0;
+                                itm.swap_count = 0;
+                                itm.is_let = NO;
+                                itm.is_allocated = NO;
+                                itm.v_tasks = v_tmp;
+                                v_new_itms.push_back(itm);
+                                cuts++;
+                                u_sum = 0;
+                                v_tmp.clear();
+                        }
+                }
+        }
+        v_itms.clear();
+        v_itms = v_new_itms;
+        sort_dec_itm_size(v_itms);
+        for (unsigned int i = 0; i < v_itms.size(); i++)
+                v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+        printf("Initial Number of TC:   %d\n", ctx.prm.n);
+        printf("Current Number of TC:   %ld\n", v_itms.size());
+        printf("Number of Cuts: %d\n", cuts);
 }
 
 int gen_rand(int min, int max) 
@@ -209,13 +241,14 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
 
         ctx.p = {0};
 
+        ctx.prm.n = v_itms.size();
         for (int i = 0; i < ctx.prm.n; i++) 
                 ctx.itms_size += v_itms[i].size;
 
         ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
 
-        printf("Total Utilization of Task-Chains: %u\n", ctx.itms_size);
         printf("Minimum Number of Cores Required: %u\n", ctx.bins_min);
+        printf("Total Utilization of Task-Chains: %u\n", ctx.itms_size);
 }
 
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
@@ -224,6 +257,7 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         int ret; 
 
         ret = 0;
+        ctx.prm = prm;
 
         while (1) {
                 ret = _gen_tc_set(v_itms, prm, ctx);
@@ -234,4 +268,9 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 } else
                         return;
         }
+}
+
+void task_chains_partitioning(vector<struct item> &v_itms, struct context &ctx)
+{
+        _partitioning(v_itms, ctx);
 }

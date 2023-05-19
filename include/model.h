@@ -50,6 +50,7 @@ struct perf {
         float sys;
         float unu;
         float maxu;
+        float frag_time;
         float allo_time;
         float schd_time;
         float disp_time;
@@ -102,29 +103,18 @@ struct task {
         struct t_pos idx;
 };
 
-struct cut {
-        int id;
-        pair<int, int> c_pair;
-        vector<struct task> v_tasks_lf;
-        vector<struct task> v_tasks_rf;
-};
-
 /* BIN-PACKING MODEL */
 struct item {
         int id;
+        int idx;
         int size;
         int gcd;
-        int nbr_cut;
-        int frag_id;
         int memcost;
         int disp_count;
         int swap_count;
         int is_let;
-        int is_frag;
         int is_allocated;
-        int is_fragmented;
         vector<struct task> v_tasks;
-        vector<struct cut> v_cuts;
 };
 
 struct bin {

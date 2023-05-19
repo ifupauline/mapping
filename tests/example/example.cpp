@@ -20,6 +20,9 @@ int main(int argc, char **argv)
         gen_tc_set(v_itms, prm, ctx);
         print_task_chains(v_itms);
 
+        /* offline fragmentation */
+        fragmentation(v_itms, ctx);
+
         /* cmp min bins req */
         init_ctx(v_itms, prm, ctx);
 
@@ -38,12 +41,13 @@ int main(int argc, char **argv)
 
         /* schedulability analysis */
         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
+        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
+        exit(0);
 
         /* optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
 
         /* results */
-        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
 
