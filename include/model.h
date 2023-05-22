@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <algorithm>
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 /* algorithms */
 #define BFDU_F 1
@@ -77,6 +77,7 @@ struct context {
         int alloc_count;
         int cuts_count;
         int tasks_count;
+        int frags_count;
         int sched_ok_count;
         int sched_failed_count;
         struct perf p;

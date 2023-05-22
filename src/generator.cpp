@@ -17,6 +17,11 @@ static void _assign_id(vector<struct item> &v_itms)
 
 static void _check_params(struct params &prm)
 {
+        if (prm.a != BFDU_F && prm.a != WFDU_F) {
+                printf("Invalid params: prm.a rule -> BFDU_F = 1 || WFDU = 2\n\n");
+                exit(0);
+        }
+
         if (prm.n < MINN || prm.n > MAXN) {
                 printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
                 exit(0);
@@ -128,16 +133,18 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
 {
         int idx;
-        int cuts;
         int u_sum;
+        int uniq_id;
         struct item itm;
         vector<struct task> v_tmp;
         vector<struct item> v_new_itms;
         vector<struct item> v_tmp_itms;
 
         idx = 0;
-        cuts = 0;
         u_sum = 0;
+        uniq_id = 1;
+        ctx.cuts_count = 0;
+        ctx.frags_count = 0;
 
         /* store itms > phi */
         for (unsigned int i = 0; i < v_itms.size(); i++) {
@@ -192,6 +199,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
+                                ctx.frags_count++;
                         }
                 }
         }
@@ -201,7 +209,6 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
 
-        int uniq_id = 1;
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
                         v_itms[i].v_tasks[j].uniq_id = uniq_id;
@@ -210,7 +217,8 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
         }
         printf("Initial Number of TC:   %d\n", ctx.prm.n);
         printf("Current Number of TC:   %ld\n", v_itms.size());
-        printf("Number of Cuts: %d\n", cuts);
+        printf("Number of Cuts: %d\n", ctx.cuts_count);
+        printf("Number of TC Cuts: %d\n", ctx.frags_count);
 }
 
 int gen_rand(int min, int max) 
@@ -224,12 +232,13 @@ int gen_rand(int min, int max)
 
 void input(int argc, char **argv, struct params &prm)
 {
-        if (argc != 3) {
+        if (argc != 4) {
                 printf("Wrong Number of Arguments!\n");
                 exit(0);
         }
         prm.n = atoi(argv[1]);
         prm.phi = atoi(argv[2]);
+        prm.a = atoi(argv[3]);
         _check_params(prm);
 }
 
@@ -238,11 +247,9 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         float frag_time;
 
         ctx.prm = prm;
-
         ctx.cycl_count = 0;
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
-        ctx.cuts_count = 0;
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
@@ -254,14 +261,13 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.p = {0};
         ctx.p.frag_time = frag_time;
 
-        ctx.prm.n = v_itms.size();
-        for (int i = 0; i < ctx.prm.n; i++) 
+        for (unsigned int i = 0; i < v_itms.size(); i++) 
                 ctx.itms_size += v_itms[i].size;
 
         ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
 
         printf("Minimum Number of Cores Required: %u\n", ctx.bins_min);
-        printf("Total Utilization of Task-Chains: %u\n", ctx.itms_size);
+        printf("Total Utilization of Task-Chains: %u\n\n", ctx.itms_size);
 }
 
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,

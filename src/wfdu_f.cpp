@@ -42,19 +42,22 @@ static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
 void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
+        int n;
         int ret;
         int load;
         int gcd;
         int bin_id;
         int alloc_count;
 
+        n = v_itms.size();
+
         /* STEP - 1, place all possible items in bins using WFDU */
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, WFDU_F\n");
         printf("<--------------------------------------->\n");
-        while (alloc_count != ctx.prm.n) {
+        while (alloc_count != n) {
                 alloc_count = 0;
-                for (int i = 0; i < ctx.prm.n; i++) {
+                for (int i = 0; i < n; i++) {
                         ret = 0;
                         gcd = 0;
                         load = 0;
@@ -85,7 +88,7 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         }
                 }
                 /* count remaining item to be allocated */
-                for (int i = 0; i < ctx.prm.n; i++) {
+                for (int i = 0; i < n; i++) {
                         if (v_itms[i].is_allocated == YES)
                                 alloc_count++;
                 }

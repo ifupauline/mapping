@@ -78,9 +78,8 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                 struct context &ctx)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < v_bins[i].v_tasks.size(); j++)
                         ctx.tasks_count++;
-                }
         }
 
         _cores_ratio(v_itms, ctx);
@@ -252,7 +251,7 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         }
 
         printf("Vector:\n");
-        for (int i = 0; i < ctx.prm.n; i++) {
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
                 if (v_itms[i].is_allocated == YES) {
                         printf(" %u ", v_itms[i].size);
                         ctx.alloc_count++;
@@ -309,8 +308,12 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Current Number of Cores:       %-3d\n", ctx.bins_count);
         printf("New Added Cores:               +%-3d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Task-Chains Allocated: %-3d\n", ctx.alloc_count);
-        printf("Total Number of Tasks: %-3d\n", ctx.tasks_count);
+        printf("Initial Number of TC:          %-3d\n", ctx.prm.n);
+        printf("Current Number of TC:          %-3ld\n", v_itms.size());
+        printf("Number of TC Allocated:        %-3d\n", ctx.alloc_count);
+        printf("Number of TC Fragmented:       %-3d\n", ctx.frags_count);
+        printf("Number of Cuts:                %-3d\n", ctx.cuts_count);
+        printf("Number of Tasks:               %-3d\n", ctx.tasks_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Fragmentation Time:               %-3.3f ms\n", ctx.p.frag_time * PERMILL);
         printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);

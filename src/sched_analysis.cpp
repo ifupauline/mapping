@@ -72,13 +72,17 @@ static void _save_priorities(struct bin &b)
         }
 }
 
-static void _reassign(struct bin &b, int p, int itm_idx, int tc_id)
+static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
 {
         /* starting new p */
         int newp;
         vector<int> v_p;
 
         newp = p + 1;
+        v_p.clear();
+        b.v_tasks.clear();
+
+        int flag = NO;
 
         /* store hp */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
@@ -86,9 +90,12 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id)
                         continue;
                 if (b.v_tasks[i].idx.itm_idx == itm_idx)
                         continue;
-
-                if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id)
+                if (b.v_tasks[i].uniq_id == uniq_id)
                         continue;
+                if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id) {
+                        flag = YES;
+                        continue;
+                }
 
                 if (b.v_tasks[i].p < p)
                         v_p.push_back(b.v_tasks[i].p);
@@ -122,9 +129,18 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id)
                         copy_back_prio_to_tc(b);
                         copy_back_resp_to_tc(b);
                         printf("Core %d SCHED_OK with reassignment\n", b.id);
+                        if (flag == YES) {
+                                print_core(b);
+                                exit(0);
+                        }
                         return;
 
                 } else {
+                        if (flag == YES) {
+                                print_core(b);
+                                exit(0);
+                        }
+
                         b.flag = SCHED_FAILED;
                         return;
                 }
@@ -151,7 +167,6 @@ static void _base_assignment(struct bin &b)
         b.flag = wcrt(b.v_tasks);
         copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
-
 }
 
 static void _reassignment(struct bin &b)
@@ -177,7 +192,10 @@ static void _reassignment(struct bin &b)
                         tmp_b = {0};
                         tmp_b = b;
                         /* priority swapping */
-                        _reassign(tmp_b, b.v_tasks[i].p, tmp_b.v_tasks[i].idx.itm_idx, tmp_b.v_tasks[i].tc_id);
+                        _reassign(tmp_b, b.v_tasks[i].p, 
+                                        tmp_b.v_tasks[i].idx.itm_idx, 
+                                        tmp_b.v_tasks[i].tc_id, 
+                                        b.v_tasks[i].uniq_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;
                                 if (ret == YES) {

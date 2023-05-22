@@ -9,10 +9,6 @@ int main(int argc, char **argv)
         vector<struct item> v_itms;
         vector<struct bin> v_bins;
 
-        struct context ctx_bfdu_f;
-        vector<struct item> v_itms_bfdu_f;
-        vector<struct bin> v_bins_bfdu_f;
-
         /* parameters */
         input(argc, argv, prm);
 
@@ -26,29 +22,22 @@ int main(int argc, char **argv)
         /* cmp min bins req */
         init_ctx(v_itms, prm, ctx);
 
-        /* copy instances and select algorithm */
-        ctx_bfdu_f = ctx;
-        ctx_bfdu_f.prm.a = BFDU_F;
-
-        v_itms_bfdu_f = v_itms;
-        v_bins_bfdu_f = v_bins;
-
         /* generation */
-        generation(v_bins_bfdu_f, ctx_bfdu_f);
+        generation(v_bins, ctx);
 
         /* allocation */
-        allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+        allocation(v_itms, v_bins, ctx);
 
         /* schedulability analysis */
-        schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
+        schedulability_analysis(v_bins, ctx);
 
         /* optimization */
-        optimization(v_bins_bfdu_f, ctx_bfdu_f);
+        optimization(v_bins, ctx);
 
         /* results */
-        print_cores(v_bins_bfdu_f, ctx_bfdu_f);
-        print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-        print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
+        print_cores(v_bins, ctx);
+        print_vectors(v_bins, v_itms, ctx);
+        print_stats(v_itms, v_bins, ctx);
 
         return 0;
 }
