@@ -21,7 +21,7 @@ static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 tmp_load = check_if_fit_itm(v_bins[i], itm, tmp_gcd);
                 if (tmp_load <= v_bins[i].phi) {
-                        tmp_rem = v_bins[i].load_rem - tmp_load;
+                        tmp_rem = v_bins[i].phi - tmp_load;
 
                         if (tmp_rem < best_rem) {
                                 best_rem = tmp_rem;
