@@ -6,7 +6,7 @@
 #include "model.h"
 
 /* precision for wcet generation */
-#define EPSILON    100
+#define EPSILON    0
 #define PRECISION  0.10
 
 /* number of task-chains */
@@ -15,15 +15,15 @@
 
 /* permils */
 #define MINMAXTU   1
-#define MAXMAXTU   200
+#define MAXMAXTU   100
 
 /* microsecs */
 #define MINWCET    100
-#define MAXWCET    25000
+#define MAXWCET    20000
 
 /* min max number of tasks in a chain */
 #define MINTASKNBR 2
-#define MAXTASKNBR 10
+#define MAXTASKNBR 8
 
 int gen_rand(int min, int max);
 

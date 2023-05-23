@@ -1,9 +1,12 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-int syst_state = NO;
-int wcrt_count = 0;
-float sched_time = 0;
+int bfdu_syst_state = NO;
+int wfdu_syst_state = NO;
+int bfdu_wcrt_count = 0;
+int wfdu_wcrt_count = 0;
+float bfdu_sched_time = 0;
+float wfdu_sched_time = 0;
 
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
                 struct task &tau, int &r_prev)
@@ -223,7 +226,9 @@ int wcrt(vector<struct task> &v_tasks)
         flag = SCHED_OK;
 
         /* compute WCRT for each task */
-        if (syst_state == YES)
+        if (bfdu_syst_state == YES)
+                start = clock();
+        if (wfdu_syst_state == YES)
                 start = clock();
 
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
@@ -238,10 +243,16 @@ int wcrt(vector<struct task> &v_tasks)
                         flag = SCHED_FAILED;
         }
 
-        if (syst_state == YES) {
+        if (bfdu_syst_state == YES) {
                 end = clock();
-                sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                wcrt_count++;
+                bfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                bfdu_wcrt_count++;
+        }
+
+        if (wfdu_syst_state == YES) {
+                end = clock();
+                wfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                wfdu_wcrt_count++;
         }
 
         if (flag == SCHED_OK)
@@ -268,7 +279,10 @@ void priority_assignment(struct bin &b)
 
 void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
-        syst_state = YES;
+        if (ctx.prm.a == BFDU_F)
+                bfdu_syst_state = YES;
+        if (ctx.prm.a == WFDU_F)
+                wfdu_syst_state = YES;
         sort_inc_bin_load_rem(v_bins);
         copy_v_tc_to_v_tasks_with_pos(v_bins);
 

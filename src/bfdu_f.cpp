@@ -80,8 +80,8 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
                                 /* no bin was found */
                         } else {
-                                printf("No Bin was found to accomodate Item %d\n", 
-                                                v_itms[i].id);
+                                printf("No Bin was found to accomodate Item %d idx: %d size: %d\n", 
+                                                v_itms[i].id, v_itms[i].idx, v_itms[i].size);
                                 add_bin(v_bins, ctx);
                                 ctx.cycl_count++;
                                 continue;

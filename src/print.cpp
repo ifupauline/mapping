@@ -102,7 +102,7 @@ void print_task_chains(vector<struct item> &v_itms)
                                 v_itms[i].memcost);
                 printf("==============================================\n");
                 for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
-                        printf("tau %d: u: %.3f c: %-5d t: %d\n",
+                        printf("tau %d: u: %.3f c: %-6d t: %-6d\n",
                                         v_itms[i].v_tasks[j].id, 
                                         v_itms[i].v_tasks[j].u / PERMILL, 
                                         v_itms[i].v_tasks[j].c, 
@@ -320,8 +320,14 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
         printf("------------------------------------------------------------------------>\n");
-        printf("WCRT Tests Count:                 %-3d tests\n", wcrt_count);
-        printf("WCRT Total Computational Time:    %-3.3f ms\n", sched_time * PERMILL);
+        if (ctx.prm.a == BFDU_F) {
+                printf("WCRT Tests Count:                 %-3d tests\n", bfdu_wcrt_count);
+                printf("WCRT Total Computational Time:    %-3.3f ms\n", bfdu_sched_time * PERMILL);
+        }
+        if (ctx.prm.a == WFDU_F) {
+                printf("WCRT Tests Count:                 %-3d tests\n", wfdu_wcrt_count);
+                printf("WCRT Total Computational Time:    %-3.3f ms\n", wfdu_sched_time * PERMILL);
+        }
         printf("------------------------------------------------------------------------>\n");
         printf("\n+===========================================+\n");
         printf("| PERFORMANCE METRICS                       |\n");

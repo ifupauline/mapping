@@ -31,9 +31,13 @@
 
 using namespace std;
 
-extern int wcrt_count;
-extern int syst_state;
-extern float sched_time;
+extern int bfdu_wcrt_count;
+extern int bfdu_syst_state;
+extern float bfdu_sched_time;
+
+extern int wfdu_wcrt_count;
+extern int wfdu_syst_state;
+extern float wfdu_sched_time;
 
 /* CONTEXT */
 struct params {
