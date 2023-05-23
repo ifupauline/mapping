@@ -3,10 +3,13 @@
 
 int bfdu_syst_state = NO;
 int wfdu_syst_state = NO;
+int frst_syst_state = NO;
 int bfdu_wcrt_count = 0;
 int wfdu_wcrt_count = 0;
+int frst_wcrt_count = 0;
 float bfdu_sched_time = 0;
 float wfdu_sched_time = 0;
+float frst_sched_time = 0;
 
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
                 struct task &tau, int &r_prev)
@@ -230,6 +233,8 @@ int wcrt(vector<struct task> &v_tasks)
                 start = clock();
         if (wfdu_syst_state == YES)
                 start = clock();
+        if (frst_syst_state == YES)
+                start = clock();
 
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
                 r_curr = 0;
@@ -253,6 +258,12 @@ int wcrt(vector<struct task> &v_tasks)
                 end = clock();
                 wfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
                 wfdu_wcrt_count++;
+        }
+
+        if (frst_syst_state == YES) {
+                end = clock();
+                frst_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                frst_wcrt_count++;
         }
 
         if (flag == SCHED_OK)
@@ -283,6 +294,8 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 bfdu_syst_state = YES;
         if (ctx.prm.a == WFDU_F)
                 wfdu_syst_state = YES;
+        if (ctx.prm.a == FRST_F)
+                frst_syst_state = YES;
         sort_inc_bin_load_rem(v_bins);
         copy_v_tc_to_v_tasks_with_pos(v_bins);
 

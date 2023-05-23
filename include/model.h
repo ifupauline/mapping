@@ -8,6 +8,7 @@
 /* algorithms */
 #define BFDU_F 1
 #define WFDU_F 2
+#define FRST_F 3
 
 /* booleans */
 #define NO  1
@@ -38,6 +39,10 @@ extern float bfdu_sched_time;
 extern int wfdu_wcrt_count;
 extern int wfdu_syst_state;
 extern float wfdu_sched_time;
+
+extern int frst_wcrt_count;
+extern int fsrt_syst_state;
+extern float frst_sched_time;
 
 /* CONTEXT */
 struct params {

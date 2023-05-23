@@ -146,6 +146,8 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                 printf("| PRINT CORE BFDU_F                   |\n");
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT CORE WFDU_F                   |\n");
+        if (ctx.prm.a == FRST_F)
+                printf("| PRINT CORE FIRST_F                  |\n");
         printf("+=====================================+\n\n");
 
         for (unsigned int i = 0; i < v_bins.size(); i++)
@@ -235,6 +237,8 @@ void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                 printf("| PRINT VECTORS BFDU_F                |\n");
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT VECTORS WFDU_F                |\n");
+        if (ctx.prm.a == FRST_F)
+                printf("| PRINT VECTORS FIRST_F               |\n");
         printf("+=====================================+\n");
 
         int sched_ok;
@@ -292,6 +296,8 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("| PRINT STATS BFDU_F                        |\n");
         if (ctx.prm.a == WFDU_F)
                 printf("| PRINT STATS WFDU_F                        |\n");
+        if (ctx.prm.a == FRST_F)
+                printf("| PRINT STATS FIRST_F                       |\n");
         printf("+===========================================+\n");
 
         cmp_stats(v_bins, v_itms, ctx);
@@ -303,6 +309,8 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("a:      BFDU_F\n");
         if (ctx.prm.a == WFDU_F)
                 printf("a:      WFDU_F\n");
+        if (ctx.prm.a == FRST_F)
+                printf("a:      FIRST_F\n");
         printf("------------------------------------------------------------------------>\n");
         printf("Initial Number of Cores:       %-3d\n", ctx.bins_min);
         printf("Current Number of Cores:       %-3d\n", ctx.bins_count);
@@ -328,10 +336,10 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("WCRT Tests Count:                 %-3d tests\n", wfdu_wcrt_count);
                 printf("WCRT Total Computational Time:    %-3.3f ms\n", wfdu_sched_time * PERMILL);
         }
-        printf("------------------------------------------------------------------------>\n");
-        printf("\n+===========================================+\n");
-        printf("| PERFORMANCE METRICS                       |\n");
-        printf("+===========================================+\n");
+        if (ctx.prm.a == FRST_F) {
+                printf("WCRT Tests Count:                 %-3d tests\n", frst_wcrt_count);
+                printf("WCRT Total Computational Time:    %-3.3f ms\n", frst_sched_time * PERMILL);
+        }
         printf("------------------------------------------------------------------------>\n");
         printf("M/M*:                             %-3.3f\n", ctx.p.cr);
         printf("------------------------------------------------------------------------>\n");

@@ -51,6 +51,16 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 end = clock();
                 ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
+
+        if (ctx.prm.a == FRST_F) {
+                printf("+=====================================+\n");
+                printf("| ALLOCATION FIRST_F                  |\n");
+                printf("+=====================================+\n");
+                start = clock();
+                wfdu_f(v_itms, v_bins, ctx);
+                end = clock();
+                ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        }
 }
 
 void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)

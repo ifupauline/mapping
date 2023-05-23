@@ -1,7 +1,7 @@
 add_library(bpp-ifc
         SHARED
-        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp exp.cpp
-        sched_analysis.cpp optimization.cpp model.cpp let.cpp)
+        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp frst_f.cpp
+        exp.cpp sched_analysis.cpp optimization.cpp model.cpp let.cpp)
 
 install (TARGETS bpp-ifc
         DESTINATION lib)

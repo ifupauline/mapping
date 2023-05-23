@@ -67,9 +67,8 @@ static void _store_itms_swap(vector<struct bin> &v_bins,
         }
 }
 
-static int _search_for_displace(vector<struct bin> &v_dst_bins, 
-                vector<pair<struct item, int>> &v_itms, int item_idx, 
-                struct bin &dst_b)
+static int _search_for_displace(vector<struct bin> &v_dst_bins, int item_id, 
+                int item_idx, struct bin &dst_b)
 {
         int max;
         int tmp_max;
@@ -88,7 +87,7 @@ static int _search_for_displace(vector<struct bin> &v_dst_bins,
                 if (v_dst_bins[i].flag == SCHED_OK) {
 
                         printf("Test WCRT for TC %d to Core %d OK!\n", 
-                                        v_itms[item_idx].first.id, v_dst_bins[i].id);
+                                        item_id, v_dst_bins[i].id);
                         /* store max cap_rem */
                         tmp_max = v_dst_bins[i].load_rem;
                         if (tmp_max < 0) {
@@ -307,7 +306,6 @@ void displacement(vector<struct bin> &v_bins)
                                 if (v_itms[i].first.disp_count == MAX_DISP_COUNT) 
                                         break;
 
-                                /* search for dst bins that can accomodate itm */
                                 /* check if itm fit */
                                 load = check_if_fit_itm(v_bins[j], v_itms[i].first, gcd);
 
@@ -318,7 +316,7 @@ void displacement(vector<struct bin> &v_bins)
                                 }
                         }
                         /* test dst bins and save best bin */
-                        is_found = _search_for_displace(v_dst_bins, v_itms, i, dst_b);
+                        is_found = _search_for_displace(v_dst_bins, v_itms[i].first.id, i, dst_b);
 
                         /* if bin not found continue */
                         if (is_found == YES) {
