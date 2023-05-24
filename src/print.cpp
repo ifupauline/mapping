@@ -121,12 +121,12 @@ void print_core(struct bin &b)
         printf("Core: %d Load: %d Lrem: %d MemCost %d\n", b.id, b.load, b.load_rem, b.memcost);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
-                        printf("TC %-3d u: %-3d tau %-3d p: %-3d itm_idx: %-3d tc_id: %-3d uniq_id: %-3d sched: %d\n", 
-                                        b.v_itms[i].id, b.v_itms[i].size,
+                        printf("TC %-3d tc_idx %d u: %-3d tau %-3d p: %-3d itm_idx: %-3d uniq_id: %-3d sched: %d\n", 
+                                        b.v_itms[i].id, b.v_itms[i].idx, 
+                                        b.v_itms[i].size,
                                         b.v_itms[i].v_tasks[j].id, 
                                         b.v_itms[i].v_tasks[j].p,
                                         b.v_itms[i].v_tasks[j].idx.itm_idx, 
-                                        b.v_itms[i].v_tasks[j].tc_id,
                                         b.v_itms[i].v_tasks[j].uniq_id, b.flag);
                 }
         }
@@ -197,8 +197,9 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 
                         } else {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|TC:  %-3d size %-3d gcd %-3d memcost %d\n", 
+                                printf("|TC:  %-3d tc_idx %d size %-3d gcd %-3d memcost %d\n", 
                                                 v_bins[i].v_itms[j].id, 
+                                                v_bins[i].v_itms[j].idx, 
                                                 v_bins[i].v_itms[j].size,
                                                 v_bins[i].v_itms[j].gcd,
                                                 v_bins[i].v_itms[j].memcost);

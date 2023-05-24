@@ -5,26 +5,20 @@ static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,
                 struct context &ctx, int &frst_load, int &frst_gcd)
 {
         int bin_id;
-        int is_found;
 
         bin_id = 0;
-        is_found = NO;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 frst_load = check_if_fit_itm(v_bins[i], itm, frst_gcd);
                 if (frst_load <= v_bins[i].phi) {
                         bin_id = v_bins[i].id;
-                        is_found = YES;
-                        continue;
+                        return bin_id;
                 }
         }
-        if (is_found == YES) 
-                return bin_id;
-
         return -1;
 }
 
-void first_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
         int n;

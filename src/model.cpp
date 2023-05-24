@@ -291,7 +291,7 @@ int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)
         return -1;
 }
 
-void delete_itm_by_id(struct bin &b, int itm_id)
+void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx)
 {
         int gcd;
         int flag;
@@ -301,7 +301,7 @@ void delete_itm_by_id(struct bin &b, int itm_id)
         flag = NO;
 
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].id == itm_id) {
+                if (b.v_itms[i].id == itm_id && b.v_itms[i].idx == itm_idx) {
                         b.v_itms.erase(b.v_itms.begin() + i);
                         b.v_tasks.clear();
                         flag = YES;
@@ -309,7 +309,8 @@ void delete_itm_by_id(struct bin &b, int itm_id)
         }
 
         if (flag == NO) {
-                printf("ERR! TC %d not removed from Core %d\n", itm_id, b.id);
+                printf("itm_idx: %d\n", itm_idx);
+                printf("ERR! TC %d idx: %d not removed from Core %d\n", itm_id, itm_idx, b.id);
                 print_core(b);
                 exit(0);
         }

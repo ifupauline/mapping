@@ -161,7 +161,7 @@ B_FR	include/exp.h	6;"	d
 B_OPT	include/exp.h	9;"	d
 B_SR_ALLO	include/exp.h	7;"	d
 B_SR_OPTI	include/exp.h	8;"	d
-C	include/model.h	19;"	d
+C	include/model.h	20;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
@@ -817,6 +817,7 @@ EQUALS	exp/phi/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
+FRST_F	include/model.h	11;"	d
 GENERATOR_H	include/generator.h	2;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
@@ -825,31 +826,31 @@ HEX	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ID_VOID_MAIN	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
 ITER	exp/phi/phi.cpp	6;"	d	file:
-LEFT	include/model.h	16;"	d
+LEFT	include/model.h	17;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
 MAXLETWCET	include/let.h	8;"	d
 MAXMAXTU	include/generator.h	18;"	d
-MAXMEMCOST	include/model.h	30;"	d
+MAXMEMCOST	include/model.h	31;"	d
 MAXN	include/generator.h	14;"	d
-MAXPHI	include/model.h	21;"	d
+MAXPHI	include/model.h	22;"	d
 MAXTASKNBR	include/generator.h	26;"	d
 MAXWCET	include/generator.h	22;"	d
 MAX_DISP_COUNT	src/optimization.cpp	5;"	d	file:
 MAX_SWAP_COUNT	src/optimization.cpp	6;"	d	file:
 MINLETWCET	include/let.h	7;"	d
 MINMAXTU	include/generator.h	17;"	d
-MINMEMCOST	include/model.h	29;"	d
+MINMEMCOST	include/model.h	30;"	d
 MINN	include/generator.h	13;"	d
-MINPHI	include/model.h	20;"	d
+MINPHI	include/model.h	21;"	d
 MINTASKNBR	include/generator.h	25;"	d
 MINWCET	include/generator.h	21;"	d
 MODEL_H	include/model.h	2;"	d
-MSEC	include/model.h	26;"	d
-NO	include/model.h	13;"	d
+MSEC	include/model.h	27;"	d
+NO	include/model.h	14;"	d
 OPTIMIZATION_H	include/optimization.h	2;"	d
 PERCENT	include/model.h	25;"	d
-PERMILL	include/model.h	24;"	d
+PERMILL	include/model.h	26;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	427;"	d	file:
@@ -988,7 +989,7 @@ PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
 PRECISION	include/generator.h	10;"	d
 PRINT_H	include/print.h	2;"	d
-RIGHT	include/model.h	17;"	d
+RIGHT	include/model.h	18;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/phi/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -1101,7 +1102,7 @@ STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	401;"	d	
 STRINGIFY_HELPER	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	416;"	d	file:
 STRINGIFY_HELPER	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	401;"	d	file:
 WFDU_F	include/model.h	10;"	d
-YES	include/model.h	14;"	d
+YES	include/model.h	15;"	d
 __has_include	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
 __has_include	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 __has_include	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
@@ -1116,21 +1117,23 @@ _cmp_inc_bin_load_rem	src/model.cpp	/^static int _cmp_inc_bin_load_rem(const str
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
 _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const struct task &a, const struct task &b)$/;"	f	file:
 _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
+_create_waters2019	src/generator.cpp	/^static void _create_waters2019(struct item &itm)$/;"	f	file:
+_create_waters_task	src/generator.cpp	/^static void _create_waters_task(struct task &tau, struct params &prm, int i, int x)$/;"	f	file:
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
+_find_frst_bin	src/frst_f.cpp	/^static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _fixedpoint	src/sched_analysis.cpp	/^static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau, $/;"	f	file:
-_gen_harmonic_task	src/generator.cpp	/^static void _gen_harmonic_task(struct task &tau, struct params &prm, int i, int x)$/;"	f	file:
 _gen_tc_set	src/generator.cpp	/^static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
 _partitioning	src/generator.cpp	/^static void _partitioning(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
-_reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id)$/;"	f	file:
+_reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct bin &b)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct bin &b)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
-_search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_dst_bins, $/;"	f	file:
+_search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_dst_bins, int item_id, $/;"	f	file:
 _search_for_swap	src/optimization.cpp	/^static int _search_for_swap(vector<struct bin> &v_bins, $/;"	f	file:
 _store_itms_disp	src/optimization.cpp	/^static void _store_itms_disp(vector<struct bin> &v_bins, $/;"	f	file:
 _store_itms_swap	src/optimization.cpp	/^static void _store_itms_swap(vector<struct bin> &v_bins, $/;"	f	file:
@@ -1146,11 +1149,15 @@ alloc_count	include/model.h	/^        int alloc_count;$/;"	m	struct:context
 allocation	src/mapping.cpp	/^void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 b_stats	include/exp.h	/^struct b_stats {$/;"	s
 bfdu_f	src/bfdu_f.cpp	/^void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
+bfdu_sched_time	src/sched_analysis.cpp	/^float bfdu_sched_time = 0;$/;"	v
+bfdu_syst_state	src/sched_analysis.cpp	/^int bfdu_syst_state = NO;$/;"	v
+bfdu_wcrt_count	src/sched_analysis.cpp	/^int bfdu_wcrt_count = 0;$/;"	v
 bin	include/model.h	/^struct bin {$/;"	s
 bin_idx	include/model.h	/^        int bin_idx;$/;"	m	struct:t_pos
 bins_count	include/model.h	/^        int bins_count;$/;"	m	struct:context
 bins_min	include/model.h	/^        int bins_min;$/;"	m	struct:context
 c	include/model.h	/^        int c;$/;"	m	struct:task
+chain	src/generator.cpp	/^static int chain[1][6] = {$/;"	v	file:
 check_duplicata	src/model.cpp	/^void check_duplicata(vector<struct bin> &v_bins)$/;"	f
 check_if_fit_itm	src/let.cpp	/^int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)$/;"	f
 cmd_gnuplot_cr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_cr[] = {};$/;"	v	file:
@@ -1176,7 +1183,7 @@ cr	include/model.h	/^        float cr;$/;"	m	struct:perf
 cuts_count	include/model.h	/^        int cuts_count;$/;"	m	struct:context
 cycl_count	include/model.h	/^        int cycl_count;$/;"	m	struct:context
 d	include/model.h	/^        int d;$/;"	m	struct:task
-delete_itm_by_id	src/model.cpp	/^void delete_itm_by_id(struct bin &b, int itm_id)$/;"	f
+delete_itm_by_id	src/model.cpp	/^void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx)$/;"	f
 disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:item
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/model.h	/^        float disp_time;$/;"	m	struct:perf
@@ -1186,12 +1193,16 @@ flag	include/model.h	/^        int flag;$/;"	m	struct:bin
 fr	include/model.h	/^        float fr;$/;"	m	struct:perf
 frag_time	include/model.h	/^        float frag_time;$/;"	m	struct:perf
 fragmentation	src/mapping.cpp	/^void fragmentation(vector<struct item> &v_itms, struct context &ctx)$/;"	f
+frags_count	include/model.h	/^        int frags_count;$/;"	m	struct:context
+frst_f	src/frst_f.cpp	/^void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
+frst_sched_time	src/sched_analysis.cpp	/^float frst_sched_time = 0;$/;"	v
+frst_syst_state	src/sched_analysis.cpp	/^int frst_syst_state = NO;$/;"	v
+frst_wcrt_count	src/sched_analysis.cpp	/^int frst_wcrt_count = 0;$/;"	v
 gcd	include/model.h	/^        int gcd;$/;"	m	struct:item
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
 gen_tc_set	src/generator.cpp	/^void gen_tc_set(vector<struct item> &v_itms, struct params &prm,$/;"	f
 generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
-harm	src/generator.cpp	/^static int harm[4][5] = {$/;"	v	file:
 id	include/model.h	/^        int id;$/;"	m	struct:bin
 id	include/model.h	/^        int id;$/;"	m	struct:item
 id	include/model.h	/^        int id;$/;"	m	struct:task
@@ -1298,7 +1309,6 @@ print_core	src/print.cpp	/^void print_core(struct bin &b)$/;"	f
 print_cores	src/print.cpp	/^void print_cores(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 print_stats	src/print.cpp	/^void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 print_task_chains	src/print.cpp	/^void print_task_chains(vector<struct item> &v_itms)$/;"	f
-print_v_tasks	src/print.cpp	/^void print_v_tasks(struct bin &b)$/;"	f
 print_vectors	src/print.cpp	/^void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 priority_assignment	src/sched_analysis.cpp	/^void priority_assignment(struct bin &b)$/;"	f
 prm	include/model.h	/^        struct params prm;$/;"	m	struct:context	typeref:struct:context::params
@@ -1322,7 +1332,6 @@ sched_rate_allo	include/model.h	/^        float sched_rate_allo;$/;"	m	struct:pe
 sched_rate_disp	include/model.h	/^        float sched_rate_disp;$/;"	m	struct:perf
 sched_rate_opti	include/model.h	/^        float sched_rate_opti;$/;"	m	struct:perf
 sched_rate_swap	include/model.h	/^        float sched_rate_swap;$/;"	m	struct:perf
-sched_time	src/sched_analysis.cpp	/^float sched_time = 0;$/;"	v
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
@@ -1335,7 +1344,6 @@ swap_gain	include/model.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/model.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/optimization.cpp	/^void swapping(vector<struct bin> &v_bins)$/;"	f
 sys	include/model.h	/^        float sys;$/;"	m	struct:perf
-syst_state	src/sched_analysis.cpp	/^int syst_state = NO;$/;"	v
 t	include/model.h	/^        int t;$/;"	m	struct:task
 t_pos	include/model.h	/^struct t_pos {$/;"	s
 task	include/model.h	/^struct task {$/;"	s
@@ -1354,6 +1362,8 @@ v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:item
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 volatile	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
-wcrt_count	src/sched_analysis.cpp	/^int wcrt_count = 0;$/;"	v
 wfdu_f	src/wfdu_f.cpp	/^void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
+wfdu_sched_time	src/sched_analysis.cpp	/^float wfdu_sched_time = 0;$/;"	v
+wfdu_syst_state	src/sched_analysis.cpp	/^int wfdu_syst_state = NO;$/;"	v
+wfdu_wcrt_count	src/sched_analysis.cpp	/^int wfdu_wcrt_count = 0;$/;"	v
 write_data_to_file	src/exp.cpp	/^void write_data_to_file(FILE *filename, vector<struct b_stats> &data,$/;"	f

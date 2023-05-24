@@ -27,6 +27,9 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
+void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+                struct context &ctx);
+
 /* getters */
 vector<struct item> *get_frags_bfdu_f(void);
 

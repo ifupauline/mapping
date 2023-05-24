@@ -183,7 +183,7 @@ struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id);
 
 int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
 
-void delete_itm_by_id(struct bin &b, int itm_id);
+void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx);
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);

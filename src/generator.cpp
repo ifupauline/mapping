@@ -2,8 +2,8 @@
 #include "sched_analysis.h"
 
 /* WATERS 2015, 2016, 2017 */
-static int chain[1][8] = {
-        {1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000},
+static int chain[1][6] = {
+        {1000, 2000, 5000, 10000, 20000, 50000},
 };
 
 static void _create_waters_task(struct task &tau, struct params &prm, int i, int x)
@@ -15,7 +15,7 @@ static void _create_waters_task(struct task &tau, struct params &prm, int i, int
         float udiff;
 
         while (1) {
-                y  = gen_rand(0, 7);
+                y  = gen_rand(0, 5);
                 real_t = chain[x][y];
                 real_c = gen_rand(MINWCET, MAXWCET);
                 real_u = (real_c/real_t) * PERMILL;
@@ -241,11 +241,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         v_itms[ncount].size = itm.size;
         ncount++;
         printf("%d\n", ncount);
-        _create_waters2019(itm);
-        v_itms.push_back(itm);
-        v_itms[ncount].size = itm.size;
-        ncount++;
-        printf("%d\n", ncount);
 
         /* derive synthetic set from waters */
         while (ncount != prm.n) {
@@ -267,6 +262,9 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         tau.tc_id = itm.id;
 
                         _create_waters_task(tau, prm, i, x);
+
+                        if (tau.u >= prm.phi - EPSILON)
+                                continue;
 
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
@@ -316,11 +314,32 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                 idx = 0;
                 for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
                         u_sum += v_tmp_itms[i].v_tasks[j].u;
-                        //printf("v_tasks[%i].u: %f\n", j, v_tmp_itms[i].v_tasks[j].u);
+                        printf("u_sum: %d v_tasks[%i].u: %f\n",u_sum, j, v_tmp_itms[i].v_tasks[j].u);
                         v_tmp_itms[i].v_tasks[j].tc_id = v_tmp_itms[i].id;
                         v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
-                        /* add fragment */
-                        if (u_sum >= ctx.prm.phi - EPSILON) {
+                        /* only for waters2019 */
+                        if (i == 0 && u_sum >= ctx.prm.phi - 40) {
+                                u_sum -= v_tmp_itms[i].v_tasks[j].u;
+                                v_tmp.pop_back();
+                                itm = {0};
+                                itm.id = v_tmp_itms[i].id;
+                                itm.idx = idx;
+                                itm.size = u_sum;
+                                itm.memcost = v_tmp_itms[i].memcost;
+                                itm.disp_count = 0;
+                                itm.swap_count = 0;
+                                itm.is_let = NO;
+                                itm.is_allocated = NO;
+                                itm.v_tasks = v_tmp;
+                                v_new_itms.push_back(itm);
+                                j--;
+                                idx++;
+                                ctx.cuts_count++;
+                                u_sum = 0;
+                                v_tmp.clear();
+
+                        }
+                        if (i > 0 && u_sum >= ctx.prm.phi - EPSILON) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
                                 itm = {0};
