@@ -9,7 +9,7 @@ static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)
         min_nbr_cuts = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++)
-                if (v_itms[i].size > ctx.prm.phi)
+                if (v_itms[i].size > PHI)
                         min_nbr_cuts++;
 
         ctx.p.cr = (float)ctx.bins_count / (float)ctx.bins_min;
@@ -48,7 +48,7 @@ static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.let /= PERMILL;
         ctx.p.sys /= PERMILL;
         ctx.p.unu /= PERMILL;
-        ctx.p.maxu = ctx.bins_count * ((float)ctx.prm.phi / (float)PERMILL);
+        ctx.p.maxu = ctx.bins_count * ((float)PHI / (float)PERMILL);
 }
 
 float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
@@ -97,7 +97,7 @@ void print_task_chains(vector<struct item> &v_itms)
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 printf("==============================================\n");
                 printf("tc.id: %-3d tc.idx: %-3d u: %.3f memcost: %d\n", 
-                                v_itms[i].id, v_itms[i].idx, 
+                                v_itms[i].id, v_itms[i].tc_idx, 
                                 (float)v_itms[i].size / PERMILL, 
                                 v_itms[i].memcost);
                 printf("==============================================\n");
@@ -122,7 +122,7 @@ void print_core(struct bin &b)
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
                         printf("TC %-3d tc_idx %d u: %-3d tau %-3d p: %-3d itm_idx: %-3d uniq_id: %-3d sched: %d\n", 
-                                        b.v_itms[i].id, b.v_itms[i].idx, 
+                                        b.v_itms[i].id, b.v_itms[i].tc_idx, 
                                         b.v_itms[i].size,
                                         b.v_itms[i].v_tasks[j].id, 
                                         b.v_itms[i].v_tasks[j].p,
@@ -199,7 +199,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                 printf("|--------------------------------------------------------------|\n");
                                 printf("|TC:  %-3d tc_idx %d size %-3d gcd %-3d memcost %d\n", 
                                                 v_bins[i].v_itms[j].id, 
-                                                v_bins[i].v_itms[j].idx, 
+                                                v_bins[i].v_itms[j].tc_idx, 
                                                 v_bins[i].v_itms[j].size,
                                                 v_bins[i].v_itms[j].gcd,
                                                 v_bins[i].v_itms[j].memcost);
@@ -305,7 +305,8 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         printf("------------------------------------------------------------------------>\n");
         printf("n:      %u\n", ctx.prm.n);
-        printf("phi:    %u\n", ctx.prm.phi);
+        printf("phi:    %u\n", PHI);
+        printf("e:      %u\n", ctx.prm.e);
         if (ctx.prm.a == BFDU_F)
                 printf("a:      BFDU_F\n");
         if (ctx.prm.a == WFDU_F)

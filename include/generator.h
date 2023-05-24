@@ -6,7 +6,6 @@
 #include "model.h"
 
 /* precision for wcet generation */
-#define EPSILON    100
 #define PRECISION  0.10
 
 /* number of task-chains */
@@ -15,7 +14,7 @@
 
 /* permils */
 #define MINMAXTU   1
-#define MAXMAXTU   200
+#define MAXMAXTU   400
 
 /* microsecs */
 #define MINWCET    1

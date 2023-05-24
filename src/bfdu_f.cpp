@@ -16,7 +16,7 @@ static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,
         tmp_gcd = 0;
         tmp_rem = 0;
         is_found = NO;
-        best_rem = ctx.prm.phi;
+        best_rem = PHI;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 tmp_load = check_if_fit_itm(v_bins[i], itm, tmp_gcd);
@@ -81,7 +81,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 /* no bin was found */
                         } else {
                                 printf("No Bin was found to accomodate Item %d idx: %d size: %d\n", 
-                                                v_itms[i].id, v_itms[i].idx, v_itms[i].size);
+                                                v_itms[i].id, v_itms[i].tc_idx, v_itms[i].size);
                                 add_bin(v_bins, ctx);
                                 ctx.cycl_count++;
                                 continue;

@@ -10,9 +10,9 @@ static void _create_waters_task(struct task &tau, struct params &prm, int i, int
 {
         int y;
         int real_t;
+        float udiff;
         float real_c;
         float real_u;
-        float udiff;
 
         while (1) {
                 y  = gen_rand(0, 5);
@@ -171,7 +171,7 @@ static void _create_waters2019(struct item &itm)
         /* tc waters 2019 */
         waters2019 = {0};
         waters2019.id = 0;
-        waters2019.idx = 0;
+        waters2019.tc_idx = 0;
         waters2019.memcost = MAXMEMCOST;
         waters2019.disp_count = 0;
         waters2019.swap_count = 0;
@@ -204,14 +204,14 @@ static void _assign_id(vector<struct item> &v_itms)
 
 static void _check_params(struct params &prm)
 {
-        if (prm.n < MINN || prm.n > MAXN) {
-                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+        if (prm.e < MAXMAXTU || prm.e > PHI) {
+                printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
+                                MAXMAXTU,  PHI);
                 exit(0);
         }
 
-        if (prm.phi < MINPHI || prm.phi > MAXPHI) {
-                printf("Invalid params: prm.phi rule -> [%d <= prm.phi <= %d]\n\n", 
-                                MINPHI, MAXPHI);
+        if (prm.n < MINN || prm.n > MAXN) {
+                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
                 exit(0);
         }
 }
@@ -246,7 +246,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         while (ncount != prm.n) {
                 itm = {0};
                 itm.id = ncount;
-                itm.idx = 0;
+                itm.tc_idx = 0;
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.memcost = MINMEMCOST;
@@ -262,9 +262,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         tau.tc_id = itm.id;
 
                         _create_waters_task(tau, prm, i, x);
-
-                        if (tau.u >= prm.phi - EPSILON)
-                                continue;
 
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
@@ -303,7 +300,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
 
         /* store itms > phi */
         for (unsigned int i = 0; i < v_itms.size(); i++) {
-                if (v_itms[i].size >= ctx.prm.phi - EPSILON)
+                if (v_itms[i].size >= ctx.prm.e)
                         v_tmp_itms.push_back(v_itms[i]);
                 else
                         v_new_itms.push_back(v_itms[i]);
@@ -314,16 +311,17 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                 idx = 0;
                 for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
                         u_sum += v_tmp_itms[i].v_tasks[j].u;
-                        printf("u_sum: %d v_tasks[%i].u: %f\n",u_sum, j, v_tmp_itms[i].v_tasks[j].u);
+                        //printf("u_sum: %d v_tasks[%i].u: %f\n", 
+                        //                u_sum, j, v_tmp_itms[i].v_tasks[j].u);
                         v_tmp_itms[i].v_tasks[j].tc_id = v_tmp_itms[i].id;
                         v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
                         /* only for waters2019 */
-                        if (i == 0 && u_sum >= ctx.prm.phi - 40) {
+                        if (i == 0 && u_sum >= PHI) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
                                 itm = {0};
                                 itm.id = v_tmp_itms[i].id;
-                                itm.idx = idx;
+                                itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
                                 itm.disp_count = 0;
@@ -339,12 +337,12 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 v_tmp.clear();
 
                         }
-                        if (i > 0 && u_sum >= ctx.prm.phi - EPSILON) {
+                        if (i > 0 && u_sum >= ctx.prm.e) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
                                 itm = {0};
                                 itm.id = v_tmp_itms[i].id;
-                                itm.idx = idx;
+                                itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
                                 itm.disp_count = 0;
@@ -364,7 +362,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                         if (j == v_tmp_itms[i].v_tasks.size() - 1) {
                                 itm = {0};
                                 itm.id = v_tmp_itms[i].id;
-                                itm.idx = idx;
+                                itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
                                 itm.disp_count = 0;
@@ -414,7 +412,7 @@ void input(int argc, char **argv, struct params &prm)
                 exit(0);
         }
         prm.n = atoi(argv[1]);
-        prm.phi = atoi(argv[2]);
+        prm.e = atoi(argv[2]);
         _check_params(prm);
 }
 
@@ -440,7 +438,7 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         for (unsigned int i = 0; i < v_itms.size(); i++) 
                 ctx.itms_size += v_itms[i].size;
 
-        ctx.bins_min = abs(ctx.itms_size / ctx.prm.phi) + 1;
+        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
 
         printf("Minimum Number of Cores Required: %u\n", ctx.bins_min);
         printf("Total Utilization of Task-Chains: %u\n\n", ctx.itms_size);

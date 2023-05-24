@@ -42,12 +42,9 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
 
         /* params instance */
         prm.n = 100;
-        prm.phi = 500;
 
         for (int i = 0; i < ITER; i++) {
-                prm.phi += STEP;
                 stts_bfdu_f = {0};
-                stts_bfdu_f.phi = prm.phi;
 
                 for (int j = 0; j < SIMNBR; j++) {
                         v_itms.clear();

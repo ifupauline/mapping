@@ -18,8 +18,8 @@
 #define RIGHT 2
 
 #define C       1000
-#define MINPHI  C/2
-#define MAXPHI  C
+#define PHI     800
+#define EPSILON 500
 
 /* units */
 #define PERCENT 100
@@ -48,7 +48,7 @@ extern float frst_sched_time;
 struct params {
         int a;
         int n;
-        int phi;
+        int e;
 };
 
 struct perf {
@@ -117,7 +117,7 @@ struct task {
 /* BIN-PACKING MODEL */
 struct item {
         int id;
-        int idx;
+        int tc_idx;
         int size;
         int gcd;
         int memcost;

@@ -1,5 +1,4 @@
 #include "let.h"
-#include "print.h"
 #include "sched_analysis.h"
 
 #define MAX_DISP_COUNT 5
@@ -12,9 +11,6 @@ static void _store_itms_disp(vector<struct bin> &v_bins,
 
         itm.first = {0};
         itm.second = {0};
-
-        struct context ctx;
-        print_cores(v_bins, ctx);
 
         /* take next unschedulable itm */
         for (unsigned int i = 0; i < v_bins.size(); i++) {
@@ -139,7 +135,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 
                         /* check if fit */
                         dst_bin = v_bins[i];
-                        delete_itm_by_id(dst_bin, dst_itm.first.id, dst_itm.first.idx);
+                        delete_itm_by_id(dst_bin, dst_itm.first.id, dst_itm.first.tc_idx);
                         load = check_if_fit_itm(dst_bin, src_itm.first, gcd);
 
                         if (load <= dst_bin.phi) {
@@ -161,7 +157,7 @@ static int _search_for_swap(vector<struct bin> &v_bins,
 
                         /* check if fit */
                         src_bin = v_bins[i];
-                        delete_itm_by_id(src_bin, src_itm.first.id, src_itm.first.idx);
+                        delete_itm_by_id(src_bin, src_itm.first.id, src_itm.first.tc_idx);
                         load = check_if_fit_itm(src_bin, dst_itm.first, gcd);
 
                         if (load <= src_bin.phi) {
@@ -228,8 +224,9 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 if (v_bins[i].id == itm.second) {
                         for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                                if (v_bins[i].v_itms[j].id == itm.first.id && v_bins[i].v_itms[j].idx == itm.first.idx) {
-                                        delete_itm_by_id(v_bins[i], itm.first.id, itm.first.idx);
+                                if (v_bins[i].v_itms[j].id == itm.first.id && 
+                                                v_bins[i].v_itms[j].tc_idx == itm.first.tc_idx) {
+                                        delete_itm_by_id(v_bins[i], itm.first.id, itm.first.tc_idx);
                                         copy_v_tc_to_v_tasks_with_pos(v_bins);
                                         priority_assignment(v_bins[i]);
                                         src_bin_idx = i;
@@ -255,8 +252,10 @@ static void _displace(vector<struct bin> &v_bins, pair<struct item,
                         }
                 }
         }
-        printf("Removed TC %d idx: %d from Core %d\n", itm.first.id, itm.first.idx, v_bins[src_bin_idx].id);
-        printf("Inserted TC %d idx: %d in Core %d\n", itm.first.id, itm.first.idx, v_bins[dst_bin_idx].id);
+        printf("Removed TC %d idx: %d from Core %d\n", itm.first.id, 
+                        itm.first.tc_idx, v_bins[src_bin_idx].id);
+        printf("Inserted TC %d idx: %d in Core %d\n", itm.first.id, 
+                        itm.first.tc_idx, v_bins[dst_bin_idx].id);
         printf("<---------------- DISPLACEMENT SUCCESS ---------------->\n\n\n");
 }
 
@@ -286,7 +285,9 @@ void displacement(vector<struct bin> &v_bins)
         _store_itms_disp(v_bins, v_itms, flag);
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 printf("TC %-3d  tc_idx %d from unfeasible Core %-3d\n", 
-                                v_itms[i].first.id, v_itms[i].first.idx, v_itms[i].second);
+                                v_itms[i].first.id, 
+                                v_itms[i].first.tc_idx, 
+                                v_itms[i].second);
         printf("\n");
 
         if (flag == NO)
@@ -297,7 +298,9 @@ void displacement(vector<struct bin> &v_bins)
                 /* find a schedulable bin that has enough space for the itm to fit */
                 for (unsigned int i = 0; i < v_itms.size(); i++) {
                         printf("Try to displace TC %-3d tc_idx %d from Core %-3d\n", 
-                                        v_itms[i].first.id, v_itms[i].first.idx, v_itms[i].second);
+                                        v_itms[i].first.id, 
+                                        v_itms[i].first.tc_idx, 
+                                        v_itms[i].second);
                         v_dst_bins.clear();
                         for (unsigned int j = 0; j < v_bins.size(); j++) {
                                 if (v_bins[j].flag == SCHED_FAILED)
@@ -373,8 +376,8 @@ void swapping(vector<struct bin> &v_bins)
                                         continue;
 
                                 printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
-                                                v_itms[i].first.id, v_itms[i].first.idx, v_itms[i].second,
-                                                v_itms[j].first.id, v_itms[j].first.idx, v_itms[j].second);
+                                                v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
+                                                v_itms[j].first.id, v_itms[j].first.tc_idx, v_itms[j].second);
 
                                 /* search if swap is possible */
                                 dst_bin = {0};

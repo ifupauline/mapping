@@ -62,8 +62,8 @@ void add_bin(vector<struct bin> &v_bins, struct context &ctx)
         tmp_bin.id = ctx.bins_count;
         tmp_bin.flag = SCHED_OK;
         tmp_bin.load = 0;
-        tmp_bin.load_rem = ctx.prm.phi;
-        tmp_bin.phi = ctx.prm.phi;
+        tmp_bin.load_rem = PHI;
+        tmp_bin.phi = PHI;
         tmp_bin.memcost = 0;
         v_bins.push_back(tmp_bin);
         ctx.bins_count++;
@@ -301,7 +301,7 @@ void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx)
         flag = NO;
 
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].id == itm_id && b.v_itms[i].idx == itm_idx) {
+                if (b.v_itms[i].id == itm_id && b.v_itms[i].tc_idx == itm_idx) {
                         b.v_itms.erase(b.v_itms.begin() + i);
                         b.v_tasks.clear();
                         flag = YES;

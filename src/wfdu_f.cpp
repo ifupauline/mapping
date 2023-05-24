@@ -14,7 +14,7 @@ static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
         bin_id = 0;
         tmp_load = 0;
         tmp_gcd = 0;
-        tmp_rem = ctx.prm.phi;
+        tmp_rem = PHI;
         is_found = NO;
         worst_rem = -1;
 
