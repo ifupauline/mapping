@@ -237,10 +237,10 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 
         /* create tc from waters2019 */
         _create_waters2019(itm);
-        v_itms.push_back(itm);
-        v_itms[ncount].size = itm.size;
-        ncount++;
-        printf("%d\n", ncount);
+        //v_itms.push_back(itm);
+        //v_itms[ncount].size = itm.size;
+        //ncount++;
+        //printf("%d\n", ncount);
 
         /* derive synthetic set from waters */
         while (ncount != prm.n) {

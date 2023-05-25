@@ -2,6 +2,7 @@
 #include "mapping.h"
 #include "generator.h"
 #include "optimization.h"
+#include "communication.h"
 #include "sched_analysis.h"
 
 void fragmentation(vector<struct item> &v_itms, struct context &ctx)
@@ -109,4 +110,17 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
+}
+
+void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+                struct context &ctx)
+{
+        clock_t start, end;
+        printf("+=====================================+\n");
+        printf("| COMMUNICATION                       |\n");
+        printf("+=====================================+\n");
+        start = clock();
+        comp_comm(v_bins, v_itms, ctx);
+        end = clock();
+        ctx.p.comm_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }

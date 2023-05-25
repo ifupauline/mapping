@@ -64,6 +64,7 @@ struct perf {
         float schd_time;
         float disp_time;
         float swap_time;
+        float comm_time;
         float sched_rate_allo;
         float sched_rate_disp;
         float sched_rate_swap;
@@ -87,6 +88,7 @@ struct context {
         int cuts_count;
         int tasks_count;
         int frags_count;
+        int comm_count;
         int sched_ok_count;
         int sched_failed_count;
         struct perf p;
@@ -149,6 +151,8 @@ void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
 void sort_dec_int(vector<int> &v_int);
 
 void sort_dec_itm_size(vector<struct item> &v_itms);
+
+void sort_inc_itm_id(vector<struct item> &v_itms);
 
 void copy_back_prio_to_tc(struct bin &b);
 
