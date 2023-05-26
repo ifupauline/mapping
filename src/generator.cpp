@@ -431,6 +431,7 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
         ctx.tasks_count = 0;
+        ctx.comm_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
         ctx.itms_size = 0;

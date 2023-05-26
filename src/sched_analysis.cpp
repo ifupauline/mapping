@@ -33,8 +33,9 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
                 exit(0);
         }
 
-        for (unsigned int i = 0; i < hp_tasks.size(); i++)
+        for (unsigned int i = 0; i < hp_tasks.size(); i++) {
                 tmp += (ceilf((float)r_prev/(float)hp_tasks[i].t) * hp_tasks[i].c);
+        }
 
         r_curr = tmp;
 
@@ -58,6 +59,72 @@ static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau,
                 }
                 return;
         }
+}
+
+int wcrt(vector<struct task> &v_tasks)
+{
+        int ret;
+        int flag;
+        int r_curr;
+        int r_prev;
+        clock_t start, end;
+        vector<struct task> hp_tasks;
+
+        ret = -1;
+        flag = -1;
+        r_curr = 0;
+        r_prev = 0;
+        flag = SCHED_OK;
+
+        /* compute WCRT for each task */
+        if (bfdu_syst_state == YES)
+                start = clock();
+        if (wfdu_syst_state == YES)
+                start = clock();
+        if (frst_syst_state == YES)
+                start = clock();
+
+        for (unsigned int i = 0; i < v_tasks.size(); i++) {
+                r_curr = 0;
+                r_prev = 0;
+                hp_tasks.clear();
+                printf("iter: %d\n", i);
+                _find_hp_tasks(v_tasks, hp_tasks, v_tasks[i], r_prev);
+                /* recursive */
+                _fixedpoint(hp_tasks, v_tasks[i], r_curr, r_prev, ret);
+
+                if (ret == SCHED_FAILED)
+                        flag = SCHED_FAILED;
+        }
+
+        if (bfdu_syst_state == YES) {
+                end = clock();
+                bfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                bfdu_wcrt_count++;
+        }
+
+        if (wfdu_syst_state == YES) {
+                end = clock();
+                wfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                wfdu_wcrt_count++;
+        }
+
+        if (frst_syst_state == YES) {
+                end = clock();
+                frst_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
+                frst_wcrt_count++;
+        }
+
+        if (flag == SCHED_OK)
+                return SCHED_OK;
+
+        else if (flag == SCHED_FAILED)
+                return SCHED_FAILED;
+        else {
+                printf("ERR! wcrt!\n");
+                exit(0);
+        }
+        return -1;
 }
 
 static void _save_priorities(struct bin &b)
@@ -211,71 +278,6 @@ static void _reassignment(struct bin &b)
                         }
                 }
         }
-}
-
-int wcrt(vector<struct task> &v_tasks)
-{
-        int ret;
-        int flag;
-        int r_curr;
-        int r_prev;
-        clock_t start, end;
-        vector<struct task> hp_tasks;
-
-        ret = -1;
-        flag = -1;
-        r_curr = 0;
-        r_prev = 0;
-        flag = SCHED_OK;
-
-        /* compute WCRT for each task */
-        if (bfdu_syst_state == YES)
-                start = clock();
-        if (wfdu_syst_state == YES)
-                start = clock();
-        if (frst_syst_state == YES)
-                start = clock();
-
-        for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                r_curr = 0;
-                r_prev = 0;
-                hp_tasks.clear();
-                _find_hp_tasks(v_tasks, hp_tasks, v_tasks[i], r_prev);
-                /* recursive */
-                _fixedpoint(hp_tasks, v_tasks[i], r_curr, r_prev, ret);
-
-                if (ret == SCHED_FAILED)
-                        flag = SCHED_FAILED;
-        }
-
-        if (bfdu_syst_state == YES) {
-                end = clock();
-                bfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                bfdu_wcrt_count++;
-        }
-
-        if (wfdu_syst_state == YES) {
-                end = clock();
-                wfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                wfdu_wcrt_count++;
-        }
-
-        if (frst_syst_state == YES) {
-                end = clock();
-                frst_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                frst_wcrt_count++;
-        }
-
-        if (flag == SCHED_OK)
-                return SCHED_OK;
-
-        else if (flag == SCHED_FAILED)
-                return SCHED_FAILED;
-        else {
-                printf("ERR! wcrt!\n");
-                exit(0);
-        }
-        return -1;
 }
 
 void priority_assignment(struct bin &b)
