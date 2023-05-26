@@ -125,7 +125,9 @@ struct item {
         int memcost;
         int disp_count;
         int swap_count;
+        int e2ed;
         int is_let;
+        int is_frag;
         int is_allocated;
         vector<struct task> v_tasks;
 };
@@ -184,6 +186,8 @@ void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
 struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id);
 
 struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id);
+
+int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx);
 
 int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
 

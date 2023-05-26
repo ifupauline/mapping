@@ -49,39 +49,39 @@ int main(int argc, char **argv)
 
         /* generation */
         generation(v_bins_bfdu_f, ctx_bfdu_f);
-        generation(v_bins_wfdu_f, ctx_wfdu_f);
-        generation(v_bins_frst_f, ctx_frst_f);
+        //generation(v_bins_wfdu_f, ctx_wfdu_f);
+        //generation(v_bins_frst_f, ctx_frst_f);
 
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
-        allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
-        allocation(v_itms_frst_f, v_bins_frst_f, ctx_frst_f);
+        //allocation(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
+        //allocation(v_itms_frst_f, v_bins_frst_f, ctx_frst_f);
 
         /* schedulability analysis */
         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
-        schedulability_analysis(v_bins_wfdu_f, ctx_wfdu_f);
-        schedulability_analysis(v_bins_frst_f, ctx_frst_f);
+        //schedulability_analysis(v_bins_wfdu_f, ctx_wfdu_f);
+        //schedulability_analysis(v_bins_frst_f, ctx_frst_f);
 
         /* optimization */
         optimization(v_bins_bfdu_f, ctx_bfdu_f);
-        optimization(v_bins_wfdu_f, ctx_wfdu_f);
-        optimization(v_bins_frst_f, ctx_frst_f);
+        //optimization(v_bins_wfdu_f, ctx_wfdu_f);
+        //optimization(v_bins_frst_f, ctx_frst_f);
 
         /* communication */
         communication(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-        communication(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
-        communication(v_bins_frst_f, v_itms_frst_f, ctx_frst_f);
+        //communication(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
+        //communication(v_bins_frst_f, v_itms_frst_f, ctx_frst_f);
 
         /* results */
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);
-        print_cores(v_bins_wfdu_f, ctx_wfdu_f);
-        print_cores(v_bins_frst_f, ctx_frst_f);
+        //print_cores(v_bins_wfdu_f, ctx_wfdu_f);
+        //print_cores(v_bins_frst_f, ctx_frst_f);
         print_vectors(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-        print_vectors(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
-        print_vectors(v_bins_frst_f, v_itms_frst_f, ctx_frst_f);
+        //print_vectors(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
+        //print_vectors(v_bins_frst_f, v_itms_frst_f, ctx_frst_f);
         print_stats(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
-        print_stats(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
-        print_stats(v_itms_frst_f, v_bins_frst_f, ctx_frst_f);
+        //print_stats(v_itms_wfdu_f, v_bins_wfdu_f, ctx_wfdu_f);
+        //print_stats(v_itms_frst_f, v_bins_frst_f, ctx_frst_f);
 
         return 0;
 }

@@ -250,6 +250,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.memcost = MINMEMCOST;
+                itm.e2ed = 0;
+                itm.is_frag = NO;
                 itm.disp_count = 0;
                 itm.swap_count = 0;
                 itm.is_let = NO;
@@ -324,9 +326,11 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.is_let = NO;
+                                itm.is_frag = YES;
                                 itm.is_allocated = NO;
                                 itm.v_tasks = v_tmp;
                                 v_new_itms.push_back(itm);
@@ -335,7 +339,6 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
-
                         }
                         if (i > 0 && u_sum >= ctx.prm.e) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
@@ -345,9 +348,11 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.is_let = NO;
+                                itm.is_frag = YES;
                                 itm.is_allocated = NO;
                                 itm.v_tasks = v_tmp;
                                 v_new_itms.push_back(itm);
@@ -357,7 +362,6 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
-
                         /* add last fragment */
                         if (j == v_tmp_itms[i].v_tasks.size() - 1) {
                                 itm = {0};
@@ -365,9 +369,11 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.is_let = NO;
+                                itm.is_frag = YES;
                                 itm.is_allocated = NO;
                                 itm.v_tasks = v_tmp;
                                 v_new_itms.push_back(itm);

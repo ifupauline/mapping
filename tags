@@ -177,6 +177,7 @@ CMAKE_SOURCE_DIR	exp/phi/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/example/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+COMMUNICATION_H	include/communication.h	2;"	d
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	117;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	123;"	d	file:
@@ -811,7 +812,7 @@ DEC	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
 DEC	exp/phi/CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
-EPSILON	include/generator.h	9;"	d
+EPSILON	include/model.h	22;"	d
 EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/phi/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
@@ -830,27 +831,26 @@ LEFT	include/model.h	17;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
 MAXLETWCET	include/let.h	8;"	d
-MAXMAXTU	include/generator.h	18;"	d
+MAXMAXTU	include/generator.h	17;"	d
 MAXMEMCOST	include/model.h	31;"	d
-MAXN	include/generator.h	14;"	d
-MAXPHI	include/model.h	22;"	d
-MAXTASKNBR	include/generator.h	26;"	d
-MAXWCET	include/generator.h	22;"	d
-MAX_DISP_COUNT	src/optimization.cpp	5;"	d	file:
-MAX_SWAP_COUNT	src/optimization.cpp	6;"	d	file:
+MAXN	include/generator.h	13;"	d
+MAXTASKNBR	include/generator.h	25;"	d
+MAXWCET	include/generator.h	21;"	d
+MAX_DISP_COUNT	src/optimization.cpp	4;"	d	file:
+MAX_SWAP_COUNT	src/optimization.cpp	5;"	d	file:
 MINLETWCET	include/let.h	7;"	d
-MINMAXTU	include/generator.h	17;"	d
+MINMAXTU	include/generator.h	16;"	d
 MINMEMCOST	include/model.h	30;"	d
-MINN	include/generator.h	13;"	d
-MINPHI	include/model.h	21;"	d
-MINTASKNBR	include/generator.h	25;"	d
-MINWCET	include/generator.h	21;"	d
+MINN	include/generator.h	12;"	d
+MINTASKNBR	include/generator.h	24;"	d
+MINWCET	include/generator.h	20;"	d
 MODEL_H	include/model.h	2;"	d
 MSEC	include/model.h	27;"	d
 NO	include/model.h	14;"	d
 OPTIMIZATION_H	include/optimization.h	2;"	d
 PERCENT	include/model.h	25;"	d
 PERMILL	include/model.h	26;"	d
+PHI	include/model.h	21;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	427;"	d	file:
@@ -987,7 +987,7 @@ PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	497;"
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	502;"	d	file:
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"	d	file:
 PLATFORM_ID	exp/phi/CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
-PRECISION	include/generator.h	10;"	d
+PRECISION	include/generator.h	9;"	d
 PRINT_H	include/print.h	2;"	d
 RIGHT	include/model.h	18;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -1114,6 +1114,7 @@ _cmp_avr_mean	exp/phi/phi.cpp	/^static void _cmp_avr_mean(vector<struct b_stats>
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_bin_load_rem	src/model.cpp	/^static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
+_cmp_inc_itm_id	src/model.cpp	/^static int _cmp_inc_itm_id(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
 _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const struct task &a, const struct task &b)$/;"	f	file:
 _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
@@ -1166,6 +1167,10 @@ cmd_gnuplot_fr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_fr[] = {};$/;"	v
 cmd_gnuplot_op	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_op[] = {};$/;"	v	file:
 cmd_gnuplot_sr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
+comm_count	include/model.h	/^        int comm_count;$/;"	m	struct:context
+comm_time	include/model.h	/^        float comm_time;$/;"	m	struct:perf
+communication	src/mapping.cpp	/^void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
+comp_comm	src/communication.cpp	/^void comp_comm(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 compute_bin_load	src/model.cpp	/^void compute_bin_load(struct bin &b, int &load)$/;"	f
 compute_bin_load_rem	src/model.cpp	/^void compute_bin_load_rem(struct bin &b)$/;"	f
 compute_bin_memcost	src/model.cpp	/^void compute_bin_memcost(struct bin &b)$/;"	f
@@ -1188,6 +1193,9 @@ disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:item
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/model.h	/^        float disp_time;$/;"	m	struct:perf
 displacement	src/optimization.cpp	/^void displacement(vector<struct bin> &v_bins)$/;"	f
+e	include/model.h	/^        int e;$/;"	m	struct:params
+e2e_latency	src/communication.cpp	/^void e2e_latency(vector<struct bin> &v_bins)$/;"	f
+e2ed	include/model.h	/^        int e2ed;$/;"	m	struct:item
 et	include/model.h	/^        float et;$/;"	m	struct:perf
 flag	include/model.h	/^        int flag;$/;"	m	struct:bin
 fr	include/model.h	/^        float fr;$/;"	m	struct:perf
@@ -1206,7 +1214,6 @@ get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bi
 id	include/model.h	/^        int id;$/;"	m	struct:bin
 id	include/model.h	/^        int id;$/;"	m	struct:item
 id	include/model.h	/^        int id;$/;"	m	struct:task
-idx	include/model.h	/^        int idx;$/;"	m	struct:item
 idx	include/model.h	/^        struct t_pos idx;$/;"	m	struct:task	typeref:struct:task::t_pos
 info_arch	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v
 info_arch	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";$/;"	v
@@ -1302,7 +1309,6 @@ perf	include/model.h	/^struct perf {$/;"	s
 phi	exp/phi/phi.cpp	/^static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)$/;"	f	file:
 phi	include/exp.h	/^        int phi;$/;"	m	struct:b_stats
 phi	include/model.h	/^        int phi;$/;"	m	struct:bin
-phi	include/model.h	/^        int phi;$/;"	m	struct:params
 plot_data	src/exp.cpp	/^void plot_data(FILE *gnuplot_pipe, char const *commands_gnuplot[], int cmd_nbr)$/;"	f
 print_b_stats	src/exp.cpp	/^void print_b_stats(vector<struct b_stats> &v_stts_bfdu_f, int iter)$/;"	f
 print_core	src/print.cpp	/^void print_core(struct bin &b)$/;"	f
@@ -1337,6 +1343,7 @@ size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
 sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_itms)$/;"	f
 sort_inc_bin_load_rem	src/model.cpp	/^void sort_inc_bin_load_rem(vector<struct bin> &v_bins)$/;"	f
+sort_inc_itm_id	src/model.cpp	/^void sort_inc_itm_id(vector<struct item> &v_itms)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f
 sort_inc_task_priority	src/model.cpp	/^void sort_inc_task_priority(vector<struct task> &v_tasks)$/;"	f
 swap_count	include/model.h	/^        int swap_count;$/;"	m	struct:item
@@ -1350,6 +1357,7 @@ task	include/model.h	/^struct task {$/;"	s
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
 tasks_count	include/model.h	/^        int tasks_count;$/;"	m	struct:context
 tc_id	include/model.h	/^        int tc_id;$/;"	m	struct:task
+tc_idx	include/model.h	/^        int tc_idx;$/;"	m	struct:item
 total_mean_disp	include/exp.h	/^        float total_mean_disp;$/;"	m	struct:b_stats
 total_mean_swap	include/exp.h	/^        float total_mean_swap;$/;"	m	struct:b_stats
 u	include/model.h	/^        float u;$/;"	m	struct:task

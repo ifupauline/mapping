@@ -292,6 +292,19 @@ struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)
         exit(0);
 }
 
+int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx)
+{
+        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+                if (b.v_itms[i].id == itm_id && b.v_itms[i].tc_idx == tc_idx) {
+                        for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
+                                if (j == b.v_itms[i].v_tasks.size() - 1)
+                                        return b.v_itms[i].v_tasks[j].r;
+                        }
+                }
+        }
+        return -1;
+}
+
 int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {
