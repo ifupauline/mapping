@@ -20,63 +20,47 @@ static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp
         }
 }
 
-static void _fixedpoint(vector<struct task> &hp_tasks, struct task &tau, 
-                int &r_curr, int &r_prev, int &ret)
+static void _fixedpoint(vector<struct task> &v_tasks, int &flag)
 {
-        int tmp;
+        int r_prev;
+        vector<struct task> hp_tasks;
 
-        tmp = tau.c;
+        r_prev = 0;
+        flag = SCHED_OK;
 
-        if (tau.c > tau.t) {
-                printf("ERROR Execution Time %d of tau %d > Period %d\n\n", 
-                                tau.c, tau.id, tau.t);
-                exit(0);
-        }
+        sort_inc_task_priority(v_tasks);
 
-        for (unsigned int i = 0; i < hp_tasks.size(); i++) {
-                tmp += (ceilf((float)r_prev/(float)hp_tasks[i].t) * hp_tasks[i].c);
-        }
+        for (unsigned int i = 0; i < v_tasks.size(); i++) {
+                hp_tasks.clear();
+                _find_hp_tasks(v_tasks, hp_tasks, v_tasks[i], r_prev);
 
-        r_curr = tmp;
-
-        if (r_curr > tau.t) {
-                tau.r = r_curr;
-                ret = SCHED_FAILED;
-                return;
-        }
-
-        if (r_curr > r_prev) {
-                r_prev = r_curr;
-                _fixedpoint(hp_tasks, tau, r_curr, r_prev, ret);
-        }
-
-        if (r_curr == r_prev) {
-                tau.r = r_curr;
-                ret = SCHED_OK;
-                if (tau.r > tau.t) {
-                        printf("ERR! tau.r: %d > tau.t: %d\n", tau.r, tau.t);
+                if (v_tasks[i].c > v_tasks[i].t) {
+                        printf("ERR! Execution Time %d of tau %d > Period %d\n\n", 
+                                        v_tasks[i].c, v_tasks[i].id, v_tasks[i].t);
                         exit(0);
                 }
-                return;
+
+                if (v_tasks[i].p == 1) {
+                        v_tasks[i].r = v_tasks[i].c;
+                        r_prev = v_tasks[i].r;
+                        continue;
+                }
+
+                v_tasks[i].r = v_tasks[i].c + r_prev;
+                r_prev = v_tasks[i].r;
+
+                if (r_prev > v_tasks[i].t)
+                        flag = SCHED_FAILED;
         }
 }
 
 int wcrt(vector<struct task> &v_tasks)
 {
-        int ret;
         int flag;
-        int r_curr;
-        int r_prev;
         clock_t start, end;
-        vector<struct task> hp_tasks;
 
-        ret = -1;
         flag = -1;
-        r_curr = 0;
-        r_prev = 0;
-        flag = SCHED_OK;
 
-        /* compute WCRT for each task */
         if (bfdu_syst_state == YES)
                 start = clock();
         if (wfdu_syst_state == YES)
@@ -84,18 +68,7 @@ int wcrt(vector<struct task> &v_tasks)
         if (frst_syst_state == YES)
                 start = clock();
 
-        for (unsigned int i = 0; i < v_tasks.size(); i++) {
-                r_curr = 0;
-                r_prev = 0;
-                hp_tasks.clear();
-                printf("iter: %d\n", i);
-                _find_hp_tasks(v_tasks, hp_tasks, v_tasks[i], r_prev);
-                /* recursive */
-                _fixedpoint(hp_tasks, v_tasks[i], r_curr, r_prev, ret);
-
-                if (ret == SCHED_FAILED)
-                        flag = SCHED_FAILED;
-        }
+        _fixedpoint(v_tasks, flag);
 
         if (bfdu_syst_state == YES) {
                 end = clock();
