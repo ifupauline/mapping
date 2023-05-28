@@ -206,7 +206,7 @@ static void _check_params(struct params &prm)
 {
         if (prm.e < MAXMAXTU || prm.e > PHI) {
                 printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
-                                MAXMAXTU,  PHI);
+                                MAXMAXTU + 1,  PHI);
                 exit(0);
         }
 

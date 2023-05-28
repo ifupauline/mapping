@@ -346,7 +346,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("M/M*:                             %-3.3f\n", ctx.p.cr);
         printf("------------------------------------------------------------------------>\n");
-        printf("Communication                     %-3d\n", ctx.comm_count);
+        printf("Number of Communication           %-3d\n", ctx.comm_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
         printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
