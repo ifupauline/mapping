@@ -30,6 +30,14 @@
 #define MINMEMCOST 1
 #define MAXMEMCOST 3
 
+/* colors */
+#define RED    0
+#define BLUE   1
+#define YELLOW 2
+#define GREEN  3
+#define CYAN   4
+#define PURPLE 5
+
 using namespace std;
 
 extern int bfdu_wcrt_count;
@@ -129,6 +137,7 @@ struct item {
         int disp_count;
         int swap_count;
         int e2ed;
+        int color;
         int is_let;
         int is_frag;
         int is_allocated;

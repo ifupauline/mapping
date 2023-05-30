@@ -25,6 +25,7 @@ void init_let_task(struct item &let, struct context &ctx)
         let.memcost = 0;
         let.disp_count = 0;
         let.swap_count = 0;
+        let.color = -1;
         let.is_let = YES;
         let.is_allocated = NO;
         let.id = ctx.itms_count;

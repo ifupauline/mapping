@@ -251,6 +251,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.memcost = MINMEMCOST;
                 itm.e2ed = 0;
+                itm.color =  gen_rand(0,10);
                 itm.is_frag = NO;
                 itm.disp_count = 0;
                 itm.swap_count = 0;
@@ -329,6 +330,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
+                                itm.color = v_tmp_itms[i].color;
                                 itm.is_let = NO;
                                 itm.is_frag = YES;
                                 itm.is_allocated = NO;
@@ -351,6 +353,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
+                                itm.color = v_tmp_itms[i].color;
                                 itm.is_let = NO;
                                 itm.is_frag = YES;
                                 itm.is_allocated = NO;
@@ -372,6 +375,7 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
+                                itm.color = v_tmp_itms[i].color;
                                 itm.is_let = NO;
                                 itm.is_frag = YES;
                                 itm.is_allocated = NO;

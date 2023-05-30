@@ -167,11 +167,9 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                         printf("|Sched: FAILED\n");
 
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-
                         if (v_bins[i].v_itms[j].is_let == YES){
-
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|LET: %-3d size %-3d gcd %-3d\n", 
+                                printf("|LET: %-3d size %-3d gcd %-6d\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].size,
                                                 v_bins[i].v_itms[j].gcd);
@@ -195,17 +193,47 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                         } else
                                                 printf("\n");
                                 }
+                                printf("\033[0m");
 
                         } else {
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|TC:  %-3d tc_idx %d size %-3d gcd %-3d memcost %d\n", 
+                                if (v_bins[i].v_itms[j].color == RED)
+                                        printf("\033[0;31m");
+                                else if (v_bins[i].v_itms[j].color == BLUE)
+                                        printf("\033[0;34m");
+                                else if (v_bins[i].v_itms[j].color == YELLOW)
+                                        printf("\033[0;33m");
+                                else if (v_bins[i].v_itms[j].color == GREEN)
+                                        printf("\033[0;32m");
+                                else if (v_bins[i].v_itms[j].color == CYAN)
+                                        printf("\033[0;36m");
+                                else if (v_bins[i].v_itms[j].color == PURPLE)
+                                        printf("\033[0;35m");
+                                else
+                                        printf("\033[0;37m");
+                                printf("|TC:  %-3d tc_idx %d size %-3d gcd %-6d memcost %d color %d\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].tc_idx, 
                                                 v_bins[i].v_itms[j].size,
                                                 v_bins[i].v_itms[j].gcd,
-                                                v_bins[i].v_itms[j].memcost);
-
+                                                v_bins[i].v_itms[j].memcost,
+                                                v_bins[i].v_itms[j].color);
+                                                printf("\033[0m");
                                 printf("|--------------------------------------------------------------|\n");
+                                if (v_bins[i].v_itms[j].color == RED)
+                                        printf("\033[0;31m");
+                                else if (v_bins[i].v_itms[j].color == BLUE)
+                                        printf("\033[0;34m");
+                                else if (v_bins[i].v_itms[j].color == YELLOW)
+                                        printf("\033[0;33m");
+                                else if (v_bins[i].v_itms[j].color == GREEN)
+                                        printf("\033[0;32m");
+                                else if (v_bins[i].v_itms[j].color == CYAN)
+                                        printf("\033[0;36m");
+                                else if (v_bins[i].v_itms[j].color == PURPLE)
+                                        printf("\033[0;35m");
+                                else
+                                        printf("\033[0;37m");
                                 for (unsigned int k = 0; k < v_bins[i].v_itms[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
                                                         v_bins[i].v_itms[j].v_tasks[k].id, 
@@ -225,6 +253,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                         } else
                                                 printf("\n");
                                 }
+                                printf("\033[0m");
                         }
                 }
                 printf("+==============================================================+\n\n");
