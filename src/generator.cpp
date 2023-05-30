@@ -225,8 +225,8 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         struct item itm;
         struct task tau;
 
-        ncount = 0;
         itm = {0};
+        ncount = 0;
 
         _check_params(prm);
 
@@ -269,6 +269,7 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
                 }
+
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.size;
                 ncount++;
@@ -281,6 +282,54 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+
+        /* count color */
+        int red = 0;
+        int blue = 0;
+        int yellow = 0;
+        int green = 0; 
+        int cyan = 0;
+        int purple = 0;
+        int white = 0;
+
+        ctx.cs = {0};
+
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                if (v_itms[i].color == RED) {
+                        red++;
+                        ctx.cs.red += v_itms[i].size;
+                } else if (v_itms[i].color == BLUE) {
+                        blue++;
+                        ctx.cs.blue += v_itms[i].size;
+                } else if (v_itms[i].color == YELLOW) {
+                        yellow++;
+                        ctx.cs.yellow += v_itms[i].size;
+                } else if (v_itms[i].color == GREEN) {
+                        green++;
+                        ctx.cs.green += v_itms[i].size;
+                } else if (v_itms[i].color == CYAN) {
+                        cyan++;
+                        ctx.cs.cyan += v_itms[i].size;
+                } else if (v_itms[i].color == PURPLE) {
+                        purple++;
+                        ctx.cs.purple += v_itms[i].size;
+                } else  {
+                        white++;
+                        ctx.cs.white += v_itms[i].size;
+                }
+        }
+
+        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
+                        purple == 0 || white == 0)
+                return -1;
+
+        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
+        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
+        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
+        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
+        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
+        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
+        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
 
         return 0;
 }

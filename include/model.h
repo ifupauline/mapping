@@ -86,6 +86,16 @@ struct perf {
         int sched_imp_swap;
 };
 
+struct colorsize {
+        int red;
+        int blue;
+        int yellow;
+        int green;
+        int cyan;
+        int purple;
+        int white;
+};
+
 struct context {
         int itms_nbr;
         int itms_size;
@@ -104,6 +114,7 @@ struct context {
         int sched_failed_count;
         struct perf p;
         struct params prm;
+        struct colorsize cs;
 };
 
 /* TASK MODEL */
@@ -153,6 +164,13 @@ struct bin {
         int memcost;
         vector<struct item> v_itms;
         vector<struct task> v_tasks;
+};
+
+/* PLATFORM MODEL */
+struct ecu {
+        int id;
+        int color;
+        vector<struct bin> v_bins;
 };
 
 /* OPERATIONS ON DATA STRUCTURES */

@@ -96,12 +96,12 @@ void print_task_chains(vector<struct item> &v_itms)
         tasknbr = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
-                printf("==============================================\n");
-                printf("tc.id: %-3d tc.idx: %-3d u: %.3f memcost: %d\n", 
+                printf("======================================================\n");
+                printf("tc.id: %-3d tc.idx: %-3d u: %.3f memcost: %d color: %d\n", 
                                 v_itms[i].id, v_itms[i].tc_idx, 
                                 (float)v_itms[i].size / PERMILL, 
-                                v_itms[i].memcost);
-                printf("==============================================\n");
+                                v_itms[i].memcost, v_itms[i].color);
+                printf("======================================================\n");
                 for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
                         printf("tau %d: u: %.3f c: %-6d t: %-6d\n",
                                         v_itms[i].v_tasks[j].id, 
@@ -110,7 +110,7 @@ void print_task_chains(vector<struct item> &v_itms)
                                         v_itms[i].v_tasks[j].t);
                         tasknbr++;
                 }
-                printf("----------------------------------------------\n");
+                printf("------------------------------------------------------\n");
                 printf("\n\n");
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
