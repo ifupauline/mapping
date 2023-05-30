@@ -23,6 +23,11 @@ static int _cmp_inc_itm_id(const struct item &a, const struct item &b)
         return a.id < b.id;
 }
 
+static int _cmp_inc_itm_tc_idx(const struct item &a, const struct item &b)
+{
+        return a.tc_idx < b.tc_idx;
+}
+
 static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)
 {
         return a.load_rem < b.load_rem;
@@ -56,6 +61,11 @@ void sort_dec_itm_size(vector<struct item> &v_itms)
 void sort_inc_itm_id(vector<struct item> &v_itms)
 {
         sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_id);
+}
+
+void sort_inc_itm_tc_idx(vector<struct item> &v_itms)
+{
+        sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_tc_idx);
 }
 
 void sort_inc_bin_load_rem(vector<struct bin> &v_bins)

@@ -120,7 +120,7 @@ void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         printf("| COMMUNICATION                       |\n");
         printf("+=====================================+\n");
         start = clock();
-        comp_comm(v_bins, v_itms, ctx);
+        comm_count(v_bins, v_itms, ctx);
         e2e_latency(v_bins, v_itms, ctx);
         end = clock();
         ctx.p.comm_time = ((float) (end - start)) / CLOCKS_PER_SEC;

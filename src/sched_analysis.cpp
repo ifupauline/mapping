@@ -1,12 +1,12 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-int bfdu_syst_state = NO;
-int wfdu_syst_state = NO;
-int frst_syst_state = NO;
 int bfdu_wcrt_count = 0;
 int wfdu_wcrt_count = 0;
 int frst_wcrt_count = 0;
+int bfdu_syst_state = NO;
+int wfdu_syst_state = NO;
+int frst_syst_state = NO;
 float bfdu_sched_time = 0;
 float wfdu_sched_time = 0;
 float frst_sched_time = 0;
@@ -279,4 +279,53 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 
         ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
         ctx.p.sched_imp_allo = ctx.sched_ok_count;
+}
+
+void verify_tc_schedulability(vector<vector<struct item>> &v_frag_itms, 
+                vector<struct item> &v_non_frag_itms, struct context &ctx)
+{
+        printf("+=================================+\n");
+        printf("| TC SCHEDULABILITY               |\n");
+        printf("+=================================+\n");
+
+        int flag;
+
+        for (unsigned int i = 0; i < v_non_frag_itms.size(); i++) {
+                flag = NO;
+                for (unsigned int j = 0; j < v_non_frag_itms[i].v_tasks.size(); j++) {
+                        if (v_non_frag_itms[i].v_tasks[j].r > v_non_frag_itms[i].v_tasks[j].t) {
+                                printf("TC %d failed --> r %d > t %d\n", v_non_frag_itms[i].id, 
+                                                v_non_frag_itms[i].v_tasks[j].r, 
+                                                v_non_frag_itms[i].v_tasks[j].t);
+                                flag = YES;
+                        }
+                }
+                if (flag == NO)
+                        ctx.e2e_ok_count++;
+                else
+                        ctx.e2e_failed_count++;
+        }
+        printf("----------------------------------------\n");
+
+        for (unsigned int i = 0; i < v_frag_itms.size(); i++) {
+                flag = NO;
+                for (unsigned int j = 0; j < v_frag_itms[i].size(); j++) {
+                        /* check wcrt */
+                        for (unsigned int k = 0; k < v_frag_itms[i][j].v_tasks.size(); k++) {
+                                if (v_frag_itms[i][j].v_tasks[k].r > v_frag_itms[i][j].v_tasks[k].t) {
+                                        printf("TC %d tc_idx %d failed --> r %d > t %d\n", 
+                                                        v_frag_itms[i][j].id, v_frag_itms[i][j].tc_idx,
+                                                        v_frag_itms[i][j].v_tasks[k].r, 
+                                                        v_frag_itms[i][j].v_tasks[k].t);
+                                        flag = YES;
+                                }
+                        }
+                }
+                if (flag == NO)
+                        ctx.e2e_ok_count++;
+                else
+                        ctx.e2e_failed_count++;
+        }
+        printf("Number of TC schedulable:   %d\n", ctx.e2e_ok_count);
+        printf("Number of TC unschedulable: %d\n", ctx.e2e_failed_count);
 }

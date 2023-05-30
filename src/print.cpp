@@ -23,6 +23,7 @@ static void _execution_time(struct context &ctx)
 
 static void _schedulability_rate(struct context &ctx)
 {
+        ctx.p.sched_rate_tc = ((float)ctx.e2e_ok_count / (float)ctx.prm.n) * PERCENT;
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
         ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - ctx.p.sched_rate_allo;
         ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - (ctx.p.sched_rate_disp * PERCENT);
@@ -353,6 +354,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
+        printf("Schedulability Rate (tc):         %-3.3f\n", ctx.p.sched_rate_tc);
         printf("------------------------------------------------------------------------>\n");
         printf("Displacement SR Gain:            +%-3.3f\n", ctx.p.disp_gain);
         printf("Swapping SR Gain:                +%-3.3f\n", ctx.p.swap_gain);
