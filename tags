@@ -92,17 +92,20 @@ C	include/model.h	20;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/phi/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_BINARY_DIR	tests/example/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_BINARY_DIR	tests/ex_eden/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_BINARY_DIR	tests/ex_normal/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/phi/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/example/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	tests/ex_eden/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	tests/ex_normal/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	exp/phi/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_SOURCE_DIR	tests/example/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_SOURCE_DIR	tests/ex_eden/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_SOURCE_DIR	tests/ex_normal/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 COMMUNICATION_H	include/communication.h	2;"	d
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
@@ -427,7 +430,8 @@ EPSILON	include/model.h	22;"	d
 EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/phi/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
+EQUALS	tests/ex_eden/Makefile	/^EQUALS = =$/;"	m
+EQUALS	tests/ex_normal/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 FRST_F	include/model.h	11;"	d
 GENERATOR_H	include/generator.h	2;"	d
@@ -536,7 +540,8 @@ RIGHT	include/model.h	18;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/phi/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/example/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	tests/ex_eden/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	tests/ex_normal/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
@@ -544,7 +549,8 @@ SCHED_OK	include/sched_analysis.h	8;"	d
 SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/phi/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/example/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	tests/ex_eden/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	tests/ex_normal/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMNBR	exp/phi/phi.cpp	7;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
@@ -604,7 +610,8 @@ __has_include	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
 __has_include	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 _assign_id	src/generator.cpp	/^static void _assign_id(vector<struct item> &v_itms)$/;"	f	file:
 _base_assignment	src/sched_analysis.cpp	/^static void _base_assignment(struct bin &b)$/;"	f	file:
-_check_params	src/generator.cpp	/^static void _check_params(struct params &prm)$/;"	f	file:
+_check_params_eden	src/generator.cpp	/^static void _check_params_eden(struct params &prm)$/;"	f	file:
+_check_params_normal	src/generator.cpp	/^static void _check_params_normal(struct params &prm)$/;"	f	file:
 _cmp_avr_mean	exp/phi/phi.cpp	/^static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
@@ -625,7 +632,7 @@ _find_frst_bin	src/frst_f.cpp	/^static int _find_frst_bin(vector<struct bin> &v_
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _fixedpoint	src/sched_analysis.cpp	/^static void _fixedpoint(vector<struct task> &v_tasks, int &flag)$/;"	f	file:
-_gen_eden_set	src/generator.cpp	/^static int _gen_eden_set(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
+_gen_eden_set	src/generator.cpp	/^static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm, $/;"	f	file:
 _gen_normal_set	src/generator.cpp	/^static int _gen_normal_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
 _reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)$/;"	f	file:
@@ -751,9 +758,10 @@ info_version_internal	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char co
 info_version_internal	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";$/;"	v
 info_version_internal	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_version_internal[] = {$/;"	v
 info_version_internal	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";$/;"	v
-init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)$/;"	f
+init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct params &prm, $/;"	f
 init_let_task	src/let.cpp	/^void init_let_task(struct item &let, struct context &ctx)$/;"	f
-input	src/generator.cpp	/^void input(int argc, char **argv, struct params &prm)$/;"	f
+input_eden	src/generator.cpp	/^void input_eden(int argc, char **argv, struct params &prm)$/;"	f
+input_normal	src/generator.cpp	/^void input_normal(int argc, char **argv, struct params &prm)$/;"	f
 is_allocated	include/model.h	/^        int is_allocated;$/;"	m	struct:item
 is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:item
 is_frag_same_tc	src/model.cpp	/^int is_frag_same_tc(struct bin &b)$/;"	f
@@ -772,7 +780,8 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	exp/phi/phi.cpp	/^int main(void)$/;"	f
-main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
+main	tests/ex_eden/ex_eden.cpp	/^int main(int argc, char **argv)$/;"	f
+main	tests/ex_normal/ex_normal.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
 mean_cr	include/exp.h	/^        float mean_cr;$/;"	m	struct:b_stats

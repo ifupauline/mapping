@@ -26,7 +26,9 @@
 
 int gen_rand(int min, int max);
 
-void input(int argc, char **argv, struct params &prm);
+void input_normal(int argc, char **argv, struct params &prm);
+
+void input_eden(int argc, char **argv, struct params &prm);
 
 void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);

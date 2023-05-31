@@ -11,7 +11,7 @@ static void _assign_id(vector<struct item> &v_itms)
                 v_itms[i].id = i;
 }
 
-static void _check_params(struct params &prm)
+static void _check_params_normal(struct params &prm)
 {
         if (prm.e < MAXMAXTU || prm.e > PHI) {
                 printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
@@ -21,6 +21,15 @@ static void _check_params(struct params &prm)
 
         if (prm.n < MINN || prm.n > MAXN) {
                 printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+                exit(0);
+        }
+}
+
+static void _check_params_eden(struct params &prm)
+{
+        if (prm.e < MAXMAXTU || prm.e > PHI) {
+                printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
+                                MAXMAXTU + 1,  PHI);
                 exit(0);
         }
 }
@@ -331,7 +340,8 @@ static void _create_tc(struct item &itm, int color)
         }
 }
 
-static int _gen_eden_set(vector<struct item> &v_itms, struct context &ctx)
+static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm, 
+                struct context &ctx)
 {
         printf("\n\n");
         printf("+=====================================+\n");
@@ -379,6 +389,9 @@ static int _gen_eden_set(vector<struct item> &v_itms, struct context &ctx)
         sort_dec_itm_size(v_itms);
         _assign_id(v_itms);
 
+        ctx.prm.n = v_itms.size();
+        prm.n = v_itms.size();
+
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
 
@@ -401,7 +414,7 @@ static int _gen_normal_set(vector<struct item> &v_itms, struct params &prm,
         itm = {0};
         ncount = 0;
 
-        _check_params(prm);
+        _check_params_normal(prm);
 
         printf("\n\n");
         printf("+=====================================+\n");
@@ -585,7 +598,7 @@ int gen_rand(int min, int max)
         return distr(gen);
 }
 
-void input(int argc, char **argv, struct params &prm)
+void input_normal(int argc, char **argv, struct params &prm)
 {
         if (argc != 3) {
                 printf("Wrong Number of Arguments!\n");
@@ -593,10 +606,21 @@ void input(int argc, char **argv, struct params &prm)
         }
         prm.n = atoi(argv[1]);
         prm.e = atoi(argv[2]);
-        _check_params(prm);
+        _check_params_normal(prm);
 }
 
-void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &ctx)
+void input_eden(int argc, char **argv, struct params &prm)
+{
+        if (argc != 2) {
+                printf("Wrong Number of Arguments!\n");
+                exit(0);
+        }
+        prm.e = atoi(argv[1]);
+        _check_params_eden(prm);
+}
+
+void init_ctx(vector<struct item> &v_itms, struct params &prm, 
+                struct context &ctx)
 {
         float frag_time;
 
@@ -642,5 +666,5 @@ void gen_eden_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         ctx.prm = prm;
-        _gen_eden_set(v_itms, ctx);
+        _gen_eden_set(v_itms, prm, ctx);
 }
