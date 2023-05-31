@@ -37,6 +37,7 @@
 #define GREEN  3
 #define CYAN   4
 #define PURPLE 5
+#define WHITE  6
 
 using namespace std;
 

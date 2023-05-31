@@ -23,7 +23,8 @@ int main(int argc, char **argv)
         input(argc, argv, prm);
 
         /* generate set of task-chains and initialize context */
-        gen_tc_set(v_itms, prm, ctx);
+        //gen_normal_set(v_itms, prm, ctx);
+        gen_eden_set(v_itms, prm, ctx);
         print_task_chains(v_itms);
 
         /* offline fragmentation */

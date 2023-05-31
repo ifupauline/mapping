@@ -125,10 +125,6 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
         vector<int> v_p;
 
         newp = p + 1;
-        v_p.clear();
-        b.v_tasks.clear();
-
-        int flag = NO;
 
         /* store hp */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
@@ -139,7 +135,6 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
                 if (b.v_tasks[i].uniq_id == uniq_id)
                         continue;
                 if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id) {
-                        flag = YES;
                         continue;
                 }
 
@@ -175,18 +170,9 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
                         copy_back_prio_to_tc(b);
                         copy_back_resp_to_tc(b);
                         printf("Core %d SCHED_OK with reassignment\n", b.id);
-                        if (flag == YES) {
-                                print_core(b);
-                                exit(0);
-                        }
                         return;
 
                 } else {
-                        if (flag == YES) {
-                                print_core(b);
-                                exit(0);
-                        }
-
                         b.flag = SCHED_FAILED;
                         return;
                 }
@@ -244,10 +230,10 @@ static void _reassignment(struct bin &b)
                                         b.v_tasks[i].uniq_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;
-                                if (ret == YES) {
-                                        print_core(b);
-                                        exit(0);
-                                }
+                                //if (ret == YES) {
+                                //        print_core(b);
+                                //        exit(0);
+                                //}
                         }
                 }
         }

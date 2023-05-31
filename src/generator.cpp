@@ -1,46 +1,104 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-/* WATERS 2015, 2016, 2017 */
 static int chain[1][6] = {
         {1000, 2000, 5000, 10000, 20000, 50000},
 };
 
-static void _create_waters_task(struct task &tau, struct params &prm, int i, int x)
+static void _assign_id(vector<struct item> &v_itms)
 {
-        int y;
-        int real_t;
-        float udiff;
-        float real_c;
-        float real_u;
+        for (unsigned int i = 0; i < v_itms.size(); i++)
+                v_itms[i].id = i;
+}
 
-        while (1) {
-                y  = gen_rand(0, 5);
-                real_t = chain[x][y];
-                real_c = gen_rand(MINWCET, MAXWCET);
-                real_u = (real_c/real_t) * PERMILL;
-
-                if (real_u > MAXMAXTU || real_u < MINMAXTU)
-                        continue;
-
-                tau.u = ceil((real_c/real_t) * PERMILL);
-                tau.c = ceil(real_c);
-                tau.t = real_t;
-
-                if (tau.c >= tau.t)
-                        continue;
-
-                /* if diff too big redo */
-                udiff = tau.u - real_u;
-                if (udiff > PRECISION)
-                        continue;
-
-                tau.d = tau.t; /* implicit deadline */
-                tau.r = 0;
-                tau.p = i + 1; /* 1 is highest priority */
-                tau.id = i;
-                break;
+static void _check_params(struct params &prm)
+{
+        if (prm.e < MAXMAXTU || prm.e > PHI) {
+                printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
+                                MAXMAXTU + 1,  PHI);
+                exit(0);
         }
+
+        if (prm.n < MINN || prm.n > MAXN) {
+                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
+                exit(0);
+        }
+}
+
+static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
+{
+        /* count color */
+        int red = 0;
+        int blue = 0;
+        int yellow = 0;
+        int green = 0; 
+        int cyan = 0;
+        int purple = 0;
+        int white = 0;
+
+        ctx.cs = {0};
+        ctx.itms_size = 0;
+
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                ctx.itms_size += v_itms[i].size;
+                if (v_itms[i].color == RED) {
+                        red++;
+                        ctx.cs.red += v_itms[i].size;
+                } else if (v_itms[i].color == BLUE) {
+                        blue++;
+                        ctx.cs.blue += v_itms[i].size;
+                } else if (v_itms[i].color == YELLOW) {
+                        yellow++;
+                        ctx.cs.yellow += v_itms[i].size;
+                } else if (v_itms[i].color == GREEN) {
+                        green++;
+                        ctx.cs.green += v_itms[i].size;
+                } else if (v_itms[i].color == CYAN) {
+                        cyan++;
+                        ctx.cs.cyan += v_itms[i].size;
+                } else if (v_itms[i].color == PURPLE) {
+                        purple++;
+                        ctx.cs.purple += v_itms[i].size;
+                } else {
+                        white++;
+                        ctx.cs.white += v_itms[i].size;
+                }
+        }
+
+        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
+                        purple == 0 || white == 0)
+                return -1;
+
+        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
+        ctx.cs.red_bins_min = abs(ctx.cs.red / PHI) + 1;
+        ctx.cs.blue_bins_min = abs(ctx.cs.blue / PHI) + 1;
+        ctx.cs.yellow_bins_min = abs(ctx.cs.yellow / PHI) + 1;
+        ctx.cs.green_bins_min = abs(ctx.cs.green / PHI) + 1;
+        ctx.cs.cyan_bins_min = abs(ctx.cs.cyan / PHI) + 1;
+        ctx.cs.purple_bins_min = abs(ctx.cs.purple / PHI) + 1;
+        ctx.cs.white_bins_min = abs(ctx.cs.white / PHI) + 1;
+
+        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
+        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
+        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
+        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
+        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
+        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
+        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
+        printf("------------------------------------------------------\n");
+        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_bins_min);
+        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_bins_min);
+        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_bins_min);
+        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_bins_min);
+        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_bins_min);
+        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_bins_min);
+        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_bins_min);
+        printf("------------------------------------------------------\n");
+        printf("Total Number of Cores    %u\n", ctx.bins_min);
+        printf("Total Utilization of TC: %u\n\n", ctx.itms_size);
+        printf("------------------------------------------------------\n");
+
+        return 0;
 }
 
 /* WATERS 2019 CRTX A57 2000 MhZ */
@@ -175,6 +233,7 @@ static void _create_waters2019(struct item &itm)
         waters2019.memcost = MAXMEMCOST;
         waters2019.disp_count = 0;
         waters2019.swap_count = 0;
+        waters2019.color = RED;
         waters2019.is_let = NO;
         waters2019.is_allocated = NO;
 
@@ -196,103 +255,139 @@ static void _create_waters2019(struct item &itm)
         itm = waters2019;
 }
 
-static void _assign_id(vector<struct item> &v_itms)
+static void _create_task(struct task &tau, int i, int x)
 {
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_itms[i].id = i;
+        int y;
+        int real_t;
+        float udiff;
+        float real_c;
+        float real_u;
+
+        while (1) {
+                y  = gen_rand(0, 5);
+                real_t = chain[x][y];
+                real_c = gen_rand(MINWCET, MAXWCET);
+                real_u = (real_c/real_t) * PERMILL;
+
+                if (real_u > MAXMAXTU || real_u < MINMAXTU)
+                        continue;
+
+                tau.u = ceil((real_c/real_t) * PERMILL);
+                tau.c = ceil(real_c);
+                tau.t = real_t;
+
+                if (tau.c >= tau.t)
+                        continue;
+
+                /* if diff too big redo */
+                udiff = tau.u - real_u;
+                if (udiff > PRECISION)
+                        continue;
+
+                tau.d = tau.t; /* implicit deadline */
+                tau.r = 0;
+                tau.p = i + 1; /* 1 is highest priority */
+                tau.id = i;
+                break;
+        }
 }
 
-static void _check_params(struct params &prm)
+static void _create_tc(struct item &itm, int color)
 {
-        if (prm.e < MAXMAXTU || prm.e > PHI) {
-                printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
-                                MAXMAXTU + 1,  PHI);
-                exit(0);
-        }
+        int x;
+        int task_nbr;
+        struct task tau;
 
-        if (prm.n < MINN || prm.n > MAXN) {
-                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
-                exit(0);
-        }
-}
+        while (1) {
+                x = 0;
+                itm = {0};
+                itm.tc_idx = 0;
+                itm.size = 0;
+                task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
+                itm.memcost = MINMEMCOST;
+                itm.e2ed = 0;
+                itm.color = color;
+                itm.is_frag = NO;
+                itm.disp_count = 0;
+                itm.swap_count = 0;
+                itm.is_let = NO;
+                itm.is_allocated = NO;
 
-static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
-{
+                for (int i = 0; i < task_nbr; i++) {
+                        tau = {0};
+                        tau.is_let = NO;
+                        tau.tc_id = itm.id;
 
-        /* count color */
-        int red = 0;
-        int blue = 0;
-        int yellow = 0;
-        int green = 0; 
-        int cyan = 0;
-        int purple = 0;
-        int white = 0;
+                        _create_task(tau, i, x);
 
-        ctx.cs = {0};
-        ctx.itms_size = 0;
-
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                ctx.itms_size += v_itms[i].size;
-                if (v_itms[i].color == RED || v_itms[i].color == 6) {
-                        red++;
-                        ctx.cs.red += v_itms[i].size;
-                } else if (v_itms[i].color == BLUE) {
-                        blue++;
-                        ctx.cs.blue += v_itms[i].size;
-                } else if (v_itms[i].color == YELLOW) {
-                        yellow++;
-                        ctx.cs.yellow += v_itms[i].size;
-                } else if (v_itms[i].color == GREEN) {
-                        green++;
-                        ctx.cs.green += v_itms[i].size;
-                } else if (v_itms[i].color == CYAN) {
-                        cyan++;
-                        ctx.cs.cyan += v_itms[i].size;
-                } else if (v_itms[i].color == PURPLE) {
-                        purple++;
-                        ctx.cs.purple += v_itms[i].size;
-                } else  {
-                        white++;
-                        ctx.cs.white += v_itms[i].size;
+                        itm.v_tasks.push_back(tau);
+                        itm.size += tau.u;
                 }
+
+                if (itm.size < C)
+                        continue;
+                else
+                        return;
         }
+}
 
-        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
-                        purple == 0 || white == 0)
-                return -1;
+static int _gen_eden_set(vector<struct item> &v_itms, struct context &ctx)
+{
+        printf("\n\n");
+        printf("+=====================================+\n");
+        printf("| EDEN INSTANCE GENERATION            |\n");
+        printf("+=====================================+\n");
 
-        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
-        ctx.cs.red_bins_min = abs(ctx.cs.red / PHI) + 1;
-        ctx.cs.blue_bins_min = abs(ctx.cs.blue / PHI) + 1;
-        ctx.cs.yellow_bins_min = abs(ctx.cs.yellow / PHI) + 1;
-        ctx.cs.green_bins_min = abs(ctx.cs.green / PHI) + 1;
-        ctx.cs.cyan_bins_min = abs(ctx.cs.cyan / PHI) + 1;
-        ctx.cs.purple_bins_min = abs(ctx.cs.purple / PHI) + 1;
-        ctx.cs.white_bins_min = abs(ctx.cs.white / PHI) + 1;
+        struct item itm;
 
-        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
-        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
-        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
-        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
-        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
-        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
-        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
-        printf("------------------------------------------------------\n");
-        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_bins_min);
-        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_bins_min);
-        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_bins_min);
-        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_bins_min);
-        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_bins_min);
-        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_bins_min);
-        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_bins_min);
-        printf("------------------------------------------------------\n");
-        printf("Total Number of Cores    %u\n", ctx.bins_min);
-        printf("Total Utilization of TC: %u\n\n", ctx.itms_size);
+        /* red -> waters */
+        itm = {0};
+        _create_waters2019(itm);
+        v_itms.push_back(itm);
+
+        /* blue */
+        itm = {0};
+        _create_tc(itm, BLUE);
+        v_itms.push_back(itm);
+
+        /* yellow */
+        itm = {0};
+        _create_tc(itm, YELLOW);
+        v_itms.push_back(itm);
+
+        /* green */
+        itm = {0};
+        _create_tc(itm, GREEN);
+        v_itms.push_back(itm);
+
+        /* cyan */
+        itm = {0};
+        _create_tc(itm, CYAN);
+        v_itms.push_back(itm);
+
+        /* purple */
+        itm = {0};
+        _create_tc(itm, PURPLE);
+        v_itms.push_back(itm);
+
+        /* white */
+        for (int i = 0; i < 4; i++) {
+                itm = {0};
+                _create_tc(itm, WHITE);
+                v_itms.push_back(itm);
+        }
+        sort_dec_itm_size(v_itms);
+        _assign_id(v_itms);
+
+        for (unsigned int i = 0; i < v_itms.size(); i++)
+                v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+
+        _compute_colors(v_itms, ctx);
 
         return 0;
 }
 
-static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
+static int _gen_normal_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         int x;
@@ -310,22 +405,18 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 
         printf("\n\n");
         printf("+=====================================+\n");
-        printf("| INSTANCE GENERATION                 |\n");
+        printf("| NORMAL INSTANCE GENERATION          |\n");
         printf("+=====================================+\n");
-
-        /* create tc from waters2019 */
-        _create_waters2019(itm);
 
         /* derive synthetic set from waters */
         while (ncount != prm.n) {
                 itm = {0};
-                itm.id = ncount;
                 itm.tc_idx = 0;
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.memcost = MINMEMCOST;
                 itm.e2ed = 0;
-                itm.color =  gen_rand(0,10);
+                itm.color = gen_rand(0,10);
                 itm.is_frag = NO;
                 itm.disp_count = 0;
                 itm.swap_count = 0;
@@ -338,13 +429,16 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         tau.is_let = NO;
                         tau.tc_id = itm.id;
 
-                        _create_waters_task(tau, prm, i, x);
+                        _create_task(tau, i, x);
 
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
                 }
+
+                if (itm.size < C)
+                        continue;
+
                 v_itms.push_back(itm);
-                v_itms[ncount].size = itm.size;
                 ncount++;
                 printf("%d\n", ncount);
         }
@@ -357,13 +451,14 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
 
         ret = _compute_colors(v_itms, ctx);
+
         if (ret == -1)
                 return -1;
 
         return 0;
 }
 
-static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
+void partitioning(vector<struct item> &v_itms, struct context &ctx)
 {
         int idx;
         int u_sum;
@@ -392,11 +487,8 @@ static void _partitioning(vector<struct item> &v_itms, struct context &ctx)
                 idx = 0;
                 for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
                         u_sum += v_tmp_itms[i].v_tasks[j].u;
-                        //printf("u_sum: %d v_tasks[%i].u: %f\n", 
-                        //                u_sum, j, v_tmp_itms[i].v_tasks[j].u);
                         v_tmp_itms[i].v_tasks[j].tc_id = v_tmp_itms[i].id;
                         v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
-                        /* only for waters2019 */
                         if (i == 0 && u_sum >= PHI) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
@@ -527,7 +619,7 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         ctx.p.frag_time = frag_time;
 }
 
-void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
+void gen_normal_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         int ret; 
@@ -536,7 +628,7 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         ctx.prm = prm;
 
         while (1) {
-                ret = _gen_tc_set(v_itms, prm, ctx);
+                ret = _gen_normal_set(v_itms, prm, ctx);
                 if (ret == -1) {
                         printf("ERR! data set generation\n");
                         v_itms.clear();
@@ -546,7 +638,9 @@ void gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         }
 }
 
-void partitioning(vector<struct item> &v_itms, struct context &ctx)
+void gen_eden_set(vector<struct item> &v_itms, struct params &prm, 
+                struct context &ctx)
 {
-        _partitioning(v_itms, ctx);
+        ctx.prm = prm;
+        _gen_eden_set(v_itms, ctx);
 }

@@ -31,7 +31,10 @@ void input(int argc, char **argv, struct params &prm);
 void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
 
-void gen_tc_set(vector<struct item> &v_itms, struct params &prm, 
+void gen_normal_set(vector<struct item> &v_itms, struct params &prm, 
+                struct context &ctx);
+
+void gen_eden_set(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
 
 void partitioning(vector<struct item> &v_itms, struct context &ctx);

@@ -96,6 +96,20 @@ void print_task_chains(vector<struct item> &v_itms)
         tasknbr = 0;
 
         for (unsigned int i = 0; i < v_itms.size(); i++) {
+                if (v_itms[i].color == RED)
+                        printf("\033[0;31m");
+                else if (v_itms[i].color == BLUE)
+                        printf("\033[0;34m");
+                else if (v_itms[i].color == YELLOW)
+                        printf("\033[0;33m");
+                else if (v_itms[i].color == GREEN)
+                        printf("\033[0;32m");
+                else if (v_itms[i].color == CYAN)
+                        printf("\033[0;36m");
+                else if (v_itms[i].color == PURPLE)
+                        printf("\033[0;35m");
+                else
+                        printf("\033[0;37m");
                 printf("======================================================\n");
                 printf("tc.id: %-3d tc.idx: %-3d u: %.3f memcost: %d color: %d\n", 
                                 v_itms[i].id, v_itms[i].tc_idx, 
@@ -111,6 +125,7 @@ void print_task_chains(vector<struct item> &v_itms)
                         tasknbr++;
                 }
                 printf("------------------------------------------------------\n");
+                printf("\033[0m");
                 printf("\n\n");
         }
         printf("Total Number of Tasks: %d\n", tasknbr);
@@ -218,7 +233,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                                 v_bins[i].v_itms[j].gcd,
                                                 v_bins[i].v_itms[j].memcost,
                                                 v_bins[i].v_itms[j].color);
-                                                printf("\033[0m");
+                                printf("\033[0m");
                                 printf("|--------------------------------------------------------------|\n");
                                 if (v_bins[i].v_itms[j].color == RED)
                                         printf("\033[0;31m");
