@@ -216,15 +216,93 @@ static void _check_params(struct params &prm)
         }
 }
 
+static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
+{
+
+        /* count color */
+        int red = 0;
+        int blue = 0;
+        int yellow = 0;
+        int green = 0; 
+        int cyan = 0;
+        int purple = 0;
+        int white = 0;
+
+        ctx.cs = {0};
+        ctx.itms_size = 0;
+
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                ctx.itms_size += v_itms[i].size;
+                if (v_itms[i].color == RED || v_itms[i].color == 6) {
+                        red++;
+                        ctx.cs.red += v_itms[i].size;
+                } else if (v_itms[i].color == BLUE) {
+                        blue++;
+                        ctx.cs.blue += v_itms[i].size;
+                } else if (v_itms[i].color == YELLOW) {
+                        yellow++;
+                        ctx.cs.yellow += v_itms[i].size;
+                } else if (v_itms[i].color == GREEN) {
+                        green++;
+                        ctx.cs.green += v_itms[i].size;
+                } else if (v_itms[i].color == CYAN) {
+                        cyan++;
+                        ctx.cs.cyan += v_itms[i].size;
+                } else if (v_itms[i].color == PURPLE) {
+                        purple++;
+                        ctx.cs.purple += v_itms[i].size;
+                } else  {
+                        white++;
+                        ctx.cs.white += v_itms[i].size;
+                }
+        }
+
+        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
+                        purple == 0 || white == 0)
+                return -1;
+
+        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
+        ctx.cs.red_bins_min = abs(ctx.cs.red / PHI) + 1;
+        ctx.cs.blue_bins_min = abs(ctx.cs.blue / PHI) + 1;
+        ctx.cs.yellow_bins_min = abs(ctx.cs.yellow / PHI) + 1;
+        ctx.cs.green_bins_min = abs(ctx.cs.green / PHI) + 1;
+        ctx.cs.cyan_bins_min = abs(ctx.cs.cyan / PHI) + 1;
+        ctx.cs.purple_bins_min = abs(ctx.cs.purple / PHI) + 1;
+        ctx.cs.white_bins_min = abs(ctx.cs.white / PHI) + 1;
+
+        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
+        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
+        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
+        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
+        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
+        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
+        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
+        printf("------------------------------------------------------\n");
+        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_bins_min);
+        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_bins_min);
+        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_bins_min);
+        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_bins_min);
+        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_bins_min);
+        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_bins_min);
+        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_bins_min);
+        printf("------------------------------------------------------\n");
+        printf("Total Number of Cores    %u\n", ctx.bins_min);
+        printf("Total Utilization of TC: %u\n\n", ctx.itms_size);
+
+        return 0;
+}
+
 static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                 struct context &ctx)
 {
         int x;
+        int ret;
         int ncount;
         int task_nbr;
         struct item itm;
         struct task tau;
 
+        ret = 0;
         itm = {0};
         ncount = 0;
 
@@ -237,10 +315,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
 
         /* create tc from waters2019 */
         _create_waters2019(itm);
-        //v_itms.push_back(itm);
-        //v_itms[ncount].size = itm.size;
-        //ncount++;
-        //printf("%d\n", ncount);
 
         /* derive synthetic set from waters */
         while (ncount != prm.n) {
@@ -269,7 +343,6 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
                 }
-
                 v_itms.push_back(itm);
                 v_itms[ncount].size = itm.size;
                 ncount++;
@@ -283,53 +356,9 @@ static int _gen_tc_set(vector<struct item> &v_itms, struct params &prm,
         for (unsigned int i = 0; i < v_itms.size(); i++)
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
 
-        /* count color */
-        int red = 0;
-        int blue = 0;
-        int yellow = 0;
-        int green = 0; 
-        int cyan = 0;
-        int purple = 0;
-        int white = 0;
-
-        ctx.cs = {0};
-
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                if (v_itms[i].color == RED) {
-                        red++;
-                        ctx.cs.red += v_itms[i].size;
-                } else if (v_itms[i].color == BLUE) {
-                        blue++;
-                        ctx.cs.blue += v_itms[i].size;
-                } else if (v_itms[i].color == YELLOW) {
-                        yellow++;
-                        ctx.cs.yellow += v_itms[i].size;
-                } else if (v_itms[i].color == GREEN) {
-                        green++;
-                        ctx.cs.green += v_itms[i].size;
-                } else if (v_itms[i].color == CYAN) {
-                        cyan++;
-                        ctx.cs.cyan += v_itms[i].size;
-                } else if (v_itms[i].color == PURPLE) {
-                        purple++;
-                        ctx.cs.purple += v_itms[i].size;
-                } else  {
-                        white++;
-                        ctx.cs.white += v_itms[i].size;
-                }
-        }
-
-        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
-                        purple == 0 || white == 0)
+        ret = _compute_colors(v_itms, ctx);
+        if (ret == -1)
                 return -1;
-
-        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
-        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
-        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
-        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
-        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
-        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
-        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
 
         return 0;
 }
@@ -496,14 +525,6 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm, struct context &c
         frag_time = ctx.p.frag_time;
         ctx.p = {0};
         ctx.p.frag_time = frag_time;
-
-        for (unsigned int i = 0; i < v_itms.size(); i++) 
-                ctx.itms_size += v_itms[i].size;
-
-        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
-
-        printf("Minimum Number of Cores Required: %u\n", ctx.bins_min);
-        printf("Total Utilization of Task-Chains: %u\n\n", ctx.itms_size);
 }
 
 void gen_tc_set(vector<struct item> &v_itms, struct params &prm,

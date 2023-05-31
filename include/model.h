@@ -94,6 +94,13 @@ struct colorsize {
         int cyan;
         int purple;
         int white;
+        int red_bins_min;
+        int blue_bins_min;
+        int yellow_bins_min;
+        int green_bins_min;
+        int cyan_bins_min;
+        int purple_bins_min;
+        int white_bins_min;
 };
 
 struct context {
