@@ -169,6 +169,7 @@ struct bin {
         int flag;
         int load;
         int load_rem;
+        int color;
         int memcost;
         vector<struct item> v_itms;
         vector<struct task> v_tasks;
@@ -215,6 +216,8 @@ void compute_bin_memcost(struct bin &b);
 int compute_gcd(vector<struct task> &v_tasks);
 
 void add_bin(vector<struct bin> &v_bins, struct context &ctx);
+
+void add_bin_color(vector<struct bin> &v_bins, int color, struct context &ctx);
 
 void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd);
 

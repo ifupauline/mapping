@@ -175,6 +175,23 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                 printf("|Load: %.3f\n", (float)v_bins[i].load / PERMILL);
                 printf("|Lrem: %.3f\n", ((float)v_bins[i].load_rem / PERMILL));
                 printf("|Memc: %d\n", v_bins[i].memcost);
+                printf("|");
+
+                if (v_bins[i].color == RED)
+                        printf("\033[0;31m");
+                else if (v_bins[i].color == BLUE)
+                        printf("\033[0;34m");
+                else if (v_bins[i].color == YELLOW)
+                        printf("\033[0;33m");
+                else if (v_bins[i].color == GREEN)
+                        printf("\033[0;32m");
+                else if (v_bins[i].color == CYAN)
+                        printf("\033[0;36m");
+                else 
+                        printf("\033[0;35m"); /* purple */
+
+                printf("Colr: %d\n", v_bins[i].color);
+                printf("\033[0m");
                 if (v_bins[i].flag == SCHED_OK)
                         printf("|Sched: OK\n");
 

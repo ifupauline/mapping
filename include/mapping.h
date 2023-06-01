@@ -11,7 +11,8 @@
 /* mapping */
 void fragmentation(vector<struct item> &v_itms, struct context &ctx);
 
-void generation(vector<struct bin> &v_bins, struct context &ctx);
+void generation(vector<struct bin> &v_bins, vector<struct ecu> &v_ecu, 
+                struct context &ctx);
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);

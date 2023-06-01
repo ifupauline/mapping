@@ -1,9 +1,10 @@
 #include "let.h"
 #include "print.h"
 #include "mapping.h"
+#include "generator.h"
 
 static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,
-                struct context &ctx, int &best_load, int &best_gcd)
+                struct context &ctx, int &best_load, int &best_gcd, int color)
 {
         int bin_id;
         int tmp_rem;
@@ -20,10 +21,12 @@ static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,
         best_rem = PHI;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].color != color && color != WHITE) 
+                        continue;
+
                 tmp_load = check_if_fit_itm(v_bins[i], itm, tmp_gcd);
                 if (tmp_load <= v_bins[i].phi) {
                         tmp_rem = v_bins[i].phi - tmp_load;
-
                         if (tmp_rem < best_rem) {
                                 best_rem = tmp_rem;
                                 best_load = tmp_load;
@@ -67,7 +70,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 continue;
 
                         /* find best bin to fit itm */
-                        ret = _find_best_bin(v_bins, v_itms[i], ctx, load, gcd);
+                        ret = _find_best_bin(v_bins, v_itms[i], ctx, load, gcd, v_itms[i].color);
 
                         /* bin found add itm to it */
                         if (ret != -1) {
@@ -83,7 +86,11 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         } else {
                                 printf("No Bin was found to accomodate Item %d idx: %d size: %d\n", 
                                                 v_itms[i].id, v_itms[i].tc_idx, v_itms[i].size);
-                                add_bin(v_bins, ctx);
+
+                                if (v_itms[i].color == WHITE)
+                                        add_bin_color(v_bins, gen_rand(0, 5), ctx);
+                                else
+                                        add_bin_color(v_bins, v_itms[i].color, ctx);
                                 ctx.cycl_count++;
                                 continue;
                         }

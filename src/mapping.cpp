@@ -18,14 +18,40 @@ void fragmentation(vector<struct item> &v_itms, struct context &ctx)
         ctx.p.frag_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
-void generation(vector<struct bin> &v_bins, struct context &ctx)
+void generation(vector<struct bin> &v_bins, vector<struct ecu> &v_ecu, 
+                struct context &ctx)
 {
         printf("+=====================================+\n");
         printf("| GENERATION                          |\n");
         printf("+=====================================+\n");
 
-        for (int i = 0; i < ctx.bins_min; i++)
-                add_bin(v_bins, ctx);
+        struct ecu e;
+
+        /* create 6 ECUs */
+        for (int i = 0; i < 6; i++) {
+                e.id = i;
+                e.color = i;
+                v_ecu.push_back(e);
+                printf("ECU %d Created\n", i);
+        }
+
+        /* create 42 cores */
+        for (int i = 0; i < 12; i++)
+                add_bin_color(v_ecu[RED].v_bins, RED, ctx);
+
+        for (int i = 0; i < 6; i++) {
+                add_bin_color(v_ecu[BLUE].v_bins, BLUE, ctx);
+                add_bin_color(v_ecu[YELLOW].v_bins, YELLOW, ctx);
+                add_bin_color(v_ecu[GREEN].v_bins, GREEN, ctx);
+                add_bin_color(v_ecu[CYAN].v_bins, CYAN, ctx);
+                add_bin_color(v_ecu[PURPLE].v_bins, PURPLE, ctx);
+        }
+
+        for (unsigned int i = 0; i < v_ecu.size(); i++) {
+                for (unsigned int j = 0; j < v_ecu[i].v_bins.size(); j++) {
+                        v_bins.push_back(v_ecu[i].v_bins[j]);
+                }
+        }
 }
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 

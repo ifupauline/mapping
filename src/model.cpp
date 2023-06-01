@@ -73,6 +73,31 @@ void sort_inc_bin_load_rem(vector<struct bin> &v_bins)
         sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_load_rem);
 }
 
+void add_bin_color(vector<struct bin> &v_bins, int color, struct context &ctx)
+{
+        struct bin tmp_bin;
+        struct item let;
+
+        /* create and insert bin */
+        tmp_bin.id = ctx.bins_count;
+        tmp_bin.flag = SCHED_OK;
+        tmp_bin.load = 0;
+        tmp_bin.load_rem = PHI;
+        tmp_bin.phi = PHI;
+        tmp_bin.color = color;
+        tmp_bin.memcost = 0;
+        v_bins.push_back(tmp_bin);
+        ctx.bins_count++;
+        printf("Bin %d Created with Color %d\n", ctx.bins_count - 1, color);
+
+        /* create and insert let task */
+        let = {0};
+        init_let_task(let, ctx);
+        add_itm_to_v_bins(v_bins, let, tmp_bin.id, ctx, let.size, let.v_tasks[0].t);
+        ctx.itms_count++;
+        let.is_allocated = YES;
+}
+
 void add_bin(vector<struct bin> &v_bins, struct context &ctx)
 {
         struct bin tmp_bin;

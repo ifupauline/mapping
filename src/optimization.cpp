@@ -1,4 +1,5 @@
 #include "let.h"
+#include "print.h"
 #include "sched_analysis.h"
 
 #define MAX_DISP_COUNT 5
@@ -279,7 +280,7 @@ void displacement(vector<struct bin> &v_bins)
         dst_b = {0};
         itm.first = {0};
         itm.second = 0;
-        
+
 
         /* take next unschedulable itm */
         _store_itms_disp(v_bins, v_itms, flag);
@@ -311,6 +312,11 @@ void displacement(vector<struct bin> &v_bins)
                                 if (v_itms[i].first.disp_count == MAX_DISP_COUNT) 
                                         break;
 
+                                /* color filter */
+                                if (v_itms[i].first.color != v_bins[j].color && 
+                                                v_itms[i].first.color != WHITE)
+                                        continue;
+
                                 /* search for dst bins that can accomodate itm */
                                 load = check_if_fit_itm(v_bins[j], v_itms[i].first, gcd);
 
@@ -341,10 +347,21 @@ void displacement(vector<struct bin> &v_bins)
         }
 }
 
+static int _retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == bin_id)
+                        return v_bins[i].color;
+        }
+        return -1;
+}
+
 void swapping(vector<struct bin> &v_bins)
 {
         int flag;
         int state;
+        int src_color;
+        int dst_color;
         struct bin dst_bin;
         struct bin src_bin;
         vector<pair<struct item, int>> v_itms;
@@ -375,21 +392,106 @@ void swapping(vector<struct bin> &v_bins)
                                                 v_itms[j].first.swap_count > MAX_SWAP_COUNT)
                                         continue;
 
-                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
-                                                v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
-                                                v_itms[j].first.id, v_itms[j].first.tc_idx, v_itms[j].second);
+                                /* none white */
+                                if (v_itms[i].first.color != WHITE && v_itms[j].first.color != WHITE) {
+                                        src_color = 0;
+                                        dst_color = 0;
+                                        src_color = _retrieve_color_bin(v_bins, v_itms[i].second);
+                                        dst_color = _retrieve_color_bin(v_bins, v_itms[j].second);
+                                        if (v_itms[i].first.color == src_color && v_itms[j].first.color == dst_color) {
+                                                if (src_color == dst_color) {
+                                                        printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                                        v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
+                                                                        v_itms[j].first.id, v_itms[j].first.tc_idx, v_itms[j].second);
 
-                                /* search if swap is possible */
-                                dst_bin = {0};
-                                src_bin = {0};
-                                flag = NO;
-                                flag = _search_for_swap(v_bins, v_itms[i], 
-                                                v_itms[j], dst_bin, src_bin);
+                                                        /* search if swap is possible */
+                                                        dst_bin = {0};
+                                                        src_bin = {0};
+                                                        flag = NO;
+                                                        flag = _search_for_swap(v_bins, v_itms[i], 
+                                                                        v_itms[j], dst_bin, src_bin);
 
-                                if (flag == YES) {
-                                        _swap(v_bins, dst_bin, src_bin);
-                                        state = YES;
-                                        break;
+                                                        if (flag == YES) {
+                                                                _swap(v_bins, dst_bin, src_bin);
+                                                                state = YES;
+                                                                break;
+                                                        }
+                                                }
+
+                                        }
+
+                                }
+
+                                /* both white */
+                                if (v_itms[i].first.color == WHITE && v_itms[j].first.color == WHITE) {
+                                        printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                        v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
+                                                        v_itms[j].first.id, v_itms[j].first.tc_idx, v_itms[j].second);
+
+                                        /* search if swap is possible */
+                                        dst_bin = {0};
+                                        src_bin = {0};
+                                        flag = NO;
+                                        flag = _search_for_swap(v_bins, v_itms[i], 
+                                                        v_itms[j], dst_bin, src_bin);
+
+                                        if (flag == YES) {
+                                                _swap(v_bins, dst_bin, src_bin);
+                                                state = YES;
+                                                break;
+                                        }
+                                }
+
+                                /* src white dst not white */
+                                if (v_itms[i].first.color == WHITE && v_itms[j].first.color != WHITE) {
+                                        src_color = 0;
+                                        dst_color = 0;
+                                        src_color = _retrieve_color_bin(v_bins, v_itms[i].second);
+                                        dst_color = _retrieve_color_bin(v_bins, v_itms[j].second);
+                                        if (src_color == dst_color) {
+                                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                                v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
+                                                                v_itms[j].first.id, v_itms[j].first.tc_idx, v_itms[j].second);
+
+                                                /* search if swap is possible */
+                                                dst_bin = {0};
+                                                src_bin = {0};
+                                                flag = NO;
+                                                flag = _search_for_swap(v_bins, v_itms[i], 
+                                                                v_itms[j], dst_bin, src_bin);
+
+                                                if (flag == YES) {
+                                                        _swap(v_bins, dst_bin, src_bin);
+                                                        state = YES;
+                                                        break;
+                                                }
+                                        }
+                                }
+
+                                /* src not white dst white */
+                                if (v_itms[i].first.color != WHITE && v_itms[j].first.color == WHITE) {
+                                        src_color = 0;
+                                        dst_color = 0;
+                                        src_color = _retrieve_color_bin(v_bins, v_itms[i].second);
+                                        dst_color = _retrieve_color_bin(v_bins, v_itms[j].second);
+                                        if (src_color == dst_color) {
+                                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                                v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
+                                                                v_itms[j].first.id, v_itms[j].first.tc_idx, v_itms[j].second);
+
+                                                /* search if swap is possible */
+                                                dst_bin = {0};
+                                                src_bin = {0};
+                                                flag = NO;
+                                                flag = _search_for_swap(v_bins, v_itms[i], 
+                                                                v_itms[j], dst_bin, src_bin);
+
+                                                if (flag == YES) {
+                                                        _swap(v_bins, dst_bin, src_bin);
+                                                        state = YES;
+                                                        break;
+                                                }
+                                        }
                                 }
                         }
                 }

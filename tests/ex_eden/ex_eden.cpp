@@ -12,6 +12,9 @@ int main(int argc, char **argv)
         struct context ctx_bfdu_f;
         struct context ctx_wfdu_f;
         struct context ctx_frst_f;
+        vector<struct ecu> v_ecu_bfdu_f;
+        vector<struct ecu> v_ecu_wfdu_f;
+        vector<struct ecu> v_ecu_frst_f;
         vector<struct bin> v_bins_bfdu_f;
         vector<struct bin> v_bins_wfdu_f;
         vector<struct bin> v_bins_frst_f;
@@ -48,7 +51,7 @@ int main(int argc, char **argv)
         v_bins_frst_f = v_bins;
 
         /* generation */
-        generation(v_bins_bfdu_f, ctx_bfdu_f);
+        generation(v_bins_bfdu_f, v_ecu_bfdu_f, ctx_bfdu_f);
         //generation(v_bins_wfdu_f, ctx_wfdu_f);
         //generation(v_bins_frst_f, ctx_frst_f);
 

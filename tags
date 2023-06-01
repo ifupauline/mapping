@@ -93,19 +93,16 @@ CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documen
 CMAKE_BINARY_DIR	exp/phi/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/ex_eden/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_BINARY_DIR	tests/ex_normal/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/phi/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/ex_eden/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/ex_normal/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	exp/phi/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/ex_eden/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_SOURCE_DIR	tests/ex_normal/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 COMMUNICATION_H	include/communication.h	2;"	d
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
@@ -431,7 +428,6 @@ EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/phi/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/ex_eden/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/ex_normal/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 FRST_F	include/model.h	11;"	d
 GENERATOR_H	include/generator.h	2;"	d
@@ -449,8 +445,8 @@ MAXMEMCOST	include/model.h	31;"	d
 MAXN	include/generator.h	13;"	d
 MAXTASKNBR	include/generator.h	25;"	d
 MAXWCET	include/generator.h	21;"	d
-MAX_DISP_COUNT	src/optimization.cpp	4;"	d	file:
-MAX_SWAP_COUNT	src/optimization.cpp	5;"	d	file:
+MAX_DISP_COUNT	src/optimization.cpp	5;"	d	file:
+MAX_SWAP_COUNT	src/optimization.cpp	6;"	d	file:
 MINLETWCET	include/let.h	7;"	d
 MINMAXTU	include/generator.h	16;"	d
 MINMEMCOST	include/model.h	30;"	d
@@ -541,7 +537,6 @@ RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/phi/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/ex_eden/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/ex_normal/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
@@ -550,7 +545,6 @@ SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/phi/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/ex_eden/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/ex_normal/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMNBR	exp/phi/phi.cpp	7;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
@@ -637,6 +631,7 @@ _gen_normal_set	src/generator.cpp	/^static int _gen_normal_set(vector<struct ite
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
 _reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct bin &b)$/;"	f	file:
+_retrieve_color_bin	src/optimization.cpp	/^static int _retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct bin &b)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_dst_bins, int item_id, $/;"	f	file:
@@ -647,6 +642,7 @@ _swap	src/optimization.cpp	/^void _swap(vector<struct bin> &v_bins, struct bin &
 _utilization_rate	src/print.cpp	/^static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)$/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
 add_bin	src/model.cpp	/^void add_bin(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+add_bin_color	src/model.cpp	/^void add_bin_color(vector<struct bin> &v_bins, int color, struct context &ctx)$/;"	f
 add_itm_to_bin	src/model.cpp	/^void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)$/;"	f
 add_itm_to_v_bins	src/model.cpp	/^void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, $/;"	f
 add_tasks_to_v_tasks	src/model.cpp	/^void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, $/;"	f
@@ -674,6 +670,7 @@ cmd_gnuplot_fr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_fr[] = {};$/;"	v
 cmd_gnuplot_op	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_op[] = {};$/;"	v	file:
 cmd_gnuplot_sr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
+color	include/model.h	/^        int color;$/;"	m	struct:bin
 color	include/model.h	/^        int color;$/;"	m	struct:ecu
 color	include/model.h	/^        int color;$/;"	m	struct:item
 colorsize	include/model.h	/^struct colorsize {$/;"	s
@@ -725,7 +722,7 @@ gcd	include/model.h	/^        int gcd;$/;"	m	struct:item
 gen_eden_set	src/generator.cpp	/^void gen_eden_set(vector<struct item> &v_itms, struct params &prm, $/;"	f
 gen_normal_set	src/generator.cpp	/^void gen_normal_set(vector<struct item> &v_itms, struct params &prm,$/;"	f
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
-generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
+generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, vector<struct ecu> &v_ecu, $/;"	f
 get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 green	include/model.h	/^        int green;$/;"	m	struct:colorsize
 green_bins_min	include/model.h	/^        int green_bins_min;$/;"	m	struct:colorsize
@@ -781,7 +778,6 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	exp/phi/phi.cpp	/^int main(void)$/;"	f
 main	tests/ex_eden/ex_eden.cpp	/^int main(int argc, char **argv)$/;"	f
-main	tests/ex_normal/ex_normal.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
 mean_cr	include/exp.h	/^        float mean_cr;$/;"	m	struct:b_stats
