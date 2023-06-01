@@ -37,13 +37,21 @@ static void _check_params_eden(struct params &prm)
 static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
 {
         /* count color */
-        int red = 0;
-        int blue = 0;
-        int yellow = 0;
-        int green = 0; 
-        int cyan = 0;
-        int purple = 0;
-        int white = 0;
+        int red;
+        int blue;
+        int yellow;
+        int green;
+        int cyan;
+        int purple;
+        int white;
+
+        red = 0;
+        blue = 0;
+        yellow = 0;
+        green = 0;
+        cyan = 0;
+        purple = 0;
+        white = 0;
 
         ctx.cs = {0};
         ctx.itms_size = 0;
@@ -629,7 +637,8 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm,
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
         ctx.tasks_count = 0;
-        ctx.comm_count = 0;
+        ctx.intra_comm_count = 0;
+        ctx.inter_comm_count = 0;
         ctx.e2e_ok_count = 0;
         ctx.e2e_failed_count = 0;
         ctx.sched_ok_count = 0;

@@ -20,7 +20,7 @@ static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp
         }
 }
 
-static void _fixedpoint(vector<struct task> &v_tasks, int &flag)
+static void _resp(vector<struct task> &v_tasks, int &flag)
 {
         int r_prev;
         vector<struct task> hp_tasks;
@@ -68,7 +68,7 @@ int wcrt(vector<struct task> &v_tasks)
         if (frst_syst_state == YES)
                 start = clock();
 
-        _fixedpoint(v_tasks, flag);
+        _resp(v_tasks, flag);
 
         if (bfdu_syst_state == YES) {
                 end = clock();
@@ -203,12 +203,12 @@ static void _base_assignment(struct bin &b)
 
 static void _reassignment(struct bin &b)
 {
-        int ret;
+        //int ret;
         struct bin tmp_b;
 
-        ret = NO;
+        //ret = NO;
 
-        ret = is_frag_same_tc(b);
+        //ret = is_frag_same_tc(b);
 
         sort_inc_task_priority(b.v_tasks);
 
@@ -280,7 +280,7 @@ void verify_tc_schedulability(vector<vector<struct item>> &v_frag_itms,
                 flag = NO;
                 for (unsigned int j = 0; j < v_non_frag_itms[i].v_tasks.size(); j++) {
                         if (v_non_frag_itms[i].v_tasks[j].r > v_non_frag_itms[i].v_tasks[j].t) {
-                                printf("TC %d failed --> r %d > t %d\n", v_non_frag_itms[i].id, 
+                                printf("TC %d failed --> r %-6d > t %-6d\n", v_non_frag_itms[i].id, 
                                                 v_non_frag_itms[i].v_tasks[j].r, 
                                                 v_non_frag_itms[i].v_tasks[j].t);
                                 flag = YES;
@@ -299,7 +299,7 @@ void verify_tc_schedulability(vector<vector<struct item>> &v_frag_itms,
                         /* check wcrt */
                         for (unsigned int k = 0; k < v_frag_itms[i][j].v_tasks.size(); k++) {
                                 if (v_frag_itms[i][j].v_tasks[k].r > v_frag_itms[i][j].v_tasks[k].t) {
-                                        printf("TC %d tc_idx %d failed --> r %d > t %d\n", 
+                                        printf("TC %-3d tc_idx %-3d failed --> r %-6d > t %-6d\n", 
                                                         v_frag_itms[i][j].id, v_frag_itms[i][j].tc_idx,
                                                         v_frag_itms[i][j].v_tasks[k].r, 
                                                         v_frag_itms[i][j].v_tasks[k].t);

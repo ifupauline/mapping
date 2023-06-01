@@ -347,15 +347,6 @@ void displacement(vector<struct bin> &v_bins)
         }
 }
 
-static int _retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)
-{
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == bin_id)
-                        return v_bins[i].color;
-        }
-        return -1;
-}
-
 void swapping(vector<struct bin> &v_bins)
 {
         int flag;
@@ -396,8 +387,8 @@ void swapping(vector<struct bin> &v_bins)
                                 if (v_itms[i].first.color != WHITE && v_itms[j].first.color != WHITE) {
                                         src_color = 0;
                                         dst_color = 0;
-                                        src_color = _retrieve_color_bin(v_bins, v_itms[i].second);
-                                        dst_color = _retrieve_color_bin(v_bins, v_itms[j].second);
+                                        src_color = retrieve_color_bin(v_bins, v_itms[i].second);
+                                        dst_color = retrieve_color_bin(v_bins, v_itms[j].second);
                                         if (v_itms[i].first.color == src_color && v_itms[j].first.color == dst_color) {
                                                 if (src_color == dst_color) {
                                                         printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
@@ -446,8 +437,8 @@ void swapping(vector<struct bin> &v_bins)
                                 if (v_itms[i].first.color == WHITE && v_itms[j].first.color != WHITE) {
                                         src_color = 0;
                                         dst_color = 0;
-                                        src_color = _retrieve_color_bin(v_bins, v_itms[i].second);
-                                        dst_color = _retrieve_color_bin(v_bins, v_itms[j].second);
+                                        src_color = retrieve_color_bin(v_bins, v_itms[i].second);
+                                        dst_color = retrieve_color_bin(v_bins, v_itms[j].second);
                                         if (src_color == dst_color) {
                                                 printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
                                                                 v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,
@@ -472,8 +463,8 @@ void swapping(vector<struct bin> &v_bins)
                                 if (v_itms[i].first.color != WHITE && v_itms[j].first.color == WHITE) {
                                         src_color = 0;
                                         dst_color = 0;
-                                        src_color = _retrieve_color_bin(v_bins, v_itms[i].second);
-                                        dst_color = _retrieve_color_bin(v_bins, v_itms[j].second);
+                                        src_color = retrieve_color_bin(v_bins, v_itms[i].second);
+                                        dst_color = retrieve_color_bin(v_bins, v_itms[j].second);
                                         if (src_color == dst_color) {
                                                 printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
                                                                 v_itms[i].first.id, v_itms[i].first.tc_idx, v_itms[i].second,

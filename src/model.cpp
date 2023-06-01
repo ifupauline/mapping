@@ -340,6 +340,15 @@ int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx)
         return -1;
 }
 
+int retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].id == bin_id)
+                        return v_bins[i].color;
+        }
+        return -1;
+}
+
 int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)
 {
         for (unsigned int i = 0; i < v_bins.size(); i++) {

@@ -7,6 +7,8 @@ void comm_count(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         int count;
         int fst_bin_id;
         int scd_bin_id;
+        int fst_bin_color;
+        int scd_bin_color;
         int tc_idx_count;
         vector<int> v_id;
         vector<struct item> v_tmp;
@@ -70,8 +72,15 @@ void comm_count(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                                                                 k == v_bins[l].v_itms[m].tc_idx) {
                                                         scd_bin_id = v_bins[l].id;
                                                         if (fst_bin_id != scd_bin_id) {
+                                                                fst_bin_color = 0;
+                                                                scd_bin_color = 0;
+                                                                fst_bin_color = retrieve_color_bin(v_bins, fst_bin_id);
+                                                                scd_bin_color = retrieve_color_bin(v_bins, scd_bin_id);
                                                                 printf("+1\n");
-                                                                ctx.comm_count++;
+                                                                if (fst_bin_color == scd_bin_color)
+                                                                        ctx.intra_comm_count++;
+                                                                else
+                                                                        ctx.inter_comm_count++;
                                                         }
                                                         printf("Found TC %d tc_idx %d in Core %d\n", 
                                                                         v_id[i], k, v_bins[l].id);

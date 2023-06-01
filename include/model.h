@@ -115,7 +115,8 @@ struct context {
         int cuts_count;
         int tasks_count;
         int frags_count;
-        int comm_count;
+        int intra_comm_count;
+        int inter_comm_count;
         int e2e_ok_count;
         int e2e_failed_count;
         int sched_ok_count;
@@ -231,6 +232,8 @@ struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id);
 struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id);
 
 int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx);
+
+int retrieve_color_bin(vector<struct bin> &v_bins, int bin_id);
 
 int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
 
