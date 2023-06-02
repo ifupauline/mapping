@@ -36,10 +36,10 @@ void generation(vector<struct bin> &v_bins, vector<struct ecu> &v_ecu,
         }
 
         /* create 42 cores */
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 8; i++)
                 add_bin_color(v_ecu[RED].v_bins, RED, ctx);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 4; i++) {
                 add_bin_color(v_ecu[BLUE].v_bins, BLUE, ctx);
                 add_bin_color(v_ecu[YELLOW].v_bins, YELLOW, ctx);
                 add_bin_color(v_ecu[GREEN].v_bins, GREEN, ctx);
@@ -48,9 +48,8 @@ void generation(vector<struct bin> &v_bins, vector<struct ecu> &v_ecu,
         }
 
         for (unsigned int i = 0; i < v_ecu.size(); i++) {
-                for (unsigned int j = 0; j < v_ecu[i].v_bins.size(); j++) {
+                for (unsigned int j = 0; j < v_ecu[i].v_bins.size(); j++)
                         v_bins.push_back(v_ecu[i].v_bins[j]);
-                }
         }
 }
 

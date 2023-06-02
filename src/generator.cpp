@@ -309,7 +309,7 @@ static void _create_task(struct task &tau, int i, int x)
         }
 }
 
-static void _create_tc(struct item &itm, int color)
+static void _create_tc(struct item &itm, int color, int minu, int maxu)
 {
         int x;
         int task_nbr;
@@ -341,7 +341,7 @@ static void _create_tc(struct item &itm, int color)
                         itm.size += tau.u;
                 }
 
-                if (itm.size < C)
+                if (itm.size < minu || itm.size > maxu)
                         continue;
                 else
                         return;
@@ -365,33 +365,33 @@ static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm,
 
         /* blue */
         itm = {0};
-        _create_tc(itm, BLUE);
+        _create_tc(itm, BLUE, 1, C);
         v_itms.push_back(itm);
 
         /* yellow */
         itm = {0};
-        _create_tc(itm, YELLOW);
+        _create_tc(itm, YELLOW, 1, C);
         v_itms.push_back(itm);
 
         /* green */
         itm = {0};
-        _create_tc(itm, GREEN);
+        _create_tc(itm, GREEN, 1, C);
         v_itms.push_back(itm);
 
         /* cyan */
         itm = {0};
-        _create_tc(itm, CYAN);
+        _create_tc(itm, CYAN, 1, C);
         v_itms.push_back(itm);
 
         /* purple */
         itm = {0};
-        _create_tc(itm, PURPLE);
+        _create_tc(itm, PURPLE, 1, C);
         v_itms.push_back(itm);
 
         /* white */
         for (int i = 0; i < 4; i++) {
                 itm = {0};
-                _create_tc(itm, WHITE);
+                _create_tc(itm, WHITE, C, C*4);
                 v_itms.push_back(itm);
         }
         sort_dec_itm_size(v_itms);
