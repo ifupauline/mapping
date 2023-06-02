@@ -609,7 +609,9 @@ _check_params_normal	src/generator.cpp	/^static void _check_params_normal(struct
 _cmp_avr_mean	exp/phi/phi.cpp	/^static void _cmp_avr_mean(vector<struct b_stats> &v_stts_bfdu_f)$/;"	f	file:
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
 _cmp_dec_itm_size	src/model.cpp	/^static int _cmp_dec_itm_size(const struct item &a, const struct item &b)$/;"	f	file:
+_cmp_inc_bin_color	src/model.cpp	/^static int _cmp_inc_bin_color(const struct bin &a, const struct bin &b)$/;"	f	file:
 _cmp_inc_bin_load_rem	src/model.cpp	/^static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)$/;"	f	file:
+_cmp_inc_itm_color	src/model.cpp	/^static int _cmp_inc_itm_color(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_itm_id	src/model.cpp	/^static int _cmp_inc_itm_id(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_itm_tc_idx	src/model.cpp	/^static int _cmp_inc_itm_tc_idx(const struct item &a, const struct item &b)$/;"	f	file:
 _cmp_inc_task_id	src/model.cpp	/^static int _cmp_inc_task_id(const struct task &a, const struct task &b)$/;"	f	file:
@@ -617,7 +619,7 @@ _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const s
 _compute_colors	src/generator.cpp	/^static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
 _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)$/;"	f	file:
 _create_task	src/generator.cpp	/^static void _create_task(struct task &tau, int i, int x)$/;"	f	file:
-_create_tc	src/generator.cpp	/^static void _create_tc(struct item &itm, int color)$/;"	f	file:
+_create_tc	src/generator.cpp	/^static void _create_tc(struct item &itm, int color, int minu, int maxu)$/;"	f	file:
 _create_waters2019	src/generator.cpp	/^static void _create_waters2019(struct item &itm)$/;"	f	file:
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
@@ -625,13 +627,13 @@ _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_
 _find_frst_bin	src/frst_f.cpp	/^static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
-_fixedpoint	src/sched_analysis.cpp	/^static void _fixedpoint(vector<struct task> &v_tasks, int &flag)$/;"	f	file:
+_fix_let_task	src/print.cpp	/^static void _fix_let_task(vector<struct bin> &v_bins)$/;"	f	file:
 _gen_eden_set	src/generator.cpp	/^static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm, $/;"	f	file:
 _gen_normal_set	src/generator.cpp	/^static int _gen_normal_set(vector<struct item> &v_itms, struct params &prm,$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
 _reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct bin &b)$/;"	f	file:
-_retrieve_color_bin	src/optimization.cpp	/^static int _retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)$/;"	f	file:
+_resp	src/sched_analysis.cpp	/^static void _resp(vector<struct task> &v_tasks, int &flag)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct bin &b)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_displace	src/optimization.cpp	/^static int _search_for_displace(vector<struct bin> &v_dst_bins, int item_id, $/;"	f	file:
@@ -671,10 +673,8 @@ cmd_gnuplot_op	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_op[] = {};$/;"	v
 cmd_gnuplot_sr	exp/phi/phi.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 color	include/model.h	/^        int color;$/;"	m	struct:bin
-color	include/model.h	/^        int color;$/;"	m	struct:ecu
 color	include/model.h	/^        int color;$/;"	m	struct:item
 colorsize	include/model.h	/^struct colorsize {$/;"	s
-comm_count	include/model.h	/^        int comm_count;$/;"	m	struct:context
 comm_count	src/communication.cpp	/^void comm_count(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 comm_time	include/model.h	/^        float comm_time;$/;"	m	struct:perf
 communication	src/mapping.cpp	/^void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
@@ -707,7 +707,6 @@ e2e_failed_count	include/model.h	/^        int e2e_failed_count;$/;"	m	struct:co
 e2e_latency	src/communication.cpp	/^void e2e_latency(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 e2e_ok_count	include/model.h	/^        int e2e_ok_count;$/;"	m	struct:context
 e2ed	include/model.h	/^        int e2ed;$/;"	m	struct:item
-ecu	include/model.h	/^struct ecu {$/;"	s
 et	include/model.h	/^        float et;$/;"	m	struct:perf
 flag	include/model.h	/^        int flag;$/;"	m	struct:bin
 fr	include/model.h	/^        float fr;$/;"	m	struct:perf
@@ -722,12 +721,11 @@ gcd	include/model.h	/^        int gcd;$/;"	m	struct:item
 gen_eden_set	src/generator.cpp	/^void gen_eden_set(vector<struct item> &v_itms, struct params &prm, $/;"	f
 gen_normal_set	src/generator.cpp	/^void gen_normal_set(vector<struct item> &v_itms, struct params &prm,$/;"	f
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
-generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, vector<struct ecu> &v_ecu, $/;"	f
+generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 green	include/model.h	/^        int green;$/;"	m	struct:colorsize
 green_bins_min	include/model.h	/^        int green_bins_min;$/;"	m	struct:colorsize
 id	include/model.h	/^        int id;$/;"	m	struct:bin
-id	include/model.h	/^        int id;$/;"	m	struct:ecu
 id	include/model.h	/^        int id;$/;"	m	struct:item
 id	include/model.h	/^        int id;$/;"	m	struct:task
 idx	include/model.h	/^        struct t_pos idx;$/;"	m	struct:task	typeref:struct:task::t_pos
@@ -759,6 +757,8 @@ init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct p
 init_let_task	src/let.cpp	/^void init_let_task(struct item &let, struct context &ctx)$/;"	f
 input_eden	src/generator.cpp	/^void input_eden(int argc, char **argv, struct params &prm)$/;"	f
 input_normal	src/generator.cpp	/^void input_normal(int argc, char **argv, struct params &prm)$/;"	f
+inter_comm_count	include/model.h	/^        int inter_comm_count;$/;"	m	struct:context
+intra_comm_count	include/model.h	/^        int intra_comm_count;$/;"	m	struct:context
 is_allocated	include/model.h	/^        int is_allocated;$/;"	m	struct:item
 is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:item
 is_frag_same_tc	src/model.cpp	/^int is_frag_same_tc(struct bin &b)$/;"	f
@@ -817,6 +817,7 @@ r	include/model.h	/^        int r;$/;"	m	struct:task
 red	include/model.h	/^        int red;$/;"	m	struct:colorsize
 red_bins_min	include/model.h	/^        int red_bins_min;$/;"	m	struct:colorsize
 replace_bin_by_id	src/model.cpp	/^void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)$/;"	f
+retrieve_color_bin	src/model.cpp	/^int retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)$/;"	f
 retrieve_core_by_id	src/model.cpp	/^struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 retrieve_tc_by_id	src/model.cpp	/^struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id)$/;"	f
 retrieve_wcrt	src/model.cpp	/^int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx)$/;"	f
@@ -837,7 +838,9 @@ schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<st
 size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
 sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_itms)$/;"	f
+sort_inc_bin_color	src/model.cpp	/^void sort_inc_bin_color(vector<struct bin> &v_bins)$/;"	f
 sort_inc_bin_load_rem	src/model.cpp	/^void sort_inc_bin_load_rem(vector<struct bin> &v_bins)$/;"	f
+sort_inc_itm_color	src/model.cpp	/^void sort_inc_itm_color(vector<struct item> &v_itms)$/;"	f
 sort_inc_itm_id	src/model.cpp	/^void sort_inc_itm_id(vector<struct item> &v_itms)$/;"	f
 sort_inc_itm_tc_idx	src/model.cpp	/^void sort_inc_itm_tc_idx(vector<struct item> &v_itms)$/;"	f
 sort_inc_task_id	src/model.cpp	/^void sort_inc_task_id(vector<struct task> &v_tasks)$/;"	f
@@ -860,7 +863,6 @@ u	include/model.h	/^        float u;$/;"	m	struct:task
 uniq_id	include/model.h	/^        int uniq_id;$/;"	m	struct:task
 unu	include/model.h	/^        float unu;$/;"	m	struct:perf
 update_let	src/let.cpp	/^void update_let(struct bin &b, int gcd)$/;"	f
-v_bins	include/model.h	/^        vector<struct bin> v_bins;$/;"	m	struct:ecu
 v_itms	include/model.h	/^        vector<struct item> v_itms;$/;"	m	struct:bin
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:bin
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:item

@@ -28,9 +28,19 @@ static int _cmp_inc_itm_tc_idx(const struct item &a, const struct item &b)
         return a.tc_idx < b.tc_idx;
 }
 
+static int _cmp_inc_itm_color(const struct item &a, const struct item &b)
+{
+        return a.color < b.color;
+}
+
 static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)
 {
         return a.load_rem < b.load_rem;
+}
+
+static int _cmp_inc_bin_color(const struct bin &a, const struct bin &b)
+{
+        return a.color < b.color;
 }
 
 static int _cmp_dec_int(const int &a, const int &b)
@@ -68,9 +78,19 @@ void sort_inc_itm_tc_idx(vector<struct item> &v_itms)
         sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_tc_idx);
 }
 
+void sort_inc_itm_color(vector<struct item> &v_itms)
+{
+        sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_color);
+}
+
 void sort_inc_bin_load_rem(vector<struct bin> &v_bins)
 {
         sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_load_rem);
+}
+
+void sort_inc_bin_color(vector<struct bin> &v_bins)
+{
+        sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_color);
 }
 
 void add_bin_color(vector<struct bin> &v_bins, int color, struct context &ctx)

@@ -1,14 +1,19 @@
 #include "let.h"
+#include "print.h"
 #include "mapping.h"
+#include "generator.h"
 
 static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,
-                struct context &ctx, int &frst_load, int &frst_gcd)
+                struct context &ctx, int &frst_load, int &frst_gcd, int color)
 {
         int bin_id;
 
         bin_id = 0;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].color != color && color != WHITE) 
+                        continue;
+
                 frst_load = check_if_fit_itm(v_bins[i], itm, frst_gcd);
                 if (frst_load <= v_bins[i].phi) {
                         bin_id = v_bins[i].id;
@@ -30,9 +35,12 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         n = v_itms.size();
 
-        /* STEP - 1, place all possible items in bins using FIRST */
+        
+        sort_inc_itm_color(v_itms);
+
+        /* STEP - 1, place all possible items in bins using FRST */
         printf("\n<--------------------------------------->\n");
-        printf("STEP 1, FIRST_F\n");
+        printf("STEP 1, FRST_F\n");
         printf("<--------------------------------------->\n");
         while (alloc_count != n) {
                 alloc_count = 0;
@@ -45,11 +53,11 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 continue;
 
                         /* find best bin to fit itm */
-                        ret = _find_frst_bin(v_bins, v_itms[i], ctx, load, gcd);
+                        ret = _find_frst_bin(v_bins, v_itms[i], ctx, load, gcd, v_itms[i].color);
 
                         /* bin found add itm to it */
                         if (ret != -1) {
-                                printf("First Bin to accomodate Item %d is Bin %d\n", 
+                                printf("Best Bin to accomodate Item %d is Bin %d\n", 
                                                 v_itms[i].id, ret);
                                 bin_id = ret;
                                 add_itm_to_v_bins(v_bins, v_itms[i], bin_id, ctx, 
@@ -59,9 +67,13 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
                                 /* no bin was found */
                         } else {
-                                printf("No Bin was found to accomodate Item %d size: %d\n", 
-                                                v_itms[i].id, v_itms[i].size);
-                                add_bin(v_bins, ctx);
+                                printf("No Bin was found to accomodate Item %d idx: %d size: %d\n", 
+                                                v_itms[i].id, v_itms[i].tc_idx, v_itms[i].size);
+
+                                if (v_itms[i].color == WHITE)
+                                        add_bin_color(v_bins, gen_rand(0, 5), ctx);
+                                else
+                                        add_bin_color(v_bins, v_itms[i].color, ctx);
                                 ctx.cycl_count++;
                                 continue;
                         }
@@ -70,17 +82,6 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 for (int i = 0; i < n; i++) {
                         if (v_itms[i].is_allocated == YES)
                                 alloc_count++;
-                }
-        }
-
-redo:
-        /* TODO remove extra useless added bin */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        if (v_bins[i].v_itms[j].size < 0 && v_bins[i].v_itms[j].is_let == YES) {
-                                v_bins.erase(v_bins.begin() + i);
-                                goto redo;
-                        }
                 }
         }
 }

@@ -34,7 +34,6 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
         struct context ctx_bfdu_f;
         struct b_stats stts_bfdu_f;
         vector<struct bin> v_bins;
-        vector<struct ecu> v_ecu_bfdu_f;
         vector<struct bin> v_bins_bfdu_f;
         vector<struct item> v_itms;
         vector<struct item> v_itms_bfdu_f;
@@ -64,7 +63,7 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
                         v_itms_bfdu_f = v_itms;
                         v_bins_bfdu_f = v_bins;
 
-                        generation(v_bins_bfdu_f, v_ecu_bfdu_f, ctx_bfdu_f);
+                        generation(v_bins_bfdu_f, ctx_bfdu_f);
                         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
                         schedulability_analysis(v_bins_bfdu_f, ctx_bfdu_f);
                         optimization(v_bins_bfdu_f, ctx_bfdu_f);

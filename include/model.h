@@ -176,19 +176,14 @@ struct bin {
         vector<struct task> v_tasks;
 };
 
-/* PLATFORM MODEL */
-struct ecu {
-        int id;
-        int color;
-        vector<struct bin> v_bins;
-};
-
 /* OPERATIONS ON DATA STRUCTURES */
 void sort_inc_task_priority(vector<struct task> &v_tasks);
 
 void sort_inc_task_id(vector<struct task> &v_tasks);
 
 void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
+
+void sort_inc_bin_color(vector<struct bin> &v_bins);
 
 void sort_dec_int(vector<int> &v_int);
 
@@ -197,6 +192,8 @@ void sort_dec_itm_size(vector<struct item> &v_itms);
 void sort_inc_itm_id(vector<struct item> &v_itms);
 
 void sort_inc_itm_tc_idx(vector<struct item> &v_itms);
+
+void sort_inc_itm_color(vector<struct item> &v_itms);
 
 void copy_back_prio_to_tc(struct bin &b);
 

@@ -247,7 +247,7 @@ static void _create_waters2019(struct item &itm)
         waters2019 = {0};
         waters2019.id = 0;
         waters2019.tc_idx = 0;
-        waters2019.memcost = MAXMEMCOST;
+        waters2019.memcost = MINMEMCOST;
         waters2019.disp_count = 0;
         waters2019.swap_count = 0;
         waters2019.color = RED;
@@ -365,33 +365,33 @@ static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm,
 
         /* blue */
         itm = {0};
-        _create_tc(itm, BLUE, 1, C);
+        _create_tc(itm, BLUE, 500, C);
         v_itms.push_back(itm);
 
         /* yellow */
         itm = {0};
-        _create_tc(itm, YELLOW, 1, C);
+        _create_tc(itm, YELLOW, 500, C);
         v_itms.push_back(itm);
 
         /* green */
         itm = {0};
-        _create_tc(itm, GREEN, 1, C);
+        _create_tc(itm, GREEN, 500, C);
         v_itms.push_back(itm);
 
         /* cyan */
         itm = {0};
-        _create_tc(itm, CYAN, 1, C);
+        _create_tc(itm, CYAN, 500, C);
         v_itms.push_back(itm);
 
         /* purple */
         itm = {0};
-        _create_tc(itm, PURPLE, 1, C);
+        _create_tc(itm, PURPLE, 500, C);
         v_itms.push_back(itm);
 
         /* white */
         for (int i = 0; i < 4; i++) {
                 itm = {0};
-                _create_tc(itm, WHITE, C, C*4);
+                _create_tc(itm, WHITE, C, C*2);
                 v_itms.push_back(itm);
         }
         sort_dec_itm_size(v_itms);

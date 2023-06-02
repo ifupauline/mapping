@@ -15,6 +15,21 @@ static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)
         ctx.p.cr = (float)ctx.bins_count / (float)ctx.bins_min;
 }
 
+static void _fix_let_task(vector<struct bin> &v_bins)
+{
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int k = 0; k < v_bins[i].v_itms.size(); k++) {
+                        if (v_bins[i].v_itms.size() == 1 && 
+                                        v_bins[i].v_itms[k].is_let == YES) {
+                                v_bins[i].v_itms[k].size = 0;
+                                v_bins[i].v_itms[k].gcd = 0;
+                                v_bins[i].load = 0;
+                                v_bins[i].load_rem = C;
+                        }
+                }
+        }
+}
+
 static void _execution_time(struct context &ctx)
 {
         ctx.p.et = ctx.p.frag_time+ ctx.p.allo_time + ctx.p.schd_time + 
@@ -70,7 +85,7 @@ float sched_rate(vector<struct bin> &v_bins, struct context &ctx)
                         ctx.sched_failed_count++;
         }
 
-        sched_rate = (float)ctx.sched_ok_count / (float)ctx.bins_count;
+        sched_rate = (float)ctx.sched_ok_count / (float)(ctx.sched_ok_count + ctx.sched_failed_count);
 
         return sched_rate;
 }
@@ -81,8 +96,16 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         for (unsigned int i = 0; i < v_bins.size(); i++) {
                 for (unsigned int j = 0; j < v_bins[i].v_tasks.size(); j++)
                         ctx.tasks_count++;
-        }
 
+                for (unsigned int k = 0; k < v_bins[i].v_itms.size(); k++) {
+                        if (v_bins[i].v_itms.size() == 1 && v_bins[i].v_itms[k].is_let == YES) {
+                                v_bins[i].v_itms[k].size = 0;
+                                v_bins[i].v_itms[k].gcd = 0;
+                                v_bins[i].load = 0;
+                                v_bins[i].load_rem = C;
+                        }
+                }
+        }
         _cores_ratio(v_itms, ctx);
         _schedulability_rate(ctx);
         _execution_time(ctx);
@@ -95,6 +118,7 @@ void print_task_chains(vector<struct item> &v_itms)
 
         tasknbr = 0;
 
+        sort_inc_itm_color(v_itms);
         for (unsigned int i = 0; i < v_itms.size(); i++) {
                 if (v_itms[i].color == RED)
                         printf("\033[0;31m");
@@ -157,6 +181,8 @@ void print_core(struct bin &b)
 
 void print_cores(vector<struct bin> &v_bins, struct context &ctx)
 {
+        sort_inc_bin_color(v_bins);
+        _fix_let_task(v_bins);
         printf("+=====================================+\n");
         if (ctx.prm.a == BFDU_F)
                 printf("| PRINT CORE BFDU_F                   |\n");
@@ -376,7 +402,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         if (ctx.prm.a == FRST_F)
                 printf("a:      FIRST_F\n");
         printf("------------------------------------------------------------------------>\n");
-        printf("Initial Number of Cores:       %-3d\n", ctx.bins_min);
+        printf("M*:                            %-3d\n", ctx.bins_min);
         printf("Current Number of Cores:       %-3d\n", ctx.bins_count);
         printf("New Added Cores:               +%-3d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
@@ -417,7 +443,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
-        printf("Schedulability Rate (tc):         %-3.3f\n", ctx.p.sched_rate_tc);
+        //printf("Schedulability Rate (tc):         %-3.3f\n", ctx.p.sched_rate_tc);
         printf("------------------------------------------------------------------------>\n");
         printf("Displacement SR Gain:            +%-3.3f\n", ctx.p.disp_gain);
         printf("Swapping SR Gain:                +%-3.3f\n", ctx.p.swap_gain);

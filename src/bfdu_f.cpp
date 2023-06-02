@@ -54,6 +54,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         int alloc_count;
 
         n = v_itms.size();
+        sort_inc_itm_color(v_itms);
 
         /* STEP - 1, place all possible items in bins using BFDU */
         printf("\n<--------------------------------------->\n");
@@ -99,17 +100,6 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 for (int i = 0; i < n; i++) {
                         if (v_itms[i].is_allocated == YES)
                                 alloc_count++;
-                }
-        }
-
-redo:
-        /* TODO remove extra useless added bin */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        if (v_bins[i].v_itms[j].size < 0 && v_bins[i].v_itms[j].is_let == YES) {
-                                v_bins.erase(v_bins.begin() + i);
-                                goto redo;
-                        }
                 }
         }
 }

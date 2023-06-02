@@ -1,8 +1,10 @@
 #include "let.h"
+#include "print.h"
 #include "mapping.h"
+#include "generator.h"
 
 static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
-                struct context &ctx, int &worst_load, int &worst_gcd)
+                struct context &ctx, int &worst_load, int &worst_gcd, int color)
 {       
         int bin_id;
         int tmp_rem;
@@ -19,6 +21,9 @@ static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
         worst_rem = -1;
 
         for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].color != color && color != WHITE) 
+                        continue;
+
                 tmp_load = check_if_fit_itm(v_bins[i], itm, tmp_gcd);
                 if (tmp_load <= v_bins[i].phi) {
                         tmp_rem = v_bins[i].phi - tmp_load;
@@ -51,6 +56,8 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         n = v_itms.size();
 
+        sort_inc_itm_color(v_itms);
+
         /* STEP - 1, place all possible items in bins using WFDU */
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, WFDU_F\n");
@@ -66,23 +73,27 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 continue;
 
                         /* find best bin to fit itm */
-                        ret = _find_worst_bin(v_bins, v_itms[i], ctx, load, gcd);
+                        ret = _find_worst_bin(v_bins, v_itms[i], ctx, load, gcd, v_itms[i].color);
 
                         /* bin found add itm to it */
-                        if (ret > -1) {
+                        if (ret != -1) {
                                 printf("Worst Bin to accomodate Item %d is Bin %d\n", 
                                                 v_itms[i].id, ret);
                                 bin_id = ret;
-                                add_itm_to_v_bins(v_bins, v_itms[i], bin_id, 
-                                                ctx, load, gcd);
+                                add_itm_to_v_bins(v_bins, v_itms[i], bin_id, ctx, 
+                                                load, gcd);
                                 v_itms[i].is_allocated = YES;
                                 continue;
 
                                 /* no bin was found */
-                        } else if (ret == -1) {
-                                printf("No Bin was found to accomodate Item %d\n", 
-                                                v_itms[i].id);
-                                add_bin(v_bins, ctx);
+                        } else {
+                                printf("No Bin was found to accomodate Item %d idx: %d size: %d\n", 
+                                                v_itms[i].id, v_itms[i].tc_idx, v_itms[i].size);
+
+                                if (v_itms[i].color == WHITE)
+                                        add_bin_color(v_bins, gen_rand(0, 5), ctx);
+                                else
+                                        add_bin_color(v_bins, v_itms[i].color, ctx);
                                 ctx.cycl_count++;
                                 continue;
                         }
@@ -91,17 +102,6 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 for (int i = 0; i < n; i++) {
                         if (v_itms[i].is_allocated == YES)
                                 alloc_count++;
-                }
-        }
-
-redo:
-        /* TODO remove extra useless added bin */
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        if (v_bins[i].v_itms[j].size < 0 && v_bins[i].v_itms[j].is_let == YES) {
-                                v_bins.erase(v_bins.begin() + i);
-                                goto redo;
-                        }
                 }
         }
 }

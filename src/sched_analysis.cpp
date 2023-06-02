@@ -260,8 +260,12 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
         sort_inc_bin_load_rem(v_bins);
         copy_v_tc_to_v_tasks_with_pos(v_bins);
 
-        for (unsigned int i = 0; i < v_bins.size(); i++)
-                priority_assignment(v_bins[i]);
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                if (v_bins[i].load == 0)
+                        continue;
+                else
+                        priority_assignment(v_bins[i]);
+        }
 
         ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
         ctx.p.sched_imp_allo = ctx.sched_ok_count;
