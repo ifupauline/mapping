@@ -2,6 +2,33 @@
 #include "mapping.h"
 #include "sched_analysis.h"
 
+static void _load_balance(vector<struct bin> &v_bins, struct context &ctx)
+{
+        float sum;
+        float mean;
+        float sumsqr;
+        float variance;
+        unsigned int n;
+
+        sum = 0.0;
+        mean = 0.0;
+        sumsqr = 0.0;
+        variance = 0.0;
+        n = v_bins.size();
+
+        for (unsigned int i = 0; i < n; i++)
+                sum += (v_bins[i].load);
+
+        mean = sum / n;
+
+        for (unsigned int i = 0; i < n; i++) {
+                ctx.p.stdv = (v_bins[i].load) - mean;
+                sumsqr += ctx.p.stdv * ctx.p.stdv;
+        }
+        variance = sumsqr / n;
+        ctx.p.stdv = sqrt(variance) ;
+}
+
 static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)
 {
         int min_nbr_cuts;
@@ -110,6 +137,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
         _schedulability_rate(ctx);
         _execution_time(ctx);
         _utilization_rate(v_bins, ctx);
+        _load_balance(v_bins, ctx);
 }
 
 void print_task_chains(vector<struct item> &v_itms)
@@ -135,10 +163,10 @@ void print_task_chains(vector<struct item> &v_itms)
                 else
                         printf("\033[0;37m");
                 printf("======================================================\n");
-                printf("tc.id: %-3d tc.idx: %-3d u: %.3f memcost: %d color: %d\n", 
+                printf("tc.id: %-3d tc.idx: %-3d u: %.3f color: %d\n", 
                                 v_itms[i].id, v_itms[i].tc_idx, 
                                 (float)v_itms[i].size / PERMILL, 
-                                v_itms[i].memcost, v_itms[i].color);
+                                v_itms[i].color);
                 printf("======================================================\n");
                 for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
                         printf("tau %d: u: %.3f c: %-6d t: %-6d\n",
@@ -158,7 +186,7 @@ void print_task_chains(vector<struct item> &v_itms)
 
 void print_core(struct bin &b)
 {
-        printf("Core: %d Load: %d Lrem: %d MemCost %d\n", b.id, b.load, b.load_rem, b.memcost);
+        printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);
         for (unsigned int i = 0; i < b.v_itms.size(); i++) {
                 for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
                         printf("TC %-3d tc_idx %d u: %-3d tau %-3d p: %-3d itm_idx: %-3d uniq_id: %-3d sched: %d\n", 
@@ -200,7 +228,7 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                 printf("|Core: %d\n", v_bins[i].id);
                 printf("|Load: %.3f\n", (float)v_bins[i].load / PERMILL);
                 printf("|Lrem: %.3f\n", ((float)v_bins[i].load_rem / PERMILL));
-                printf("|Memc: %d\n", v_bins[i].memcost);
+                printf("|Letc: %d\n", v_bins[i].memcost);
                 printf("|");
 
                 if (v_bins[i].color == RED)
@@ -269,12 +297,11 @@ void print_cores(vector<struct bin> &v_bins, struct context &ctx)
                                         printf("\033[0;35m");
                                 else
                                         printf("\033[0;37m");
-                                printf("|TC:  %-3d tc_idx %d size %-3d gcd %-6d memcost %d color %d\n", 
+                                printf("|TC:  %-3d tc_idx %d size %-3d gcd %-6d color %d\n", 
                                                 v_bins[i].v_itms[j].id, 
                                                 v_bins[i].v_itms[j].tc_idx, 
                                                 v_bins[i].v_itms[j].size,
                                                 v_bins[i].v_itms[j].gcd,
-                                                v_bins[i].v_itms[j].memcost,
                                                 v_bins[i].v_itms[j].color);
                                 printf("\033[0m");
                                 printf("|--------------------------------------------------------------|\n");
@@ -449,6 +476,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Swapping SR Gain:                +%-3.3f\n", ctx.p.swap_gain);
         printf("Total Optimization SR Gain:      +%-3.3f\n", ctx.p.opti_gain);
         printf("------------------------------------------------------------------------>\n");
+        printf("Load Balance (stdv)               %-3.3f\n", ctx.p.stdv / PERMILL);
         printf("Total SYS Utilization             %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);
         printf("Total LET Utilization             %-3.3f\n", (ctx.p.let / ctx.p.maxu) * PERCENT);
         printf("------------------------------------------------------------------------>\n");

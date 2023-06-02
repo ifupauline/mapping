@@ -68,6 +68,7 @@ struct perf {
         float sys;
         float unu;
         float maxu;
+        float stdv;
         float frag_time;
         float allo_time;
         float schd_time;
