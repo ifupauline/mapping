@@ -29,15 +29,16 @@ static void _load_balance(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.stdv = sqrt(variance) ;
 }
 
-static void _cores_ratio(vector<struct item> &v_itms, struct context &ctx)
+static void _cores_ratio(vector<struct bin> &v_bins, struct context &ctx)
 {
-        int min_nbr_cuts;
 
-        min_nbr_cuts = 0;
-
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                if (v_itms[i].size > PHI)
-                        min_nbr_cuts++;
+        for (unsigned int i = 0; i < v_bins.size(); i++) {
+                for (unsigned int k = 0; k < v_bins[i].v_itms.size(); k++) {
+                        if (v_bins[i].v_itms.size() == 1 && v_bins[i].v_itms[k].is_let == YES) {
+                                ctx.bins_count--;
+                        }
+                }
+        }
 
         ctx.p.cr = (float)ctx.bins_count / (float)ctx.bins_min;
 }
@@ -84,6 +85,9 @@ static void _utilization_rate(vector<struct bin> &v_bins, struct context &ctx)
                 ctx.p.sys += v_bins[i].load;
                 ctx.p.unu += v_bins[i].load_rem;
                 for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
+                        if (v_bins[i].v_itms.size() == 1 && 
+                                        v_bins[i].v_itms[j].is_let == YES)
+                                continue;
                         if (v_bins[i].v_itms[j].is_let == YES) 
                                 ctx.p.let += v_bins[i].v_itms[j].size;
                 }
@@ -133,7 +137,7 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
                         }
                 }
         }
-        _cores_ratio(v_itms, ctx);
+        _cores_ratio(v_bins, ctx);
         _schedulability_rate(ctx);
         _execution_time(ctx);
         _utilization_rate(v_bins, ctx);
@@ -430,7 +434,7 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("a:      FIRST_F\n");
         printf("------------------------------------------------------------------------>\n");
         printf("M*:                            %-3d\n", ctx.bins_min);
-        printf("Current Number of Cores:       %-3d\n", ctx.bins_count);
+        printf("M:                             %-3d\n", ctx.bins_count);
         printf("New Added Cores:               +%-3d\n", ctx.cycl_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Initial Number of TC:          %-3d\n", ctx.prm.n);
@@ -470,15 +474,14 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
-        //printf("Schedulability Rate (tc):         %-3.3f\n", ctx.p.sched_rate_tc);
         printf("------------------------------------------------------------------------>\n");
         printf("Displacement SR Gain:            +%-3.3f\n", ctx.p.disp_gain);
         printf("Swapping SR Gain:                +%-3.3f\n", ctx.p.swap_gain);
         printf("Total Optimization SR Gain:      +%-3.3f\n", ctx.p.opti_gain);
         printf("------------------------------------------------------------------------>\n");
         printf("Load Balance (stdv)               %-3.3f\n", ctx.p.stdv / PERMILL);
-        printf("Total SYS Utilization             %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);
-        printf("Total LET Utilization             %-3.3f\n", (ctx.p.let / ctx.p.maxu) * PERCENT);
+        printf("Total SYS Utilization (M)         %-3.3f\n", (ctx.p.sys / ctx.p.maxu) * PERCENT);
+        printf("Total LET Utilization (M)         %-3.3f\n", (ctx.p.let / ctx.p.maxu) * PERCENT);
         printf("------------------------------------------------------------------------>\n");
         printf("Total Execution Time:             %-3.3f ms\n", ctx.p.et * MSEC);
         printf("------------------------------------------------------------------------>\n");

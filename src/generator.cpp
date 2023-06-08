@@ -1,8 +1,9 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-static int chain[1][6] = {
-        {1000, 2000, 5000, 10000, 20000, 50000},
+/* WATERS2015 task periods */
+static int chain[1][8] = {
+        {1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000},
 };
 
 static void _assign_id(vector<struct item> &v_itms)
@@ -281,7 +282,7 @@ static void _create_task(struct task &tau, int i, int x)
         float real_u;
 
         while (1) {
-                y  = gen_rand(0, 5);
+                y  = gen_rand(0, 7);
                 real_t = chain[x][y];
                 real_c = gen_rand(MINWCET, MAXWCET);
                 real_u = (real_c/real_t) * PERMILL;
@@ -482,6 +483,7 @@ static int _gen_normal_set(vector<struct item> &v_itms, struct params &prm,
 void partitioning(vector<struct item> &v_itms, struct context &ctx)
 {
         int idx;
+        int ret;
         int u_sum;
         int uniq_id;
         struct item itm;
@@ -490,26 +492,49 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
         vector<struct item> v_tmp_itms;
 
         idx = 0;
+        ret = -1;
         u_sum = 0;
         uniq_id = 1;
         ctx.cuts_count = 0;
         ctx.frags_count = 0;
 
         /* store itms > phi */
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                if (v_itms[i].size >= ctx.prm.e)
-                        v_tmp_itms.push_back(v_itms[i]);
-                else
-                        v_new_itms.push_back(v_itms[i]);
-        }
+        for (unsigned int i = 0; i < v_itms.size(); i++)
+                v_tmp_itms.push_back(v_itms[i]);
 
         /* fragmentation */
         for (unsigned int i = 0; i < v_tmp_itms.size(); i++) {
                 idx = 0;
                 for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
+                        ret = -1;
                         u_sum += v_tmp_itms[i].v_tasks[j].u;
                         v_tmp_itms[i].v_tasks[j].tc_id = v_tmp_itms[i].id;
                         v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
+                        ret = wcrt(v_tmp);
+                        if (ret == SCHED_FAILED)  {
+                                u_sum -= v_tmp_itms[i].v_tasks[j].u;
+                                v_tmp.pop_back();
+                                itm = {0};
+                                itm.id = v_tmp_itms[i].id;
+                                itm.tc_idx = idx;
+                                itm.size = u_sum;
+                                itm.memcost = v_tmp_itms[i].memcost;
+                                itm.e2ed = 0;
+                                itm.disp_count = 0;
+                                itm.swap_count = 0;
+                                itm.color = v_tmp_itms[i].color;
+                                itm.is_let = NO;
+                                itm.is_frag = YES;
+                                itm.is_allocated = NO;
+                                itm.v_tasks = v_tmp;
+                                v_new_itms.push_back(itm);
+                                j--;
+                                idx++;
+                                ctx.cuts_count++;
+                                u_sum = 0;
+                                v_tmp.clear();
+                        }
+
                         if (i == 0 && u_sum >= PHI) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();

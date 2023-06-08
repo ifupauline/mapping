@@ -281,7 +281,6 @@ void displacement(vector<struct bin> &v_bins)
         itm.first = {0};
         itm.second = 0;
 
-
         /* take next unschedulable itm */
         _store_itms_disp(v_bins, v_itms, flag);
         for (unsigned int i = 0; i < v_itms.size(); i++)

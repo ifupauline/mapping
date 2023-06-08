@@ -57,7 +57,7 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
                         /* bin found add itm to it */
                         if (ret != -1) {
-                                printf("Best Bin to accomodate Item %d is Bin %d\n", 
+                                printf("First Bin to accomodate Item %d is Bin %d\n", 
                                                 v_itms[i].id, ret);
                                 bin_id = ret;
                                 add_itm_to_v_bins(v_bins, v_itms[i], bin_id, ctx, 

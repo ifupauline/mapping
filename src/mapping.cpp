@@ -10,7 +10,7 @@ void fragmentation(vector<struct item> &v_itms, struct context &ctx)
         clock_t start, end;
 
         printf("+=====================================+\n");
-        printf("| FRAGMENTATION                       |\n");
+        printf("| PARTITIONING                        |\n");
         printf("+=====================================+\n");
         start = clock();
         partitioning(v_itms, ctx);
