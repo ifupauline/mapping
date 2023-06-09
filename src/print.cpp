@@ -189,6 +189,15 @@ void print_task_chains(vector<struct item> &v_itms)
         printf("Total Number of Task-Chains: %lu\n\n", v_itms.size());
 }
 
+void print_tc_comm(struct tc_comm &com)
+{
+        printf("<--------------- TC %d PATH --------------->\n", com.tc_id);
+        for (unsigned int i = 0; i < com.path.size(); i++) {
+                printf("Core %-3d -> Core %-3d\n", com.path[i].src, com.path[i].dst);
+        }
+        printf("\n");
+}
+
 void print_core(struct bin &b)
 {
         printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);

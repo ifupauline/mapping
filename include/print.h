@@ -10,6 +10,8 @@ void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms,
 
 void print_task_chains(vector<struct item> &v_itms);
 
+void print_tc_comm(struct tc_comm &com);
+
 void print_core(struct bin &b);
 
 void print_cores(vector<struct bin> &v_bins, struct context &ctx);

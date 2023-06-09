@@ -123,14 +123,15 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 }
 
 void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
-                struct context &ctx)
+                vector<struct ecu> &v_ecus, struct context &ctx)
 {
         clock_t start, end;
         printf("+=====================================+\n");
         printf("| COMMUNICATION                       |\n");
         printf("+=====================================+\n");
         start = clock();
-        comm_count(v_bins, v_itms, ctx);
+        create_ecus(v_bins, v_ecus);
+        comm_count(v_bins, v_itms, v_ecus, ctx);
         e2e_latency(v_bins, v_itms, ctx);
         end = clock();
         ctx.p.comm_time = ((float) (end - start)) / CLOCKS_PER_SEC;

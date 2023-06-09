@@ -243,6 +243,7 @@ static void _create_waters2019(struct item &itm)
         /* tc waters 2019 */
         waters2019 = {0};
         waters2019.id = 0;
+        waters2019.ecu = -1;
         waters2019.tc_idx = 0;
         waters2019.memcost = MINMEMCOST;
         waters2019.disp_count = 0;
@@ -326,6 +327,7 @@ static void _create_tc(struct item &itm, int color, int minu,
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.memcost = MINMEMCOST;
+                itm.ecu = -1;
                 itm.e2ed = 0;
                 itm.color = color;
                 itm.is_frag = NO;
@@ -451,6 +453,7 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.ecu = -1;
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
@@ -475,6 +478,7 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.ecu = -1;
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
@@ -498,6 +502,7 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.ecu = -1;
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
@@ -520,6 +525,7 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
+                                itm.ecu = -1;
                                 itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;

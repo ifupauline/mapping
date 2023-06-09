@@ -28,6 +28,12 @@ int main(int argc, char **argv)
         vector<struct item> v_itms_wfdu_800;
         vector<struct item> v_itms_frst_500;
         vector<struct item> v_itms_frst_800;
+        vector<struct ecu> v_ecus_bfdu_500;
+        vector<struct ecu> v_ecus_bfdu_800;
+        vector<struct ecu> v_ecus_wfdu_500;
+        vector<struct ecu> v_ecus_wfdu_800;
+        vector<struct ecu> v_ecus_frst_500;
+        vector<struct ecu> v_ecus_frst_800;
 
         /* parameters */
         prm = {0};
@@ -115,20 +121,20 @@ int main(int argc, char **argv)
         optimization(v_bins_frst_800, ctx_frst_800);
 
         /* communication */
-        communication(v_bins_bfdu_500, v_itms_bfdu_500, ctx_bfdu_500);
-        communication(v_bins_bfdu_800, v_itms_bfdu_800, ctx_bfdu_800);
-        communication(v_bins_wfdu_500, v_itms_wfdu_500, ctx_wfdu_500);
-        communication(v_bins_wfdu_800, v_itms_wfdu_800, ctx_wfdu_800);
-        communication(v_bins_frst_500, v_itms_frst_500, ctx_frst_500);
-        communication(v_bins_frst_800, v_itms_frst_800, ctx_frst_800);
+        communication(v_bins_bfdu_500, v_itms_bfdu_500, v_ecus_bfdu_500, ctx_bfdu_500);
+        communication(v_bins_bfdu_800, v_itms_bfdu_800, v_ecus_bfdu_800, ctx_bfdu_800);
+        communication(v_bins_wfdu_500, v_itms_wfdu_500, v_ecus_wfdu_500, ctx_wfdu_500);
+        communication(v_bins_wfdu_800, v_itms_wfdu_800, v_ecus_wfdu_800, ctx_wfdu_800);
+        communication(v_bins_frst_500, v_itms_frst_500, v_ecus_frst_500, ctx_frst_500);
+        communication(v_bins_frst_800, v_itms_frst_800, v_ecus_frst_800, ctx_frst_800);
 
         /* results */
-        print_cores(v_bins_bfdu_500, ctx_bfdu_500);
-        print_cores(v_bins_bfdu_800, ctx_bfdu_800);
-        print_cores(v_bins_wfdu_500, ctx_wfdu_500);
-        print_cores(v_bins_wfdu_800, ctx_wfdu_800);
-        print_cores(v_bins_frst_500, ctx_frst_500);
-        print_cores(v_bins_frst_800, ctx_frst_800);
+        //print_cores(v_bins_bfdu_500, ctx_bfdu_500);
+        //print_cores(v_bins_bfdu_800, ctx_bfdu_800);
+        //print_cores(v_bins_wfdu_500, ctx_wfdu_500);
+        //print_cores(v_bins_wfdu_800, ctx_wfdu_800);
+        //print_cores(v_bins_frst_500, ctx_frst_500);
+        //print_cores(v_bins_frst_800, ctx_frst_800);
         print_vectors(v_bins_bfdu_500, v_itms_bfdu_500, ctx_bfdu_500);
         print_vectors(v_bins_bfdu_800, v_itms_bfdu_800, ctx_bfdu_800);
         print_vectors(v_bins_wfdu_500, v_itms_wfdu_500, ctx_wfdu_500);

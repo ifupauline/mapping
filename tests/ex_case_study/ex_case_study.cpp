@@ -8,7 +8,6 @@ int main(int argc, char **argv)
         struct context ctx;
         vector<struct bin> v_bins;
         vector<struct item> v_itms;
-
         struct context ctx_bfdu_f;
         struct context ctx_wfdu_f;
         struct context ctx_frst_f;
@@ -18,6 +17,9 @@ int main(int argc, char **argv)
         vector<struct item> v_itms_bfdu_f;
         vector<struct item> v_itms_wfdu_f;
         vector<struct item> v_itms_frst_f;
+        vector<struct ecu> v_ecus_bfdu_f;
+        vector<struct ecu> v_ecus_wfdu_f;
+        vector<struct ecu> v_ecus_frst_f;
 
         /* parameters */
         input_case_study(argc, argv, prm);
@@ -68,9 +70,9 @@ int main(int argc, char **argv)
         optimization(v_bins_frst_f, ctx_frst_f);
 
         /* communication */
-        communication(v_bins_bfdu_f, v_itms_bfdu_f, ctx_bfdu_f);
-        communication(v_bins_wfdu_f, v_itms_wfdu_f, ctx_wfdu_f);
-        communication(v_bins_frst_f, v_itms_frst_f, ctx_frst_f);
+        communication(v_bins_bfdu_f, v_itms_bfdu_f, v_ecus_bfdu_f, ctx_bfdu_f);
+        communication(v_bins_wfdu_f, v_itms_wfdu_f, v_ecus_wfdu_f, ctx_wfdu_f);
+        communication(v_bins_frst_f, v_itms_frst_f, v_ecus_frst_f, ctx_frst_f);
 
         /* results */
         print_cores(v_bins_bfdu_f, ctx_bfdu_f);

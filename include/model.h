@@ -30,6 +30,10 @@
 #define MINMEMCOST 1
 #define MAXMEMCOST 3
 
+/* comm types */
+#define INTRA_ECU 0
+#define INTER_ECU 1
+
 /* colors */
 #define RED    0
 #define BLUE   1
@@ -93,10 +97,11 @@ struct colorsize {
         int white_bins_min;
 };
 
-struct item {
+struct item { /* task-chain */
         int id;
         int tc_idx;
         int size;
+        int ecu;
         int gcd;
         int memcost;
         int disp_count;
@@ -109,7 +114,7 @@ struct item {
         vector<struct task> v_tasks;
 };
 
-struct bin {
+struct bin { /* core */
         int id;
         int phi;
         int flag;
@@ -176,6 +181,23 @@ struct context {
         struct perf p;
         struct params prm;
         struct colorsize cs;
+};
+
+/* NETWORK MODEL */
+struct ecu {
+        int color;
+        vector<struct bin> v_bins;
+};
+
+struct link {
+        int src;
+        int dst;
+        int comm_type;
+};
+
+struct tc_comm {
+        int tc_id;
+        vector<struct link> path;
 };
 
 /* OPERATIONS ON DATA STRUCTURES */
