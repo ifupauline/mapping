@@ -12,20 +12,6 @@ static void _assign_id(vector<struct item> &v_itms)
                 v_itms[i].id = i;
 }
 
-static void _check_params_normal(struct params &prm)
-{
-        if (prm.e < MAXMAXTU || prm.e > PHI) {
-                printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
-                                MAXMAXTU + 1,  PHI);
-                exit(0);
-        }
-
-        if (prm.n < MINN || prm.n > MAXN) {
-                printf("Invalid params: prm.n rule -> [10 <= n <= 10000]\n\n");
-                exit(0);
-        }
-}
-
 static void _check_params_eden(struct params &prm)
 {
         if (prm.e < MAXMAXTU || prm.e > PHI) {
@@ -143,6 +129,7 @@ static void _create_waters2019(struct item &itm)
         can_polling.id = 0;
         can_polling.tc_id = itm.id;
         can_polling.is_let = NO;
+        can_polling.datasize = 1;
         can_polling.u = ceil(((float)can_polling.c/(float)can_polling.t) * PERMILL);
 
         /* lidar */
@@ -154,6 +141,7 @@ static void _create_waters2019(struct item &itm)
         lidar.id = 1;
         lidar.tc_id = itm.id;
         lidar.is_let = NO;
+        lidar.datasize = 2000;
         lidar.u = ceil(((float)lidar.c/(float)lidar.t) * PERMILL);
 
         /* cam_grabber */
@@ -165,6 +153,7 @@ static void _create_waters2019(struct item &itm)
         cam_grabber.id = 2;
         cam_grabber.tc_id = itm.id;
         cam_grabber.is_let = NO;
+        cam_grabber.datasize = 2000;
         cam_grabber.u = ceil(((float)cam_grabber.c/(float)cam_grabber.t) * PERMILL);
 
         /* localization */
@@ -176,6 +165,7 @@ static void _create_waters2019(struct item &itm)
         localization.id = 3;
         localization.tc_id = itm.id;
         localization.is_let = NO;
+        localization.datasize = 3;
         localization.u = ceil(((float)localization.c/(float)localization.t) * PERMILL);
 
         /* detection */
@@ -187,6 +177,7 @@ static void _create_waters2019(struct item &itm)
         detection.id = 4;
         detection.tc_id = itm.id;
         detection.is_let = NO;
+        detection.datasize = 750;
         detection.u = ceil(((float)detection.c/(float)detection.t) * PERMILL);
 
         /* lane detection */
@@ -198,6 +189,7 @@ static void _create_waters2019(struct item &itm)
         lane_detection.id = 5;
         lane_detection.tc_id = itm.id;
         lane_detection.is_let = NO;
+        lane_detection.datasize = 1;
         lane_detection.u = ceil(((float)lane_detection.c/(float)lane_detection.t) * PERMILL);
 
         /* ekf */
@@ -209,6 +201,7 @@ static void _create_waters2019(struct item &itm)
         ekf.id = 6;
         ekf.tc_id = itm.id;
         ekf.is_let = NO;
+        ekf.datasize = 5;
         ekf.u = ceil(((float)ekf.c/(float)ekf.t) * PERMILL);
 
         /* planner */
@@ -220,6 +213,7 @@ static void _create_waters2019(struct item &itm)
         planner.id = 7;
         planner.tc_id = itm.id;
         planner.is_let = NO;
+        planner.datasize = 2;
         planner.u = ceil(((float)planner.c/(float)planner.t) * PERMILL);
 
         /* control */
@@ -231,6 +225,7 @@ static void _create_waters2019(struct item &itm)
         control.id = 8;
         control.tc_id = itm.id;
         control.is_let = NO;
+        control.datasize = 2;
         control.u = ceil(((float)control.c/(float)control.t) * PERMILL);
 
         /* can write */
@@ -242,6 +237,7 @@ static void _create_waters2019(struct item &itm)
         can_write.id = 9;
         can_write.tc_id = itm.id;
         can_write.is_let = NO;
+        can_write.datasize = 1;
         can_write.u = ceil(((float)can_write.c/(float)can_write.t) * PERMILL);
 
         /* tc waters 2019 */
@@ -273,7 +269,7 @@ static void _create_waters2019(struct item &itm)
         itm = waters2019;
 }
 
-static void _create_task(struct task &tau, int i, int x)
+static void _create_task(struct task &tau, int i, int x, int datasize)
 {
         int y;
         int real_t;
@@ -308,9 +304,16 @@ static void _create_task(struct task &tau, int i, int x)
                 tau.id = i;
                 break;
         }
+
+        if (datasize == SSIZE)
+                tau.datasize = gen_rand(1, 250);
+
+        if (datasize == BSIZE)
+                tau.datasize = gen_rand(250, 1000);
 }
 
-static void _create_tc(struct item &itm, int color, int minu, int maxu)
+static void _create_tc(struct item &itm, int color, int minu, 
+                int maxu, int datasize)
 {
         int x;
         int task_nbr;
@@ -336,7 +339,7 @@ static void _create_tc(struct item &itm, int color, int minu, int maxu)
                         tau.is_let = NO;
                         tau.tc_id = itm.id;
 
-                        _create_task(tau, i, x);
+                        _create_task(tau, i, x, datasize);
 
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
@@ -349,12 +352,12 @@ static void _create_tc(struct item &itm, int color, int minu, int maxu)
         }
 }
 
-static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm, 
+static int _gen_case_study(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx)
 {
         printf("\n\n");
         printf("+=====================================+\n");
-        printf("| EDEN INSTANCE GENERATION            |\n");
+        printf("| CASE-STUDY INSTANCE GENERATION      |\n");
         printf("+=====================================+\n");
 
         struct item itm;
@@ -366,33 +369,33 @@ static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm,
 
         /* blue */
         itm = {0};
-        _create_tc(itm, BLUE, 500, C);
+        _create_tc(itm, BLUE, 500, C, SSIZE);
         v_itms.push_back(itm);
 
         /* yellow */
         itm = {0};
-        _create_tc(itm, YELLOW, 500, C);
+        _create_tc(itm, YELLOW, 500, C, SSIZE);
         v_itms.push_back(itm);
 
         /* green */
         itm = {0};
-        _create_tc(itm, GREEN, 500, C);
+        _create_tc(itm, GREEN, 500, C, SSIZE);
         v_itms.push_back(itm);
 
         /* cyan */
         itm = {0};
-        _create_tc(itm, CYAN, 500, C);
+        _create_tc(itm, CYAN, 500, C, SSIZE);
         v_itms.push_back(itm);
 
         /* purple */
         itm = {0};
-        _create_tc(itm, PURPLE, 500, C);
+        _create_tc(itm, PURPLE, 500, C, SSIZE);
         v_itms.push_back(itm);
 
         /* white */
         for (int i = 0; i < 4; i++) {
                 itm = {0};
-                _create_tc(itm, WHITE, C, C*2);
+                _create_tc(itm, WHITE, C, C*2, BSIZE);
                 v_itms.push_back(itm);
         }
         sort_dec_itm_size(v_itms);
@@ -405,77 +408,6 @@ static int _gen_eden_set(vector<struct item> &v_itms, struct params &prm,
                 v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
 
         _compute_colors(v_itms, ctx);
-
-        return 0;
-}
-
-static int _gen_normal_set(vector<struct item> &v_itms, struct params &prm,
-                struct context &ctx)
-{
-        int x;
-        int ret;
-        int ncount;
-        int task_nbr;
-        struct item itm;
-        struct task tau;
-
-        ret = 0;
-        itm = {0};
-        ncount = 0;
-
-        _check_params_normal(prm);
-
-        printf("\n\n");
-        printf("+=====================================+\n");
-        printf("| NORMAL INSTANCE GENERATION          |\n");
-        printf("+=====================================+\n");
-
-        /* derive synthetic set from waters */
-        while (ncount != prm.n) {
-                itm = {0};
-                itm.tc_idx = 0;
-                itm.size = 0;
-                task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
-                itm.memcost = MINMEMCOST;
-                itm.e2ed = 0;
-                itm.color = gen_rand(0,10);
-                itm.is_frag = NO;
-                itm.disp_count = 0;
-                itm.swap_count = 0;
-                itm.is_let = NO;
-                itm.is_allocated = NO;
-                x = 0;
-
-                for (int i = 0; i < task_nbr; i++) {
-                        tau = {0};
-                        tau.is_let = NO;
-                        tau.tc_id = itm.id;
-
-                        _create_task(tau, i, x);
-
-                        itm.v_tasks.push_back(tau);
-                        itm.size += tau.u;
-                }
-
-                if (itm.size < C)
-                        continue;
-
-                v_itms.push_back(itm);
-                ncount++;
-                printf("%d\n", ncount);
-        }
-        printf("\n");
-
-        sort_dec_itm_size(v_itms);
-        _assign_id(v_itms);
-
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
-
-        ret = _compute_colors(v_itms, ctx);
-
-        if (ret == -1)
-                return -1;
 
         return 0;
 }
@@ -631,18 +563,7 @@ int gen_rand(int min, int max)
         return distr(gen);
 }
 
-void input_normal(int argc, char **argv, struct params &prm)
-{
-        if (argc != 3) {
-                printf("Wrong Number of Arguments!\n");
-                exit(0);
-        }
-        prm.n = atoi(argv[1]);
-        prm.e = atoi(argv[2]);
-        _check_params_normal(prm);
-}
-
-void input_eden(int argc, char **argv, struct params &prm)
+void input_case_study(int argc, char **argv, struct params &prm)
 {
         if (argc != 2) {
                 printf("Wrong Number of Arguments!\n");
@@ -677,28 +598,9 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm,
         ctx.p.frag_time = frag_time;
 }
 
-void gen_normal_set(vector<struct item> &v_itms, struct params &prm,
-                struct context &ctx)
-{
-        int ret; 
-
-        ret = 0;
-        ctx.prm = prm;
-
-        while (1) {
-                ret = _gen_normal_set(v_itms, prm, ctx);
-                if (ret == -1) {
-                        printf("ERR! data set generation\n");
-                        v_itms.clear();
-                        continue;
-                } else
-                        return;
-        }
-}
-
-void gen_eden_set(vector<struct item> &v_itms, struct params &prm, 
+void gen_case_study(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx)
 {
         ctx.prm = prm;
-        _gen_eden_set(v_itms, prm, ctx);
+        _gen_case_study(v_itms, prm, ctx);
 }

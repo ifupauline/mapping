@@ -52,7 +52,7 @@ static void phi(vector<struct b_stats> &v_stts_bfdu_f, struct params &prm)
                         v_itms_bfdu_f.clear();
                         v_bins_bfdu_f.clear();
 
-                        gen_normal_set(v_itms, prm, ctx);
+                        gen_case_study(v_itms, prm, ctx);
                         init_ctx(v_itms, prm, ctx);
 
                         ctx_bfdu_f = {0};

@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         prm = {0};
 
         /* generate set of task-chains and initialize context */
-        gen_eden_set(v_itms, prm, ctx);
+        gen_case_study(v_itms, prm, ctx);
         print_task_chains(v_itms);
 
         v_itms_bfdu_500 = v_itms;

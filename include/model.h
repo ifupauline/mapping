@@ -53,6 +53,74 @@ extern int frst_wcrt_count;
 extern int fsrt_syst_state;
 extern float frst_sched_time;
 
+/* TASK MODEL */
+struct t_pos {
+        int bin_idx;
+        int itm_idx;
+        int task_idx;
+};
+
+struct task {
+        int c;
+        int t;
+        int d;
+        int p;
+        int r;
+        int id;
+        int uniq_id;
+        int tc_id;
+        int is_let;
+        int datasize;
+        float u;
+        struct t_pos idx;
+};
+
+/* BIN-PACKING MODEL */
+struct colorsize {
+        int red;
+        int blue;
+        int yellow;
+        int green;
+        int cyan;
+        int purple;
+        int white;
+        int red_bins_min;
+        int blue_bins_min;
+        int yellow_bins_min;
+        int green_bins_min;
+        int cyan_bins_min;
+        int purple_bins_min;
+        int white_bins_min;
+};
+
+struct item {
+        int id;
+        int tc_idx;
+        int size;
+        int gcd;
+        int memcost;
+        int disp_count;
+        int swap_count;
+        int e2ed;
+        int color;
+        int is_let;
+        int is_frag;
+        int is_allocated;
+        vector<struct task> v_tasks;
+};
+
+struct bin {
+        int id;
+        int phi;
+        int flag;
+        int load;
+        int load_rem;
+        int color;
+        int memcost;
+        vector<struct item> v_itms;
+        vector<struct task> v_tasks;
+};
+
 /* CONTEXT */
 struct params {
         int a;
@@ -88,23 +156,6 @@ struct perf {
         int sched_imp_swap;
 };
 
-struct colorsize {
-        int red;
-        int blue;
-        int yellow;
-        int green;
-        int cyan;
-        int purple;
-        int white;
-        int red_bins_min;
-        int blue_bins_min;
-        int yellow_bins_min;
-        int green_bins_min;
-        int cyan_bins_min;
-        int purple_bins_min;
-        int white_bins_min;
-};
-
 struct context {
         int itms_nbr;
         int itms_size;
@@ -125,56 +176,6 @@ struct context {
         struct perf p;
         struct params prm;
         struct colorsize cs;
-};
-
-/* TASK MODEL */
-struct t_pos {
-        int bin_idx;
-        int itm_idx;
-        int task_idx;
-};
-
-struct task {
-        int c;
-        int t;
-        int d;
-        int p;
-        int r;
-        int id;
-        int uniq_id;
-        int tc_id;
-        int is_let;
-        float u;
-        struct t_pos idx;
-};
-
-/* BIN-PACKING MODEL */
-struct item {
-        int id;
-        int tc_idx;
-        int size;
-        int gcd;
-        int memcost;
-        int disp_count;
-        int swap_count;
-        int e2ed;
-        int color;
-        int is_let;
-        int is_frag;
-        int is_allocated;
-        vector<struct task> v_tasks;
-};
-
-struct bin {
-        int id;
-        int phi;
-        int flag;
-        int load;
-        int load_rem;
-        int color;
-        int memcost;
-        vector<struct item> v_itms;
-        vector<struct task> v_tasks;
 };
 
 /* OPERATIONS ON DATA STRUCTURES */

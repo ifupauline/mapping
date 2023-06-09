@@ -173,11 +173,12 @@ void print_task_chains(vector<struct item> &v_itms)
                                 v_itms[i].color);
                 printf("======================================================\n");
                 for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
-                        printf("tau %d: u: %.3f c: %-6d t: %-6d\n",
+                        printf("tau %d: u: %.3f c: %-6d t: %-6d msize: %-6d\n",
                                         v_itms[i].v_tasks[j].id, 
                                         v_itms[i].v_tasks[j].u / PERMILL, 
                                         v_itms[i].v_tasks[j].c, 
-                                        v_itms[i].v_tasks[j].t);
+                                        v_itms[i].v_tasks[j].t,
+                                        v_itms[i].v_tasks[j].datasize);
                         tasknbr++;
                 }
                 printf("------------------------------------------------------\n");
