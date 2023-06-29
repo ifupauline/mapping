@@ -9,7 +9,7 @@ include_directories(include)
 project(bpp-ifc)
 
 add_subdirectory(src)
-add_subdirectory(exp/phi)
+add_subdirectory(exp/dse)
 add_subdirectory(tests/wcrt)
 add_subdirectory(tests/ex_case_study)
 add_subdirectory(tests/ex_sigcomp)

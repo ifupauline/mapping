@@ -134,6 +134,7 @@ struct params {
 };
 
 struct perf {
+        float m;
         float cr;
         float et;
         float fr;
