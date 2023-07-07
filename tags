@@ -87,20 +87,20 @@ C	include/model.h	20;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_BINARY_DIR	tests/ex_case_study/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_BINARY_DIR	tests/ex_sigcomp/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_BINARY_DIR	tests/example/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_BINARY_DIR	tests/example_prmsig/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/dse/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/ex_case_study/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/ex_sigcomp/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	tests/example/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	tests/example_prmsig/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	exp/dse/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_SOURCE_DIR	tests/ex_case_study/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
-CMAKE_SOURCE_DIR	tests/ex_sigcomp/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_SOURCE_DIR	tests/example/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
+CMAKE_SOURCE_DIR	tests/example_prmsig/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/bpp-ifc$/;"	m
 COMMUNICATION_H	include/communication.h	2;"	d
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
@@ -425,8 +425,8 @@ EPSILON	include/model.h	22;"	d
 EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/dse/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/ex_case_study/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/ex_sigcomp/Makefile	/^EQUALS = =$/;"	m
+EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
+EQUALS	tests/example_prmsig/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 EXP_H	include/exp.h	2;"	d
 FRST_F	include/model.h	11;"	d
@@ -538,8 +538,8 @@ RIGHT	include/model.h	18;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/dse/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/ex_case_study/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/ex_sigcomp/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	tests/example/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	tests/example_prmsig/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
@@ -547,8 +547,8 @@ SCHED_OK	include/sched_analysis.h	8;"	d
 SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/dse/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/ex_case_study/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/ex_sigcomp/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	tests/example/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	tests/example_prmsig/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMNBR	exp/dse/dse.cpp	7;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
@@ -785,8 +785,8 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	exp/dse/dse.cpp	/^int main(void)$/;"	f
-main	tests/ex_case_study/ex_case_study.cpp	/^int main(int argc, char **argv)$/;"	f
-main	tests/ex_sigcomp/ex_sigcomp.cpp	/^int main(int argc, char **argv)$/;"	f
+main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
+main	tests/example_prmsig/example_prmsig.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
 mean_m	include/exp.h	/^        float mean_m;$/;"	m	struct:b_stats

@@ -4,7 +4,7 @@
 
 #define STEP    20
 #define ITERSIG 16
-#define SIMNBR  1000
+#define SIMNBR  10
 
 static char const *cmd_gnuplot_m[] = {};
 
@@ -71,13 +71,16 @@ int main(void)
         write_data_to_file(bfdu_m, v_stts_bfdu, B_M, ITERSIG);
 
         cmd_gnuplot_m[0] = "set title 'M'";
-        cmd_gnuplot_m[1] = "set xrange [480:820]";
-        cmd_gnuplot_m[2] = "set yrange [0:30]";
-        cmd_gnuplot_m[3] = "set xlabel 'sigma'";
-        cmd_gnuplot_m[4] = "set ylabel 'M'";
-        cmd_gnuplot_m[5] = "set datafile separator whitespace";
-        cmd_gnuplot_m[6] = "plot 'data.bfdu_m_sig' with linespoint lc 7 pointtype 7";
-        plot_data(gnuplot_bfdu_m, cmd_gnuplot_m, 7);
+        cmd_gnuplot_m[1] = "set style data histograms";
+        cmd_gnuplot_m[2] = "set style fill solid";
+        cmd_gnuplot_m[3] = "set title 'M'";
+        cmd_gnuplot_m[4] = "set xrange [480:820]";
+        cmd_gnuplot_m[5] = "set yrange [0:30]";
+        cmd_gnuplot_m[6] = "set xlabel 'sigma'";
+        cmd_gnuplot_m[7] = "set ylabel 'M'";
+        cmd_gnuplot_m[8] = "set datafile separator whitespace";
+        cmd_gnuplot_m[9] = "plot 'data.bfdu_m_sig' title AQI";
+        plot_data(gnuplot_bfdu_m, cmd_gnuplot_m, 10);
 
         fflush(gnuplot_bfdu_m);
 
