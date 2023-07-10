@@ -2,19 +2,24 @@
 #define EXP_H
 
 #define B_M        0
-#define B_SR_ALLO  1
-#define B_SR_DISP  2
-#define B_SR_SWAP  3
+#define B_ET       1
+#define B_SR_ALLO  2
+#define B_SR_DISP  3
+#define B_SR_SWAP  4
 
 #define BUFFSIZE  256
 
 #include "mapping.h"
 
 struct b_stats {
-        int sig;
+        float sig;
+        float mean_et;
         float mean_bfdu_m;
         float mean_wfdu_m;
         float mean_ffdu_m;
+        float mean_bfdu_et;
+        float mean_wfdu_et;
+        float mean_ffdu_et;
         float mean_bfdu_sr_allo;
         float mean_wfdu_sr_allo;
         float mean_ffdu_sr_allo;

@@ -81,11 +81,12 @@ ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	637;"	d	f
 BFDU_F	include/model.h	9;"	d
 BLUE	include/model.h	39;"	d
 BSIZE	include/generator.h	29;"	d
-BUFFSIZE	include/exp.h	9;"	d
+BUFFSIZE	include/exp.h	10;"	d
+B_ET	include/exp.h	5;"	d
 B_M	include/exp.h	4;"	d
-B_SR_ALLO	include/exp.h	5;"	d
-B_SR_DISP	include/exp.h	6;"	d
-B_SR_SWAP	include/exp.h	7;"	d
+B_SR_ALLO	include/exp.h	6;"	d
+B_SR_DISP	include/exp.h	7;"	d
+B_SR_SWAP	include/exp.h	8;"	d
 C	include/model.h	20;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
@@ -673,7 +674,9 @@ c	include/model.h	/^        int c;$/;"	m	struct:task
 chain	src/generator.cpp	/^static int chain[1][8] = {$/;"	v	file:
 check_duplicata	src/model.cpp	/^void check_duplicata(vector<struct bin> &v_bins)$/;"	f
 check_if_fit_itm	src/let.cpp	/^int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)$/;"	f
+cmd_gnuplot_et	exp/dse/dse.cpp	/^static char const *cmd_gnuplot_et[] = {};$/;"	v	file:
 cmd_gnuplot_m	exp/dse/dse.cpp	/^static char const *cmd_gnuplot_m[] = {};$/;"	v	file:
+cmd_gnuplot_sr	exp/dse/dse.cpp	/^static char const *cmd_gnuplot_sr[] = {};$/;"	v	file:
 cmp_stats	src/print.cpp	/^void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, $/;"	f
 color	include/model.h	/^        int color;$/;"	m	struct:bin
 color	include/model.h	/^        int color;$/;"	m	struct:ecu
@@ -792,14 +795,18 @@ main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/example_prmsig/example_prmsig.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
+mean_bfdu_et	include/exp.h	/^        float mean_bfdu_et;$/;"	m	struct:b_stats
 mean_bfdu_m	include/exp.h	/^        float mean_bfdu_m;$/;"	m	struct:b_stats
 mean_bfdu_sr_allo	include/exp.h	/^        float mean_bfdu_sr_allo;$/;"	m	struct:b_stats
 mean_bfdu_sr_disp	include/exp.h	/^        float mean_bfdu_sr_disp;$/;"	m	struct:b_stats
 mean_bfdu_sr_swap	include/exp.h	/^        float mean_bfdu_sr_swap;$/;"	m	struct:b_stats
+mean_et	include/exp.h	/^        float mean_et;$/;"	m	struct:b_stats
+mean_ffdu_et	include/exp.h	/^        float mean_ffdu_et;$/;"	m	struct:b_stats
 mean_ffdu_m	include/exp.h	/^        float mean_ffdu_m;$/;"	m	struct:b_stats
 mean_ffdu_sr_allo	include/exp.h	/^        float mean_ffdu_sr_allo;$/;"	m	struct:b_stats
 mean_ffdu_sr_disp	include/exp.h	/^        float mean_ffdu_sr_disp;$/;"	m	struct:b_stats
 mean_ffdu_sr_swap	include/exp.h	/^        float mean_ffdu_sr_swap;$/;"	m	struct:b_stats
+mean_wfdu_et	include/exp.h	/^        float mean_wfdu_et;$/;"	m	struct:b_stats
 mean_wfdu_m	include/exp.h	/^        float mean_wfdu_m;$/;"	m	struct:b_stats
 mean_wfdu_sr_allo	include/exp.h	/^        float mean_wfdu_sr_allo;$/;"	m	struct:b_stats
 mean_wfdu_sr_disp	include/exp.h	/^        float mean_wfdu_sr_disp;$/;"	m	struct:b_stats
@@ -853,7 +860,7 @@ sched_rate_opti	include/model.h	/^        float sched_rate_opti;$/;"	m	struct:pe
 sched_rate_swap	include/model.h	/^        float sched_rate_swap;$/;"	m	struct:perf
 sched_rate_tc	include/model.h	/^        float sched_rate_tc;$/;"	m	struct:perf
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
-sig	include/exp.h	/^        int sig;$/;"	m	struct:b_stats
+sig	include/exp.h	/^        float sig;$/;"	m	struct:b_stats
 size	include/model.h	/^        int size;$/;"	m	struct:item
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
 sort_dec_itm_size	src/model.cpp	/^void sort_dec_itm_size(vector<struct item> &v_itms)$/;"	f
