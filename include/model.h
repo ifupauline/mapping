@@ -8,7 +8,7 @@
 /* algorithms */
 #define BFDU_F 1
 #define WFDU_F 2
-#define FRST_F 3
+#define FFDU_F 3
 
 /* booleans */
 #define NO  1

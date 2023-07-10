@@ -62,9 +62,9 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
-        if (ctx.prm.a == FRST_F) {
+        if (ctx.prm.a == FFDU_F) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION FIRST_F                  |\n");
+                printf("| ALLOCATION FFDU_F                   |\n");
                 printf("+=====================================+\n");
                 start = clock();
                 frst_f(v_itms, v_bins, ctx);

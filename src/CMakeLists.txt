@@ -1,10 +1,10 @@
-add_library(bpp-ifc
+add_library(mapping
         SHARED
-        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp frst_f.cpp
+        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp ffdu_f.cpp
         exp.cpp sched_analysis.cpp optimization.cpp model.cpp let.cpp
         communication.cpp)
 
-install (TARGETS bpp-ifc
+install (TARGETS mapping
         DESTINATION lib)
 
 file(

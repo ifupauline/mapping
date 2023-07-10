@@ -9,7 +9,9 @@
 
 struct b_stats {
         int sig;
-        float mean_m;
+        float mean_bfdu_m;
+        float mean_wfdu_m;
+        float mean_ffdu_m;
 };
 
 void concatenate(char p[], char q[]);

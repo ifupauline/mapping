@@ -255,7 +255,7 @@ void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 bfdu_syst_state = YES;
         if (ctx.prm.a == WFDU_F)
                 wfdu_syst_state = YES;
-        if (ctx.prm.a == FRST_F)
+        if (ctx.prm.a == FFDU_F)
                 frst_syst_state = YES;
         sort_inc_bin_load_rem(v_bins);
         copy_v_tc_to_v_tasks_with_pos(v_bins);

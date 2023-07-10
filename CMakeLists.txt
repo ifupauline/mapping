@@ -6,7 +6,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 include_directories(include)
 
-project(bpp-ifc)
+project(mapping)
 
 add_subdirectory(src)
 add_subdirectory(exp/dse)

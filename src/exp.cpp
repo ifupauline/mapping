@@ -24,9 +24,11 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
         switch (type) {
                 case B_M: 
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%d %f\n", 
+                                fprintf(filename, "%d %f %f %f\n", 
                                                 data[i].sig, 
-                                                data[i].mean_m);
+                                                data[i].mean_bfdu_m,
+                                                data[i].mean_wfdu_m,
+                                                data[i].mean_ffdu_m);
                         break;
 
                 default:
@@ -46,7 +48,9 @@ void print_b_stats(vector<struct b_stats> &v_stts_algo, int iter)
                 printf("+===============+\n");
                 printf("| SIG: %d       |\n", v_stts_algo[i].sig);
                 printf("+===============+\n");
-                printf("M: %f\n", v_stts_algo[i].mean_m);
+                printf("BFDU_M: %f\n", v_stts_algo[i].mean_bfdu_m);
+                printf("WFDU_M: %f\n", v_stts_algo[i].mean_wfdu_m);
+                printf("FFDU_M: %f\n", v_stts_algo[i].mean_ffdu_m);
                 
                 printf("\n");
         }

@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         ctx_frst_f = ctx;
         ctx_bfdu_f.prm.a = BFDU_F;
         ctx_wfdu_f.prm.a = WFDU_F;
-        ctx_frst_f.prm.a = FRST_F;
+        ctx_frst_f.prm.a = FFDU_F;
 
         v_itms_bfdu_f = v_itms;
         v_itms_wfdu_f = v_itms;

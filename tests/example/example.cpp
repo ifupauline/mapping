@@ -85,8 +85,8 @@ int main(int argc, char **argv)
         ctx_bfdu_800.prm.a = BFDU_F;
         ctx_wfdu_500.prm.a = WFDU_F;
         ctx_wfdu_800.prm.a = WFDU_F;
-        ctx_frst_500.prm.a = FRST_F;
-        ctx_frst_800.prm.a = FRST_F;
+        ctx_frst_500.prm.a = FFDU_F;
+        ctx_frst_800.prm.a = FFDU_F;
 
         /* generation */
         generation(v_bins_bfdu_500, ctx_bfdu_500);
