@@ -81,8 +81,11 @@ ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	637;"	d	f
 BFDU_F	include/model.h	9;"	d
 BLUE	include/model.h	39;"	d
 BSIZE	include/generator.h	29;"	d
-BUFFSIZE	include/exp.h	6;"	d
+BUFFSIZE	include/exp.h	9;"	d
 B_M	include/exp.h	4;"	d
+B_SR_ALLO	include/exp.h	5;"	d
+B_SR_DISP	include/exp.h	6;"	d
+B_SR_SWAP	include/exp.h	7;"	d
 C	include/model.h	20;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
@@ -429,7 +432,7 @@ EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/example_prmsig/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 EXP_H	include/exp.h	2;"	d
-FRST_F	include/model.h	11;"	d
+FFDU_F	include/model.h	11;"	d
 GENERATOR_H	include/generator.h	2;"	d
 GREEN	include/model.h	41;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
@@ -628,7 +631,7 @@ _create_waters2019	src/generator.cpp	/^static void _create_waters2019(struct ite
 _displace	src/optimization.cpp	/^static void _displace(vector<struct bin> &v_bins, pair<struct item, $/;"	f	file:
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_bin	src/bfdu_f.cpp	/^static int _find_best_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
-_find_frst_bin	src/frst_f.cpp	/^static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
+_find_frst_bin	src/ffdu_f.cpp	/^static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _fix_let_task	src/print.cpp	/^static void _fix_let_task(vector<struct bin> &v_bins)$/;"	f	file:
@@ -706,7 +709,7 @@ disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:item
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/model.h	/^        float disp_time;$/;"	m	struct:perf
 displacement	src/optimization.cpp	/^void displacement(vector<struct bin> &v_bins)$/;"	f
-dse	exp/dse/dse.cpp	/^static void dse(vector<struct b_stats> &v_stts_bfdu, vector<struct b_stats> &v_stts_wfdu, $/;"	f	file:
+dse	exp/dse/dse.cpp	/^static void dse(vector<struct b_stats> &v_stts, struct params &prm)$/;"	f	file:
 dst	include/model.h	/^        int dst;$/;"	m	struct:link
 e	include/model.h	/^        int e;$/;"	m	struct:params
 e2e_failed_count	include/model.h	/^        int e2e_failed_count;$/;"	m	struct:context
@@ -721,7 +724,7 @@ fr	include/model.h	/^        float fr;$/;"	m	struct:perf
 frag_time	include/model.h	/^        float frag_time;$/;"	m	struct:perf
 fragmentation	src/mapping.cpp	/^void fragmentation(vector<struct item> &v_itms, struct context &ctx)$/;"	f
 frags_count	include/model.h	/^        int frags_count;$/;"	m	struct:context
-frst_f	src/frst_f.cpp	/^void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
+frst_f	src/ffdu_f.cpp	/^void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, $/;"	f
 frst_sched_time	src/sched_analysis.cpp	/^float frst_sched_time = 0;$/;"	v
 frst_syst_state	src/sched_analysis.cpp	/^int frst_syst_state = NO;$/;"	v
 frst_wcrt_count	src/sched_analysis.cpp	/^int frst_wcrt_count = 0;$/;"	v
@@ -789,7 +792,18 @@ main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/example_prmsig/example_prmsig.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
-mean_m	include/exp.h	/^        float mean_m;$/;"	m	struct:b_stats
+mean_bfdu_m	include/exp.h	/^        float mean_bfdu_m;$/;"	m	struct:b_stats
+mean_bfdu_sr_allo	include/exp.h	/^        float mean_bfdu_sr_allo;$/;"	m	struct:b_stats
+mean_bfdu_sr_disp	include/exp.h	/^        float mean_bfdu_sr_disp;$/;"	m	struct:b_stats
+mean_bfdu_sr_swap	include/exp.h	/^        float mean_bfdu_sr_swap;$/;"	m	struct:b_stats
+mean_ffdu_m	include/exp.h	/^        float mean_ffdu_m;$/;"	m	struct:b_stats
+mean_ffdu_sr_allo	include/exp.h	/^        float mean_ffdu_sr_allo;$/;"	m	struct:b_stats
+mean_ffdu_sr_disp	include/exp.h	/^        float mean_ffdu_sr_disp;$/;"	m	struct:b_stats
+mean_ffdu_sr_swap	include/exp.h	/^        float mean_ffdu_sr_swap;$/;"	m	struct:b_stats
+mean_wfdu_m	include/exp.h	/^        float mean_wfdu_m;$/;"	m	struct:b_stats
+mean_wfdu_sr_allo	include/exp.h	/^        float mean_wfdu_sr_allo;$/;"	m	struct:b_stats
+mean_wfdu_sr_disp	include/exp.h	/^        float mean_wfdu_sr_disp;$/;"	m	struct:b_stats
+mean_wfdu_sr_swap	include/exp.h	/^        float mean_wfdu_sr_swap;$/;"	m	struct:b_stats
 memcost	include/model.h	/^        int memcost;$/;"	m	struct:bin
 memcost	include/model.h	/^        int memcost;$/;"	m	struct:item
 n	include/model.h	/^        int n;$/;"	m	struct:params

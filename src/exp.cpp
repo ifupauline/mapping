@@ -31,6 +31,32 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                                                 data[i].mean_ffdu_m);
                         break;
 
+                case B_SR_ALLO: 
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%d %f %f %f\n", 
+                                                data[i].sig, 
+                                                data[i].mean_bfdu_sr_allo,
+                                                data[i].mean_wfdu_sr_allo,
+                                                data[i].mean_ffdu_sr_allo);
+                        break;
+
+                case B_SR_DISP: 
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%d %f %f %f\n", 
+                                                data[i].sig, 
+                                                data[i].mean_bfdu_sr_disp,
+                                                data[i].mean_wfdu_sr_disp,
+                                                data[i].mean_ffdu_sr_disp);
+                        break;
+
+                case B_SR_SWAP: 
+                        for (int i = 0; i < size; i++)
+                                fprintf(filename, "%d %f %f %f\n", 
+                                                data[i].sig, 
+                                                data[i].mean_bfdu_sr_swap,
+                                                data[i].mean_wfdu_sr_swap,
+                                                data[i].mean_ffdu_sr_swap);
+                        break;
                 default:
                         printf("Error! Unknown type of data\n");
         }
@@ -48,10 +74,19 @@ void print_b_stats(vector<struct b_stats> &v_stts_algo, int iter)
                 printf("+===============+\n");
                 printf("| SIG: %d       |\n", v_stts_algo[i].sig);
                 printf("+===============+\n");
-                printf("BFDU_M: %f\n", v_stts_algo[i].mean_bfdu_m);
-                printf("WFDU_M: %f\n", v_stts_algo[i].mean_wfdu_m);
-                printf("FFDU_M: %f\n", v_stts_algo[i].mean_ffdu_m);
-                
+                printf("BFDU_M:       %f\n", v_stts_algo[i].mean_bfdu_m);
+                printf("WFDU_M:       %f\n", v_stts_algo[i].mean_wfdu_m);
+                printf("FFDU_M:       %f\n", v_stts_algo[i].mean_ffdu_m);
+                printf("BFDU_SR_ALLO: %f\n", v_stts_algo[i].mean_bfdu_sr_allo);
+                printf("WFDU_SR_ALLO: %f\n", v_stts_algo[i].mean_wfdu_sr_allo);
+                printf("FFDU_SR_ALLO: %f\n", v_stts_algo[i].mean_ffdu_sr_allo);
+                printf("BFDU_SR_DISP: %f\n", v_stts_algo[i].mean_bfdu_sr_disp);
+                printf("WFDU_SR_DISP: %f\n", v_stts_algo[i].mean_wfdu_sr_disp);
+                printf("FFDU_SR_DISP: %f\n", v_stts_algo[i].mean_ffdu_sr_disp);
+                printf("BFDU_SR_SWAP: %f\n", v_stts_algo[i].mean_bfdu_sr_swap);
+                printf("WFDU_SR_SWAP: %f\n", v_stts_algo[i].mean_wfdu_sr_swap);
+                printf("FFDU_SR_SWAP: %f\n", v_stts_algo[i].mean_ffdu_sr_swap);
+
                 printf("\n");
         }
 }
