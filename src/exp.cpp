@@ -33,7 +33,7 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
 
                 case B_SR_ALLO: 
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f %f %f\n", 
+                                fprintf(filename, "%-3.2f %-3.2f %-3.2f %-3.2f\n", 
                                                 data[i].sig, 
                                                 data[i].mean_bfdu_sr_allo,
                                                 data[i].mean_wfdu_sr_allo,
@@ -42,7 +42,7 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
 
                 case B_SR_DISP: 
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f %f %f\n", 
+                                fprintf(filename, "%-3.2f %-3.2f %-3.2f %-3.2f\n", 
                                                 data[i].sig, 
                                                 data[i].mean_bfdu_sr_disp,
                                                 data[i].mean_wfdu_sr_disp,
@@ -51,7 +51,7 @@ void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
 
                 case B_SR_SWAP: 
                         for (int i = 0; i < size; i++)
-                                fprintf(filename, "%f %f %f %f\n", 
+                                fprintf(filename, "%-3.2f %-3.2f %-3.2f %-3.2f\n", 
                                                 data[i].sig, 
                                                 data[i].mean_bfdu_sr_swap,
                                                 data[i].mean_wfdu_sr_swap,
