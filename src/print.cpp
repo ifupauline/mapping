@@ -435,13 +435,13 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("------------------------------------------------------------------------>\n");
         printf("n:      %u\n", ctx.prm.n);
         printf("phi:    %u\n", PHI);
-        printf("e:      %u\n", ctx.prm.e);
+        printf("sigma:  %u\n", ctx.prm.e);
         if (ctx.prm.a == BFDU_F)
-                printf("a:      BFDU_F\n");
+                printf("alpha:  BFDU_F\n");
         if (ctx.prm.a == WFDU_F)
-                printf("a:      WFDU_F\n");
+                printf("alpha:  WFDU_F\n");
         if (ctx.prm.a == FFDU_F)
-                printf("a:      FFDU_F\n");
+                printf("alpha:  FFDU_F\n");
         printf("------------------------------------------------------------------------>\n");
         printf("M*:                            %-3d\n", ctx.bins_min);
         printf("M:                             %-3d\n", ctx.bins_count);
@@ -450,12 +450,12 @@ void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins,
         printf("Initial Number of TC:          %-3d\n", ctx.prm.n);
         printf("Current Number of TC:          %-3ld\n", v_itms.size());
         printf("Number of TC Allocated:        %-3d\n", ctx.alloc_count);
-        printf("Number of TC Fragmented:       %-3d\n", ctx.frags_count);
+        printf("Number of TC Partitioned:      %-3d\n", ctx.frags_count);
         printf("Number of Cuts:                %-3d\n", ctx.cuts_count);
         printf("Number of Tasks:               %-3d\n", ctx.tasks_count);
         printf("------------------------------------------------------------------------>\n");
-        printf("Fragmentation Time:               %-3.3f ms\n", ctx.p.frag_time * PERMILL);
-        printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
+        printf("Partitioning Time:                %-3.3f ms\n", ctx.p.frag_time * PERMILL);
+        printf("Assignment Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
         printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
         printf("Communication Time:               %-3.3f ms\n", ctx.p.comm_time * PERMILL);

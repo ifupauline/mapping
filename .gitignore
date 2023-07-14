@@ -11,5 +11,4 @@ CTestTestfile.cmake
 _deps
 lib/
 bin/
-data*
 *pdf
