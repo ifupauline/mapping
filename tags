@@ -88,24 +88,21 @@ B_SR_ALLO	include/exp.h	6;"	d
 B_SR_DISP	include/exp.h	7;"	d
 B_SR_SWAP	include/exp.h	8;"	d
 C	include/model.h	20;"	d
-CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	tests/example/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	tests/example_prmsig/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	tests/example_prmsig/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/dse/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/example/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/example_prmsig/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	exp/dse/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	tests/example/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	tests/example_prmsig/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	exp/dse/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	tests/example_prmsig/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Desktop\/Documents\/repos\/mapping$/;"	m
 COMMUNICATION_H	include/communication.h	2;"	d
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	117;"	d	file:
@@ -429,7 +426,6 @@ EPSILON	include/model.h	22;"	d
 EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/dse/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/example/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/example_prmsig/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 EXP_H	include/exp.h	2;"	d
@@ -542,7 +538,6 @@ RIGHT	include/model.h	18;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/dse/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/example/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/example_prmsig/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
@@ -551,7 +546,6 @@ SCHED_OK	include/sched_analysis.h	8;"	d
 SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/dse/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/example/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/example_prmsig/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMNBR	exp/dse/dse.cpp	7;"	d	file:
@@ -791,7 +785,6 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	exp/dse/dse.cpp	/^int main(void)$/;"	f
-main	tests/example/example.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/example_prmsig/example_prmsig.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf

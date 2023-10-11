@@ -468,9 +468,11 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
+                                continue;
                         }
 
-                        if (i == 0 && u_sum >= PHI) {
+                        /* only for the waters2019 task-chain */
+                        if (i == 0 && u_sum > PHI) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
                                 itm = {0};
@@ -494,7 +496,7 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
-                        if (i > 0 && u_sum >= ctx.prm.e) {
+                        if (i > 0 && u_sum > ctx.prm.e - 10) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
                                 itm = {0};
