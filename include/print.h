@@ -3,21 +3,21 @@
 
 #include "model.h"
 
-float sched_rate(vector<struct bin> &v_bins, struct context &ctx);
+float sched_rate(vector<struct core> &v_cores, struct context &ctx);
 
-void cmp_stats(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+void cmp_stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
                 struct context &ctx);
 
-void print_task_chains(vector<struct item> &v_itms);
+void print_task_chains(vector<struct tc> &v_tcs);
 
-void print_core(struct bin &b);
+void print_core(struct core &b);
 
-void print_cores(vector<struct bin> &v_bins, struct context &ctx);
+void print_cores(vector<struct core> &v_cores, struct context &ctx);
 
-void print_stats(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void print_vectors(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
+void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
                 struct context &ctx);
 
 #endif /* PRINT_H */

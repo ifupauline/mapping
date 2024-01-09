@@ -28,13 +28,13 @@ int gen_rand(int min, int max);
 
 void input_prm(int argc, char **argv, struct params &prm);
 
-void init_ctx(vector<struct item> &v_itms, struct params &prm, 
+void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx);
 
-void gen_app(vector<struct item> &v_itms, struct params &prm, 
+void gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx);
-void gen_arch(vector<struct bin> &v_bins, struct context &ctx);
+void gen_arch(vector<struct core> &v_cores, struct context &ctx);
 
-void cut(vector<struct item> &v_itms, struct context &ctx);
+void cut(vector<struct tc> &v_tcs, struct context &ctx);
 
 #endif /* GENERATOR_H */

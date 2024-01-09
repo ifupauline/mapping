@@ -64,7 +64,7 @@ int wcrt(vector<struct task> &v_tasks)
         return -1;
 }
 
-static void _save_priorities(struct bin &b)
+static void _save_priorities(struct core &b)
 {
         int p;
 
@@ -82,7 +82,7 @@ static void _save_priorities(struct bin &b)
         }
 }
 
-static void _pswap(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
+static void _pswap(struct core &b, int p, int tc_idx, int tc_id, int uniq_id)
 {
         /* starting new p */
         int newp;
@@ -94,7 +94,7 @@ static void _pswap(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 if (b.v_tasks[i].is_let == YES)
                         continue;
-                if (b.v_tasks[i].idx.itm_idx == itm_idx)
+                if (b.v_tasks[i].idx.tc_idx == tc_idx)
                         continue;
                 if (b.v_tasks[i].uniq_id == uniq_id)
                         continue;
@@ -112,14 +112,14 @@ static void _pswap(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
                 for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                         if (b.v_tasks[i].is_let == YES)
                                 continue;
-                        if (b.v_tasks[i].idx.itm_idx == itm_idx)
+                        if (b.v_tasks[i].idx.tc_idx == tc_idx)
                                 continue;
 
                         if (b.v_tasks[i].p == v_p[z]) {
                                 for (unsigned int j = i; j < b.v_tasks.size(); j++) {
                                         if (b.v_tasks[j].p == p)
                                                 continue;
-                                        if (b.v_tasks[j].idx.itm_idx == itm_idx && b.v_tasks[j].p < p)
+                                        if (b.v_tasks[j].idx.tc_idx == tc_idx && b.v_tasks[j].p < p)
                                                 continue;
                                         b.v_tasks[j].p = newp;
                                         newp++;
@@ -142,7 +142,7 @@ static void _pswap(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
         }
 }
 
-static void _base_assignment(struct bin &b)
+static void _base_assignment(struct core &b)
 {
         int p;
 
@@ -164,9 +164,9 @@ static void _base_assignment(struct bin &b)
         copy_back_resp_to_tc(b);
 }
 
-static void _pswapping(struct bin &b)
+static void _pswapping(struct core &b)
 {
-        struct bin tmp_b;
+        struct core tmp_b;
 
         sort_inc_task_priority(b.v_tasks);
 
@@ -175,7 +175,7 @@ static void _pswapping(struct bin &b)
                 if (b.v_tasks[i].p == 0) {
                         printf("\nERR! Core %d tau %d p %d idx %d\n", 
                                         b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
-                                        b.v_tasks[i].idx.itm_idx);
+                                        b.v_tasks[i].idx.tc_idx);
                         exit(0);
                 }
                 if (b.v_tasks[i].r > b.v_tasks[i].t) {
@@ -184,7 +184,7 @@ static void _pswapping(struct bin &b)
 
                         /* priority swapping */
                         _pswap(tmp_b, b.v_tasks[i].p, 
-                                        tmp_b.v_tasks[i].idx.itm_idx, 
+                                        tmp_b.v_tasks[i].idx.tc_idx, 
                                         tmp_b.v_tasks[i].tc_id, 
                                         b.v_tasks[i].uniq_id);
                         if (tmp_b.flag == SCHED_OK) {
@@ -194,7 +194,7 @@ static void _pswapping(struct bin &b)
         }
 }
 
-void priority_assignment(struct bin &b)
+void priority_assignment(struct core &b)
 {
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
@@ -204,18 +204,18 @@ void priority_assignment(struct bin &b)
                 printf("Core %d SCHED_OK\n", b.id);
 }
 
-void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
+void sched_analysis(vector<struct core> &v_cores, struct context &ctx)
 {
-        sort_inc_bin_load_rem(v_bins);
-        copy_v_tc_to_v_tasks_with_pos(v_bins);
+        sort_inc_core_load_rem(v_cores);
+        copy_v_tc_to_v_tasks_with_pos(v_cores);
 
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].load == 0)
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].load == 0)
                         continue;
                 else
-                        priority_assignment(v_bins[i]);
+                        priority_assignment(v_cores[i]);
         }
 
-        ctx.p.sched_rate_allo = sched_rate(v_bins, ctx);
+        ctx.p.sched_rate_allo = sched_rate(v_cores, ctx);
         ctx.p.sched_imp_allo = ctx.sched_ok_count;
 }

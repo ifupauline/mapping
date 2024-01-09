@@ -41,17 +41,15 @@
 
 using namespace std;
 
-/* TASK MODEL */
 struct t_pos {
-        int bin_idx;
-        int itm_idx;
+        int core_idx;
+        int tc_idx;
         int task_idx;
 };
 
 struct task {
         int c;
         int t;
-        int d;
         int p;
         int r;
         int id;
@@ -62,7 +60,6 @@ struct task {
         struct t_pos idx;
 };
 
-/* BIN-PACKING MODEL */
 struct colorsize {
         int red;
         int blue;
@@ -71,16 +68,16 @@ struct colorsize {
         int cyan;
         int purple;
         int white;
-        int red_bins_min;
-        int blue_bins_min;
-        int yellow_bins_min;
-        int green_bins_min;
-        int cyan_bins_min;
-        int purple_bins_min;
-        int white_bins_min;
+        int red_cores_min;
+        int blue_cores_min;
+        int yellow_cores_min;
+        int green_cores_min;
+        int cyan_cores_min;
+        int purple_cores_min;
+        int white_cores_min;
 };
 
-struct item { /* task-chain */
+struct tc {
         int id;
         int tc_idx;
         int size;
@@ -95,7 +92,7 @@ struct item { /* task-chain */
         vector<struct task> v_tasks;
 };
 
-struct bin { /* core */
+struct core {
         int id;
         int phi;
         int flag;
@@ -103,11 +100,10 @@ struct bin { /* core */
         int load_rem;
         int color;
         int memcost;
-        vector<struct item> v_itms;
+        vector<struct tc> v_tcs;
         vector<struct task> v_tasks;
 };
 
-/* CONTEXT */
 struct params {
         int a;
         int n;
@@ -116,7 +112,7 @@ struct params {
 
 struct perf {
         float m;
-        float cr;
+        float ar;
         float et;
         float letu;
         float appu;
@@ -142,12 +138,11 @@ struct perf {
 };
 
 struct context {
-        int itms_nbr;
-        int itms_size;
-        int bins_min;
-        int bins_count;
-        int cycl_count;
-        int itms_count;
+        int tcs_nbr;
+        int tcs_size;
+        int cores_min;
+        int cores_count;
+        int tcs_count;
         int alloc_count;
         int tasks_count;
         int frags_count;
@@ -163,68 +158,59 @@ void sort_inc_task_priority(vector<struct task> &v_tasks);
 
 void sort_inc_task_id(vector<struct task> &v_tasks);
 
-void sort_inc_bin_load_rem(vector<struct bin> &v_bins);
+void sort_inc_core_load_rem(vector<struct core> &v_cores);
 
-void sort_inc_bin_color(vector<struct bin> &v_bins);
+void sort_inc_core_color(vector<struct core> &v_cores);
 
 void sort_dec_int(vector<int> &v_int);
 
-void sort_dec_itm_size(vector<struct item> &v_itms);
+void sort_dec_tc_size(vector<struct tc> &v_tcs);
 
-void sort_inc_itm_id(vector<struct item> &v_itms);
+void sort_inc_tc_id(vector<struct tc> &v_tcs);
 
-void sort_inc_itm_tc_idx(vector<struct item> &v_itms);
+void sort_inc_tc_tc_idx(vector<struct tc> &v_tcs);
 
-void sort_inc_itm_color(vector<struct item> &v_itms);
+void sort_inc_tc_color(vector<struct tc> &v_tcs);
 
-void copy_back_prio_to_tc(struct bin &b);
+void copy_back_prio_to_tc(struct core &b);
 
-void copy_back_resp_to_tc(struct bin &b);
+void copy_back_resp_to_tc(struct core &b);
 
-void copy_v_tc_to_v_tasks_with_pos(vector<struct bin> &v_bins);
+void copy_v_tc_to_v_tasks_with_pos(vector<struct core> &v_cores);
 
-void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx);
+void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx);
 
-void compute_bin_load(struct bin &b, int &load);
+void cmp_core_load(struct core &b, int &load);
 
-void compute_itm_load(struct item &itm);
+void cmp_tc_load(struct tc &tc);
 
-void compute_bin_load_rem(struct bin &b);
+void cmp_core_load_rem(struct core &b);
 
-void compute_bin_memcost(struct bin &b);
+void cmp_core_memcost(struct core &b);
 
-int compute_gcd(vector<struct task> &v_tasks);
+int cmp_gcd(vector<struct task> &v_tasks);
 
-void add_bin(vector<struct bin> &v_bins, struct context &ctx);
+void rplc_core_by_id(vector<struct core> &v_cores, struct core &b);
 
-void add_bin_color(vector<struct bin> &v_bins, int color, struct context &ctx);
+struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id);
 
-void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd);
+struct core get_core_by_id(vector<struct core> &v_cores, int core_id);
 
-void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
-                struct context &ctx, int load, int gcd);
+int get_wcrt(struct core &b, int tc_id, int tc_idx);
 
-void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b);
+int get_color_by_id(vector<struct core> &v_cores, int core_id);
 
-struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id);
+int get_core_idx_by_id(vector<struct core> &v_cores, int core_id);
 
-struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id);
-
-int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx);
-
-int retrieve_color_bin(vector<struct bin> &v_bins, int bin_id);
-
-int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id);
-
-void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx);
+void del_tc_by_id(struct core &b, int tc_id, int tc_idx);
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);
 
-void check_duplicata(vector<struct bin> &v_bins);
+void add_core_color(vector<struct core> &v_cores, int color, struct context &ctx);
 
-int is_frag_same_tc(struct bin &b);
+void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd);
 
-int is_task_same_v_tasks(struct bin &b);
-
+void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, 
+                struct context &ctx, int load, int gcd);
 #endif /* MODEL_H */

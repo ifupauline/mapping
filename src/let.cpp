@@ -2,20 +2,20 @@
 #include "print.h"
 #include "generator.h"
 
-static struct task *_get_let_task(struct bin &b)
+static struct task *_get_let_task(struct core &b)
 {
         int idx;
 
         idx = 0;
 
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].is_let == YES)
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
+                if (b.v_tcs[i].is_let == YES)
                         idx = i;
         }
-        return &b.v_itms[idx].v_tasks[0];
+        return &b.v_tcs[idx].v_tasks[0];
 }
 
-void init_let_task(struct item &let, struct context &ctx)
+void init_let_task(struct tc &let, struct context &ctx)
 {
         struct task t;
 
@@ -28,11 +28,10 @@ void init_let_task(struct item &let, struct context &ctx)
         let.color = -1;
         let.is_let = YES;
         let.is_allocated = NO;
-        let.id = ctx.itms_count;
+        let.id = ctx.tcs_count;
 
         t.c = 0;
         t.t = 0;
-        t.d = t.t;
         t.r = 0;
         t.u = 0;
         t.p = 1; /* always highest priority */
@@ -43,7 +42,7 @@ void init_let_task(struct item &let, struct context &ctx)
         let.v_tasks.push_back(t);
 }
 
-void update_let(struct bin &b, int gcd)
+void update_let(struct core &b, int gcd)
 {
         struct task *let;
 
@@ -52,71 +51,70 @@ void update_let(struct bin &b, int gcd)
         switch (b.memcost) {
 
                 case 1: 
-                        let->c = gen_rand(5, 80);
+                        let->c = gen_rand(50, 100);
                         break;
                 case 2:
-                        let->c = gen_rand(80, 150);
+                        let->c = gen_rand(100, 200);
                         break;
                 case 3: 
-                        let->c = gen_rand(150, 200);
+                        let->c = gen_rand(200, 300);
                         break;
                 default:
-                        let->c = 250;
+                        let->c = 400;
                         break;
         }
         let->t = gcd;
-        let->d = let->t;
         let->u = ceil(((float)let->c / (float)let->t) * PERMILL);
 
-        /* update let item */
-        b.v_itms[0].size = let->u;
-        b.v_itms[0].gcd = gcd;
-        b.v_itms[0].v_tasks.clear();
-        b.v_itms[0].v_tasks.push_back(*let);
+        /* update let tc */
+        b.v_tcs[0].size = let->u;
+        b.v_tcs[0].gcd = gcd;
+        b.v_tcs[0].v_tasks.clear();
+        b.v_tcs[0].v_tasks.push_back(*let);
 }
 
-int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
+int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
 {
-        struct bin tmp_b;
-        int total_binload;
-        int target_binload;
+        struct core tmp_b;
+        int total_coreload;
+        int target_coreload;
         vector<struct task> v_tasks;
 
         gcd = 0;
         tmp_b = b;
-        total_binload = 0;
-        target_binload = 0;
+        total_coreload = 0;
+        target_coreload = 0;
 
-        /* add itm memcost to bin memcost */
-        compute_bin_memcost(tmp_b);
-        tmp_b.memcost += itm.memcost;
+        /* add tc memcost to core memcost */
+        cmp_core_memcost(tmp_b);
+        tmp_b.memcost += tc.memcost;
 
         /* copy v_tasks */
-        add_tasks_to_v_tasks(v_tasks, itm.v_tasks);
-        for (unsigned int i = 0; i < tmp_b.v_itms.size(); i++) {
-                if (tmp_b.v_itms[i].is_let == YES)
+        add_tasks_to_v_tasks(v_tasks, tc.v_tasks);
+        for (unsigned int i = 0; i < tmp_b.v_tcs.size(); i++) {
+                if (tmp_b.v_tcs[i].is_let == YES)
                         continue;
-                add_tasks_to_v_tasks(v_tasks, tmp_b.v_itms[i].v_tasks);
+                add_tasks_to_v_tasks(v_tasks, tmp_b.v_tcs[i].v_tasks);
         }
 
         /* cmp gcd */
-        gcd = compute_gcd(v_tasks);
+        gcd = cmp_gcd(v_tasks);
 
-        for (unsigned int i = 0; i < tmp_b.v_itms.size(); i++) {
-                if (tmp_b.v_itms[i].is_let == YES) {
-                        if (gcd < tmp_b.v_itms[i].v_tasks[0].c) {
-                                printf("ERR! gcd < c --> TC %d can never be allocated, increase EPSILON\n", itm.id);
+        for (unsigned int i = 0; i < tmp_b.v_tcs.size(); i++) {
+                if (tmp_b.v_tcs[i].is_let == YES) {
+                        if (gcd < tmp_b.v_tcs[i].v_tasks[0].c) {
+                                printf("ERR! gcd < c --> TC %d can never be allocated, increase EPSILON\n", tc.id);
                                 exit(0);
                         }
                 }
         }
 
-        /* update let item and let task */
+        /* update let tc and let task */
         update_let(tmp_b, gcd);
 
-        /* compute total bin load */
-        compute_bin_load(tmp_b, target_binload);
-        total_binload = itm.size + target_binload;
+        /* compute total core load */
+        cmp_core_load(tmp_b, target_coreload);
+        total_coreload = tc.size + target_coreload;
 
-        return total_binload;
+        return total_coreload;
 }

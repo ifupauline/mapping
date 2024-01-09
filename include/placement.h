@@ -3,8 +3,8 @@
 
 #include "model.h"
 
-void displacement(vector<struct bin> &v_bins);
+void displacement(vector<struct core> &v_cores);
 
-void swapping(vector<struct bin> &v_bins);
+void swapping(vector<struct core> &v_cores);
 
 #endif /* PLACEMENT_H */

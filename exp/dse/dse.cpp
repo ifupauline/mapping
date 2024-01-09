@@ -15,81 +15,81 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
         int SIGMA;
         struct context ctx;
         struct b_stats stts;
-        vector<struct bin> v_bins;
-        vector<struct item> v_itms;
+        vector<struct core> v_cores;
+        vector<struct tc> v_tcs;
         struct context ctx_bfdu;
         struct context ctx_wfdu;
         struct context ctx_ffdu;
-        vector<struct bin> v_bins_bfdu;
-        vector<struct bin> v_bins_wfdu;
-        vector<struct bin> v_bins_ffdu;
-        vector<struct item> v_itms_bfdu;
-        vector<struct item> v_itms_wfdu;
-        vector<struct item> v_itms_ffdu;
+        vector<struct core> v_cores_bfdu;
+        vector<struct core> v_cores_wfdu;
+        vector<struct core> v_cores_ffdu;
+        vector<struct tc> v_tcs_bfdu;
+        vector<struct tc> v_tcs_wfdu;
+        vector<struct tc> v_tcs_ffdu;
 
         prm = {0};
         SIGMA = 820;
         for (int j = 0; j < ITERSIG; j++) {
-                v_itms.clear();
+                v_tcs.clear();
                 ctx = {0};
                 stts = {0};
                 SIGMA = SIGMA - STEP;
-                gen_app(v_itms, prm, ctx);
+                gen_app(v_tcs, prm, ctx);
                 for (int k = 0; k < SIMNBR; k++) {
                         ctx_bfdu = {0};
-                        v_itms_bfdu.clear();
-                        v_bins_bfdu.clear();
-                        v_itms_bfdu = v_itms;
+                        v_tcs_bfdu.clear();
+                        v_cores_bfdu.clear();
+                        v_tcs_bfdu = v_tcs;
                         ctx_bfdu = ctx;
                         ctx_bfdu.prm.s = SIGMA;
 
-                        v_itms_wfdu.clear();
-                        v_bins_wfdu.clear();
-                        v_itms_wfdu = v_itms;
+                        v_tcs_wfdu.clear();
+                        v_cores_wfdu.clear();
+                        v_tcs_wfdu = v_tcs;
                         ctx_wfdu = ctx;
                         ctx_wfdu.prm.s = SIGMA;
 
-                        v_itms_ffdu.clear();
-                        v_bins_ffdu.clear();
-                        v_itms_ffdu = v_itms;
+                        v_tcs_ffdu.clear();
+                        v_cores_ffdu.clear();
+                        v_tcs_ffdu = v_tcs;
                         ctx_ffdu = ctx;
                         ctx_ffdu.prm.s = SIGMA;
 
-                        partitioning(v_itms_bfdu, ctx_bfdu);
-                        partitioning(v_itms_wfdu, ctx_wfdu);
-                        partitioning(v_itms_ffdu, ctx_ffdu);
+                        partitioning(v_tcs_bfdu, ctx_bfdu);
+                        partitioning(v_tcs_wfdu, ctx_wfdu);
+                        partitioning(v_tcs_ffdu, ctx_ffdu);
 
-                        init_ctx(v_itms_bfdu, ctx_bfdu.prm, ctx_bfdu);
-                        init_ctx(v_itms_wfdu, ctx_wfdu.prm, ctx_wfdu);
-                        init_ctx(v_itms_ffdu, ctx_ffdu.prm, ctx_ffdu);
+                        init_ctx(v_tcs_bfdu, ctx_bfdu.prm, ctx_bfdu);
+                        init_ctx(v_tcs_wfdu, ctx_wfdu.prm, ctx_wfdu);
+                        init_ctx(v_tcs_ffdu, ctx_ffdu.prm, ctx_ffdu);
 
                         ctx_bfdu.prm.a = BFDU_F;
                         ctx_wfdu.prm.a = WFDU_F;
                         ctx_ffdu.prm.a = FFDU_F;
 
-                        gen_arch(v_bins_bfdu, ctx_bfdu);
-                        gen_arch(v_bins_wfdu, ctx_wfdu);
-                        gen_arch(v_bins_ffdu, ctx_ffdu);
+                        gen_arch(v_cores_bfdu, ctx_bfdu);
+                        gen_arch(v_cores_wfdu, ctx_wfdu);
+                        gen_arch(v_cores_ffdu, ctx_ffdu);
 
-                        allocation(v_itms_bfdu, v_bins_bfdu, ctx_bfdu);
-                        allocation(v_itms_wfdu, v_bins_wfdu, ctx_wfdu);
-                        allocation(v_itms_ffdu, v_bins_ffdu, ctx_ffdu);
+                        allocation(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
+                        allocation(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
+                        allocation(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
 
-                        schedulability_analysis(v_bins_bfdu, ctx_bfdu);
-                        schedulability_analysis(v_bins_wfdu, ctx_wfdu);
-                        schedulability_analysis(v_bins_ffdu, ctx_ffdu);
+                        schedulability_analysis(v_cores_bfdu, ctx_bfdu);
+                        schedulability_analysis(v_cores_wfdu, ctx_wfdu);
+                        schedulability_analysis(v_cores_ffdu, ctx_ffdu);
 
-                        placement(v_bins_bfdu, ctx_bfdu);
-                        placement(v_bins_wfdu, ctx_wfdu);
-                        placement(v_bins_ffdu, ctx_ffdu);
+                        placement(v_cores_bfdu, ctx_bfdu);
+                        placement(v_cores_wfdu, ctx_wfdu);
+                        placement(v_cores_ffdu, ctx_ffdu);
 
-                        cmp_stats(v_bins_bfdu, v_itms_bfdu, ctx_bfdu);
-                        cmp_stats(v_bins_wfdu, v_itms_wfdu, ctx_wfdu);
-                        cmp_stats(v_bins_ffdu, v_itms_ffdu, ctx_ffdu);
+                        cmp_stats(v_cores_bfdu, v_tcs_bfdu, ctx_bfdu);
+                        cmp_stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
+                        cmp_stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
 
-                        stts.mean_bfdu_m += ctx_bfdu.bins_count;
-                        stts.mean_wfdu_m += ctx_wfdu.bins_count;
-                        stts.mean_ffdu_m += ctx_ffdu.bins_count;
+                        stts.mean_bfdu_m += ctx_bfdu.cores_count;
+                        stts.mean_wfdu_m += ctx_wfdu.cores_count;
+                        stts.mean_ffdu_m += ctx_ffdu.cores_count;
 
                         stts.mean_bfdu_sr_allo += ctx_bfdu.p.sched_rate_allo;
                         stts.mean_wfdu_sr_allo += ctx_wfdu.p.sched_rate_allo;

@@ -3,62 +3,62 @@
 #include "mapping.h"
 #include "generator.h"
 
-static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,
+static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,
                 struct context &ctx, int &worst_load, int &worst_gcd, int color)
 {       
-        int bin_id;
+        int core_id;
         int tmp_rem;
         int tmp_load;
         int tmp_gcd;
         int is_found;
         int worst_rem;
 
-        bin_id = 0;
+        core_id = 0;
         tmp_load = 0;
         tmp_gcd = 0;
         tmp_rem = PHI;
         is_found = NO;
         worst_rem = -1;
 
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].color != color && color != WHITE) 
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].color != color && color != WHITE) 
                         continue;
 
-                tmp_load = check_if_fit_itm(v_bins[i], itm, tmp_gcd);
-                if (tmp_load <= v_bins[i].phi) {
-                        tmp_rem = v_bins[i].phi - tmp_load;
+                tmp_load = check_if_fit_tc(v_cores[i], tc, tmp_gcd);
+                if (tmp_load <= v_cores[i].phi) {
+                        tmp_rem = v_cores[i].phi - tmp_load;
 
                         if (tmp_rem > worst_rem) {
                                 worst_rem = tmp_rem;
                                 worst_load = tmp_load;
                                 worst_gcd = tmp_gcd;
-                                bin_id = v_bins[i].id;
+                                core_id = v_cores[i].id;
                         }
                         is_found = YES;
                         continue;
                 }
         }
         if (is_found == YES) 
-                return bin_id;
+                return core_id;
 
         return -1;
 }
 
-void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void wfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx)
 {
         int n;
         int ret;
         int load;
         int gcd;
-        int bin_id;
+        int core_id;
         int alloc_count;
 
-        n = v_itms.size();
+        n = v_tcs.size();
 
-        sort_inc_itm_color(v_itms);
+        sort_inc_tc_color(v_tcs);
 
-        /* STEP - 1, place all possible items in bins using WFDU */
+        /* STEP - 1, place all possible tcs in cores using WFDU */
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, WFDU_F\n");
         printf("<--------------------------------------->\n");
@@ -68,39 +68,33 @@ void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                         ret = 0;
                         gcd = 0;
                         load = 0;
-                        bin_id = 0;
-                        if (v_itms[i].is_allocated == YES) 
+                        core_id = 0;
+                        if (v_tcs[i].is_allocated == YES) 
                                 continue;
 
-                        /* find best bin to fit itm */
-                        ret = _find_worst_bin(v_bins, v_itms[i], ctx, load, gcd, v_itms[i].color);
+                        /* find best core to fit tc */
+                        ret = _find_worst_core(v_cores, v_tcs[i], ctx, load, gcd, v_tcs[i].color);
 
-                        /* bin found add itm to it */
+                        /* core found add tc to it */
                         if (ret != -1) {
-                                printf("Worst Bin to accomodate Item %d is Bin %d\n", 
-                                                v_itms[i].id, ret);
-                                bin_id = ret;
-                                add_itm_to_v_bins(v_bins, v_itms[i], bin_id, ctx, 
+                                printf("Worst Core to accomodate TC %d is Core %d\n", 
+                                                v_tcs[i].id, ret);
+                                core_id = ret;
+                                add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
                                                 load, gcd);
-                                v_itms[i].is_allocated = YES;
+                                v_tcs[i].is_allocated = YES;
                                 continue;
 
-                                /* no bin was found */
+                                /* no core was found */
                         } else {
-                                printf("No Bin was found to accomodate Item %d idx: %d size: %d\n", 
-                                                v_itms[i].id, v_itms[i].tc_idx, v_itms[i].size);
-
-                                if (v_itms[i].color == WHITE)
-                                        add_bin_color(v_bins, gen_rand(0, 5), ctx);
-                                else
-                                        add_bin_color(v_bins, v_itms[i].color, ctx);
-                                ctx.cycl_count++;
-                                continue;
+                                printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
+                                                v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
+                                exit(0);
                         }
                 }
-                /* count remaining item to be allocated */
+                /* count remaining tc to be allocated */
                 for (int i = 0; i < n; i++) {
-                        if (v_itms[i].is_allocated == YES)
+                        if (v_tcs[i].is_allocated == YES)
                                 alloc_count++;
                 }
         }

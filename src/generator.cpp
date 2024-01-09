@@ -7,9 +7,9 @@ static int chain[1][8] = {
 };
 
 /* WATERS 2019 */
-static void _create_waters2019(struct item &itm)
+static void _create_waters2019(struct tc &tc)
 {
-        struct item waters2019;
+        struct tc waters2019;
         struct task can_polling;
         struct task lidar;
         struct task cam_grabber;
@@ -25,10 +25,9 @@ static void _create_waters2019(struct item &itm)
         can_polling = {0};
         can_polling.c = 499;
         can_polling.t = 10000;
-        can_polling.d = 10000;
         can_polling.r = 0;
         can_polling.id = 0;
-        can_polling.tc_id = itm.id;
+        can_polling.tc_id = tc.id;
         can_polling.is_let = NO;
         can_polling.u = ceil(((float)can_polling.c/(float)can_polling.t) * PERMILL);
 
@@ -36,10 +35,9 @@ static void _create_waters2019(struct item &itm)
         lidar = {0};
         lidar.c = 11759;
         lidar.t = 33000;
-        lidar.d = 33000;
         lidar.r = 0;
         lidar.id = 1;
-        lidar.tc_id = itm.id;
+        lidar.tc_id = tc.id;
         lidar.is_let = NO;
         lidar.u = ceil(((float)lidar.c/(float)lidar.t) * PERMILL);
 
@@ -47,10 +45,9 @@ static void _create_waters2019(struct item &itm)
         cam_grabber = {0};
         cam_grabber.c = 14986;
         cam_grabber.t = 33000;
-        cam_grabber.d = 33000;
         cam_grabber.r = 0;
         cam_grabber.id = 2;
-        cam_grabber.tc_id = itm.id;
+        cam_grabber.tc_id = tc.id;
         cam_grabber.is_let = NO;
         cam_grabber.u = ceil(((float)cam_grabber.c/(float)cam_grabber.t) * PERMILL);
 
@@ -58,10 +55,9 @@ static void _create_waters2019(struct item &itm)
         localization = {0};
         localization.c = 142375;
         localization.t = 400000;
-        localization.d = 400000;
         localization.r = 0;
         localization.id = 3;
-        localization.tc_id = itm.id;
+        localization.tc_id = tc.id;
         localization.is_let = NO;
         localization.u = ceil(((float)localization.c/(float)localization.t) * PERMILL);
 
@@ -69,10 +65,9 @@ static void _create_waters2019(struct item &itm)
         detection = {0};
         detection.c = 124956;
         detection.t = 200000;
-        detection.d = 200000;
         detection.r = 0;
         detection.id = 4;
-        detection.tc_id = itm.id;
+        detection.tc_id = tc.id;
         detection.is_let = NO;
         detection.u = ceil(((float)detection.c/(float)detection.t) * PERMILL);
 
@@ -80,10 +75,9 @@ static void _create_waters2019(struct item &itm)
         lane_detection = {0};
         lane_detection.c = 36416;
         lane_detection.t = 66000;
-        lane_detection.d = 66000;
         lane_detection.r = 0;
         lane_detection.id = 5;
-        lane_detection.tc_id = itm.id;
+        lane_detection.tc_id = tc.id;
         lane_detection.is_let = NO;
         lane_detection.u = ceil(((float)lane_detection.c/(float)lane_detection.t) * PERMILL);
 
@@ -91,10 +85,9 @@ static void _create_waters2019(struct item &itm)
         ekf = {0};
         ekf.c = 4399;
         ekf.t = 15000;
-        ekf.d = 15000;
         ekf.r = 0;
         ekf.id = 6;
-        ekf.tc_id = itm.id;
+        ekf.tc_id = tc.id;
         ekf.is_let = NO;
         ekf.u = ceil(((float)ekf.c/(float)ekf.t) * PERMILL);
 
@@ -102,10 +95,9 @@ static void _create_waters2019(struct item &itm)
         planner = {0};
         planner.c = 11371;
         planner.t = 15000;
-        planner.d = 15000;
         planner.r = 0;
         planner.id = 7;
-        planner.tc_id = itm.id;
+        planner.tc_id = tc.id;
         planner.is_let = NO;
         planner.u = ceil(((float)planner.c/(float)planner.t) * PERMILL);
 
@@ -113,10 +105,9 @@ static void _create_waters2019(struct item &itm)
         control = {0};
         control.c = 1609;
         control.t = 5000;
-        control.d = 5000;
         control.r = 0;
         control.id = 8;
-        control.tc_id = itm.id;
+        control.tc_id = tc.id;
         control.is_let = NO;
         control.u = ceil(((float)control.c/(float)control.t) * PERMILL);
 
@@ -124,10 +115,9 @@ static void _create_waters2019(struct item &itm)
         can_write = {0};
         can_write.c = 499;
         can_write.t = 10000;
-        can_write.d = 10000;
         can_write.r = 0;
         can_write.id = 9;
-        can_write.tc_id = itm.id;
+        can_write.tc_id = tc.id;
         can_write.is_let = NO;
         can_write.u = ceil(((float)can_write.c/(float)can_write.t) * PERMILL);
 
@@ -156,13 +146,13 @@ static void _create_waters2019(struct item &itm)
         waters2019.v_tasks.push_back(control);
         waters2019.v_tasks.push_back(can_write);
 
-        itm = waters2019;
+        tc = waters2019;
 }
 
-static void _assign_id(vector<struct item> &v_itms)
+static void _assign_id(vector<struct tc> &v_tcs)
 {
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_itms[i].id = i;
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tcs[i].id = i;
 }
 
 static void _check_prm(struct params &prm)
@@ -174,7 +164,7 @@ static void _check_prm(struct params &prm)
         }
 }
 
-static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
+static int _compute_colors(vector<struct tc> &v_tcs, struct context &ctx)
 {
         /* count color */
         int red;
@@ -194,31 +184,31 @@ static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
         white = 0;
 
         ctx.cs = {0};
-        ctx.itms_size = 0;
+        ctx.tcs_size = 0;
 
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                ctx.itms_size += v_itms[i].size;
-                if (v_itms[i].color == RED) {
+        for (unsigned int i = 0; i < v_tcs.size(); i++) {
+                ctx.tcs_size += v_tcs[i].size;
+                if (v_tcs[i].color == RED) {
                         red++;
-                        ctx.cs.red += v_itms[i].size;
-                } else if (v_itms[i].color == BLUE) {
+                        ctx.cs.red += v_tcs[i].size;
+                } else if (v_tcs[i].color == BLUE) {
                         blue++;
-                        ctx.cs.blue += v_itms[i].size;
-                } else if (v_itms[i].color == YELLOW) {
+                        ctx.cs.blue += v_tcs[i].size;
+                } else if (v_tcs[i].color == YELLOW) {
                         yellow++;
-                        ctx.cs.yellow += v_itms[i].size;
-                } else if (v_itms[i].color == GREEN) {
+                        ctx.cs.yellow += v_tcs[i].size;
+                } else if (v_tcs[i].color == GREEN) {
                         green++;
-                        ctx.cs.green += v_itms[i].size;
-                } else if (v_itms[i].color == CYAN) {
+                        ctx.cs.green += v_tcs[i].size;
+                } else if (v_tcs[i].color == CYAN) {
                         cyan++;
-                        ctx.cs.cyan += v_itms[i].size;
-                } else if (v_itms[i].color == PURPLE) {
+                        ctx.cs.cyan += v_tcs[i].size;
+                } else if (v_tcs[i].color == PURPLE) {
                         purple++;
-                        ctx.cs.purple += v_itms[i].size;
+                        ctx.cs.purple += v_tcs[i].size;
                 } else {
                         white++;
-                        ctx.cs.white += v_itms[i].size;
+                        ctx.cs.white += v_tcs[i].size;
                 }
         }
 
@@ -226,14 +216,14 @@ static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
                         purple == 0 || white == 0)
                 return -1;
 
-        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
-        ctx.cs.red_bins_min = abs(ctx.cs.red / PHI) + 1;
-        ctx.cs.blue_bins_min = abs(ctx.cs.blue / PHI) + 1;
-        ctx.cs.yellow_bins_min = abs(ctx.cs.yellow / PHI) + 1;
-        ctx.cs.green_bins_min = abs(ctx.cs.green / PHI) + 1;
-        ctx.cs.cyan_bins_min = abs(ctx.cs.cyan / PHI) + 1;
-        ctx.cs.purple_bins_min = abs(ctx.cs.purple / PHI) + 1;
-        ctx.cs.white_bins_min = abs(ctx.cs.white / PHI) + 1;
+        ctx.cores_min = abs(ctx.tcs_size / PHI) + 1;
+        ctx.cs.red_cores_min = abs(ctx.cs.red / PHI) + 1;
+        ctx.cs.blue_cores_min = abs(ctx.cs.blue / PHI) + 1;
+        ctx.cs.yellow_cores_min = abs(ctx.cs.yellow / PHI) + 1;
+        ctx.cs.green_cores_min = abs(ctx.cs.green / PHI) + 1;
+        ctx.cs.cyan_cores_min = abs(ctx.cs.cyan / PHI) + 1;
+        ctx.cs.purple_cores_min = abs(ctx.cs.purple / PHI) + 1;
+        ctx.cs.white_cores_min = abs(ctx.cs.white / PHI) + 1;
 
         printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
         printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
@@ -243,16 +233,16 @@ static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
         printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
         printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
         printf("------------------------------------------------------\n");
-        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_bins_min);
-        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_bins_min);
-        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_bins_min);
-        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_bins_min);
-        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_bins_min);
-        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_bins_min);
-        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_bins_min);
+        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_cores_min);
+        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_cores_min);
+        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_cores_min);
+        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_cores_min);
+        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_cores_min);
+        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_cores_min);
+        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_cores_min);
         printf("------------------------------------------------------\n");
-        printf("Total Number of Cores    %u\n", ctx.bins_min);
-        printf("Total Utilization of TC: %u\n\n", ctx.itms_size);
+        printf("Total Number of Cores    %u\n", ctx.cores_min);
+        printf("Total Utilization of TC: %u\n\n", ctx.tcs_size);
         printf("------------------------------------------------------\n");
 
         return 0;
@@ -287,7 +277,6 @@ static void _create_task(struct task &tau, int i, int x)
                 if (udiff > PRECISION)
                         continue;
 
-                tau.d = tau.t; /* implicit deadline */
                 tau.r = 0;
                 tau.p = i + 1; /* 1 is highest priority */
                 tau.id = i;
@@ -295,7 +284,7 @@ static void _create_task(struct task &tau, int i, int x)
         }
 }
 
-static void _create_tc(struct item &itm, int color, int minu, int maxu)
+static void _create_tc(struct tc &tc, int color, int minu, int maxu)
 {
         int x;
         int task_nbr;
@@ -303,37 +292,37 @@ static void _create_tc(struct item &itm, int color, int minu, int maxu)
 
         while (1) {
                 x = 0;
-                itm = {0};
-                itm.tc_idx = 0;
-                itm.size = 0;
+                tc = {0};
+                tc.tc_idx = 0;
+                tc.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
-                itm.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
-                itm.color = color;
-                itm.is_frag = NO;
-                itm.disp_count = 0;
-                itm.swap_count = 0;
-                itm.is_let = NO;
-                itm.is_allocated = NO;
+                tc.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
+                tc.color = color;
+                tc.is_frag = NO;
+                tc.disp_count = 0;
+                tc.swap_count = 0;
+                tc.is_let = NO;
+                tc.is_allocated = NO;
 
                 for (int i = 0; i < task_nbr; i++) {
                         tau = {0};
                         tau.is_let = NO;
-                        tau.tc_id = itm.id;
+                        tau.tc_id = tc.id;
 
                         _create_task(tau, i, x);
 
-                        itm.v_tasks.push_back(tau);
-                        itm.size += tau.u;
+                        tc.v_tasks.push_back(tau);
+                        tc.size += tau.u;
                 }
 
-                if (itm.size < minu || itm.size > maxu)
+                if (tc.size < minu || tc.size > maxu)
                         continue;
                 else
                         return;
         }
 }
 
-static int _gen_app(vector<struct item> &v_itms, struct params &prm, 
+static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
         printf("\n\n");
@@ -341,68 +330,68 @@ static int _gen_app(vector<struct item> &v_itms, struct params &prm,
         printf("| CASE-STUDY INSTANCE GENERATION      |\n");
         printf("+=====================================+\n");
 
-        struct item itm;
+        struct tc tc;
 
         /* red -> waters */
-        itm = {0};
-        _create_waters2019(itm);
-        v_itms.push_back(itm);
+        tc = {0};
+        _create_waters2019(tc);
+        v_tcs.push_back(tc);
 
         /* blue */
-        itm = {0};
-        _create_tc(itm, BLUE, 100, C/2);
-        v_itms.push_back(itm);
+        tc = {0};
+        _create_tc(tc, BLUE, 100, C/2);
+        v_tcs.push_back(tc);
 
         /* yellow */
-        itm = {0};
-        _create_tc(itm, YELLOW, 100, C/2);
-        v_itms.push_back(itm);
+        tc = {0};
+        _create_tc(tc, YELLOW, 100, C/2);
+        v_tcs.push_back(tc);
 
         /* green */
-        itm = {0};
-        _create_tc(itm, GREEN, 100, C/2);
-        v_itms.push_back(itm);
+        tc = {0};
+        _create_tc(tc, GREEN, 100, C/2);
+        v_tcs.push_back(tc);
 
         /* cyan */
-        itm = {0};
-        _create_tc(itm, CYAN, 100, C/2);
-        v_itms.push_back(itm);
+        tc = {0};
+        _create_tc(tc, CYAN, 100, C/2);
+        v_tcs.push_back(tc);
 
         /* purple */
-        itm = {0};
-        _create_tc(itm, PURPLE, 100, C/2);
-        v_itms.push_back(itm);
+        tc = {0};
+        _create_tc(tc, PURPLE, 100, C/2);
+        v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 14; i++) {
-                itm = {0};
-                _create_tc(itm, WHITE, C/2, C);
-                v_itms.push_back(itm);
+        for (int i = 0; i < 6; i++) {
+                tc = {0};
+                _create_tc(tc, WHITE, C/2, C);
+                v_tcs.push_back(tc);
         }
-        sort_dec_itm_size(v_itms);
-        _assign_id(v_itms);
+        sort_dec_tc_size(v_tcs);
+        _assign_id(v_tcs);
 
-        ctx.prm.n = v_itms.size();
-        prm.n = v_itms.size();
+        ctx.prm.n = v_tcs.size();
+        prm.n = v_tcs.size();
 
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
 
-        _compute_colors(v_itms, ctx);
+        _compute_colors(v_tcs, ctx);
 
         return 0;
 }
 
-void cut(vector<struct item> &v_itms, struct context &ctx)
+void cut(vector<struct tc> &v_tcs, struct context &ctx)
 {
         int idx;
         int ret;
         int u_sum;
         int uniq_id;
-        struct item itm;
+        struct tc tc;
         vector<struct task> v_tmp;
-        vector<struct item> v_new_itms;
-        vector<struct item> v_tmp_itms;
+        vector<struct tc> v_new_tcs;
+        vector<struct tc> v_tmp_tcs;
 
         idx = 0;
         ret = -1;
@@ -410,35 +399,35 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
         uniq_id = 1;
         ctx.frags_count = 0;
 
-        /* store itms > phi */
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_tmp_itms.push_back(v_itms[i]);
+        /* store tcs > phi */
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tmp_tcs.push_back(v_tcs[i]);
 
         /* fragmentation */
-        for (unsigned int i = 0; i < v_tmp_itms.size(); i++) {
+        for (unsigned int i = 0; i < v_tmp_tcs.size(); i++) {
                 idx = 0;
-                for (unsigned int j = 0; j < v_tmp_itms[i].v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < v_tmp_tcs[i].v_tasks.size(); j++) {
                         ret = -1;
-                        u_sum += v_tmp_itms[i].v_tasks[j].u;
-                        v_tmp_itms[i].v_tasks[j].tc_id = v_tmp_itms[i].id;
-                        v_tmp.push_back(v_tmp_itms[i].v_tasks[j]);
+                        u_sum += v_tmp_tcs[i].v_tasks[j].u;
+                        v_tmp_tcs[i].v_tasks[j].tc_id = v_tmp_tcs[i].id;
+                        v_tmp.push_back(v_tmp_tcs[i].v_tasks[j]);
                         ret = wcrt(v_tmp);
                         if (ret == SCHED_FAILED)  {
-                                u_sum -= v_tmp_itms[i].v_tasks[j].u;
+                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
                                 v_tmp.pop_back();
-                                itm = {0};
-                                itm.id = v_tmp_itms[i].id;
-                                itm.tc_idx = idx;
-                                itm.size = u_sum;
-                                itm.memcost = v_tmp_itms[i].memcost;
-                                itm.disp_count = 0;
-                                itm.swap_count = 0;
-                                itm.color = v_tmp_itms[i].color;
-                                itm.is_let = NO;
-                                itm.is_frag = YES;
-                                itm.is_allocated = NO;
-                                itm.v_tasks = v_tmp;
-                                v_new_itms.push_back(itm);
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.size = u_sum;
+                                tc.memcost = v_tmp_tcs[i].memcost;
+                                tc.disp_count = 0;
+                                tc.swap_count = 0;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_allocated = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
                                 j--;
                                 idx++;
                                 u_sum = 0;
@@ -448,21 +437,21 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
 
                         /* only for the waters2019 task-chain */
                         if (i == 0 && u_sum > PHI) {
-                                u_sum -= v_tmp_itms[i].v_tasks[j].u;
+                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
                                 v_tmp.pop_back();
-                                itm = {0};
-                                itm.id = v_tmp_itms[i].id;
-                                itm.tc_idx = idx;
-                                itm.size = u_sum;
-                                itm.memcost = v_tmp_itms[i].memcost;
-                                itm.disp_count = 0;
-                                itm.swap_count = 0;
-                                itm.color = v_tmp_itms[i].color;
-                                itm.is_let = NO;
-                                itm.is_frag = YES;
-                                itm.is_allocated = NO;
-                                itm.v_tasks = v_tmp;
-                                v_new_itms.push_back(itm);
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.size = u_sum;
+                                tc.memcost = v_tmp_tcs[i].memcost;
+                                tc.disp_count = 0;
+                                tc.swap_count = 0;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_allocated = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
                                 j--;
                                 idx++;
                                 u_sum = 0;
@@ -470,61 +459,61 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
                         }
 
                         if (i > 0 && u_sum > ctx.prm.s - 10) {
-                                u_sum -= v_tmp_itms[i].v_tasks[j].u;
+                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
                                 v_tmp.pop_back();
-                                itm = {0};
-                                itm.id = v_tmp_itms[i].id;
-                                itm.tc_idx = idx;
-                                itm.size = u_sum;
-                                itm.memcost = v_tmp_itms[i].memcost;
-                                itm.disp_count = 0;
-                                itm.swap_count = 0;
-                                itm.color = v_tmp_itms[i].color;
-                                itm.is_let = NO;
-                                itm.is_frag = YES;
-                                itm.is_allocated = NO;
-                                itm.v_tasks = v_tmp;
-                                v_new_itms.push_back(itm);
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.size = u_sum;
+                                tc.memcost = v_tmp_tcs[i].memcost;
+                                tc.disp_count = 0;
+                                tc.swap_count = 0;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_allocated = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
                                 j--;
                                 idx++;
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
                         /* add last fragment */
-                        if (j == v_tmp_itms[i].v_tasks.size() - 1) {
-                                itm = {0};
-                                itm.id = v_tmp_itms[i].id;
-                                itm.tc_idx = idx;
-                                itm.size = u_sum;
-                                itm.memcost = v_tmp_itms[i].memcost;
-                                itm.disp_count = 0;
-                                itm.swap_count = 0;
-                                itm.color = v_tmp_itms[i].color;
-                                itm.is_let = NO;
-                                itm.is_frag = YES;
-                                itm.is_allocated = NO;
-                                itm.v_tasks = v_tmp;
-                                v_new_itms.push_back(itm);
+                        if (j == v_tmp_tcs[i].v_tasks.size() - 1) {
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.size = u_sum;
+                                tc.memcost = v_tmp_tcs[i].memcost;
+                                tc.disp_count = 0;
+                                tc.swap_count = 0;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_allocated = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
                                 u_sum = 0;
                                 v_tmp.clear();
                                 ctx.frags_count++;
                         }
                 }
         }
-        v_itms.clear();
-        v_itms = v_new_itms;
-        sort_dec_itm_size(v_itms);
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_itms[i].gcd = compute_gcd(v_itms[i].v_tasks);
+        v_tcs.clear();
+        v_tcs = v_new_tcs;
+        sort_dec_tc_size(v_tcs);
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
 
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                for (unsigned int j = 0; j < v_itms[i].v_tasks.size(); j++) {
-                        v_itms[i].v_tasks[j].uniq_id = uniq_id;
+        for (unsigned int i = 0; i < v_tcs.size(); i++) {
+                for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
+                        v_tcs[i].v_tasks[j].uniq_id = uniq_id;
                         uniq_id++;
                 }
         }
         printf("Initial Number of TC:   %d\n", ctx.prm.n);
-        printf("Current Number of TC:   %ld\n", v_itms.size());
+        printf("Current Number of TC:   %ld\n", v_tcs.size());
         printf("Number of TC Cuts: %d\n", ctx.frags_count);
 }
 
@@ -547,45 +536,44 @@ void input_prm(int argc, char **argv, struct params &prm)
         _check_prm(prm);
 }
 
-void init_ctx(vector<struct item> &v_itms, struct params &prm, 
+void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
         float part_time;
 
         ctx.prm = prm;
-        ctx.cycl_count = 0;
-        ctx.bins_count = 0;
+        ctx.cores_count = 0;
         ctx.alloc_count = 0;
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
-        ctx.itms_size = 0;
-        ctx.itms_nbr = ctx.prm.n;
-        ctx.itms_count = ctx.prm.n;
+        ctx.tcs_size = 0;
+        ctx.tcs_nbr = ctx.prm.n;
+        ctx.tcs_count = ctx.prm.n;
 
         part_time = ctx.p.part_time;
         ctx.p = {0};
         ctx.p.part_time = part_time;
 }
 
-void gen_app(vector<struct item> &v_itms, struct params &prm, 
+void gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
         ctx.prm = prm;
-        _gen_app(v_itms, prm, ctx);
+        _gen_app(v_tcs, prm, ctx);
 }
 
-void gen_arch(vector<struct bin> &v_bins, struct context &ctx)
+void gen_arch(vector<struct core> &v_cores, struct context &ctx)
 {
-        /* create 42 cores */
+        /* create 28 cores */
         for (int i = 0; i < 8; i++)
-                add_bin_color(v_bins, RED, ctx);
+                add_core_color(v_cores, RED, ctx);
 
         for (int i = 0; i < 4; i++) {
-                add_bin_color(v_bins, BLUE, ctx);
-                add_bin_color(v_bins, YELLOW, ctx);
-                add_bin_color(v_bins, GREEN, ctx);
-                add_bin_color(v_bins, CYAN, ctx);
-                add_bin_color(v_bins, PURPLE, ctx);
+                add_core_color(v_cores, BLUE, ctx);
+                add_core_color(v_cores, YELLOW, ctx);
+                add_core_color(v_cores, GREEN, ctx);
+                add_core_color(v_cores, CYAN, ctx);
+                add_core_color(v_cores, PURPLE, ctx);
         }
 }

@@ -13,32 +13,32 @@ static int _cmp_inc_task_id(const struct task &a, const struct task &b)
         return a.id < b.id;
 }
 
-static int _cmp_dec_itm_size(const struct item &a, const struct item &b)
+static int _cmp_dec_tc_size(const struct tc &a, const struct tc &b)
 {
         return a.size > b.size;
 }
 
-static int _cmp_inc_itm_id(const struct item &a, const struct item &b)
+static int _cmp_inc_tc_id(const struct tc &a, const struct tc &b)
 {
         return a.id < b.id;
 }
 
-static int _cmp_inc_itm_tc_idx(const struct item &a, const struct item &b)
+static int _cmp_inc_tc_tc_idx(const struct tc &a, const struct tc &b)
 {
         return a.tc_idx < b.tc_idx;
 }
 
-static int _cmp_inc_itm_color(const struct item &a, const struct item &b)
+static int _cmp_inc_tc_color(const struct tc &a, const struct tc &b)
 {
         return a.color < b.color;
 }
 
-static int _cmp_inc_bin_load_rem(const struct bin &a, const struct bin &b)
+static int _cmp_inc_core_load_rem(const struct core &a, const struct core &b)
 {
         return a.load_rem < b.load_rem;
 }
 
-static int _cmp_inc_bin_color(const struct bin &a, const struct bin &b)
+static int _cmp_inc_core_color(const struct core &a, const struct core &b)
 {
         return a.color < b.color;
 }
@@ -63,204 +63,180 @@ void sort_inc_task_id(vector<struct task> &v_tasks)
         sort(v_tasks.begin(), v_tasks.end(), _cmp_inc_task_id);
 }
 
-void sort_dec_itm_size(vector<struct item> &v_itms)
+void sort_dec_tc_size(vector<struct tc> &v_tcs)
 {
-        sort(v_itms.begin(), v_itms.end(), _cmp_dec_itm_size);
+        sort(v_tcs.begin(), v_tcs.end(), _cmp_dec_tc_size);
 }
 
-void sort_inc_itm_id(vector<struct item> &v_itms)
+void sort_inc_tc_id(vector<struct tc> &v_tcs)
 {
-        sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_id);
+        sort(v_tcs.begin(), v_tcs.end(), _cmp_inc_tc_id);
 }
 
-void sort_inc_itm_tc_idx(vector<struct item> &v_itms)
+void sort_inc_tc_tc_idx(vector<struct tc> &v_tcs)
 {
-        sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_tc_idx);
+        sort(v_tcs.begin(), v_tcs.end(), _cmp_inc_tc_tc_idx);
 }
 
-void sort_inc_itm_color(vector<struct item> &v_itms)
+void sort_inc_tc_color(vector<struct tc> &v_tcs)
 {
-        sort(v_itms.begin(), v_itms.end(), _cmp_inc_itm_color);
+        sort(v_tcs.begin(), v_tcs.end(), _cmp_inc_tc_color);
 }
 
-void sort_inc_bin_load_rem(vector<struct bin> &v_bins)
+void sort_inc_core_load_rem(vector<struct core> &v_cores)
 {
-        sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_load_rem);
+        sort(v_cores.begin(), v_cores.end(), _cmp_inc_core_load_rem);
 }
 
-void sort_inc_bin_color(vector<struct bin> &v_bins)
+void sort_inc_core_color(vector<struct core> &v_cores)
 {
-        sort(v_bins.begin(), v_bins.end(), _cmp_inc_bin_color);
+        sort(v_cores.begin(), v_cores.end(), _cmp_inc_core_color);
 }
 
-void add_bin_color(vector<struct bin> &v_bins, int color, struct context &ctx)
+void add_core_color(vector<struct core> &v_cores, int color, struct context &ctx)
 {
-        struct bin tmp_bin;
-        struct item let;
+        struct core tmp_core;
+        struct tc let;
 
-        /* create and insert bin */
-        tmp_bin.id = ctx.bins_count;
-        tmp_bin.flag = SCHED_OK;
-        tmp_bin.load = 0;
-        tmp_bin.load_rem = PHI;
-        tmp_bin.phi = PHI;
-        tmp_bin.color = color;
-        tmp_bin.memcost = 0;
-        v_bins.push_back(tmp_bin);
-        ctx.bins_count++;
-        printf("Bin %d Created with Color %d\n", ctx.bins_count - 1, color);
+        /* create and insert core */
+        tmp_core.id = ctx.cores_count;
+        tmp_core.flag = SCHED_OK;
+        tmp_core.load = 0;
+        tmp_core.load_rem = PHI;
+        tmp_core.phi = PHI;
+        tmp_core.color = color;
+        tmp_core.memcost = 0;
+        v_cores.push_back(tmp_core);
+        ctx.cores_count++;
+        printf("Core %d created with Color %d\n", ctx.cores_count - 1, color);
 
         /* create and insert let task */
         let = {0};
         init_let_task(let, ctx);
-        add_itm_to_v_bins(v_bins, let, tmp_bin.id, ctx, let.size, let.v_tasks[0].t);
-        ctx.itms_count++;
+        add_tc_to_v_cores(v_cores, let, tmp_core.id, ctx, let.size, let.v_tasks[0].t);
+        ctx.tcs_count++;
         let.is_allocated = YES;
 }
 
-void add_bin(vector<struct bin> &v_bins, struct context &ctx)
-{
-        struct bin tmp_bin;
-        struct item let;
-
-        /* create and insert bin */
-        tmp_bin.id = ctx.bins_count;
-        tmp_bin.flag = SCHED_OK;
-        tmp_bin.load = 0;
-        tmp_bin.load_rem = PHI;
-        tmp_bin.phi = PHI;
-        tmp_bin.memcost = 0;
-        v_bins.push_back(tmp_bin);
-        ctx.bins_count++;
-        printf("Bin %d Created\n", ctx.bins_count - 1);
-
-        /* create and insert let task */
-        let = {0};
-        init_let_task(let, ctx);
-        add_itm_to_v_bins(v_bins, let, tmp_bin.id, ctx, let.size, let.v_tasks[0].t);
-        ctx.itms_count++;
-        let.is_allocated = YES;
-}
-
-void add_itm_to_bin(struct bin &b, struct item &itm, int load, int gcd)
+void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd)
 {
         if (b.phi < load) {
-                printf("ERR Bin %d Overflow with itm.size %d\n", 
-                                b.id, itm.size);
+                printf("ERR Core %d Overflow with tc.size %d\n", 
+                                b.id, tc.size);
                 exit(0);
         }
-        itm.is_allocated = YES;
+        tc.is_allocated = YES;
         b.load = load;
         b.load_rem = b.phi - load;
-        b.v_itms.push_back(itm);
-        compute_bin_memcost(b);
+        b.v_tcs.push_back(tc);
+        cmp_core_memcost(b);
         update_let(b, gcd);
         b.v_tasks.clear();
 
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
-                        b.v_itms[i].v_tasks[j].idx.itm_idx = i;
-                        b.v_itms[i].v_tasks[j].idx.task_idx = j;
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
+                for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
+                        b.v_tcs[i].v_tasks[j].idx.tc_idx = i;
+                        b.v_tcs[i].v_tasks[j].idx.task_idx = j;
                 }
         }
 
-        for (unsigned int i = 0; i < b.v_itms.size(); i++)
-                add_tasks_to_v_tasks(b.v_tasks, b.v_itms[i].v_tasks);
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++)
+                add_tasks_to_v_tasks(b.v_tasks, b.v_tcs[i].v_tasks);
 }
 
-void add_itm_to_v_bins(vector<struct bin> &v_bins, struct item &itm, int bin_id, 
+void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, 
                 struct context &ctx, int load, int gcd)
 {
-        for (int i = 0; i < ctx.bins_count; i++) {
-                if (v_bins[i].id == bin_id) {
-                        if (v_bins[i].phi < load) {
-                                printf("ERR Bin %d Overflow with itm.size %d\n", 
-                                                v_bins[i].id, itm.size);
+        for (int i = 0; i < ctx.cores_count; i++) {
+                if (v_cores[i].id == core_id) {
+                        if (v_cores[i].phi < load) {
+                                printf("ERR Core %d Overflow with tc.size %d\n", 
+                                                v_cores[i].id, tc.size);
                                 exit(0);
                         }
-                        itm.is_allocated = YES;
-                        v_bins[i].load = load;
-                        v_bins[i].load_rem = v_bins[i].phi - load;
-                        v_bins[i].v_itms.push_back(itm);
-                        compute_bin_memcost(v_bins[i]);
-                        update_let(v_bins[i], gcd);
-                        v_bins[i].v_tasks.clear();
-                        printf("Item %d added in Bin %d\n\n", itm.id, v_bins[i].id);
+                        tc.is_allocated = YES;
+                        v_cores[i].load = load;
+                        v_cores[i].load_rem = v_cores[i].phi - load;
+                        v_cores[i].v_tcs.push_back(tc);
+                        cmp_core_memcost(v_cores[i]);
+                        update_let(v_cores[i], gcd);
+                        v_cores[i].v_tasks.clear();
+                        printf("TC %d added in Core %d\n\n", tc.id, v_cores[i].id);
                         return;
                 }
         }
 }
 
-void copy_back_prio_to_tc(struct bin &b)
+void copy_back_prio_to_tc(struct core &b)
 {
-        int itm_idx;
+        int tc_idx;
         int task_idx;
 
-        itm_idx = 0;
+        tc_idx = 0;
         task_idx = 0;
 
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                itm_idx = b.v_tasks[i].idx.itm_idx;
+                tc_idx = b.v_tasks[i].idx.tc_idx;
                 task_idx = b.v_tasks[i].idx.task_idx;
-                b.v_itms[itm_idx].v_tasks[task_idx].p = b.v_tasks[i].p;
+                b.v_tcs[tc_idx].v_tasks[task_idx].p = b.v_tasks[i].p;
         }
 }
 
-void copy_back_resp_to_tc(struct bin &b)
+void copy_back_resp_to_tc(struct core &b)
 {
-        int itm_idx;
+        int tc_idx;
         int task_idx;
 
-        itm_idx = 0;
+        tc_idx = 0;
         task_idx = 0;
 
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                itm_idx = b.v_tasks[i].idx.itm_idx;
+                tc_idx = b.v_tasks[i].idx.tc_idx;
                 task_idx = b.v_tasks[i].idx.task_idx;
-                b.v_itms[itm_idx].v_tasks[task_idx].r = b.v_tasks[i].r;
+                b.v_tcs[tc_idx].v_tasks[task_idx].r = b.v_tasks[i].r;
         }
 }
 
-void copy_v_tc_to_v_tasks_with_pos(vector<struct bin> &v_bins)
+void copy_v_tc_to_v_tasks_with_pos(vector<struct core> &v_cores)
 {
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                v_bins[i].v_tasks.clear();
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
-                        copy_tc_to_v_tasks_with_pos(v_bins[i], i, j);
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                v_cores[i].v_tasks.clear();
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++)
+                        copy_tc_to_v_tasks_with_pos(v_cores[i], i, j);
         }
 }
 
-void copy_tc_to_v_tasks_with_pos(struct bin &b, int bin_idx, int itm_idx)
+void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx)
 {
-        for (unsigned int i = 0; i < b.v_itms[itm_idx].v_tasks.size(); i++) {
-                b.v_itms[itm_idx].v_tasks[i].idx.bin_idx = bin_idx;
-                b.v_itms[itm_idx].v_tasks[i].idx.itm_idx = itm_idx;
-                b.v_itms[itm_idx].v_tasks[i].idx.task_idx = i;
-                b.v_tasks.push_back(b.v_itms[itm_idx].v_tasks[i]);
+        for (unsigned int i = 0; i < b.v_tcs[tc_idx].v_tasks.size(); i++) {
+                b.v_tcs[tc_idx].v_tasks[i].idx.core_idx = core_idx;
+                b.v_tcs[tc_idx].v_tasks[i].idx.tc_idx = tc_idx;
+                b.v_tcs[tc_idx].v_tasks[i].idx.task_idx = i;
+                b.v_tasks.push_back(b.v_tcs[tc_idx].v_tasks[i]);
         }
         /* sort tasks by id */
         sort_inc_task_id(b.v_tasks);
 }
 
-void compute_itm_load(struct item &itm)
+void cmp_tc_load(struct tc &tc)
 {
-        for (unsigned int i = 0; i < itm.v_tasks.size(); i++)
-                itm.size += itm.v_tasks[i].u;
+        for (unsigned int i = 0; i < tc.v_tasks.size(); i++)
+                tc.size += tc.v_tasks[i].u;
 }
 
-void compute_bin_load(struct bin &b, int &load)
+void cmp_core_load(struct core &b, int &load)
 {
-        for (unsigned int i = 0; i < b.v_itms.size(); i++)
-                load += b.v_itms[i].size;
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++)
+                load += b.v_tcs[i].size;
 }
 
-void compute_bin_load_rem(struct bin &b)
+void cmp_core_load_rem(struct core &b)
 {
         b.load = 0;
         b.load_rem = 0;
 
-        for (unsigned int i = 0; i < b.v_itms.size(); i++)
-                b.load += b.v_itms[i].size;
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++)
+                b.load += b.v_tcs[i].size;
 
         b.load_rem = b.phi - b.load;
 
@@ -270,15 +246,15 @@ void compute_bin_load_rem(struct bin &b)
         }
 }
 
-void compute_bin_memcost(struct bin &b)
+void cmp_core_memcost(struct core &b)
 {
         b.memcost = 0;
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 /* let task has no memcost */
-                if (b.v_itms[i].is_let == YES)
+                if (b.v_tcs[i].is_let == YES)
                         continue;
 
-                b.memcost += b.v_itms[i].memcost;
+                b.memcost += b.v_tcs[i].memcost;
         }
 
         if (b.memcost < 0) {
@@ -287,7 +263,7 @@ void compute_bin_memcost(struct bin &b)
         }
 }
 
-int compute_gcd(vector<struct task> &v_tasks)
+int cmp_gcd(vector<struct task> &v_tasks)
 {
         int gcd;
 
@@ -314,71 +290,71 @@ int compute_gcd(vector<struct task> &v_tasks)
         return gcd;
 }
 
-void replace_bin_by_id(vector<struct bin> &v_bins, struct bin &b)
+void rplc_core_by_id(vector<struct core> &v_cores, struct core &b)
 {
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == b.id) {
-                        v_bins[i] = b;
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].id == b.id) {
+                        v_cores[i] = b;
                         return;
                 }
         }
 }
 
-struct item retrieve_tc_by_id(vector<struct bin> &v_bins, int tc_id)
+struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id)
 {
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++) {
-                        if (v_bins[i].v_itms[j].id == tc_id) {
-                                return v_bins[i].v_itms[j];
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        if (v_cores[i].v_tcs[j].id == tc_id) {
+                                return v_cores[i].v_tcs[j];
                         }
                 }
         }
-        printf("ERR! Could not retrieve tc %d by id!\n", tc_id);
+        printf("ERR! Could not retrieve TC %d by id!\n", tc_id);
         exit(0);
 }
 
-struct bin retrieve_core_by_id(vector<struct bin> &v_bins, int bin_id)
+struct core get_core_by_id(vector<struct core> &v_cores, int core_id)
 {
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == bin_id)
-                        return v_bins[i];
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].id == core_id)
+                        return v_cores[i];
         }
-        printf("ERR! Could not retrieve core by id!\n");
+        printf("ERR! Could not retrieve Core %d by id!\n", core_id);
         exit(0);
 }
 
-int retrieve_wcrt(struct bin &b, int itm_id, int tc_idx)
+int get_wcrt(struct core &b, int tc_id, int tc_idx)
 {
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].id == itm_id && b.v_itms[i].tc_idx == tc_idx) {
-                        for (unsigned int j = 0; j < b.v_itms[i].v_tasks.size(); j++) {
-                                if (j == b.v_itms[i].v_tasks.size() - 1)
-                                        return b.v_itms[i].v_tasks[j].r;
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
+                if (b.v_tcs[i].id == tc_id && b.v_tcs[i].tc_idx == tc_idx) {
+                        for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
+                                if (j == b.v_tcs[i].v_tasks.size() - 1)
+                                        return b.v_tcs[i].v_tasks[j].r;
                         }
                 }
         }
         return -1;
 }
 
-int retrieve_color_bin(vector<struct bin> &v_bins, int bin_id)
+int get_color_by_id(vector<struct core> &v_cores, int core_id)
 {
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == bin_id)
-                        return v_bins[i].color;
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].id == core_id)
+                        return v_cores[i].color;
         }
         return -1;
 }
 
-int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)
+int get_core_idx_by_id(vector<struct core> &v_cores, int core_id)
 {
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                if (v_bins[i].id == bin_id)
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].id == core_id)
                         return i;
         }
         return -1;
 }
 
-void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx)
+void del_tc_by_id(struct core &b, int tc_id, int tc_idx)
 {
         int gcd;
         int flag;
@@ -387,36 +363,36 @@ void delete_itm_by_id(struct bin &b, int itm_id, int itm_idx)
         gcd = 0;
         flag = NO;
 
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].id == itm_id && b.v_itms[i].tc_idx == itm_idx) {
-                        b.v_itms.erase(b.v_itms.begin() + i);
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
+                if (b.v_tcs[i].id == tc_id && b.v_tcs[i].tc_idx == tc_idx) {
+                        b.v_tcs.erase(b.v_tcs.begin() + i);
                         b.v_tasks.clear();
                         flag = YES;
                 }
         }
 
         if (flag == NO) {
-                printf("itm_idx: %d\n", itm_idx);
-                printf("ERR! TC %d idx: %d not removed from Core %d\n", itm_id, itm_idx, b.id);
+                printf("tc_idx: %d\n", tc_idx);
+                printf("ERR! TC %d idx: %d not removed from Core %d\n", tc_id, tc_idx, b.id);
                 print_core(b);
                 exit(0);
         }
 
-        /* check if there is only LET item */
-        if (b.v_itms.size() == 1)
-                gcd = b.v_itms[0].v_tasks[0].t;
+        /* check if there is only LET tc */
+        if (b.v_tcs.size() == 1)
+                gcd = b.v_tcs[0].v_tasks[0].t;
 
         else {
-                for (unsigned int j = 0; j < b.v_itms.size(); j++) {
-                        if (b.v_itms[j].is_let == YES)
+                for (unsigned int j = 0; j < b.v_tcs.size(); j++) {
+                        if (b.v_tcs[j].is_let == YES)
                                 continue;
-                        add_tasks_to_v_tasks(v_tasks, b.v_itms[j].v_tasks);
+                        add_tasks_to_v_tasks(v_tasks, b.v_tcs[j].v_tasks);
                 }
-                gcd = compute_gcd(v_tasks);
+                gcd = cmp_gcd(v_tasks);
         }
         update_let(b, gcd);
-        compute_bin_load_rem(b);
-        compute_bin_memcost(b);
+        cmp_core_load_rem(b);
+        cmp_core_memcost(b);
 }
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
@@ -424,94 +400,4 @@ void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks,
 {
         for (unsigned int i = 0; i < src_v_tasks.size(); i++)
                 dst_v_tasks.push_back(src_v_tasks[i]);
-}
-
-void check_duplicata(vector<struct bin> &v_bins)
-{
-        int count;
-        int curr;
-        vector<int> v_int;
-
-        curr = 0;
-
-        for (unsigned int i = 0; i < v_bins.size(); i++) {
-                for (unsigned int j = 0; j < v_bins[i].v_itms.size(); j++)
-                        v_int.push_back(v_bins[i].v_itms[j].id);
-        }
-
-        for (unsigned int i = 0; i < v_int.size(); i++) {
-                count = 0;
-                curr = v_int[i];
-                for (unsigned int j = 0; j < v_int.size(); j++) {
-                        if (v_int[j] == curr) {
-                                count++;
-                                if (count > 1) {
-                                        printf("ERR! Found duplicata TC %d\n", v_int[i]);
-                                        exit(0);
-                                }
-                        }
-                }
-        }
-}
-
-int is_frag_same_tc(struct bin &b)
-{
-        int count;
-        int curr;
-        vector<int> v_int;
-
-        curr = 0;
-
-        for (unsigned int i = 0; i < b.v_itms.size(); i++) {
-                if (b.v_itms[i].is_let == YES)
-                        continue;
-                v_int.push_back(b.v_itms[i].id);
-        }
-
-        for (unsigned int i = 0; i < v_int.size(); i++) {
-                count = 0;
-                curr = v_int[i];
-                for (unsigned int j = 0; j < v_int.size(); j++) {
-                        if (v_int[j] == curr) {
-                                count++;
-                                if (count > 1) {
-                                        printf("Found TC %d in Core %d\n", 
-                                                        v_int[i], b.id);
-                                        return YES;
-                                }
-                        }
-                }
-        }
-        return NO;
-}
-
-int is_task_same_v_tasks(struct bin &b)
-{
-        int count;
-        int curr;
-        vector<int> v_int;
-
-        curr = 0;
-
-        for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
-                v_int.push_back(b.v_tasks[i].uniq_id);
-        }
-
-        for (unsigned int i = 0; i < v_int.size(); i++) {
-                count = 0;
-                curr = v_int[i];
-                for (unsigned int j = 0; j < v_int.size(); j++) {
-                        if (v_int[j] == curr) {
-                                count++;
-                                if (count > 1) {
-                                        printf("Found tasks %d in Core %d\n", 
-                                                        v_int[i], b.id);
-                                        print_core(b);
-                                        exit(0);
-                                        return YES;
-                                }
-                        }
-                }
-        }
-        return NO;
 }

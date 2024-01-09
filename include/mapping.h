@@ -9,28 +9,28 @@
 #include "model.h"
 
 /* mapping */
-void partitioning(vector<struct item> &v_itms, struct context &ctx);
+void partitioning(vector<struct tc> &v_tcs, struct context &ctx);
 
-void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void allocation(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx);
+void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx);
 
-void placement(vector<struct bin> &v_bins, struct context &ctx);
+void placement(vector<struct core> &v_cores, struct context &ctx);
 
 /* algorithms */
-void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void bfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void wfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void ffdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void ffdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
 /* getters */
-vector<struct item> *get_frags_bfdu_f(void);
+vector<struct tc> *get_frags_bfdu_f(void);
 
-vector<struct item> *get_frags_wfdu_f(void);
+vector<struct tc> *get_frags_wfdu_f(void);
 
 #endif /* MAPPING.H */
