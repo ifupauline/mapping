@@ -26,13 +26,14 @@
 
 int gen_rand(int min, int max);
 
-void input_case_study(int argc, char **argv, struct params &prm);
+void input_prm(int argc, char **argv, struct params &prm);
 
 void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
 
-void gen_case_study(vector<struct item> &v_itms, struct params &prm, 
+void gen_app(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx);
+void gen_arch(vector<struct bin> &v_bins, struct context &ctx);
 
 void cut(vector<struct item> &v_itms, struct context &ctx);
 

@@ -1,5 +1,5 @@
-#ifndef OPTIMIZATION_H 
-#define OPTIMIZATION_H
+#ifndef PLACEMENT_H 
+#define PLACEMENT_H
 
 #include "model.h"
 
@@ -7,4 +7,4 @@ void displacement(vector<struct bin> &v_bins);
 
 void swapping(vector<struct bin> &v_bins);
 
-#endif /* OPTIMIZATION_H */
+#endif /* PLACEMENT_H */

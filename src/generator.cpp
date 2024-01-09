@@ -334,7 +334,7 @@ static void _create_tc(struct item &itm, int color, int minu, int maxu)
         }
 }
 
-static int _gen_case_study(vector<struct item> &v_itms, struct params &prm, 
+static int _gen_app(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx)
 {
         printf("\n\n");
@@ -472,6 +472,7 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
+
                         if (i > 0 && u_sum > ctx.prm.e - 10) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
@@ -543,7 +544,7 @@ int gen_rand(int min, int max)
         return distr(gen);
 }
 
-void input_case_study(int argc, char **argv, struct params &prm)
+void input_prm(int argc, char **argv, struct params &prm)
 {
         if (argc != 2) {
                 printf("Wrong Number of Arguments!\n");
@@ -574,9 +575,24 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm,
         ctx.p.frag_time = frag_time;
 }
 
-void gen_case_study(vector<struct item> &v_itms, struct params &prm, 
+void gen_app(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx)
 {
         ctx.prm = prm;
-        _gen_case_study(v_itms, prm, ctx);
+        _gen_app(v_itms, prm, ctx);
+}
+
+void gen_arch(vector<struct bin> &v_bins, struct context &ctx)
+{
+        /* create 42 cores */
+        for (int i = 0; i < 8; i++)
+                add_bin_color(v_bins, RED, ctx);
+
+        for (int i = 0; i < 4; i++) {
+                add_bin_color(v_bins, BLUE, ctx);
+                add_bin_color(v_bins, YELLOW, ctx);
+                add_bin_color(v_bins, GREEN, ctx);
+                add_bin_color(v_bins, CYAN, ctx);
+                add_bin_color(v_bins, PURPLE, ctx);
+        }
 }

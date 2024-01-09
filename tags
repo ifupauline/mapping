@@ -455,10 +455,10 @@ MINWCET	include/generator.h	20;"	d
 MODEL_H	include/model.h	2;"	d
 MSEC	include/model.h	26;"	d
 NO	include/model.h	14;"	d
-OPTIMIZATION_H	include/placement.h	2;"	d
 PERCENT	include/model.h	24;"	d
 PERMILL	include/model.h	25;"	d
 PHI	include/model.h	21;"	d
+PLACEMENT_H	include/placement.h	2;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	427;"	d	file:
@@ -625,7 +625,7 @@ _find_ffdu_bin	src/ffdu_f.cpp	/^static int _find_ffdu_bin(vector<struct bin> &v_
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
 _find_worst_bin	src/wfdu_f.cpp	/^static int _find_worst_bin(vector<struct bin> &v_bins, struct item &itm,$/;"	f	file:
 _fix_let_task	src/print.cpp	/^static void _fix_let_task(vector<struct bin> &v_bins)$/;"	f	file:
-_gen_case_study	src/generator.cpp	/^static int _gen_case_study(vector<struct item> &v_itms, struct params &prm, $/;"	f	file:
+_gen_app	src/generator.cpp	/^static int _gen_app(vector<struct item> &v_itms, struct params &prm, $/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct bin &b)$/;"	f	file:
 _reassign	src/sched_analysis.cpp	/^static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct bin &b)$/;"	f	file:
@@ -706,9 +706,9 @@ fr	include/model.h	/^        float fr;$/;"	m	struct:perf
 frag_time	include/model.h	/^        float frag_time;$/;"	m	struct:perf
 frags_count	include/model.h	/^        int frags_count;$/;"	m	struct:context
 gcd	include/model.h	/^        int gcd;$/;"	m	struct:item
-gen_case_study	src/generator.cpp	/^void gen_case_study(vector<struct item> &v_itms, struct params &prm, $/;"	f
+gen_app	src/generator.cpp	/^void gen_app(vector<struct item> &v_itms, struct params &prm, $/;"	f
+gen_arch	src/generator.cpp	/^void gen_arch(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
-generation	src/mapping.cpp	/^void generation(vector<struct bin> &v_bins, struct context &ctx)$/;"	f
 get_bin_idx_by_id	src/model.cpp	/^int get_bin_idx_by_id(vector<struct bin> &v_bins, int bin_id)$/;"	f
 green	include/model.h	/^        int green;$/;"	m	struct:colorsize
 green_bins_min	include/model.h	/^        int green_bins_min;$/;"	m	struct:colorsize
@@ -742,7 +742,7 @@ info_version_internal	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^c
 info_version_internal	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";$/;"	v
 init_ctx	src/generator.cpp	/^void init_ctx(vector<struct item> &v_itms, struct params &prm, $/;"	f
 init_let_task	src/let.cpp	/^void init_let_task(struct item &let, struct context &ctx)$/;"	f
-input_case_study	src/generator.cpp	/^void input_case_study(int argc, char **argv, struct params &prm)$/;"	f
+input_prm	src/generator.cpp	/^void input_prm(int argc, char **argv, struct params &prm)$/;"	f
 is_allocated	include/model.h	/^        int is_allocated;$/;"	m	struct:item
 is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:item
 is_frag_same_tc	src/model.cpp	/^int is_frag_same_tc(struct bin &b)$/;"	f

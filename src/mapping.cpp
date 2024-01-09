@@ -4,25 +4,6 @@
 #include "placement.h"
 #include "sched_analysis.h"
 
-void generation(vector<struct bin> &v_bins, struct context &ctx)
-{
-        printf("+=====================================+\n");
-        printf("| GENERATION                          |\n");
-        printf("+=====================================+\n");
-
-        /* create 42 cores */
-        for (int i = 0; i < 8; i++)
-                add_bin_color(v_bins, RED, ctx);
-
-        for (int i = 0; i < 4; i++) {
-                add_bin_color(v_bins, BLUE, ctx);
-                add_bin_color(v_bins, YELLOW, ctx);
-                add_bin_color(v_bins, GREEN, ctx);
-                add_bin_color(v_bins, CYAN, ctx);
-                add_bin_color(v_bins, PURPLE, ctx);
-        }
-}
-
 void partitioning(vector<struct item> &v_itms, struct context &ctx)
 {
         clock_t start, end;
@@ -93,7 +74,7 @@ void placement(vector<struct bin> &v_bins, struct context &ctx)
 
         clock_t start, end;
         printf("+=====================================+\n");
-        printf("| DISPLACEMENT                        |\n");
+        printf("| PLACEMENT - DISPLACEMENT            |\n");
         printf("+=====================================+\n");
         start = clock();
         displacement(v_bins);
@@ -109,7 +90,7 @@ void placement(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.sched_imp_swap -= ctx.sched_ok_count;
 
         printf("+=====================================+\n");
-        printf("| SWAPPING                            |\n");
+        printf("| PLACEMENT - SWAPPING                |\n");
         printf("+=====================================+\n");
         start = clock();
         swapping(v_bins);

@@ -34,7 +34,7 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                 ctx = {0};
                 stts = {0};
                 SIGMA = SIGMA - STEP;
-                gen_case_study(v_itms, prm, ctx);
+                gen_app(v_itms, prm, ctx);
                 for (int k = 0; k < SIMNBR; k++) {
                         ctx_bfdu = {0};
                         v_itms_bfdu.clear();
@@ -67,9 +67,9 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         ctx_wfdu.prm.a = WFDU_F;
                         ctx_ffdu.prm.a = FFDU_F;
 
-                        generation(v_bins_bfdu, ctx_bfdu);
-                        generation(v_bins_wfdu, ctx_wfdu);
-                        generation(v_bins_ffdu, ctx_ffdu);
+                        gen_arch(v_bins_bfdu, ctx_bfdu);
+                        gen_arch(v_bins_wfdu, ctx_wfdu);
+                        gen_arch(v_bins_ffdu, ctx_ffdu);
 
                         allocation(v_itms_bfdu, v_bins_bfdu, ctx_bfdu);
                         allocation(v_itms_wfdu, v_bins_wfdu, ctx_wfdu);

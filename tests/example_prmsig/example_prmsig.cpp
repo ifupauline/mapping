@@ -19,10 +19,10 @@ int main(int argc, char **argv)
         vector<struct item> v_itms_ffdu_f;
 
         /* parameters */
-        input_case_study(argc, argv, prm);
+        input_prm(argc, argv, prm);
 
         /* generate set of task-chains and initialize context */
-        gen_case_study(v_itms, prm, ctx);
+        gen_app(v_itms, prm, ctx);
         print_task_chains(v_itms);
 
         /* offline partitioning */
@@ -46,10 +46,10 @@ int main(int argc, char **argv)
         v_bins_wfdu_f = v_bins;
         v_bins_ffdu_f = v_bins;
 
-        /* generation */
-        generation(v_bins_bfdu_f, ctx_bfdu_f);
-        generation(v_bins_wfdu_f, ctx_wfdu_f);
-        generation(v_bins_ffdu_f, ctx_ffdu_f);
+        /* create cores */
+        gen_arch(v_bins_bfdu_f, ctx_bfdu_f);
+        gen_arch(v_bins_wfdu_f, ctx_wfdu_f);
+        gen_arch(v_bins_ffdu_f, ctx_ffdu_f);
 
         /* allocation */
         allocation(v_itms_bfdu_f, v_bins_bfdu_f, ctx_bfdu_f);
