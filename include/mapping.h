@@ -9,19 +9,16 @@
 #include "model.h"
 
 /* mapping */
-void fragmentation(vector<struct item> &v_itms, struct context &ctx);
-
 void generation(vector<struct bin> &v_bins, struct context &ctx);
+
+void partitioning(vector<struct item> &v_itms, struct context &ctx);
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
 void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx);
 
-void optimization(vector<struct bin> &v_bins, struct context &ctx);
-
-void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
-                vector<struct ecu> &v_ecus, struct context &ctx);
+void placement(vector<struct bin> &v_bins, struct context &ctx);
 
 /* algorithms */
 void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
@@ -30,7 +27,7 @@ void bfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 void wfdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
-void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void ffdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx);
 
 /* getters */

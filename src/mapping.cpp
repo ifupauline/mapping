@@ -1,22 +1,8 @@
 #include "print.h"
 #include "mapping.h"
 #include "generator.h"
-#include "optimization.h"
-#include "communication.h"
+#include "placement.h"
 #include "sched_analysis.h"
-
-void fragmentation(vector<struct item> &v_itms, struct context &ctx)
-{
-        clock_t start, end;
-
-        printf("+=====================================+\n");
-        printf("| PARTITIONING                        |\n");
-        printf("+=====================================+\n");
-        start = clock();
-        partitioning(v_itms, ctx);
-        end = clock();
-        ctx.p.frag_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-}
 
 void generation(vector<struct bin> &v_bins, struct context &ctx)
 {
@@ -35,6 +21,19 @@ void generation(vector<struct bin> &v_bins, struct context &ctx)
                 add_bin_color(v_bins, CYAN, ctx);
                 add_bin_color(v_bins, PURPLE, ctx);
         }
+}
+
+void partitioning(vector<struct item> &v_itms, struct context &ctx)
+{
+        clock_t start, end;
+
+        printf("+=====================================+\n");
+        printf("| PARTITIONING                        |\n");
+        printf("+=====================================+\n");
+        start = clock();
+        cut(v_itms, ctx);
+        end = clock();
+        ctx.p.frag_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
@@ -67,7 +66,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                 printf("| ALLOCATION FFDU_FF                  |\n");
                 printf("+=====================================+\n");
                 start = clock();
-                frst_f(v_itms, v_bins, ctx);
+                ffdu_f(v_itms, v_bins, ctx);
                 end = clock();
                 ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
@@ -89,12 +88,12 @@ void schedulability_analysis(vector<struct bin> &v_bins, struct context &ctx)
                 is_task_same_v_tasks(v_bins[i]);
 }
 
-void optimization(vector<struct bin> &v_bins, struct context &ctx)
+void placement(vector<struct bin> &v_bins, struct context &ctx)
 {
 
         clock_t start, end;
         printf("+=====================================+\n");
-        printf("| DISPLACEMENT OPTIMIZATION           |\n");
+        printf("| DISPLACEMENT                        |\n");
         printf("+=====================================+\n");
         start = clock();
         displacement(v_bins);
@@ -110,7 +109,7 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
         ctx.p.sched_imp_swap -= ctx.sched_ok_count;
 
         printf("+=====================================+\n");
-        printf("| SWAPPING OPTIMIZATION               |\n");
+        printf("| SWAPPING                            |\n");
         printf("+=====================================+\n");
         start = clock();
         swapping(v_bins);
@@ -120,19 +119,4 @@ void optimization(vector<struct bin> &v_bins, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
-}
-
-void communication(vector<struct bin> &v_bins, vector<struct item> &v_itms, 
-                vector<struct ecu> &v_ecus, struct context &ctx)
-{
-        clock_t start, end;
-        printf("+=====================================+\n");
-        printf("| COMMUNICATION                       |\n");
-        printf("+=====================================+\n");
-        start = clock();
-        create_ecus(v_bins, v_ecus);
-        comm_count(v_bins, v_itms, v_ecus, ctx);
-        e2e_latency(v_bins, v_itms, ctx);
-        end = clock();
-        ctx.p.comm_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }

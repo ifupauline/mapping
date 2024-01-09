@@ -129,7 +129,6 @@ static void _create_waters2019(struct item &itm)
         can_polling.id = 0;
         can_polling.tc_id = itm.id;
         can_polling.is_let = NO;
-        can_polling.datasize = 1;
         can_polling.u = ceil(((float)can_polling.c/(float)can_polling.t) * PERMILL);
 
         /* lidar */
@@ -141,7 +140,6 @@ static void _create_waters2019(struct item &itm)
         lidar.id = 1;
         lidar.tc_id = itm.id;
         lidar.is_let = NO;
-        lidar.datasize = 2000;
         lidar.u = ceil(((float)lidar.c/(float)lidar.t) * PERMILL);
 
         /* cam_grabber */
@@ -153,7 +151,6 @@ static void _create_waters2019(struct item &itm)
         cam_grabber.id = 2;
         cam_grabber.tc_id = itm.id;
         cam_grabber.is_let = NO;
-        cam_grabber.datasize = 2000;
         cam_grabber.u = ceil(((float)cam_grabber.c/(float)cam_grabber.t) * PERMILL);
 
         /* localization */
@@ -165,7 +162,6 @@ static void _create_waters2019(struct item &itm)
         localization.id = 3;
         localization.tc_id = itm.id;
         localization.is_let = NO;
-        localization.datasize = 3;
         localization.u = ceil(((float)localization.c/(float)localization.t) * PERMILL);
 
         /* detection */
@@ -177,7 +173,6 @@ static void _create_waters2019(struct item &itm)
         detection.id = 4;
         detection.tc_id = itm.id;
         detection.is_let = NO;
-        detection.datasize = 750;
         detection.u = ceil(((float)detection.c/(float)detection.t) * PERMILL);
 
         /* lane detection */
@@ -189,7 +184,6 @@ static void _create_waters2019(struct item &itm)
         lane_detection.id = 5;
         lane_detection.tc_id = itm.id;
         lane_detection.is_let = NO;
-        lane_detection.datasize = 1;
         lane_detection.u = ceil(((float)lane_detection.c/(float)lane_detection.t) * PERMILL);
 
         /* ekf */
@@ -201,7 +195,6 @@ static void _create_waters2019(struct item &itm)
         ekf.id = 6;
         ekf.tc_id = itm.id;
         ekf.is_let = NO;
-        ekf.datasize = 5;
         ekf.u = ceil(((float)ekf.c/(float)ekf.t) * PERMILL);
 
         /* planner */
@@ -213,7 +206,6 @@ static void _create_waters2019(struct item &itm)
         planner.id = 7;
         planner.tc_id = itm.id;
         planner.is_let = NO;
-        planner.datasize = 2;
         planner.u = ceil(((float)planner.c/(float)planner.t) * PERMILL);
 
         /* control */
@@ -225,7 +217,6 @@ static void _create_waters2019(struct item &itm)
         control.id = 8;
         control.tc_id = itm.id;
         control.is_let = NO;
-        control.datasize = 2;
         control.u = ceil(((float)control.c/(float)control.t) * PERMILL);
 
         /* can write */
@@ -237,13 +228,11 @@ static void _create_waters2019(struct item &itm)
         can_write.id = 9;
         can_write.tc_id = itm.id;
         can_write.is_let = NO;
-        can_write.datasize = 1;
         can_write.u = ceil(((float)can_write.c/(float)can_write.t) * PERMILL);
 
         /* tc waters 2019 */
         waters2019 = {0};
         waters2019.id = 0;
-        waters2019.ecu = -1;
         waters2019.tc_idx = 0;
         waters2019.memcost = MINMEMCOST;
         waters2019.disp_count = 0;
@@ -270,7 +259,7 @@ static void _create_waters2019(struct item &itm)
         itm = waters2019;
 }
 
-static void _create_task(struct task &tau, int i, int x, int datasize)
+static void _create_task(struct task &tau, int i, int x)
 {
         int y;
         int real_t;
@@ -305,16 +294,9 @@ static void _create_task(struct task &tau, int i, int x, int datasize)
                 tau.id = i;
                 break;
         }
-
-        if (datasize == SSIZE)
-                tau.datasize = gen_rand(1, 250);
-
-        if (datasize == BSIZE)
-                tau.datasize = gen_rand(250, 1000);
 }
 
-static void _create_tc(struct item &itm, int color, int minu, 
-                int maxu, int datasize)
+static void _create_tc(struct item &itm, int color, int minu, int maxu)
 {
         int x;
         int task_nbr;
@@ -327,8 +309,6 @@ static void _create_tc(struct item &itm, int color, int minu,
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
                 itm.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
-                itm.ecu = -1;
-                itm.e2ed = 0;
                 itm.color = color;
                 itm.is_frag = NO;
                 itm.disp_count = 0;
@@ -341,7 +321,7 @@ static void _create_tc(struct item &itm, int color, int minu,
                         tau.is_let = NO;
                         tau.tc_id = itm.id;
 
-                        _create_task(tau, i, x, datasize);
+                        _create_task(tau, i, x);
 
                         itm.v_tasks.push_back(tau);
                         itm.size += tau.u;
@@ -371,33 +351,33 @@ static int _gen_case_study(vector<struct item> &v_itms, struct params &prm,
 
         /* blue */
         itm = {0};
-        _create_tc(itm, BLUE, 100, C/2, SSIZE);
+        _create_tc(itm, BLUE, 100, C/2);
         v_itms.push_back(itm);
 
         /* yellow */
         itm = {0};
-        _create_tc(itm, YELLOW, 100, C/2, SSIZE);
+        _create_tc(itm, YELLOW, 100, C/2);
         v_itms.push_back(itm);
 
         /* green */
         itm = {0};
-        _create_tc(itm, GREEN, 100, C/2, SSIZE);
+        _create_tc(itm, GREEN, 100, C/2);
         v_itms.push_back(itm);
 
         /* cyan */
         itm = {0};
-        _create_tc(itm, CYAN, 100, C/2, SSIZE);
+        _create_tc(itm, CYAN, 100, C/2);
         v_itms.push_back(itm);
 
         /* purple */
         itm = {0};
-        _create_tc(itm, PURPLE, 100, C/2, SSIZE);
+        _create_tc(itm, PURPLE, 100, C/2);
         v_itms.push_back(itm);
 
         /* white */
         for (int i = 0; i < 14; i++) {
                 itm = {0};
-                _create_tc(itm, WHITE, C/2, C, BSIZE);
+                _create_tc(itm, WHITE, C/2, C);
                 v_itms.push_back(itm);
         }
         sort_dec_itm_size(v_itms);
@@ -414,7 +394,7 @@ static int _gen_case_study(vector<struct item> &v_itms, struct params &prm,
         return 0;
 }
 
-void partitioning(vector<struct item> &v_itms, struct context &ctx)
+void cut(vector<struct item> &v_itms, struct context &ctx)
 {
         int idx;
         int ret;
@@ -453,8 +433,6 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
-                                itm.ecu = -1;
-                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.color = v_tmp_itms[i].color;
@@ -480,8 +458,6 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
-                                itm.ecu = -1;
-                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.color = v_tmp_itms[i].color;
@@ -504,8 +480,6 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
-                                itm.ecu = -1;
-                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.color = v_tmp_itms[i].color;
@@ -527,8 +501,6 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
                                 itm.tc_idx = idx;
                                 itm.size = u_sum;
                                 itm.memcost = v_tmp_itms[i].memcost;
-                                itm.ecu = -1;
-                                itm.e2ed = 0;
                                 itm.disp_count = 0;
                                 itm.swap_count = 0;
                                 itm.color = v_tmp_itms[i].color;
@@ -591,10 +563,6 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm,
         ctx.bins_count = 0;
         ctx.alloc_count = 0;
         ctx.tasks_count = 0;
-        ctx.intra_comm_count = 0;
-        ctx.inter_comm_count = 0;
-        ctx.e2e_ok_count = 0;
-        ctx.e2e_failed_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
         ctx.itms_size = 0;

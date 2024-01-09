@@ -3,8 +3,8 @@
 #include "mapping.h"
 #include "generator.h"
 
-static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,
-                struct context &ctx, int &frst_load, int &frst_gcd, int color)
+static int _find_ffdu_bin(vector<struct bin> &v_bins, struct item &itm,
+                struct context &ctx, int &ffdu_load, int &ffdu_gcd, int color)
 {
         int bin_id;
 
@@ -14,8 +14,8 @@ static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,
                 if (v_bins[i].color != color && color != WHITE) 
                         continue;
 
-                frst_load = check_if_fit_itm(v_bins[i], itm, frst_gcd);
-                if (frst_load <= v_bins[i].phi) {
+                ffdu_load = check_if_fit_itm(v_bins[i], itm, ffdu_gcd);
+                if (ffdu_load <= v_bins[i].phi) {
                         bin_id = v_bins[i].id;
                         return bin_id;
                 }
@@ -23,7 +23,7 @@ static int _find_frst_bin(vector<struct bin> &v_bins, struct item &itm,
         return -1;
 }
 
-void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
+void ffdu_f(vector<struct item> &v_itms, vector<struct bin> &v_bins, 
                 struct context &ctx)
 {
         int n;
@@ -35,12 +35,11 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         n = v_itms.size();
 
-        
         sort_inc_itm_color(v_itms);
 
-        /* STEP - 1, place all possible items in bins using FRST */
+        /* STEP - 1, place all possible items in bins using ffdu */
         printf("\n<--------------------------------------->\n");
-        printf("STEP 1, FRST_F\n");
+        printf("STEP 1, FFDU_F\n");
         printf("<--------------------------------------->\n");
         while (alloc_count != n) {
                 alloc_count = 0;
@@ -53,7 +52,7 @@ void frst_f(vector<struct item> &v_itms, vector<struct bin> &v_bins,
                                 continue;
 
                         /* find best bin to fit itm */
-                        ret = _find_frst_bin(v_bins, v_itms[i], ctx, load, gcd, v_itms[i].color);
+                        ret = _find_ffdu_bin(v_bins, v_itms[i], ctx, load, gcd, v_itms[i].color);
 
                         /* bin found add itm to it */
                         if (ret != -1) {

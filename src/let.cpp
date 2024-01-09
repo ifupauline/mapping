@@ -39,7 +39,6 @@ void init_let_task(struct item &let, struct context &ctx)
         t.id = 0;
         t.tc_id = let.id;
         t.is_let = YES;
-        t.datasize = 0;
 
         let.v_tasks.push_back(t);
 }

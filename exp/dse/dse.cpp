@@ -26,9 +26,6 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
         vector<struct item> v_itms_bfdu;
         vector<struct item> v_itms_wfdu;
         vector<struct item> v_itms_ffdu;
-        vector<struct ecu> v_ecus_bfdu;
-        vector<struct ecu> v_ecus_wfdu;
-        vector<struct ecu> v_ecus_ffdu;
 
         prm = {0};
         SIGMA = 820;
@@ -43,27 +40,24 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         v_itms_bfdu.clear();
                         v_bins_bfdu.clear();
                         v_itms_bfdu = v_itms;
-                        v_ecus_bfdu.clear();
                         ctx_bfdu = ctx;
                         ctx_bfdu.prm.e = SIGMA;
 
                         v_itms_wfdu.clear();
                         v_bins_wfdu.clear();
                         v_itms_wfdu = v_itms;
-                        v_ecus_wfdu.clear();
                         ctx_wfdu = ctx;
                         ctx_wfdu.prm.e = SIGMA;
 
                         v_itms_ffdu.clear();
                         v_bins_ffdu.clear();
                         v_itms_ffdu = v_itms;
-                        v_ecus_ffdu.clear();
                         ctx_ffdu = ctx;
                         ctx_ffdu.prm.e = SIGMA;
 
-                        fragmentation(v_itms_bfdu, ctx_bfdu);
-                        fragmentation(v_itms_wfdu, ctx_wfdu);
-                        fragmentation(v_itms_ffdu, ctx_ffdu);
+                        partitioning(v_itms_bfdu, ctx_bfdu);
+                        partitioning(v_itms_wfdu, ctx_wfdu);
+                        partitioning(v_itms_ffdu, ctx_ffdu);
 
                         init_ctx(v_itms_bfdu, ctx_bfdu.prm, ctx_bfdu);
                         init_ctx(v_itms_wfdu, ctx_wfdu.prm, ctx_wfdu);
@@ -85,13 +79,9 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         schedulability_analysis(v_bins_wfdu, ctx_wfdu);
                         schedulability_analysis(v_bins_ffdu, ctx_ffdu);
 
-                        optimization(v_bins_bfdu, ctx_bfdu);
-                        optimization(v_bins_wfdu, ctx_wfdu);
-                        optimization(v_bins_ffdu, ctx_ffdu);
-
-                        communication(v_bins_bfdu, v_itms_bfdu, v_ecus_bfdu, ctx_bfdu);
-                        communication(v_bins_wfdu, v_itms_wfdu, v_ecus_wfdu, ctx_wfdu);
-                        communication(v_bins_ffdu, v_itms_ffdu, v_ecus_ffdu, ctx_ffdu);
+                        placement(v_bins_bfdu, ctx_bfdu);
+                        placement(v_bins_wfdu, ctx_wfdu);
+                        placement(v_bins_ffdu, ctx_ffdu);
 
                         cmp_stats(v_bins_bfdu, v_itms_bfdu, ctx_bfdu);
                         cmp_stats(v_bins_wfdu, v_itms_wfdu, ctx_wfdu);

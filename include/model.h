@@ -52,9 +52,9 @@ extern int wfdu_wcrt_count;
 extern int wfdu_syst_state;
 extern float wfdu_sched_time;
 
-extern int frst_wcrt_count;
-extern int fsrt_syst_state;
-extern float frst_sched_time;
+extern int ffdu_wcrt_count;
+extern int ffdu_syst_state;
+extern float ffdu_sched_time;
 
 /* TASK MODEL */
 struct t_pos {
@@ -73,7 +73,6 @@ struct task {
         int uniq_id;
         int tc_id;
         int is_let;
-        int datasize;
         float u;
         struct t_pos idx;
 };
@@ -100,12 +99,10 @@ struct item { /* task-chain */
         int id;
         int tc_idx;
         int size;
-        int ecu;
         int gcd;
         int memcost;
         int disp_count;
         int swap_count;
-        int e2ed;
         int color;
         int is_let;
         int is_frag;
@@ -141,13 +138,11 @@ struct perf {
         float sys;
         float unu;
         float maxu;
-        float stdv;
         float frag_time;
         float allo_time;
         float schd_time;
         float disp_time;
         float swap_time;
-        float comm_time;
         float sched_rate_tc;
         float sched_rate_allo;
         float sched_rate_disp;
@@ -172,32 +167,11 @@ struct context {
         int cuts_count;
         int tasks_count;
         int frags_count;
-        int intra_comm_count;
-        int inter_comm_count;
-        int e2e_ok_count;
-        int e2e_failed_count;
         int sched_ok_count;
         int sched_failed_count;
         struct perf p;
         struct params prm;
         struct colorsize cs;
-};
-
-/* NETWORK MODEL */
-struct ecu {
-        int color;
-        vector<struct bin> v_bins;
-};
-
-struct link {
-        int src;
-        int dst;
-        int comm_type;
-};
-
-struct tc_comm {
-        int tc_id;
-        vector<struct link> path;
 };
 
 /* OPERATIONS ON DATA STRUCTURES */
