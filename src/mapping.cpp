@@ -14,7 +14,7 @@ void partitioning(vector<struct item> &v_itms, struct context &ctx)
         start = clock();
         cut(v_itms, ctx);
         end = clock();
-        ctx.p.frag_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.part_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
 void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins, 

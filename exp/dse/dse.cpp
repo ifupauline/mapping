@@ -41,19 +41,19 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         v_bins_bfdu.clear();
                         v_itms_bfdu = v_itms;
                         ctx_bfdu = ctx;
-                        ctx_bfdu.prm.e = SIGMA;
+                        ctx_bfdu.prm.s = SIGMA;
 
                         v_itms_wfdu.clear();
                         v_bins_wfdu.clear();
                         v_itms_wfdu = v_itms;
                         ctx_wfdu = ctx;
-                        ctx_wfdu.prm.e = SIGMA;
+                        ctx_wfdu.prm.s = SIGMA;
 
                         v_itms_ffdu.clear();
                         v_bins_ffdu.clear();
                         v_itms_ffdu = v_itms;
                         ctx_ffdu = ctx;
-                        ctx_ffdu.prm.e = SIGMA;
+                        ctx_ffdu.prm.s = SIGMA;
 
                         partitioning(v_itms_bfdu, ctx_bfdu);
                         partitioning(v_itms_wfdu, ctx_wfdu);

@@ -17,6 +17,7 @@
 #define LEFT  1
 #define RIGHT 2
 
+/* core filling capacity */
 #define C       1000
 #define PHI     800
 
@@ -29,10 +30,6 @@
 #define MINMEMCOST 1
 #define MAXMEMCOST 3
 
-/* comm types */
-#define INTRA_ECU 0
-#define INTER_ECU 1
-
 /* colors */
 #define RED    0
 #define BLUE   1
@@ -43,18 +40,6 @@
 #define WHITE  6
 
 using namespace std;
-
-extern int bfdu_wcrt_count;
-extern int bfdu_syst_state;
-extern float bfdu_sched_time;
-
-extern int wfdu_wcrt_count;
-extern int wfdu_syst_state;
-extern float wfdu_sched_time;
-
-extern int ffdu_wcrt_count;
-extern int ffdu_syst_state;
-extern float ffdu_sched_time;
 
 /* TASK MODEL */
 struct t_pos {
@@ -126,23 +111,23 @@ struct bin { /* core */
 struct params {
         int a;
         int n;
-        int e;
+        int s;
 };
 
 struct perf {
         float m;
         float cr;
         float et;
-        float fr;
-        float let;
-        float sys;
-        float unu;
+        float letu;
+        float appu;
+        float unuu;
         float maxu;
-        float frag_time;
+        float part_time;
         float allo_time;
         float schd_time;
         float disp_time;
         float swap_time;
+        float plac_time;
         float sched_rate_tc;
         float sched_rate_allo;
         float sched_rate_disp;
@@ -164,7 +149,6 @@ struct context {
         int cycl_count;
         int itms_count;
         int alloc_count;
-        int cuts_count;
         int tasks_count;
         int frags_count;
         int sched_ok_count;

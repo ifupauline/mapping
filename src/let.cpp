@@ -118,13 +118,5 @@ int check_if_fit_itm(struct bin &b, struct item &itm, int &gcd)
         compute_bin_load(tmp_b, target_binload);
         total_binload = itm.size + target_binload;
 
-        //if (total_binload > b.phi) {
-        //        printf("Item %d of size %d cannot fit in Bin %d with potential load: %d\n", 
-        //                        itm.id, itm.size, b.id, total_binload);
-
-        //} else {
-        //        printf("Item %d of size %d can fit in Bin %d with potential load: %d\n\n", 
-        //                        itm.id, itm.size, b.id, total_binload);
-        //}
         return total_binload;
 }

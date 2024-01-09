@@ -6,106 +6,7 @@ static int chain[1][8] = {
         {1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000},
 };
 
-static void _assign_id(vector<struct item> &v_itms)
-{
-        for (unsigned int i = 0; i < v_itms.size(); i++)
-                v_itms[i].id = i;
-}
-
-static void _check_params_eden(struct params &prm)
-{
-        if (prm.e < MAXMAXTU || prm.e > PHI) {
-                printf("Invalid params: prm.e rule -> [%d <= e <= %d]\n\n", 
-                                MAXMAXTU + 1,  PHI);
-                exit(0);
-        }
-}
-
-static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
-{
-        /* count color */
-        int red;
-        int blue;
-        int yellow;
-        int green;
-        int cyan;
-        int purple;
-        int white;
-
-        red = 0;
-        blue = 0;
-        yellow = 0;
-        green = 0;
-        cyan = 0;
-        purple = 0;
-        white = 0;
-
-        ctx.cs = {0};
-        ctx.itms_size = 0;
-
-        for (unsigned int i = 0; i < v_itms.size(); i++) {
-                ctx.itms_size += v_itms[i].size;
-                if (v_itms[i].color == RED) {
-                        red++;
-                        ctx.cs.red += v_itms[i].size;
-                } else if (v_itms[i].color == BLUE) {
-                        blue++;
-                        ctx.cs.blue += v_itms[i].size;
-                } else if (v_itms[i].color == YELLOW) {
-                        yellow++;
-                        ctx.cs.yellow += v_itms[i].size;
-                } else if (v_itms[i].color == GREEN) {
-                        green++;
-                        ctx.cs.green += v_itms[i].size;
-                } else if (v_itms[i].color == CYAN) {
-                        cyan++;
-                        ctx.cs.cyan += v_itms[i].size;
-                } else if (v_itms[i].color == PURPLE) {
-                        purple++;
-                        ctx.cs.purple += v_itms[i].size;
-                } else {
-                        white++;
-                        ctx.cs.white += v_itms[i].size;
-                }
-        }
-
-        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
-                        purple == 0 || white == 0)
-                return -1;
-
-        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
-        ctx.cs.red_bins_min = abs(ctx.cs.red / PHI) + 1;
-        ctx.cs.blue_bins_min = abs(ctx.cs.blue / PHI) + 1;
-        ctx.cs.yellow_bins_min = abs(ctx.cs.yellow / PHI) + 1;
-        ctx.cs.green_bins_min = abs(ctx.cs.green / PHI) + 1;
-        ctx.cs.cyan_bins_min = abs(ctx.cs.cyan / PHI) + 1;
-        ctx.cs.purple_bins_min = abs(ctx.cs.purple / PHI) + 1;
-        ctx.cs.white_bins_min = abs(ctx.cs.white / PHI) + 1;
-
-        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
-        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
-        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
-        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
-        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
-        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
-        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
-        printf("------------------------------------------------------\n");
-        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_bins_min);
-        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_bins_min);
-        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_bins_min);
-        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_bins_min);
-        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_bins_min);
-        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_bins_min);
-        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_bins_min);
-        printf("------------------------------------------------------\n");
-        printf("Total Number of Cores    %u\n", ctx.bins_min);
-        printf("Total Utilization of TC: %u\n\n", ctx.itms_size);
-        printf("------------------------------------------------------\n");
-
-        return 0;
-}
-
-/* WATERS 2019 CRTX A57 2000 MhZ */
+/* WATERS 2019 */
 static void _create_waters2019(struct item &itm)
 {
         struct item waters2019;
@@ -230,7 +131,6 @@ static void _create_waters2019(struct item &itm)
         can_write.is_let = NO;
         can_write.u = ceil(((float)can_write.c/(float)can_write.t) * PERMILL);
 
-        /* tc waters 2019 */
         waters2019 = {0};
         waters2019.id = 0;
         waters2019.tc_idx = 0;
@@ -257,6 +157,105 @@ static void _create_waters2019(struct item &itm)
         waters2019.v_tasks.push_back(can_write);
 
         itm = waters2019;
+}
+
+static void _assign_id(vector<struct item> &v_itms)
+{
+        for (unsigned int i = 0; i < v_itms.size(); i++)
+                v_itms[i].id = i;
+}
+
+static void _check_prm(struct params &prm)
+{
+        if (prm.s < MAXMAXTU || prm.s > PHI) {
+                printf("Invalid params: prm.s rule -> [%d <= s <= %d]\n\n", 
+                                MAXMAXTU + 1,  PHI);
+                exit(0);
+        }
+}
+
+static int _compute_colors(vector<struct item> &v_itms, struct context &ctx)
+{
+        /* count color */
+        int red;
+        int blue;
+        int yellow;
+        int green;
+        int cyan;
+        int purple;
+        int white;
+
+        red = 0;
+        blue = 0;
+        yellow = 0;
+        green = 0;
+        cyan = 0;
+        purple = 0;
+        white = 0;
+
+        ctx.cs = {0};
+        ctx.itms_size = 0;
+
+        for (unsigned int i = 0; i < v_itms.size(); i++) {
+                ctx.itms_size += v_itms[i].size;
+                if (v_itms[i].color == RED) {
+                        red++;
+                        ctx.cs.red += v_itms[i].size;
+                } else if (v_itms[i].color == BLUE) {
+                        blue++;
+                        ctx.cs.blue += v_itms[i].size;
+                } else if (v_itms[i].color == YELLOW) {
+                        yellow++;
+                        ctx.cs.yellow += v_itms[i].size;
+                } else if (v_itms[i].color == GREEN) {
+                        green++;
+                        ctx.cs.green += v_itms[i].size;
+                } else if (v_itms[i].color == CYAN) {
+                        cyan++;
+                        ctx.cs.cyan += v_itms[i].size;
+                } else if (v_itms[i].color == PURPLE) {
+                        purple++;
+                        ctx.cs.purple += v_itms[i].size;
+                } else {
+                        white++;
+                        ctx.cs.white += v_itms[i].size;
+                }
+        }
+
+        if (red == 0 || blue == 0 || yellow == 0 || green == 0 || cyan == 0 || 
+                        purple == 0 || white == 0)
+                return -1;
+
+        ctx.bins_min = abs(ctx.itms_size / PHI) + 1;
+        ctx.cs.red_bins_min = abs(ctx.cs.red / PHI) + 1;
+        ctx.cs.blue_bins_min = abs(ctx.cs.blue / PHI) + 1;
+        ctx.cs.yellow_bins_min = abs(ctx.cs.yellow / PHI) + 1;
+        ctx.cs.green_bins_min = abs(ctx.cs.green / PHI) + 1;
+        ctx.cs.cyan_bins_min = abs(ctx.cs.cyan / PHI) + 1;
+        ctx.cs.purple_bins_min = abs(ctx.cs.purple / PHI) + 1;
+        ctx.cs.white_bins_min = abs(ctx.cs.white / PHI) + 1;
+
+        printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
+        printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
+        printf("Number of TC YELLOW: %d size: %d\n", yellow, ctx.cs.yellow);
+        printf("Number of TC GREEN:  %d size: %d\n", green, ctx.cs.green);
+        printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
+        printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
+        printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
+        printf("------------------------------------------------------\n");
+        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_bins_min);
+        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_bins_min);
+        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_bins_min);
+        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_bins_min);
+        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_bins_min);
+        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_bins_min);
+        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_bins_min);
+        printf("------------------------------------------------------\n");
+        printf("Total Number of Cores    %u\n", ctx.bins_min);
+        printf("Total Utilization of TC: %u\n\n", ctx.itms_size);
+        printf("------------------------------------------------------\n");
+
+        return 0;
 }
 
 static void _create_task(struct task &tau, int i, int x)
@@ -409,7 +408,6 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
         ret = -1;
         u_sum = 0;
         uniq_id = 1;
-        ctx.cuts_count = 0;
         ctx.frags_count = 0;
 
         /* store itms > phi */
@@ -443,7 +441,6 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
                                 v_new_itms.push_back(itm);
                                 j--;
                                 idx++;
-                                ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
                                 continue;
@@ -468,12 +465,11 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
                                 v_new_itms.push_back(itm);
                                 j--;
                                 idx++;
-                                ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
 
-                        if (i > 0 && u_sum > ctx.prm.e - 10) {
+                        if (i > 0 && u_sum > ctx.prm.s - 10) {
                                 u_sum -= v_tmp_itms[i].v_tasks[j].u;
                                 v_tmp.pop_back();
                                 itm = {0};
@@ -491,7 +487,6 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
                                 v_new_itms.push_back(itm);
                                 j--;
                                 idx++;
-                                ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
                         }
@@ -510,7 +505,6 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
                                 itm.is_allocated = NO;
                                 itm.v_tasks = v_tmp;
                                 v_new_itms.push_back(itm);
-                                ctx.cuts_count++;
                                 u_sum = 0;
                                 v_tmp.clear();
                                 ctx.frags_count++;
@@ -531,7 +525,6 @@ void cut(vector<struct item> &v_itms, struct context &ctx)
         }
         printf("Initial Number of TC:   %d\n", ctx.prm.n);
         printf("Current Number of TC:   %ld\n", v_itms.size());
-        printf("Number of Cuts: %d\n", ctx.cuts_count);
         printf("Number of TC Cuts: %d\n", ctx.frags_count);
 }
 
@@ -550,14 +543,14 @@ void input_prm(int argc, char **argv, struct params &prm)
                 printf("Wrong Number of Arguments!\n");
                 exit(0);
         }
-        prm.e = atoi(argv[1]);
-        _check_params_eden(prm);
+        prm.s = atoi(argv[1]);
+        _check_prm(prm);
 }
 
 void init_ctx(vector<struct item> &v_itms, struct params &prm, 
                 struct context &ctx)
 {
-        float frag_time;
+        float part_time;
 
         ctx.prm = prm;
         ctx.cycl_count = 0;
@@ -570,9 +563,9 @@ void init_ctx(vector<struct item> &v_itms, struct params &prm,
         ctx.itms_nbr = ctx.prm.n;
         ctx.itms_count = ctx.prm.n;
 
-        frag_time = ctx.p.frag_time;
+        part_time = ctx.p.part_time;
         ctx.p = {0};
-        ctx.p.frag_time = frag_time;
+        ctx.p.part_time = part_time;
 }
 
 void gen_app(vector<struct item> &v_itms, struct params &prm, 

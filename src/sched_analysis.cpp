@@ -1,16 +1,6 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-int bfdu_wcrt_count = 0;
-int wfdu_wcrt_count = 0;
-int ffdu_wcrt_count = 0;
-int bfdu_syst_state = NO;
-int wfdu_syst_state = NO;
-int ffdu_syst_state = NO;
-float bfdu_sched_time = 0;
-float wfdu_sched_time = 0;
-float ffdu_sched_time = 0;
-
 static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
                 struct task &tau, int &r_prev)
 {
@@ -57,36 +47,10 @@ static void _resp(vector<struct task> &v_tasks, int &flag)
 int wcrt(vector<struct task> &v_tasks)
 {
         int flag;
-        clock_t start, end;
 
         flag = -1;
 
-        if (bfdu_syst_state == YES)
-                start = clock();
-        if (wfdu_syst_state == YES)
-                start = clock();
-        if (ffdu_syst_state == YES)
-                start = clock();
-
         _resp(v_tasks, flag);
-
-        if (bfdu_syst_state == YES) {
-                end = clock();
-                bfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                bfdu_wcrt_count++;
-        }
-
-        if (wfdu_syst_state == YES) {
-                end = clock();
-                wfdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                wfdu_wcrt_count++;
-        }
-
-        if (ffdu_syst_state == YES) {
-                end = clock();
-                ffdu_sched_time += ((float) (end - start)) / CLOCKS_PER_SEC;
-                ffdu_wcrt_count++;
-        }
 
         if (flag == SCHED_OK)
                 return SCHED_OK;
@@ -118,7 +82,7 @@ static void _save_priorities(struct bin &b)
         }
 }
 
-static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
+static void _pswap(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
 {
         /* starting new p */
         int newp;
@@ -134,9 +98,8 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
                         continue;
                 if (b.v_tasks[i].uniq_id == uniq_id)
                         continue;
-                if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id) {
+                if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id)
                         continue;
-                }
 
                 if (b.v_tasks[i].p < p)
                         v_p.push_back(b.v_tasks[i].p);
@@ -169,7 +132,7 @@ static void _reassign(struct bin &b, int p, int itm_idx, int tc_id, int uniq_id)
                 if (b.flag == SCHED_OK) {
                         copy_back_prio_to_tc(b);
                         copy_back_resp_to_tc(b);
-                        printf("Core %d SCHED_OK with reassignment\n", b.id);
+                        printf("Core %d SCHED_OK with priority swapping\n", b.id);
                         return;
 
                 } else {
@@ -201,14 +164,9 @@ static void _base_assignment(struct bin &b)
         copy_back_resp_to_tc(b);
 }
 
-static void _reassignment(struct bin &b)
+static void _pswapping(struct bin &b)
 {
-        //int ret;
         struct bin tmp_b;
-
-        //ret = NO;
-
-        //ret = is_frag_same_tc(b);
 
         sort_inc_task_priority(b.v_tasks);
 
@@ -223,17 +181,14 @@ static void _reassignment(struct bin &b)
                 if (b.v_tasks[i].r > b.v_tasks[i].t) {
                         tmp_b = {0};
                         tmp_b = b;
+
                         /* priority swapping */
-                        _reassign(tmp_b, b.v_tasks[i].p, 
+                        _pswap(tmp_b, b.v_tasks[i].p, 
                                         tmp_b.v_tasks[i].idx.itm_idx, 
                                         tmp_b.v_tasks[i].tc_id, 
                                         b.v_tasks[i].uniq_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;
-                                //if (ret == YES) {
-                                //        print_core(b);
-                                //        exit(0);
-                                //}
                         }
                 }
         }
@@ -244,19 +199,13 @@ void priority_assignment(struct bin &b)
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
                 printf("Core %d SCHED_FAILED\n", b.id);
-                _reassignment(b);
+                _pswapping(b);
         } else
                 printf("Core %d SCHED_OK\n", b.id);
 }
 
 void sched_analysis(vector<struct bin> &v_bins, struct context &ctx)
 {
-        if (ctx.prm.a == BFDU_F)
-                bfdu_syst_state = YES;
-        if (ctx.prm.a == WFDU_F)
-                wfdu_syst_state = YES;
-        if (ctx.prm.a == FFDU_F)
-                ffdu_syst_state = YES;
         sort_inc_bin_load_rem(v_bins);
         copy_v_tc_to_v_tasks_with_pos(v_bins);
 
