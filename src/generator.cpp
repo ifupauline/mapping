@@ -326,7 +326,7 @@ static void _create_tc(struct item &itm, int color, int minu,
                 itm.tc_idx = 0;
                 itm.size = 0;
                 task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
-                itm.memcost = MINMEMCOST;
+                itm.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
                 itm.ecu = -1;
                 itm.e2ed = 0;
                 itm.color = color;
@@ -371,33 +371,33 @@ static int _gen_case_study(vector<struct item> &v_itms, struct params &prm,
 
         /* blue */
         itm = {0};
-        _create_tc(itm, BLUE, 500, C, SSIZE);
+        _create_tc(itm, BLUE, 100, C/2, SSIZE);
         v_itms.push_back(itm);
 
         /* yellow */
         itm = {0};
-        _create_tc(itm, YELLOW, 500, C, SSIZE);
+        _create_tc(itm, YELLOW, 100, C/2, SSIZE);
         v_itms.push_back(itm);
 
         /* green */
         itm = {0};
-        _create_tc(itm, GREEN, 500, C, SSIZE);
+        _create_tc(itm, GREEN, 100, C/2, SSIZE);
         v_itms.push_back(itm);
 
         /* cyan */
         itm = {0};
-        _create_tc(itm, CYAN, 500, C, SSIZE);
+        _create_tc(itm, CYAN, 100, C/2, SSIZE);
         v_itms.push_back(itm);
 
         /* purple */
         itm = {0};
-        _create_tc(itm, PURPLE, 500, C, SSIZE);
+        _create_tc(itm, PURPLE, 100, C/2, SSIZE);
         v_itms.push_back(itm);
 
         /* white */
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 14; i++) {
                 itm = {0};
-                _create_tc(itm, WHITE, C, C*2, BSIZE);
+                _create_tc(itm, WHITE, C/2, C, BSIZE);
                 v_itms.push_back(itm);
         }
         sort_dec_itm_size(v_itms);

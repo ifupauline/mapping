@@ -14,7 +14,7 @@
 
 /* permils */
 #define MINMAXTU   1
-#define MAXMAXTU   500
+#define MAXMAXTU   100
 
 /* microsecs */
 #define MINWCET    1

@@ -19,7 +19,6 @@
 
 #define C       1000
 #define PHI     800
-#define EPSILON 500
 
 /* units */
 #define PERCENT 100

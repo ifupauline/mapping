@@ -64,7 +64,7 @@ void allocation(vector<struct item> &v_itms, vector<struct bin> &v_bins,
 
         if (ctx.prm.a == FFDU_F) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION FFDU_F                   |\n");
+                printf("| ALLOCATION FFDU_FF                  |\n");
                 printf("+=====================================+\n");
                 start = clock();
                 frst_f(v_itms, v_bins, ctx);

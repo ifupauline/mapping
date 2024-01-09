@@ -53,16 +53,16 @@ void update_let(struct bin &b, int gcd)
         switch (b.memcost) {
 
                 case 1: 
-                        let->c = gen_rand(10, 55);
+                        let->c = gen_rand(5, 80);
                         break;
                 case 2:
-                        let->c = gen_rand(55, 110);
+                        let->c = gen_rand(80, 150);
                         break;
                 case 3: 
-                        let->c = gen_rand(110, 165);
+                        let->c = gen_rand(150, 200);
                         break;
                 default:
-                        let->c = 165;
+                        let->c = 250;
                         break;
         }
         let->t = gcd;

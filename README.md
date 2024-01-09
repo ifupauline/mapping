@@ -1,30 +1,6 @@
 # *Modeling and Mapping of Automotive Real-Time Applications on Future E/E Architectures*
 
-## *Dependencies**
-
+## *Branch of ESM2023 publication**
 ```sh
-sudo apt install g++ cmake gnuplot
+git checkout ESM2023
 ```
-
-## *Install**
-
-```sh
-cmake .
-make
-```
-
-## *Run Example**
-
-```sh
-./bin/example_prmsig 600
-```
-
-## *Run Full Exploration**
-
-```sh
-./bin/dse
-```
-
-Results published in article are in /res folder.
-
-
