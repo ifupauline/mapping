@@ -4,7 +4,7 @@
 
 #define STEP    20
 #define ITERSIG 16
-#define SIMNBR  1000
+#define EXENBR  1
 
 static char const *cmd_gnuplot_m[] = {};
 static char const *cmd_gnuplot_sr[] = {};
@@ -28,14 +28,13 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
         vector<struct tc> v_tcs_ffdu;
 
         prm = {0};
-        SIGMA = 820;
-        for (int j = 0; j < ITERSIG; j++) {
+        SIGMA = PHI;
+        for (int i = 0; i < ITERSIG; i++) {
                 v_tcs.clear();
                 ctx = {0};
                 stts = {0};
-                SIGMA = SIGMA - STEP;
                 gen_app(v_tcs, prm, ctx);
-                for (int k = 0; k < SIMNBR; k++) {
+                for (int j = 0; j < EXENBR; j++) {
                         ctx_bfdu = {0};
                         v_tcs_bfdu.clear();
                         v_cores_bfdu.clear();
@@ -108,32 +107,32 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         stts.mean_ffdu_et += ctx_ffdu.p.et * MSEC;
                 }
                 /* mean */
-                stts.mean_bfdu_m /= (float)SIMNBR;
-                stts.mean_wfdu_m /= (float)SIMNBR;
-                stts.mean_ffdu_m /= (float)SIMNBR;
+                stts.mean_bfdu_m /= (float)EXENBR;
+                stts.mean_wfdu_m /= (float)EXENBR;
+                stts.mean_ffdu_m /= (float)EXENBR;
 
-                stts.mean_bfdu_sr_allo /= (float)SIMNBR;
-                stts.mean_wfdu_sr_allo /= (float)SIMNBR;
-                stts.mean_ffdu_sr_allo /= (float)SIMNBR;
+                stts.mean_bfdu_sr_allo /= (float)EXENBR;
+                stts.mean_wfdu_sr_allo /= (float)EXENBR;
+                stts.mean_ffdu_sr_allo /= (float)EXENBR;
 
-                stts.mean_bfdu_sr_disp /= (float)SIMNBR;
-                stts.mean_wfdu_sr_disp /= (float)SIMNBR;
-                stts.mean_ffdu_sr_disp /= (float)SIMNBR;
+                stts.mean_bfdu_sr_disp /= (float)EXENBR;
+                stts.mean_wfdu_sr_disp /= (float)EXENBR;
+                stts.mean_ffdu_sr_disp /= (float)EXENBR;
 
-                stts.mean_bfdu_sr_swap /= (float)SIMNBR;
-                stts.mean_wfdu_sr_swap /= (float)SIMNBR;
-                stts.mean_ffdu_sr_swap /= (float)SIMNBR;
+                stts.mean_bfdu_sr_swap /= (float)EXENBR;
+                stts.mean_wfdu_sr_swap /= (float)EXENBR;
+                stts.mean_ffdu_sr_swap /= (float)EXENBR;
 
-                stts.mean_bfdu_et /= (float)SIMNBR;
-                stts.mean_wfdu_et /= (float)SIMNBR;
-                stts.mean_ffdu_et /= (float)SIMNBR;
+                stts.mean_bfdu_et /= (float)EXENBR;
+                stts.mean_wfdu_et /= (float)EXENBR;
+                stts.mean_ffdu_et /= (float)EXENBR;
 
                 stts.mean_et = stts.mean_bfdu_et + stts.mean_wfdu_et + stts.mean_ffdu_et;
                 stts.mean_et /= 3;
 
                 stts.sig = (float)((float)SIGMA/PERMILL);
                 v_stts.push_back(stts);
-                printf("SIGMA: %d\n", SIGMA);
+                printf("SIGMA: %.3f\n", (float)SIGMA / PERMILL);
                 printf("M:            %f\n", stts.mean_bfdu_m);
                 printf("M:            %f\n", stts.mean_wfdu_m);
                 printf("M:            %f\n", stts.mean_ffdu_m);
@@ -149,6 +148,8 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                 printf("ET_BFDU:      %f\n", stts.mean_bfdu_et);
                 printf("ET_WFDU:      %f\n", stts.mean_bfdu_et);
                 printf("ET_FFDU:      %f\n", stts.mean_bfdu_et);
+
+                SIGMA = SIGMA - STEP;
         }
 }
 

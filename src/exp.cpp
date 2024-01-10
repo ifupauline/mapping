@@ -79,7 +79,7 @@ void print_b_stats(vector<struct b_stats> &v_stts_algo, int iter)
 {
         for (int i = 0; i < iter; i++) {
                 printf("+===============+\n");
-                printf("| SIG: %d       |\n", (int)(v_stts_algo[i].sig * PERCENT));
+                printf("| SIG: %.2lf    |\n", v_stts_algo[i].sig);
                 printf("+===============+\n");
                 printf("BFDU_M:       %f\n", v_stts_algo[i].mean_bfdu_m);
                 printf("WFDU_M:       %f\n", v_stts_algo[i].mean_wfdu_m);
