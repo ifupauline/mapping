@@ -2,6 +2,38 @@
 #include "mapping.h"
 #include "sched_analysis.h"
 
+static int _count_pcu(vector<struct core> &v_cores)
+{
+        int count;
+
+        count = 0;
+
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].is_empty == YES)
+                        continue;
+                if (v_cores[i].color == RED)
+                        count++;
+        }
+        return count;
+}
+
+static int _count_zcu(vector<struct core> &v_cores)
+{
+        int count;
+
+        count = 0;
+
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].is_empty == YES)
+                        continue;
+                if (v_cores[i].color == RED)
+                        continue;
+                else
+                        count++;
+        }
+        return count;
+}
+
 static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)
 {
 
@@ -26,7 +58,8 @@ static void _rst_empty_cores(vector<struct core> &v_cores)
                                 v_cores[i].v_tcs[j].gcd = 0;
                                 v_cores[i].v_tcs[j].v_tasks[0] = {0};
                                 v_cores[i].load = 0;
-                                v_cores[i].load_rem = v_cores[i].phi * 0.001;
+                                v_cores[i].load_rem = 0;
+                                v_cores[i].is_empty = YES;
                         }
                 }
         }
@@ -191,12 +224,12 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
         sort_inc_core_color(v_cores);
         _rst_empty_cores(v_cores);
         printf("+=====================================+\n");
-        if (ctx.prm.a == BFDU_F)
-                printf("| PRINT CORE BFDU_F                   |\n");
-        if (ctx.prm.a == WFDU_F)
-                printf("| PRINT CORE WFDU_F                   |\n");
-        if (ctx.prm.a == FFDU_F)
-                printf("| PRINT CORE FFDU_F                   |\n");
+        if (ctx.prm.a == BFDU)
+                printf("| PRINT CORE BFDU                     |\n");
+        if (ctx.prm.a == WFDU)
+                printf("| PRINT CORE WFDU                     |\n");
+        if (ctx.prm.a == FFDU)
+                printf("| PRINT CORE FFDU                     |\n");
         printf("+=====================================+\n\n");
 
         for (unsigned int i = 0; i < v_cores.size(); i++)
@@ -210,7 +243,6 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 printf("|Lrem: %.3f\n", ((float)v_cores[i].load_rem / PERMILL));
                 printf("|LETc: %d\n", v_cores[i].memcost);
                 printf("|");
-
                 if (v_cores[i].color == RED)
                         printf("\033[0;31m");
                 else if (v_cores[i].color == BLUE)
@@ -223,9 +255,12 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                         printf("\033[0;36m");
                 else 
                         printf("\033[0;35m"); /* purple */
-
                 printf("Colr: %d\n", v_cores[i].color);
                 printf("\033[0m");
+                if (v_cores[i].is_empty == NO)
+                        printf("|Empt:  NO\n");
+                else
+                        printf("|Empt:  YES\n");
                 if (v_cores[i].flag == SCHED_OK)
                         printf("|Sched: OK\n");
 
@@ -329,12 +364,12 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
                 struct context &ctx)
 {
         printf("\n+=====================================+\n");
-        if (ctx.prm.a == BFDU_F)
-                printf("| PRINT VECTORS BFDU_F                |\n");
-        if (ctx.prm.a == WFDU_F)
-                printf("| PRINT VECTORS WFDU_F                |\n");
-        if (ctx.prm.a == FFDU_F)
-                printf("| PRINT VECTORS FFDU_F                |\n");
+        if (ctx.prm.a == BFDU)
+                printf("| PRINT VECTORS BFDU                  |\n");
+        if (ctx.prm.a == WFDU)
+                printf("| PRINT VECTORS WFDU                  |\n");
+        if (ctx.prm.a == FFDU)
+                printf("| PRINT VECTORS FFDU                  |\n");
         printf("+=====================================+\n");
 
         int sched_ok;
@@ -388,12 +423,12 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 struct context &ctx)
 {
         printf("\n+===========================================+\n");
-        if (ctx.prm.a == BFDU_F)
-                printf("| PRINT STATS BFDU_F                        |\n");
-        if (ctx.prm.a == WFDU_F)
-                printf("| PRINT STATS WFDU_F                        |\n");
-        if (ctx.prm.a == FFDU_F)
-                printf("| PRINT STATS FFDU_F                        |\n");
+        if (ctx.prm.a == BFDU)
+                printf("| PRINT STATS BFDU                          |\n");
+        if (ctx.prm.a == WFDU)
+                printf("| PRINT STATS WFDU                          |\n");
+        if (ctx.prm.a == FFDU)
+                printf("| PRINT STATS FFDU                          |\n");
         printf("+===========================================+\n");
 
         cmp_stats(v_cores, v_tcs, ctx);
@@ -402,15 +437,16 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("n:      %u\n", ctx.prm.n);
         printf("phi:    %u\n", PHI);
         printf("sigma:  %u\n", ctx.prm.s);
-        if (ctx.prm.a == BFDU_F)
-                printf("alpha:  BFDU_F\n");
-        if (ctx.prm.a == WFDU_F)
-                printf("alpha:  WFDU_F\n");
-        if (ctx.prm.a == FFDU_F)
-                printf("alpha:  FFDU_F\n");
+        if (ctx.prm.a == BFDU)
+                printf("alpha:  BFDU\n");
+        if (ctx.prm.a == WFDU)
+                printf("alpha:  WFDU\n");
+        if (ctx.prm.a == FFDU)
+                printf("alpha:  FFDU\n");
         printf("------------------------------------------------------------------------>\n");
         printf("Optimal Number of Cores (M*):  %-3d\n", ctx.cores_min);
-        printf("Number of Cores in Use   (M):  %-3d\n", ctx.cores_count);
+        printf("Number of Cores in Use   (M):  %-3d     PCU: %-3d ZCU: %-3d\n", 
+                        ctx.cores_count, _count_pcu(v_cores), _count_zcu(v_cores));
         printf("Approximation Ratio   (M/M*):  %-3.3f\n", ctx.p.ar);
         printf("------------------------------------------------------------------------>\n");
         printf("Initial Number of TC:          %-3d\n", ctx.prm.n);

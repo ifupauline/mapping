@@ -1,6 +1,6 @@
 add_library(mapping
         SHARED
-        mapping.cpp generator.cpp print.cpp bfdu_f.cpp wfdu_f.cpp ffdu_f.cpp
+        mapping.cpp generator.cpp print.cpp bfdu.cpp wfdu.cpp ffdu.cpp
         exp.cpp sched_analysis.cpp placement.cpp model.cpp let.cpp)
 
 install (TARGETS mapping

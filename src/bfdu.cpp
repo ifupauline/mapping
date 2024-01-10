@@ -58,7 +58,7 @@ void bfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
         /* STEP - 1, place all possible tcs in cores using BFDU */
         printf("\n<--------------------------------------->\n");
-        printf("STEP 1, BFDU_F\n");
+        printf("STEP 1, BFDU\n");
         printf("<--------------------------------------->\n");
         while (alloc_count != n) {
                 alloc_count = 0;
@@ -75,8 +75,8 @@ void bfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
                         /* core found add tc to it */
                         if (ret != -1) {
-                                printf("Best Core to accomodate TC %d is Core %d\n", 
-                                                v_tcs[i].id, ret);
+                                printf("Best Core to accomodate TC %d idx: %d is Core %d\n", 
+                                                v_tcs[i].id, v_tcs[i].tc_idx, ret);
                                 core_id = ret;
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
                                                 load, gcd);

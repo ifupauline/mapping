@@ -5,6 +5,22 @@
 #define MAX_DISP_COUNT 5
 #define MAX_SWAP_COUNT 5
 
+static void _rst_empty_cores(vector<struct core> &v_cores)
+{
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        if (v_cores[i].v_tcs.size() == 1 && 
+                                        v_cores[i].v_tcs[j].is_let == YES) {
+                                v_cores[i].v_tcs[j].size = 0;
+                                v_cores[i].v_tcs[j].gcd = 0;
+                                v_cores[i].v_tcs[j].v_tasks[0] = {0};
+                                v_cores[i].load = 0;
+                                v_cores[i].load_rem = 0;
+                        }
+                }
+        }
+}
+
 static void _store_tcs_disp(vector<struct core> &v_cores, 
                 vector<pair<struct tc, int>> &v_tcs, int &flag)
 {
@@ -488,4 +504,5 @@ void swapping(vector<struct core> &v_cores)
                 if (state == NO)
                         break;
         }
+        _rst_empty_cores(v_cores);
 }

@@ -169,9 +169,9 @@ static void _assign_id(vector<struct tc> &v_tcs)
 
 static void _check_prm(struct params &prm)
 {
-        if (prm.s < 100 || prm.s > PHI) {
+        if (prm.s < 150 || prm.s > PHI) {
                 printf("Invalid params: prm.s rule -> [%d <= s <= %d]\n\n", 
-                                100,  PHI);
+                                150,  PHI);
                 exit(0);
         }
 }
@@ -356,33 +356,32 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         /* blue */
         tc = {0};
-        _create_tc(tc, BLUE, 100, 250);
+        _create_tc(tc, BLUE, 100, 200);
         v_tcs.push_back(tc);
 
         /* yellow */
         tc = {0};
-        _create_tc(tc, YELLOW, 100, 250);
+        _create_tc(tc, YELLOW, 100, 200);
         v_tcs.push_back(tc);
 
         /* green */
         tc = {0};
-        _create_tc(tc, GREEN, 100, 250);
+        _create_tc(tc, GREEN, 100, 200);
         v_tcs.push_back(tc);
 
         /* cyan */
         tc = {0};
-        _create_tc(tc, CYAN, 100, 250);
+        _create_tc(tc, CYAN, 100, 200);
         v_tcs.push_back(tc);
 
         /* purple */
         tc = {0};
-        _create_tc(tc, PURPLE, 100, 250);
+        _create_tc(tc, PURPLE, 100, 200);
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 6; i++) {
                 tc = {0};
-                /* should not exceed ZCU cores capacity */
                 _create_tc(tc, WHITE, 100, 400);
                 v_tcs.push_back(tc);
         }

@@ -107,6 +107,7 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
         tmp_core.phi = PHI / speed_factor;
         tmp_core.color = color;
         tmp_core.memcost = 0;
+        tmp_core.is_empty = NO;
         v_cores.push_back(tmp_core);
         ctx.cores_count++;
         printf("Core %d created with Color %d\n", ctx.cores_count - 1, color);

@@ -6,9 +6,9 @@
 #include <bits/stdc++.h>
 
 /* algorithms */
-#define BFDU_F 1
-#define WFDU_F 2
-#define FFDU_F 3
+#define BFDU 1
+#define WFDU 2
+#define FFDU 3
 
 /* booleans */
 #define NO  1
@@ -101,6 +101,7 @@ struct core {
         int load_rem;
         int color;
         int memcost;
+        int is_empty;
         vector<struct tc> v_tcs;
         vector<struct task> v_tasks;
 };
