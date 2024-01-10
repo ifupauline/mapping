@@ -93,7 +93,8 @@ void sort_inc_core_color(vector<struct core> &v_cores)
         sort(v_cores.begin(), v_cores.end(), _cmp_inc_core_color);
 }
 
-void add_core_color(vector<struct core> &v_cores, int color, struct context &ctx)
+void add_core(vector<struct core> &v_cores, int color, int speed_factor, 
+                struct context &ctx)
 {
         struct core tmp_core;
         struct tc let;
@@ -103,7 +104,7 @@ void add_core_color(vector<struct core> &v_cores, int color, struct context &ctx
         tmp_core.flag = SCHED_OK;
         tmp_core.load = 0;
         tmp_core.load_rem = PHI;
-        tmp_core.phi = PHI;
+        tmp_core.phi = PHI / speed_factor;
         tmp_core.color = color;
         tmp_core.memcost = 0;
         v_cores.push_back(tmp_core);

@@ -6,8 +6,8 @@ static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)
 {
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
-                for (unsigned int k = 0; k < v_cores[i].v_tcs.size(); k++) {
-                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[k].is_let == YES) {
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[j].is_let == YES) {
                                 ctx.cores_count--;
                         }
                 }
@@ -16,7 +16,7 @@ static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)
         ctx.p.ar = (float)ctx.cores_count / (float)ctx.cores_min;
 }
 
-static void _fix_let_task(vector<struct core> &v_cores)
+static void _rst_empty_cores(vector<struct core> &v_cores)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
@@ -24,8 +24,9 @@ static void _fix_let_task(vector<struct core> &v_cores)
                                         v_cores[i].v_tcs[j].is_let == YES) {
                                 v_cores[i].v_tcs[j].size = 0;
                                 v_cores[i].v_tcs[j].gcd = 0;
+                                v_cores[i].v_tcs[j].v_tasks[0] = {0};
                                 v_cores[i].load = 0;
-                                v_cores[i].load_rem = C;
+                                v_cores[i].load_rem = v_cores[i].phi * 0.001;
                         }
                 }
         }
@@ -188,7 +189,7 @@ void print_core(struct core &b)
 void print_cores(vector<struct core> &v_cores, struct context &ctx)
 {
         sort_inc_core_color(v_cores);
-        _fix_let_task(v_cores);
+        _rst_empty_cores(v_cores);
         printf("+=====================================+\n");
         if (ctx.prm.a == BFDU_F)
                 printf("| PRINT CORE BFDU_F                   |\n");
@@ -204,9 +205,10 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 printf("+==============================================================+\n");
                 printf("|Core: %d\n", v_cores[i].id);
+                printf("|Capa: %.3f\n", (float)v_cores[i].phi / PERMILL);
                 printf("|Load: %.3f\n", (float)v_cores[i].load / PERMILL);
                 printf("|Lrem: %.3f\n", ((float)v_cores[i].load_rem / PERMILL));
-                printf("|Letc: %d\n", v_cores[i].memcost);
+                printf("|LETc: %d\n", v_cores[i].memcost);
                 printf("|");
 
                 if (v_cores[i].color == RED)

@@ -21,6 +21,18 @@ static void _create_waters2019(struct tc &tc)
         struct task control;
         struct task can_write;
 
+        waters2019 = {0};
+        can_polling = {0};
+        lidar = {0};
+        cam_grabber = {0};
+        localization = {0};
+        detection = {0};
+        lane_detection = {0};
+        ekf = {0};
+        planner = {0};
+        control = {0};
+        can_write = {0};
+
         /* can_polling */
         can_polling = {0};
         can_polling.c = 499;
@@ -124,7 +136,7 @@ static void _create_waters2019(struct tc &tc)
         waters2019 = {0};
         waters2019.id = 0;
         waters2019.tc_idx = 0;
-        waters2019.memcost = MINMEMCOST;
+        waters2019.memcost = 3;
         waters2019.disp_count = 0;
         waters2019.swap_count = 0;
         waters2019.color = RED;
@@ -157,14 +169,14 @@ static void _assign_id(vector<struct tc> &v_tcs)
 
 static void _check_prm(struct params &prm)
 {
-        if (prm.s < MAXMAXTU || prm.s > PHI) {
+        if (prm.s < 100 || prm.s > PHI) {
                 printf("Invalid params: prm.s rule -> [%d <= s <= %d]\n\n", 
-                                MAXMAXTU + 1,  PHI);
+                                100,  PHI);
                 exit(0);
         }
 }
 
-static int _compute_colors(vector<struct tc> &v_tcs, struct context &ctx)
+static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
 {
         /* count color */
         int red;
@@ -259,10 +271,10 @@ static void _create_task(struct task &tau, int i, int x)
         while (1) {
                 y  = gen_rand(0, 7);
                 real_t = chain[x][y];
-                real_c = gen_rand(MINWCET, MAXWCET);
+                real_c = gen_rand(1, 30000); /* microsecs */
                 real_u = (real_c/real_t) * PERMILL;
 
-                if (real_u > MAXMAXTU || real_u < MINMAXTU)
+                if (real_u < 1 || real_u > 100)
                         continue;
 
                 tau.u = ceil((real_c/real_t) * PERMILL);
@@ -295,8 +307,13 @@ static void _create_tc(struct tc &tc, int color, int minu, int maxu)
                 tc = {0};
                 tc.tc_idx = 0;
                 tc.size = 0;
-                task_nbr = gen_rand(MINTASKNBR, MAXTASKNBR);
-                tc.memcost = gen_rand(MINMEMCOST, MAXMEMCOST);
+
+                if (color == WHITE || color == RED)
+                        task_nbr = gen_rand(2, 15);
+                else
+                        task_nbr = gen_rand(4, 6); /* ZCU tc */
+
+                tc.memcost = gen_rand(1, 3);
                 tc.color = color;
                 tc.is_frag = NO;
                 tc.disp_count = 0;
@@ -339,33 +356,34 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         /* blue */
         tc = {0};
-        _create_tc(tc, BLUE, 100, C/2);
+        _create_tc(tc, BLUE, 100, 250);
         v_tcs.push_back(tc);
 
         /* yellow */
         tc = {0};
-        _create_tc(tc, YELLOW, 100, C/2);
+        _create_tc(tc, YELLOW, 100, 250);
         v_tcs.push_back(tc);
 
         /* green */
         tc = {0};
-        _create_tc(tc, GREEN, 100, C/2);
+        _create_tc(tc, GREEN, 100, 250);
         v_tcs.push_back(tc);
 
         /* cyan */
         tc = {0};
-        _create_tc(tc, CYAN, 100, C/2);
+        _create_tc(tc, CYAN, 100, 250);
         v_tcs.push_back(tc);
 
         /* purple */
         tc = {0};
-        _create_tc(tc, PURPLE, 100, C/2);
+        _create_tc(tc, PURPLE, 100, 250);
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 10; i++) {
                 tc = {0};
-                _create_tc(tc, WHITE, C/2, C);
+                /* should not exceed ZCU cores capacity */
+                _create_tc(tc, WHITE, 100, 400);
                 v_tcs.push_back(tc);
         }
         sort_dec_tc_size(v_tcs);
@@ -377,7 +395,7 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
 
-        _compute_colors(v_tcs, ctx);
+        _cmp_colors(v_tcs, ctx);
 
         return 0;
 }
@@ -567,13 +585,14 @@ void gen_arch(vector<struct core> &v_cores, struct context &ctx)
 {
         /* create 28 cores */
         for (int i = 0; i < 8; i++)
-                add_core_color(v_cores, RED, ctx);
+                add_core(v_cores, RED, 1, ctx);
 
+        /* ZCU cores are 2 times slower than PCU cores */
         for (int i = 0; i < 4; i++) {
-                add_core_color(v_cores, BLUE, ctx);
-                add_core_color(v_cores, YELLOW, ctx);
-                add_core_color(v_cores, GREEN, ctx);
-                add_core_color(v_cores, CYAN, ctx);
-                add_core_color(v_cores, PURPLE, ctx);
+                add_core(v_cores, BLUE, 2, ctx);
+                add_core(v_cores, YELLOW, 2, ctx);
+                add_core(v_cores, GREEN, 2, ctx);
+                add_core(v_cores, CYAN, 2, ctx);
+                add_core(v_cores, PURPLE, 2, ctx);
         }
 }

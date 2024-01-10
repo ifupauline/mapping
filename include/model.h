@@ -26,10 +26,6 @@
 #define PERMILL 1000
 #define MSEC    1000
 
-/* mem cost of tc */
-#define MINMEMCOST 1
-#define MAXMEMCOST 3
-
 /* colors */
 #define RED    0
 #define BLUE   1
@@ -207,7 +203,8 @@ void del_tc_by_id(struct core &b, int tc_id, int tc_idx);
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);
 
-void add_core_color(vector<struct core> &v_cores, int color, struct context &ctx);
+void add_core(vector<struct core> &v_cores, int color, int speed_factor, 
+                struct context &ctx);
 
 void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd);
 
