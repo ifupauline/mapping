@@ -4,6 +4,8 @@
 #include "placement.h"
 #include "sched_analysis.h"
 
+int STATE = OK;
+
 void partitioning(vector<struct tc> &v_tcs, struct context &ctx)
 {
         clock_t start, end;

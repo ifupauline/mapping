@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv)
 {
-        struct params prm;
+redo:   struct params prm;
         struct context ctx;
         vector<struct core> v_cores;
         vector<struct tc> v_tcs;
@@ -53,8 +53,20 @@ int main(int argc, char **argv)
 
         /* allocation */
         allocation(v_tcs_bfdu_f, v_cores_bfdu_f, ctx_bfdu_f);
+        if (STATE == FAILED) {
+                STATE = OK;
+                goto redo;
+        }
         allocation(v_tcs_wfdu_f, v_cores_wfdu_f, ctx_wfdu_f);
+        if (STATE == FAILED) {
+                STATE = OK;
+                goto redo;
+        }
         allocation(v_tcs_ffdu_f, v_cores_ffdu_f, ctx_ffdu_f);
+        if (STATE == FAILED) {
+                STATE = OK;
+                goto redo;
+        }
 
         /* schedulability analysis */
         schedulability_analysis(v_cores_bfdu_f, ctx_bfdu_f);

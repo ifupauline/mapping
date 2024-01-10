@@ -87,7 +87,8 @@ void bfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                         } else {
                                 printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
-                                exit(0);
+                                STATE = FAILED;
+                                return;
                         }
                 }
                 /* count remaining tc to be allocated */

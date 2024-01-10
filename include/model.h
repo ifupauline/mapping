@@ -14,6 +14,9 @@
 #define NO  1
 #define YES 2
 
+#define OK     1
+#define FAILED 2
+
 #define LEFT  1
 #define RIGHT 2
 
@@ -34,6 +37,8 @@
 #define CYAN   4
 #define PURPLE 5
 #define WHITE  6
+
+extern int STATE;
 
 using namespace std;
 
