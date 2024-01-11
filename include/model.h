@@ -38,8 +38,6 @@
 #define PURPLE 5
 #define WHITE  6
 
-extern int STATE;
-
 using namespace std;
 
 struct t_pos {

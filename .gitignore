@@ -12,3 +12,4 @@ _deps
 lib/
 bin/
 *pdf
+data*

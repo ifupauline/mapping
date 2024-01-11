@@ -29,7 +29,7 @@ void allocation(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 printf("| ALLOCATION BFDU                     |\n");
                 printf("+=====================================+\n");
                 start = clock();
-                bfdu_f(v_tcs, v_cores, ctx);
+                bfdu(v_tcs, v_cores, ctx);
                 end = clock();
                 ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
@@ -39,7 +39,7 @@ void allocation(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 printf("| ALLOCATION WFDU                     |\n");
                 printf("+=====================================+\n");
                 start = clock();
-                wfdu_f(v_tcs, v_cores, ctx);
+                wfdu(v_tcs, v_cores, ctx);
                 end = clock();
                 ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
@@ -49,7 +49,7 @@ void allocation(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 printf("| ALLOCATION FFDU                     |\n");
                 printf("+=====================================+\n");
                 start = clock();
-                ffdu_f(v_tcs, v_cores, ctx);
+                ffdu(v_tcs, v_cores, ctx);
                 end = clock();
                 ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }

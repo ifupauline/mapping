@@ -260,7 +260,7 @@ static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
         return 0;
 }
 
-static void _create_task(struct task &tau, int i, int x)
+static void _create_task(struct task &tau, int i)
 {
         int y;
         int real_t;
@@ -270,7 +270,7 @@ static void _create_task(struct task &tau, int i, int x)
 
         while (1) {
                 y  = gen_rand(0, 7);
-                real_t = chain[x][y];
+                real_t = chain[0][y];
                 real_c = gen_rand(1, 30000); /* microsecs */
                 real_u = (real_c/real_t) * PERMILL;
 
@@ -298,17 +298,15 @@ static void _create_task(struct task &tau, int i, int x)
 
 static void _create_tc(struct tc &tc, int color, int minu, int maxu)
 {
-        int x;
         int task_nbr;
         struct task tau;
 
         while (1) {
-                x = 0;
                 tc = {0};
                 tc.tc_idx = 0;
                 tc.size = 0;
 
-                if (color == WHITE || color == RED)
+                if (color == WHITE)
                         task_nbr = gen_rand(2, 15);
                 else
                         task_nbr = gen_rand(4, 6); /* ZCU tc */
@@ -326,7 +324,7 @@ static void _create_tc(struct tc &tc, int color, int minu, int maxu)
                         tau.is_let = NO;
                         tau.tc_id = tc.id;
 
-                        _create_task(tau, i, x);
+                        _create_task(tau, i);
 
                         tc.v_tasks.push_back(tau);
                         tc.size += tau.u;
@@ -380,9 +378,9 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 10; i++) {
                 tc = {0};
-                _create_tc(tc, WHITE, 100, 400);
+                _create_tc(tc, WHITE, 100, 800);
                 v_tcs.push_back(tc);
         }
         sort_dec_tc_size(v_tcs);
@@ -588,10 +586,10 @@ void gen_arch(vector<struct core> &v_cores, struct context &ctx)
 
         /* ZCU cores are 2 times slower than PCU cores */
         for (int i = 0; i < 4; i++) {
-                add_core(v_cores, BLUE, 2, ctx);
-                add_core(v_cores, YELLOW, 2, ctx);
-                add_core(v_cores, GREEN, 2, ctx);
-                add_core(v_cores, CYAN, 2, ctx);
-                add_core(v_cores, PURPLE, 2, ctx);
+                add_core(v_cores, BLUE, 1, ctx);
+                add_core(v_cores, YELLOW, 1, ctx);
+                add_core(v_cores, GREEN, 1, ctx);
+                add_core(v_cores, CYAN, 1, ctx);
+                add_core(v_cores, PURPLE, 1, ctx);
         }
 }

@@ -44,7 +44,7 @@ static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,
         return -1;
 }
 
-void wfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx)
 {
         int n;
@@ -77,7 +77,7 @@ void wfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
                         /* core found add tc to it */
                         if (ret != -1) {
-                                printf("Worst Core to accomodate TC %d idx: %d is Core %d\n", 
+                                printf("Worst Core to accomodate TC %d idx: %d is core %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, ret);
                                 core_id = ret;
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
@@ -89,8 +89,12 @@ void wfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                         } else {
                                 printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
-                                STATE = FAILED;
-                                return;
+
+                                if (v_tcs[i].color == WHITE)
+                                        add_core(v_cores, gen_rand(0, 5), 1, ctx);
+                                else
+                                        add_core(v_cores, v_tcs[i].color, 1, ctx);
+                                continue;
                         }
                 }
                 /* count remaining tc to be allocated */

@@ -19,18 +19,13 @@ void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx);
 void placement(vector<struct core> &v_cores, struct context &ctx);
 
 /* algorithms */
-void bfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void wfdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void ffdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
-
-/* getters */
-vector<struct tc> *get_frags_bfdu_f(void);
-
-vector<struct tc> *get_frags_wfdu_f(void);
 
 #endif /* MAPPING.H */

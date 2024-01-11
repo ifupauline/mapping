@@ -3,8 +3,8 @@
 #include "mapping.h"
 #include "generator.h"
 
-static int _find_ffdu_core(vector<struct core> &v_cores, struct tc &tc,
-                struct context &ctx, int &ffdu_load, int &ffdu_gcd, int color)
+static int _find_ffst_core(vector<struct core> &v_cores, struct tc &tc,
+                struct context &ctx, int &frst_load, int &frst_gcd, int color)
 {
         int core_id;
 
@@ -14,8 +14,8 @@ static int _find_ffdu_core(vector<struct core> &v_cores, struct tc &tc,
                 if (v_cores[i].color != color && color != WHITE) 
                         continue;
 
-                ffdu_load = check_if_fit_tc(v_cores[i], tc, ffdu_gcd);
-                if (ffdu_load <= v_cores[i].phi) {
+                frst_load = check_if_fit_tc(v_cores[i], tc, frst_gcd);
+                if (frst_load <= v_cores[i].phi) {
                         core_id = v_cores[i].id;
                         return core_id;
                 }
@@ -23,7 +23,7 @@ static int _find_ffdu_core(vector<struct core> &v_cores, struct tc &tc,
         return -1;
 }
 
-void ffdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx)
 {
         int n;
@@ -35,11 +35,12 @@ void ffdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
         n = v_tcs.size();
 
+        
         sort_inc_tc_color(v_tcs);
 
-        /* STEP - 1, place all possible tcs in cores using ffdu */
+        /* STEP - 1, place all possible tcs in cores using FRST */
         printf("\n<--------------------------------------->\n");
-        printf("STEP 1, FFDU\n");
+        printf("STEP 1, FFST\n");
         printf("<--------------------------------------->\n");
         while (alloc_count != n) {
                 alloc_count = 0;
@@ -52,11 +53,11 @@ void ffdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 continue;
 
                         /* find best core to fit tc */
-                        ret = _find_ffdu_core(v_cores, v_tcs[i], ctx, load, gcd, v_tcs[i].color);
+                        ret = _find_ffst_core(v_cores, v_tcs[i], ctx, load, gcd, v_tcs[i].color);
 
                         /* core found add tc to it */
                         if (ret != -1) {
-                                printf("First Core to accomodate TC %d idx: %d is Core %d\n", 
+                                printf("First Core to accomodate TC %d idx: %d is core %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, ret);
                                 core_id = ret;
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
@@ -68,8 +69,12 @@ void ffdu_f(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                         } else {
                                 printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
-                                STATE = FAILED;
-                                return;
+
+                                if (v_tcs[i].color == WHITE)
+                                        add_core(v_cores, gen_rand(0, 5), 1, ctx);
+                                else
+                                        add_core(v_cores, v_tcs[i].color, 1, ctx);
+                                continue;
                         }
                 }
                 /* count remaining tc to be allocated */
