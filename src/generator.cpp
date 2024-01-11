@@ -274,7 +274,7 @@ static void _create_task(struct task &tau, int i)
                 real_c = gen_rand(1, 30000); /* microsecs */
                 real_u = (real_c/real_t) * PERMILL;
 
-                if (real_u < 1 || real_u > 100)
+                if (real_u < 10 || real_u > 100)
                         continue;
 
                 tau.u = ceil((real_c/real_t) * PERMILL);
@@ -380,7 +380,7 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         /* white */
         for (int i = 0; i < 10; i++) {
                 tc = {0};
-                _create_tc(tc, WHITE, 100, 800);
+                _create_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);
         }
         sort_dec_tc_size(v_tcs);
@@ -586,10 +586,10 @@ void gen_arch(vector<struct core> &v_cores, struct context &ctx)
 
         /* ZCU cores are 2 times slower than PCU cores */
         for (int i = 0; i < 4; i++) {
-                add_core(v_cores, BLUE, 1, ctx);
-                add_core(v_cores, YELLOW, 1, ctx);
-                add_core(v_cores, GREEN, 1, ctx);
-                add_core(v_cores, CYAN, 1, ctx);
-                add_core(v_cores, PURPLE, 1, ctx);
+                add_core(v_cores, BLUE, 2, ctx);
+                add_core(v_cores, YELLOW, 2, ctx);
+                add_core(v_cores, GREEN, 2, ctx);
+                add_core(v_cores, CYAN, 2, ctx);
+                add_core(v_cores, PURPLE, 2, ctx);
         }
 }

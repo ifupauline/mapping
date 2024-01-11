@@ -232,22 +232,6 @@ void cmp_core_load(struct core &b, int &load)
                 load += b.v_tcs[i].size;
 }
 
-void cmp_core_load_rem(struct core &b)
-{
-        b.load = 0;
-        b.load_rem = 0;
-
-        for (unsigned int i = 0; i < b.v_tcs.size(); i++)
-                b.load += b.v_tcs[i].size;
-
-        b.load_rem = b.phi - b.load;
-
-        if (b.load_rem < 0) {
-                printf("Core: %d load_rem: %d\n", b.id, b.load_rem);
-                exit(0);
-        }
-}
-
 void cmp_core_memcost(struct core &b)
 {
         b.memcost = 0;
@@ -393,7 +377,6 @@ void del_tc_by_id(struct core &b, int tc_id, int tc_idx)
                 gcd = cmp_gcd(v_tasks);
         }
         update_let(b, gcd);
-        cmp_core_load_rem(b);
         cmp_core_memcost(b);
 }
 

@@ -27,6 +27,7 @@ int main(int argc, char **argv)
 
         /* offline partitioning */
         partitioning(v_tcs, ctx);
+        print_task_chains(v_tcs);
 
         /* cmp min cores req */
         init_ctx(v_tcs, prm, ctx);

@@ -21,7 +21,6 @@
 #define RIGHT 2
 
 /* core filling capacity */
-#define C       1000
 #define PHI     800
 
 /* units */
@@ -183,8 +182,6 @@ void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx);
 void cmp_core_load(struct core &b, int &load);
 
 void cmp_tc_load(struct tc &tc);
-
-void cmp_core_load_rem(struct core &b);
 
 void cmp_core_memcost(struct core &b);
 

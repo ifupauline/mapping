@@ -5,6 +5,23 @@
 #define MAX_DISP_COUNT 5
 #define MAX_SWAP_COUNT 5
 
+static void _check_core_load(vector<struct core> &v_cores)
+{
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].load_rem < 0) {
+                        printf("Core %d load_rem %d\n", 
+                                        v_cores[i].id, v_cores[i].load_rem);
+                        exit(0);
+
+                }
+                if (v_cores[i].load > v_cores[i].phi) {
+                        printf("Core %d load %d\n", 
+                                        v_cores[i].id, v_cores[i].load);
+                        exit(0);
+                }
+        }
+}
+
 static void _rst_empty_cores(vector<struct core> &v_cores)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
@@ -15,7 +32,7 @@ static void _rst_empty_cores(vector<struct core> &v_cores)
                                 v_cores[i].v_tcs[j].gcd = 0;
                                 v_cores[i].v_tcs[j].v_tasks[0] = {0};
                                 v_cores[i].load = 0;
-                                v_cores[i].load_rem = 0;
+                                v_cores[i].load_rem = v_cores[i].phi;
                         }
                 }
         }
@@ -360,6 +377,8 @@ void displacement(vector<struct core> &v_cores)
                 if (state == NO)
                         break;
         }
+        _check_core_load(v_cores);
+        _rst_empty_cores(v_cores);
 }
 
 void swapping(vector<struct core> &v_cores)
@@ -504,5 +523,6 @@ void swapping(vector<struct core> &v_cores)
                 if (state == NO)
                         break;
         }
+        _check_core_load(v_cores);
         _rst_empty_cores(v_cores);
 }

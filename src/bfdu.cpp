@@ -52,7 +52,9 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         int gcd;
         int core_id;
         int alloc_count;
+        int cycl_count;
 
+        cycl_count = 0;
         n = v_tcs.size();
         sort_inc_tc_color(v_tcs);
 
@@ -88,10 +90,19 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
 
-                                if (v_tcs[i].color == WHITE)
+                                if (v_tcs[i].color == WHITE) {
                                         add_core(v_cores, gen_rand(0, 5), 1, ctx);
-                                else
+                                        cycl_count++;
+                                } else {
                                         add_core(v_cores, v_tcs[i].color, 1, ctx);
+                                        cycl_count++;
+                                }
+
+                                if (cycl_count > 100) {
+                                        printf("ERR!: Impossible to allocate all TC, System Unfeasible\n");
+                                        exit(0);
+
+                                }
                                 continue;
                         }
                 }

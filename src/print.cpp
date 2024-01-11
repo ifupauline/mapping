@@ -136,15 +136,6 @@ void cmp_stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tasks.size(); j++)
                         ctx.tasks_count++;
-
-                for (unsigned int k = 0; k < v_cores[i].v_tcs.size(); k++) {
-                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[k].is_let == YES) {
-                                v_cores[i].v_tcs[k].size = 0;
-                                v_cores[i].v_tcs[k].gcd = 0;
-                                v_cores[i].load = 0;
-                                v_cores[i].load_rem = C;
-                        }
-                }
         }
         _cores_ratio(v_cores, ctx);
         _schedulability_rate(ctx);
@@ -201,11 +192,12 @@ void print_core(struct core &b)
         printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
-                        printf("TC %-3d tc_idx %d u: %-3d tau %-3d p: %-3d tc_idx: %-3d uniq_id: %-3d sched: %d\n", 
+                        printf("TC %-3d tc_idx %d u: %-3d || tau %-3d p: %-3d u: %-3f tc_idx: %-3d uniq_id: %-3d sched: %d\n", 
                                         b.v_tcs[i].id, b.v_tcs[i].tc_idx, 
                                         b.v_tcs[i].size,
                                         b.v_tcs[i].v_tasks[j].id, 
                                         b.v_tcs[i].v_tasks[j].p,
+                                        b.v_tcs[i].v_tasks[j].u,
                                         b.v_tcs[i].v_tasks[j].idx.tc_idx, 
                                         b.v_tcs[i].v_tasks[j].uniq_id, b.flag);
                 }
@@ -240,6 +232,8 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 printf("|Core: %d\n", v_cores[i].id);
                 printf("|Capa: %.3f\n", (float)v_cores[i].phi / PERMILL);
                 printf("|Load: %.3f\n", (float)v_cores[i].load / PERMILL);
+                if (v_cores[i].is_empty == YES)
+                        v_cores[i].load_rem = v_cores[i].phi;
                 printf("|Lrem: %.3f\n", ((float)v_cores[i].load_rem / PERMILL));
                 printf("|LETc: %d\n", v_cores[i].memcost);
                 printf("|");

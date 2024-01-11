@@ -4,7 +4,7 @@
 
 #define STEP    10
 #define ITERSIG 61
-#define SIMNBR  100
+#define EXENBR  1
 
 static char const *cmd_gnuplot_m[] = {};
 static char const *cmd_gnuplot_sr[] = {};
@@ -35,7 +35,7 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                 stts = {0};
                 SIGMA = SIGMA - STEP;
                 gen_app(v_tcs, prm, ctx);
-                for (int j = 0; j < SIMNBR; j++) {
+                for (int j = 0; j < EXENBR; j++) {
                         ctx_bfdu = {0};
                         ctx_wfdu = {0};
                         ctx_ffdu = {0};
@@ -113,25 +113,25 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         stts.mean_ffdu_et += ctx_ffdu.p.et * MSEC;
                 }
                 /* mean */
-                stts.mean_bfdu_m /= (float)SIMNBR;
-                stts.mean_wfdu_m /= (float)SIMNBR;
-                stts.mean_ffdu_m /= (float)SIMNBR;
+                stts.mean_bfdu_m /= (float)EXENBR;
+                stts.mean_wfdu_m /= (float)EXENBR;
+                stts.mean_ffdu_m /= (float)EXENBR;
 
-                stts.mean_bfdu_sr_allo /= (float)SIMNBR;
-                stts.mean_wfdu_sr_allo /= (float)SIMNBR;
-                stts.mean_ffdu_sr_allo /= (float)SIMNBR;
+                stts.mean_bfdu_sr_allo /= (float)EXENBR;
+                stts.mean_wfdu_sr_allo /= (float)EXENBR;
+                stts.mean_ffdu_sr_allo /= (float)EXENBR;
 
-                stts.mean_bfdu_sr_disp /= (float)SIMNBR;
-                stts.mean_wfdu_sr_disp /= (float)SIMNBR;
-                stts.mean_ffdu_sr_disp /= (float)SIMNBR;
+                stts.mean_bfdu_sr_disp /= (float)EXENBR;
+                stts.mean_wfdu_sr_disp /= (float)EXENBR;
+                stts.mean_ffdu_sr_disp /= (float)EXENBR;
 
-                stts.mean_bfdu_sr_swap /= (float)SIMNBR;
-                stts.mean_wfdu_sr_swap /= (float)SIMNBR;
-                stts.mean_ffdu_sr_swap /= (float)SIMNBR;
+                stts.mean_bfdu_sr_swap /= (float)EXENBR;
+                stts.mean_wfdu_sr_swap /= (float)EXENBR;
+                stts.mean_ffdu_sr_swap /= (float)EXENBR;
 
-                stts.mean_bfdu_et /= (float)SIMNBR;
-                stts.mean_wfdu_et /= (float)SIMNBR;
-                stts.mean_ffdu_et /= (float)SIMNBR;
+                stts.mean_bfdu_et /= (float)EXENBR;
+                stts.mean_wfdu_et /= (float)EXENBR;
+                stts.mean_ffdu_et /= (float)EXENBR;
 
                 stts.mean_et = stts.mean_bfdu_et + stts.mean_wfdu_et + stts.mean_ffdu_et;
                 stts.mean_et /= 3;
