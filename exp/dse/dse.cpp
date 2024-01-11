@@ -2,9 +2,9 @@
 #include "print.h"
 #include "generator.h"
 
-#define STEP    10
-#define ITERSIG 61
-#define EXENBR  1
+#define STP 10
+#define ITR 61
+#define EXE 1000
 
 static char const *cmd_gnuplot_m[] = {};
 static char const *cmd_gnuplot_sr[] = {};
@@ -27,15 +27,15 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
         vector<struct tc> v_tcs_wfdu;
         vector<struct tc> v_tcs_ffdu;
 
-        prm = {0};
-        SIGMA = PHI + STEP;
-        for (int i = 0; i < ITERSIG; i++) {
-                v_tcs.clear();
+        SIGMA = PHI + STP;
+        for (int i = 0; i < ITR; i++) {
+redo:           v_tcs.clear();
+                prm = {0};
                 ctx = {0};
                 stts = {0};
-                SIGMA = SIGMA - STEP;
+                SIGMA -= STP;
                 gen_app(v_tcs, prm, ctx);
-                for (int j = 0; j < EXENBR; j++) {
+                for (int j = 0; j < EXE; j++) {
                         ctx_bfdu = {0};
                         ctx_wfdu = {0};
                         ctx_ffdu = {0};
@@ -77,8 +77,26 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         gen_arch(v_cores_ffdu, ctx_ffdu);
 
                         allocation(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
+                        if (STATE == FAILED) {
+                                STATE = OK;
+                                SIGMA += STP;
+                                i--;
+                                goto redo;
+                        }
                         allocation(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
+                        if (STATE == FAILED) {
+                                SIGMA += STP;
+                                STATE = OK;
+                                i--;
+                                goto redo;
+                        }
                         allocation(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
+                        if (STATE == FAILED) {
+                                SIGMA += STP;
+                                STATE = OK;
+                                i--;
+                                goto redo;
+                        }
 
                         schedulability_analysis(v_cores_bfdu, ctx_bfdu);
                         schedulability_analysis(v_cores_wfdu, ctx_wfdu);
@@ -113,25 +131,25 @@ static void dse(vector<struct b_stats> &v_stts, struct params &prm)
                         stts.mean_ffdu_et += ctx_ffdu.p.et * MSEC;
                 }
                 /* mean */
-                stts.mean_bfdu_m /= (float)EXENBR;
-                stts.mean_wfdu_m /= (float)EXENBR;
-                stts.mean_ffdu_m /= (float)EXENBR;
+                stts.mean_bfdu_m /= (float)EXE;
+                stts.mean_wfdu_m /= (float)EXE;
+                stts.mean_ffdu_m /= (float)EXE;
 
-                stts.mean_bfdu_sr_allo /= (float)EXENBR;
-                stts.mean_wfdu_sr_allo /= (float)EXENBR;
-                stts.mean_ffdu_sr_allo /= (float)EXENBR;
+                stts.mean_bfdu_sr_allo /= (float)EXE;
+                stts.mean_wfdu_sr_allo /= (float)EXE;
+                stts.mean_ffdu_sr_allo /= (float)EXE;
 
-                stts.mean_bfdu_sr_disp /= (float)EXENBR;
-                stts.mean_wfdu_sr_disp /= (float)EXENBR;
-                stts.mean_ffdu_sr_disp /= (float)EXENBR;
+                stts.mean_bfdu_sr_disp /= (float)EXE;
+                stts.mean_wfdu_sr_disp /= (float)EXE;
+                stts.mean_ffdu_sr_disp /= (float)EXE;
 
-                stts.mean_bfdu_sr_swap /= (float)EXENBR;
-                stts.mean_wfdu_sr_swap /= (float)EXENBR;
-                stts.mean_ffdu_sr_swap /= (float)EXENBR;
+                stts.mean_bfdu_sr_swap /= (float)EXE;
+                stts.mean_wfdu_sr_swap /= (float)EXE;
+                stts.mean_ffdu_sr_swap /= (float)EXE;
 
-                stts.mean_bfdu_et /= (float)EXENBR;
-                stts.mean_wfdu_et /= (float)EXENBR;
-                stts.mean_ffdu_et /= (float)EXENBR;
+                stts.mean_bfdu_et /= (float)EXE;
+                stts.mean_wfdu_et /= (float)EXE;
+                stts.mean_ffdu_et /= (float)EXE;
 
                 stts.mean_et = stts.mean_bfdu_et + stts.mean_wfdu_et + stts.mean_ffdu_et;
                 stts.mean_et /= 3;
@@ -163,7 +181,7 @@ int main(void)
         vector<struct b_stats> v_stts;
 
         dse(v_stts, prm);
-        print_b_stats(v_stts, ITERSIG);
+        print_b_stats(v_stts, ITR);
 
         FILE *gnuplot_m = (FILE*)popen("gnuplot -persistent", "w");
         FILE *gnuplot_sr = (FILE*)popen("gnuplot -persistent", "w");
@@ -174,11 +192,11 @@ int main(void)
         FILE *sr_swap = (FILE*)fopen("data.sr_swap_sig", "w");
         FILE *et = (FILE*)fopen("data.et_sig", "w");
 
-        write_data_to_file(m, v_stts, B_M, ITERSIG);
-        write_data_to_file(sr_allo, v_stts, B_SR_ALLO, ITERSIG);
-        write_data_to_file(sr_disp, v_stts, B_SR_DISP, ITERSIG);
-        write_data_to_file(sr_swap, v_stts, B_SR_SWAP, ITERSIG);
-        write_data_to_file(et, v_stts, B_ET, ITERSIG);
+        write_data_to_file(m, v_stts, B_M, ITR);
+        write_data_to_file(sr_allo, v_stts, B_SR_ALLO, ITR);
+        write_data_to_file(sr_disp, v_stts, B_SR_DISP, ITR);
+        write_data_to_file(sr_swap, v_stts, B_SR_SWAP, ITR);
+        write_data_to_file(et, v_stts, B_ET, ITR);
 
         cmd_gnuplot_m[0] = "set title 'Number of cores in use'";
         cmd_gnuplot_m[1] = "set style data histogram";

@@ -1,8 +1,8 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  
-                struct task &tau, int &r_prev)
+static void _find_hp_tasks(vector<struct task> &v_tasks, 
+                vector<struct task> &hp_tasks, struct task &tau, int &r_prev)
 {
         for (unsigned int i = 0; i < v_tasks.size(); i++) {
                 if (v_tasks[i].p < tau.p)

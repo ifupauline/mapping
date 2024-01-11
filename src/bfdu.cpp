@@ -100,8 +100,8 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
                                 if (cycl_count > 100) {
                                         printf("ERR!: Impossible to allocate all TC, System Unfeasible\n");
-                                        exit(0);
-
+                                        STATE = FAILED;
+                                        return;
                                 }
                                 continue;
                         }
