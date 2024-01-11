@@ -88,18 +88,18 @@ B_SR_DISP	include/exp.h	7;"	d
 B_SR_SWAP	include/exp.h	8;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	exp/map/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	tests/example_prmsig/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/dse/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	exp/map/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/example_prmsig/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/dse/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	exp/map/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	tests/example_prmsig/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	117;"	d	file:
@@ -421,10 +421,10 @@ DEC	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	656;"	d	file:
 DEC	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	641;"	d	file:
 EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/dse/Makefile	/^EQUALS = =$/;"	m
+EQUALS	exp/map/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/example_prmsig/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
-EXENBR	exp/dse/dse.cpp	7;"	d	file:
+EXE	exp/dse/dse.cpp	7;"	d	file:
 EXP_H	include/exp.h	2;"	d
 FAILED	include/model.h	18;"	d
 FFDU	include/model.h	11;"	d
@@ -433,7 +433,7 @@ GREEN	include/model.h	35;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
-ITERSIG	exp/dse/dse.cpp	6;"	d	file:
+ITR	exp/dse/dse.cpp	6;"	d	file:
 LEFT	include/model.h	20;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
@@ -524,16 +524,16 @@ RED	include/model.h	32;"	d
 RIGHT	include/model.h	21;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/dse/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	exp/map/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/example_prmsig/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
 SCHED_OK	include/sched_analysis.h	8;"	d
 SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/dse/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	exp/map/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/example_prmsig/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	291;"	d	file:
@@ -580,7 +580,7 @@ SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	67;"	d	f
 SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	105;"	d	file:
 SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	67;"	d	file:
 STATE	src/mapping.cpp	/^int STATE = OK;$/;"	v
-STEP	exp/dse/dse.cpp	5;"	d	file:
+STP	exp/dse/dse.cpp	5;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	417;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	402;"	d	file:
 STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	416;"	d	file:
@@ -615,7 +615,7 @@ _disp	src/placement.cpp	/^static void _disp(vector<struct core> &v_cores, pair<s
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_core	src/bfdu.cpp	/^static int _find_best_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _find_ffst_core	src/ffdu.cpp	/^static int _find_ffst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
-_find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, vector<struct task> &hp_tasks,  $/;"	f	file:
+_find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, $/;"	f	file:
 _find_worst_core	src/wfdu.cpp	/^static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _gen_app	src/generator.cpp	/^static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, $/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct core &b)$/;"	f	file:
@@ -660,7 +660,6 @@ cmp_tc_load	src/model.cpp	/^void cmp_tc_load(struct tc &tc)$/;"	f
 color	include/model.h	/^        int color;$/;"	m	struct:core
 color	include/model.h	/^        int color;$/;"	m	struct:tc
 colorsize	include/model.h	/^struct colorsize {$/;"	s
-concatenate	src/exp.cpp	/^void concatenate(char p[], char q[]) {$/;"	f
 const	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	10;"	d	file:
 context	include/model.h	/^struct context {$/;"	s
 copy_back_prio_to_tc	src/model.cpp	/^void copy_back_prio_to_tc(struct core &b)$/;"	f
@@ -740,7 +739,7 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int
 main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	exp/dse/dse.cpp	/^int main(void)$/;"	f
-main	tests/example_prmsig/example_prmsig.cpp	/^int main(int argc, char **argv)$/;"	f
+main	exp/map/map.cpp	/^int main(int argc, char **argv)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
 mean_bfdu_et	include/exp.h	/^        float mean_bfdu_et;$/;"	m	struct:b_stats

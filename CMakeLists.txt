@@ -10,5 +10,5 @@ project(mapping)
 
 add_subdirectory(src)
 add_subdirectory(exp/dse)
+add_subdirectory(exp/map)
 add_subdirectory(tests/wcrt)
-add_subdirectory(tests/example_prmsig)

@@ -1,23 +1,5 @@
 #include "exp.h"
 
-void concatenate(char p[], char q[]) {
-        int c;
-        int d;
-        c = 0;
-
-        while (p[c] != '\0') {
-                c++;
-        }
-        d = 0;
-
-        while (q[d] != '\0') {
-                p[c] = q[d];
-                d++;
-                c++;
-        }
-        p[c] = '\0';
-}
-
 void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                 int type, int size)
 {
