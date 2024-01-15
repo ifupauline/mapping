@@ -21,7 +21,8 @@
 #define RIGHT 2
 
 /* core filling capacity */
-#define PHI     800
+#define C   1000
+#define PHI 800
 
 /* units */
 #define PERCENT 100
@@ -66,13 +67,6 @@ struct colorsize {
         int cyan;
         int purple;
         int white;
-        int red_cores_min;
-        int blue_cores_min;
-        int yellow_cores_min;
-        int green_cores_min;
-        int cyan_cores_min;
-        int purple_cores_min;
-        int white_cores_min;
 };
 
 struct tc {
@@ -141,6 +135,7 @@ struct context {
         int tcs_size;
         int cores_min;
         int cores_count;
+        int init_cores_count;
         int tcs_count;
         int alloc_count;
         int tasks_count;

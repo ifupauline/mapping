@@ -187,6 +187,8 @@ static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
         int purple;
         int white;
 
+        float tmp;
+
         red = 0;
         blue = 0;
         yellow = 0;
@@ -195,6 +197,7 @@ static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
         purple = 0;
         white = 0;
 
+        tmp = 0.0;
         ctx.cs = {0};
         ctx.tcs_size = 0;
 
@@ -228,14 +231,13 @@ static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
                         purple == 0 || white == 0)
                 return -1;
 
-        ctx.cores_min = abs(ctx.tcs_size / PHI) + 1;
-        ctx.cs.red_cores_min = abs(ctx.cs.red / PHI) + 1;
-        ctx.cs.blue_cores_min = abs(ctx.cs.blue / PHI) + 1;
-        ctx.cs.yellow_cores_min = abs(ctx.cs.yellow / PHI) + 1;
-        ctx.cs.green_cores_min = abs(ctx.cs.green / PHI) + 1;
-        ctx.cs.cyan_cores_min = abs(ctx.cs.cyan / PHI) + 1;
-        ctx.cs.purple_cores_min = abs(ctx.cs.purple / PHI) + 1;
-        ctx.cs.white_cores_min = abs(ctx.cs.white / PHI) + 1;
+
+        tmp = (float)(ctx.tcs_size / (float)PHI);
+
+        if (abs(ctx.tcs_size/PHI) == tmp)
+                ctx.cores_min = abs(ctx.tcs_size / PHI);
+        else
+                ctx.cores_min = abs(ctx.tcs_size / PHI) + 1;
 
         printf("Number of TC RED:    %d size: %d\n", red, ctx.cs.red);
         printf("Number of TC BLUE:   %d size: %d\n", blue, ctx.cs.blue);
@@ -244,14 +246,6 @@ static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
         printf("Number of TC CYAN:   %d size: %d\n", cyan, ctx.cs.cyan);
         printf("Number of TC PURPLE: %d size: %d\n", purple, ctx.cs.purple);
         printf("Number of TC WHITE:  %d size: %d\n", white, ctx.cs.white);
-        printf("------------------------------------------------------\n");
-        printf("Minimum Number of RED    Cores: %u\n", ctx.cs.red_cores_min);
-        printf("Minimum Number of BLUE   Cores: %u\n", ctx.cs.blue_cores_min);
-        printf("Minimum Number of YELLOW Cores: %u\n", ctx.cs.yellow_cores_min);
-        printf("Minimum Number of GREEN  Cores: %u\n", ctx.cs.green_cores_min);
-        printf("Minimum Number of CYAN   Cores: %u\n", ctx.cs.cyan_cores_min);
-        printf("Minimum Number of PURPLE Cores: %u\n", ctx.cs.purple_cores_min);
-        printf("Minimum Number of WHITE  Cores: %u\n", ctx.cs.white_cores_min);
         printf("------------------------------------------------------\n");
         printf("Total Number of Cores    %u\n", ctx.cores_min);
         printf("Total Utilization of TC: %u\n\n", ctx.tcs_size);
@@ -354,33 +348,48 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         /* blue */
         tc = {0};
-        _create_tc(tc, BLUE, 100, 200);
+        _create_tc(tc, BLUE, 100, C/2);
+        v_tcs.push_back(tc);
+        tc = {0};
+        _create_tc(tc, BLUE, 100, C/2);
         v_tcs.push_back(tc);
 
         /* yellow */
         tc = {0};
-        _create_tc(tc, YELLOW, 100, 200);
+        _create_tc(tc, YELLOW, 100, C/2);
+        v_tcs.push_back(tc);
+        tc = {0};
+        _create_tc(tc, YELLOW, 100, C/2);
         v_tcs.push_back(tc);
 
         /* green */
         tc = {0};
-        _create_tc(tc, GREEN, 100, 200);
+        _create_tc(tc, GREEN, 100, C/2);
+        v_tcs.push_back(tc);
+        tc = {0};
+        _create_tc(tc, GREEN, 100, C/2);
         v_tcs.push_back(tc);
 
         /* cyan */
         tc = {0};
-        _create_tc(tc, CYAN, 100, 200);
+        _create_tc(tc, CYAN, 100, C/2);
+        v_tcs.push_back(tc);
+        tc = {0};
+        _create_tc(tc, CYAN, 100, C/2);
         v_tcs.push_back(tc);
 
         /* purple */
         tc = {0};
-        _create_tc(tc, PURPLE, 100, 200);
+        _create_tc(tc, PURPLE, 100, C/2);
+        v_tcs.push_back(tc);
+        tc = {0};
+        _create_tc(tc, PURPLE, 100, C/2);
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
                 tc = {0};
-                _create_tc(tc, WHITE, 100, 1000);
+                _create_tc(tc, WHITE, 100, C);
                 v_tcs.push_back(tc);
         }
         sort_dec_tc_size(v_tcs);
@@ -414,11 +423,11 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         uniq_id = 1;
         ctx.frags_count = 0;
 
-        /* store tcs > phi */
+        /* store tcs */
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tmp_tcs.push_back(v_tcs[i]);
 
-        /* fragmentation */
+        /* partitioning */
         for (unsigned int i = 0; i < v_tmp_tcs.size(); i++) {
                 idx = 0;
                 for (unsigned int j = 0; j < v_tmp_tcs[i].v_tasks.size(); j++) {
@@ -471,6 +480,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 idx++;
                                 u_sum = 0;
                                 v_tmp.clear();
+                                continue;
                         }
 
                         if (i > 0 && u_sum > ctx.prm.s - 10) {
@@ -493,6 +503,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 idx++;
                                 u_sum = 0;
                                 v_tmp.clear();
+                                continue;
                         }
                         /* add last fragment */
                         if (j == v_tmp_tcs[i].v_tasks.size() - 1) {
@@ -512,6 +523,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 u_sum = 0;
                                 v_tmp.clear();
                                 ctx.frags_count++;
+                                continue;
                         }
                 }
         }
@@ -580,16 +592,15 @@ void gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
 void gen_arch(vector<struct core> &v_cores, struct context &ctx)
 {
-        /* create 28 cores */
         for (int i = 0; i < 8; i++)
                 add_core(v_cores, RED, 1, ctx);
 
-        /* ZCU cores are 2 times slower than PCU cores */
         for (int i = 0; i < 4; i++) {
-                add_core(v_cores, BLUE, 2, ctx);
-                add_core(v_cores, YELLOW, 2, ctx);
-                add_core(v_cores, GREEN, 2, ctx);
-                add_core(v_cores, CYAN, 2, ctx);
-                add_core(v_cores, PURPLE, 2, ctx);
+                add_core(v_cores, BLUE, 1, ctx);
+                add_core(v_cores, YELLOW, 1, ctx);
+                add_core(v_cores, GREEN, 1, ctx);
+                add_core(v_cores, CYAN, 1, ctx);
+                add_core(v_cores, PURPLE, 1, ctx);
         }
+        ctx.init_cores_count = v_cores.size();
 }

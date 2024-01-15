@@ -100,15 +100,6 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
         /* cmp gcd */
         gcd = cmp_gcd(v_tasks);
 
-        for (unsigned int i = 0; i < tmp_b.v_tcs.size(); i++) {
-                if (tmp_b.v_tcs[i].is_let == YES) {
-                        if (gcd < tmp_b.v_tcs[i].v_tasks[0].c) {
-                                printf("ERR! gcd < c --> TC %d can never be allocated, increase EPSILON\n", tc.id);
-                                exit(0);
-                        }
-                }
-        }
-
         /* update let tc and let task */
         update_let(tmp_b, gcd);
 

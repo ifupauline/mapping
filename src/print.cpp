@@ -438,6 +438,7 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         if (ctx.prm.a == FFDU)
                 printf("alpha:  FFDU\n");
         printf("------------------------------------------------------------------------>\n");
+        printf("Initial Number of Cores:       %-d\n", ctx.init_cores_count);
         printf("Optimal Number of Cores (M*):  %-3d\n", ctx.cores_min);
         printf("Number of Cores in Use   (M):  %-3d     PCU: %-3d ZCU: %-3d\n", 
                         ctx.cores_count, _count_pcu(v_cores), _count_zcu(v_cores));

@@ -13,30 +13,27 @@
 
 struct b_stats {
         float sig;
-        float mean_et;
-        float mean_bfdu_m;
-        float mean_wfdu_m;
-        float mean_ffdu_m;
-        float mean_bfdu_et;
-        float mean_wfdu_et;
-        float mean_ffdu_et;
-        float mean_bfdu_sr_allo;
-        float mean_wfdu_sr_allo;
-        float mean_ffdu_sr_allo;
-        float mean_bfdu_sr_disp;
-        float mean_wfdu_sr_disp;
-        float mean_ffdu_sr_disp;
-        float mean_bfdu_sr_swap;
-        float mean_wfdu_sr_swap;
-        float mean_ffdu_sr_swap;
+        float bfdu_m;
+        float wfdu_m;
+        float ffdu_m;
+        float bfdu_et;
+        float wfdu_et;
+        float ffdu_et;
+        float bfdu_sr_allo;
+        float wfdu_sr_allo;
+        float ffdu_sr_allo;
+        float bfdu_sr_disp;
+        float wfdu_sr_disp;
+        float ffdu_sr_disp;
+        float bfdu_sr_swap;
+        float wfdu_sr_swap;
+        float ffdu_sr_swap;
 };
 
 void concatenate(char p[], char q[]);
 
 void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                 int type, int size);
-
-void plot_data(FILE *gnuplot_pipe, char const *commands_gnuplot[], int cmd_nbr);
 
 void print_b_stats(vector<struct b_stats> &v_stts_algo, int iter);
 
