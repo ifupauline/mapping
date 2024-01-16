@@ -72,8 +72,8 @@ void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
 
-                                if (v_tcs[i].color != RED) {
-                                        add_core(v_cores, gen_rand(1, 5), 1, ctx);
+                                if (v_tcs[i].color == WHITE) {
+                                        add_core(v_cores, gen_rand(0, 5), 1, ctx);
                                         cycl_count++;
 
                                 } else {

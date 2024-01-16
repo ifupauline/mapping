@@ -387,7 +387,7 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 9; i++) {
                 tc = {0};
                 _create_tc(tc, WHITE, 100, C);
                 v_tcs.push_back(tc);
