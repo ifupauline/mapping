@@ -2,9 +2,6 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-#define MAX_DISP_COUNT 5
-#define MAX_SWAP_COUNT 5
-
 static void _check_core_load(vector<struct core> &v_cores)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
@@ -215,8 +212,6 @@ static int _search_for_swap(vector<struct core> &v_cores,
 
                                 dst_tc.second = src_core.id;
                                 src_tc.second = dst_core.id;
-                                dst_tc.first.swap_count++;
-                                src_tc.first.swap_count++;
                                 return YES;
                         }
                 }
@@ -230,8 +225,6 @@ static int _search_for_swap(vector<struct core> &v_cores,
 
                                 dst_tc.second = src_core.id;
                                 src_tc.second = dst_core.id;
-                                dst_tc.first.swap_count++;
-                                src_tc.first.swap_count++;
                                 return YES;
                         }
                 }
@@ -298,7 +291,6 @@ void displacement(vector<struct core> &v_cores)
         int gcd;
         int flag;
         int load;
-        int state;
         int is_found;
         struct core dst_b;
         pair<struct tc, int> tc;
@@ -306,7 +298,6 @@ void displacement(vector<struct core> &v_cores)
         vector<pair<struct tc, int>> v_tcs;
 
         flag = NO;
-        state = NO;
         is_found = NO;
         gcd = 0;
         load = 0;
@@ -326,56 +317,46 @@ void displacement(vector<struct core> &v_cores)
         if (flag == NO)
                 return;
 
-        while (1) {
-                state = NO;
-                /* find a schedulable core that has enough space for the tc to fit */
-                for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                        printf("Try to displace TC %-3d tc_idx %d from Core %-3d\n", 
-                                        v_tcs[i].first.id, 
-                                        v_tcs[i].first.tc_idx, 
-                                        v_tcs[i].second);
-                        v_dst_cores.clear();
-                        for (unsigned int j = 0; j < v_cores.size(); j++) {
-                                if (v_cores[j].flag == SCHED_FAILED)
-                                        continue;
-                                if (v_tcs[i].second == v_cores[j].id)
-                                        continue;
-                                /* if tc moved too many times skip */
-                                if (v_tcs[i].first.disp_count == MAX_DISP_COUNT) 
-                                        break;
+        /* find a schedulable core that has enough space for the tc to fit */
+        for (unsigned int i = 0; i < v_tcs.size(); i++) {
+                printf("Try to displace TC %-3d tc_idx %d from Core %-3d\n", 
+                                v_tcs[i].first.id, 
+                                v_tcs[i].first.tc_idx, 
+                                v_tcs[i].second);
+                v_dst_cores.clear();
+                for (unsigned int j = 0; j < v_cores.size(); j++) {
+                        if (v_cores[j].flag == SCHED_FAILED)
+                                continue;
+                        if (v_tcs[i].second == v_cores[j].id)
+                                continue;
 
-                                /* color filter */
-                                if (v_tcs[i].first.color != v_cores[j].color && 
-                                                v_tcs[i].first.color != WHITE)
-                                        continue;
+                        /* color filter */
+                        if (v_tcs[i].first.color != v_cores[j].color && 
+                                        v_tcs[i].first.color != WHITE)
+                                continue;
 
-                                /* search for dst cores that can accomodate tc */
-                                load = check_if_fit_tc(v_cores[j], v_tcs[i].first, gcd);
+                        /* search for dst cores that can accomodate tc */
+                        load = check_if_fit_tc(v_cores[j], v_tcs[i].first, gcd);
 
-                                if (load <= v_cores[j].phi) {
-                                        /* add tc to potential core */
-                                        v_dst_cores.push_back(v_cores[j]);
-                                        add_tc_to_core(v_dst_cores.back(), v_tcs[i].first, load, gcd);
-                                }
+                        if (load <= v_cores[j].phi) {
+                                /* add tc to potential core */
+                                v_dst_cores.push_back(v_cores[j]);
+                                add_tc_to_core(v_dst_cores.back(), v_tcs[i].first, load, gcd);
                         }
-                        /* test dst cores and save best core */
-                        is_found = _search_for_disp(v_dst_cores, v_tcs[i].first.id, i, dst_b);
-
-                        /* if core not found continue */
-                        if (is_found == YES) {
-                                /* displace */
-                                tc.first = {0};
-                                tc.second = dst_b.id;
-                                tc = v_tcs[i];
-                                v_tcs[i].first.disp_count++;
-                                v_tcs[i].second = dst_b.id;
-                                _disp(v_cores, tc, dst_b);
-                                is_found = NO;
-                                state = YES;
-                        }                
                 }
-                if (state == NO)
-                        break;
+                /* test dst cores and save best core */
+                is_found = _search_for_disp(v_dst_cores, v_tcs[i].first.id, i, dst_b);
+
+                /* if core not found continue */
+                if (is_found == YES) {
+                        /* displace */
+                        tc.first = {0};
+                        tc.second = dst_b.id;
+                        tc = v_tcs[i];
+                        v_tcs[i].second = dst_b.id;
+                        _disp(v_cores, tc, dst_b);
+                        is_found = NO;
+                }                
         }
         _check_core_load(v_cores);
         _rst_empty_cores(v_cores);
@@ -384,7 +365,6 @@ void displacement(vector<struct core> &v_cores)
 void swapping(vector<struct core> &v_cores)
 {
         int flag;
-        int state;
         int src_color;
         int dst_color;
         struct core dst_core;
@@ -392,7 +372,6 @@ void swapping(vector<struct core> &v_cores)
         vector<pair<struct tc, int>> v_tcs;
 
         flag = NO;
-        state = NO;
 
         /* store fail_cores */
         _store_tcs_swap(v_cores, v_tcs, flag);
@@ -403,52 +382,62 @@ void swapping(vector<struct core> &v_cores)
         if (flag == NO)
                 return;
 
-        while (1) {
-                state = NO;
-                /* iterate over unsched tcs */
-                for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                        for (unsigned int j = 0; j < v_tcs.size(); j++) {
-                                /* skip tcs in same core */
-                                if (v_tcs[i].second == v_tcs[j].second)
-                                        continue;
+        /* iterate over unsched tcs */
+        for (unsigned int i = 0; i < v_tcs.size(); i++) {
+                for (unsigned int j = 0; j < v_tcs.size(); j++) {
+                        /* skip tcs in same core */
+                        if (v_tcs[i].second == v_tcs[j].second)
+                                continue;
 
-                                /* if tc has been moved too many times skip */
-                                if (v_tcs[i].first.swap_count > MAX_SWAP_COUNT || 
-                                                v_tcs[j].first.swap_count > MAX_SWAP_COUNT)
-                                        continue;
+                        /* none white */
+                        if (v_tcs[i].first.color != WHITE && v_tcs[j].first.color != WHITE) {
+                                src_color = 0;
+                                dst_color = 0;
+                                src_color = get_color_by_id(v_cores, v_tcs[i].second);
+                                dst_color = get_color_by_id(v_cores, v_tcs[j].second);
+                                if (v_tcs[i].first.color == src_color && v_tcs[j].first.color == dst_color) {
+                                        if (src_color == dst_color) {
+                                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                                v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
+                                                                v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
 
-                                /* none white */
-                                if (v_tcs[i].first.color != WHITE && v_tcs[j].first.color != WHITE) {
-                                        src_color = 0;
-                                        dst_color = 0;
-                                        src_color = get_color_by_id(v_cores, v_tcs[i].second);
-                                        dst_color = get_color_by_id(v_cores, v_tcs[j].second);
-                                        if (v_tcs[i].first.color == src_color && v_tcs[j].first.color == dst_color) {
-                                                if (src_color == dst_color) {
-                                                        printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
-                                                                        v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
-                                                                        v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
+                                                /* search if swap is possible */
+                                                dst_core = {0};
+                                                src_core = {0};
+                                                flag = NO;
+                                                flag = _search_for_swap(v_cores, v_tcs[i], 
+                                                                v_tcs[j], dst_core, src_core);
 
-                                                        /* search if swap is possible */
-                                                        dst_core = {0};
-                                                        src_core = {0};
-                                                        flag = NO;
-                                                        flag = _search_for_swap(v_cores, v_tcs[i], 
-                                                                        v_tcs[j], dst_core, src_core);
-
-                                                        if (flag == YES) {
-                                                                _swap(v_cores, dst_core, src_core);
-                                                                state = YES;
-                                                                break;
-                                                        }
-                                                }
-
+                                                if (flag == YES)
+                                                        _swap(v_cores, dst_core, src_core);
                                         }
-
                                 }
+                        }
 
-                                /* both white */
-                                if (v_tcs[i].first.color == WHITE && v_tcs[j].first.color == WHITE) {
+                        /* both white */
+                        if (v_tcs[i].first.color == WHITE && v_tcs[j].first.color == WHITE) {
+                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
+                                                v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
+
+                                /* search if swap is possible */
+                                dst_core = {0};
+                                src_core = {0};
+                                flag = NO;
+                                flag = _search_for_swap(v_cores, v_tcs[i], 
+                                                v_tcs[j], dst_core, src_core);
+
+                                if (flag == YES)
+                                        _swap(v_cores, dst_core, src_core);
+                        }
+
+                        /* src white dst not white */
+                        if (v_tcs[i].first.color == WHITE && v_tcs[j].first.color != WHITE) {
+                                src_color = 0;
+                                dst_color = 0;
+                                src_color = get_color_by_id(v_cores, v_tcs[i].second);
+                                dst_color = get_color_by_id(v_cores, v_tcs[j].second);
+                                if (src_color == dst_color) {
                                         printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
                                                         v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
                                                         v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
@@ -460,68 +449,34 @@ void swapping(vector<struct core> &v_cores)
                                         flag = _search_for_swap(v_cores, v_tcs[i], 
                                                         v_tcs[j], dst_core, src_core);
 
-                                        if (flag == YES) {
+                                        if (flag == YES)
                                                 _swap(v_cores, dst_core, src_core);
-                                                state = YES;
-                                                break;
-                                        }
                                 }
+                        }
 
-                                /* src white dst not white */
-                                if (v_tcs[i].first.color == WHITE && v_tcs[j].first.color != WHITE) {
-                                        src_color = 0;
-                                        dst_color = 0;
-                                        src_color = get_color_by_id(v_cores, v_tcs[i].second);
-                                        dst_color = get_color_by_id(v_cores, v_tcs[j].second);
-                                        if (src_color == dst_color) {
-                                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
-                                                                v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
-                                                                v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
+                        /* src not white dst white */
+                        if (v_tcs[i].first.color != WHITE && v_tcs[j].first.color == WHITE) {
+                                src_color = 0;
+                                dst_color = 0;
+                                src_color = get_color_by_id(v_cores, v_tcs[i].second);
+                                dst_color = get_color_by_id(v_cores, v_tcs[j].second);
+                                if (src_color == dst_color) {
+                                        printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
+                                                        v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
+                                                        v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
 
-                                                /* search if swap is possible */
-                                                dst_core = {0};
-                                                src_core = {0};
-                                                flag = NO;
-                                                flag = _search_for_swap(v_cores, v_tcs[i], 
-                                                                v_tcs[j], dst_core, src_core);
+                                        /* search if swap is possible */
+                                        dst_core = {0};
+                                        src_core = {0};
+                                        flag = NO;
+                                        flag = _search_for_swap(v_cores, v_tcs[i], 
+                                                        v_tcs[j], dst_core, src_core);
 
-                                                if (flag == YES) {
-                                                        _swap(v_cores, dst_core, src_core);
-                                                        state = YES;
-                                                        break;
-                                                }
-                                        }
-                                }
-
-                                /* src not white dst white */
-                                if (v_tcs[i].first.color != WHITE && v_tcs[j].first.color == WHITE) {
-                                        src_color = 0;
-                                        dst_color = 0;
-                                        src_color = get_color_by_id(v_cores, v_tcs[i].second);
-                                        dst_color = get_color_by_id(v_cores, v_tcs[j].second);
-                                        if (src_color == dst_color) {
-                                                printf("Trying to swap src TC %d tc_idx %d from Core %d with dst TC %d idx: %d from Core %d\n",
-                                                                v_tcs[i].first.id, v_tcs[i].first.tc_idx, v_tcs[i].second,
-                                                                v_tcs[j].first.id, v_tcs[j].first.tc_idx, v_tcs[j].second);
-
-                                                /* search if swap is possible */
-                                                dst_core = {0};
-                                                src_core = {0};
-                                                flag = NO;
-                                                flag = _search_for_swap(v_cores, v_tcs[i], 
-                                                                v_tcs[j], dst_core, src_core);
-
-                                                if (flag == YES) {
-                                                        _swap(v_cores, dst_core, src_core);
-                                                        state = YES;
-                                                        break;
-                                                }
-                                        }
+                                        if (flag == YES)
+                                                _swap(v_cores, dst_core, src_core);
                                 }
                         }
                 }
-                if (state == NO)
-                        break;
         }
         _check_core_load(v_cores);
         _rst_empty_cores(v_cores);

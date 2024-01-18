@@ -137,8 +137,6 @@ static void _create_waters2019(struct tc &tc)
         waters2019.id = 0;
         waters2019.tc_idx = 0;
         waters2019.memcost = 3;
-        waters2019.disp_count = 0;
-        waters2019.swap_count = 0;
         waters2019.color = RED;
         waters2019.is_let = NO;
         waters2019.is_allocated = NO;
@@ -308,8 +306,6 @@ static void _create_tc(struct tc &tc, int color, int minu, int maxu)
                 tc.memcost = gen_rand(1, 3);
                 tc.color = color;
                 tc.is_frag = NO;
-                tc.disp_count = 0;
-                tc.swap_count = 0;
                 tc.is_let = NO;
                 tc.is_allocated = NO;
 
@@ -387,7 +383,7 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 5; i++) {
                 tc = {0};
                 _create_tc(tc, WHITE, 100, C);
                 v_tcs.push_back(tc);
@@ -444,8 +440,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.tc_idx = idx;
                                 tc.size = u_sum;
                                 tc.memcost = v_tmp_tcs[i].memcost;
-                                tc.disp_count = 0;
-                                tc.swap_count = 0;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -468,8 +462,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.tc_idx = idx;
                                 tc.size = u_sum;
                                 tc.memcost = v_tmp_tcs[i].memcost;
-                                tc.disp_count = 0;
-                                tc.swap_count = 0;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -491,8 +483,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.tc_idx = idx;
                                 tc.size = u_sum;
                                 tc.memcost = v_tmp_tcs[i].memcost;
-                                tc.disp_count = 0;
-                                tc.swap_count = 0;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -512,8 +502,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.tc_idx = idx;
                                 tc.size = u_sum;
                                 tc.memcost = v_tmp_tcs[i].memcost;
-                                tc.disp_count = 0;
-                                tc.swap_count = 0;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;

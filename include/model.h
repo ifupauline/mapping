@@ -75,8 +75,6 @@ struct tc {
         int size;
         int gcd;
         int memcost;
-        int disp_count;
-        int swap_count;
         int color;
         int is_let;
         int is_frag;
