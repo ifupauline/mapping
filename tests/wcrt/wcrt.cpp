@@ -38,7 +38,7 @@ int main(void)
         v_tasks.push_back(tau_2);
         v_tasks.push_back(tau_3);
 
-        ret = wcrt(v_tasks);
+        ret = wcrt_part(v_tasks); /* without blocking time */
         if (ret == SCHED_FAILED)
                 printf("Schedulability FAILED\n");
         else 

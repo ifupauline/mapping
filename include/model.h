@@ -21,7 +21,6 @@
 #define RIGHT 2
 
 /* core filling capacity */
-#define C   1000
 #define PHI 800
 
 /* units */

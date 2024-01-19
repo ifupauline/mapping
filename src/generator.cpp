@@ -2,7 +2,11 @@
 #include "sched_analysis.h"
 
 /* WATERS2015 task periods */
-static int chain[1][8] = {
+static int chain_static[1][6] = {
+        {1000, 2000, 5000, 10000, 20000, 50000},
+};
+
+static int chain_dynamic[1][8] = {
         {1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000},
 };
 
@@ -252,7 +256,7 @@ static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)
         return 0;
 }
 
-static void _create_task(struct task &tau, int i)
+static void _create_task(struct task &tau, int i, int color)
 {
         int y;
         int real_t;
@@ -261,8 +265,14 @@ static void _create_task(struct task &tau, int i)
         float real_u;
 
         while (1) {
-                y  = gen_rand(0, 7);
-                real_t = chain[0][y];
+                if (color == WHITE) {
+                        y  = gen_rand(0, 7);
+                        real_t = chain_dynamic[0][y];
+                } else {
+                        y  = gen_rand(0, 5);
+                        real_t = chain_static[0][y];
+                }
+
                 real_c = gen_rand(1, 30000); /* microsecs */
                 real_u = (real_c/real_t) * PERMILL;
 
@@ -301,7 +311,7 @@ static void _create_tc(struct tc &tc, int color, int minu, int maxu)
                 if (color == WHITE)
                         task_nbr = gen_rand(2, 15);
                 else
-                        task_nbr = gen_rand(4, 6); /* ZCU tc */
+                        task_nbr = gen_rand(2, 6); /* ZCU tc */
 
                 tc.memcost = gen_rand(1, 3);
                 tc.color = color;
@@ -314,7 +324,7 @@ static void _create_tc(struct tc &tc, int color, int minu, int maxu)
                         tau.is_let = NO;
                         tau.tc_id = tc.id;
 
-                        _create_task(tau, i);
+                        _create_task(tau, i, color);
 
                         tc.v_tasks.push_back(tau);
                         tc.size += tau.u;
@@ -344,48 +354,48 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         /* blue */
         tc = {0};
-        _create_tc(tc, BLUE, 100, C/2);
+        _create_tc(tc, BLUE, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, BLUE, 100, C/2);
+        _create_tc(tc, BLUE, 100, 200);
         v_tcs.push_back(tc);
 
         /* yellow */
         tc = {0};
-        _create_tc(tc, YELLOW, 100, C/2);
+        _create_tc(tc, YELLOW, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, YELLOW, 100, C/2);
+        _create_tc(tc, YELLOW, 100, 200);
         v_tcs.push_back(tc);
 
         /* green */
         tc = {0};
-        _create_tc(tc, GREEN, 100, C/2);
+        _create_tc(tc, GREEN, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, GREEN, 100, C/2);
+        _create_tc(tc, GREEN, 100, 200);
         v_tcs.push_back(tc);
 
         /* cyan */
         tc = {0};
-        _create_tc(tc, CYAN, 100, C/2);
+        _create_tc(tc, CYAN, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, CYAN, 100, C/2);
+        _create_tc(tc, CYAN, 100, 200);
         v_tcs.push_back(tc);
 
         /* purple */
         tc = {0};
-        _create_tc(tc, PURPLE, 100, C/2);
+        _create_tc(tc, PURPLE, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, PURPLE, 100, C/2);
+        _create_tc(tc, PURPLE, 100, 200);
         v_tcs.push_back(tc);
 
         /* white */
         for (int i = 0; i < 5; i++) {
                 tc = {0};
-                _create_tc(tc, WHITE, 100, C);
+                _create_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);
         }
         sort_dec_tc_size(v_tcs);
@@ -431,7 +441,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                         u_sum += v_tmp_tcs[i].v_tasks[j].u;
                         v_tmp_tcs[i].v_tasks[j].tc_id = v_tmp_tcs[i].id;
                         v_tmp.push_back(v_tmp_tcs[i].v_tasks[j]);
-                        ret = wcrt(v_tmp);
+                        ret = wcrt_part(v_tmp);
                         if (ret == SCHED_FAILED)  {
                                 u_sum -= v_tmp_tcs[i].v_tasks[j].u;
                                 v_tmp.pop_back();

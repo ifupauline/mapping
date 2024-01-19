@@ -30,6 +30,7 @@ static void _rst_empty_cores(vector<struct core> &v_cores)
                                 v_cores[i].v_tcs[j].v_tasks[0] = {0};
                                 v_cores[i].load = 0;
                                 v_cores[i].load_rem = v_cores[i].phi;
+                                v_cores[i].is_empty = YES;
                         }
                 }
         }
