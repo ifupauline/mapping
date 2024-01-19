@@ -441,7 +441,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                         u_sum += v_tmp_tcs[i].v_tasks[j].u;
                         v_tmp_tcs[i].v_tasks[j].tc_id = v_tmp_tcs[i].id;
                         v_tmp.push_back(v_tmp_tcs[i].v_tasks[j]);
-                        ret = wcrt_part(v_tmp);
+                        ret = wcrt(v_tmp);
                         if (ret == SCHED_FAILED)  {
                                 u_sum -= v_tmp_tcs[i].v_tasks[j].u;
                                 v_tmp.pop_back();
