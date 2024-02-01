@@ -1,6 +1,8 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
+static int counter = 0;
+
 /* WATERS2015 task periods */
 static int chain_static[1][6] = {
         {1000, 2000, 5000, 10000, 20000, 50000},
@@ -332,8 +334,11 @@ static void _create_tc(struct tc &tc, int color, int minu, int maxu)
 
                 if (tc.size < minu || tc.size > maxu)
                         continue;
-                else
+                else {
+                        counter++;
+                        printf("%d\n", counter);
                         return;
+                }
         }
 }
 
@@ -393,7 +398,7 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 9; i++) {
                 tc = {0};
                 _create_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);

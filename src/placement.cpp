@@ -22,17 +22,10 @@ static void _check_core_load(vector<struct core> &v_cores)
 static void _rst_empty_cores(vector<struct core> &v_cores)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
-                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
-                        if (v_cores[i].v_tcs.size() == 1 && 
-                                        v_cores[i].v_tcs[j].is_let == YES) {
-                                v_cores[i].v_tcs[j].size = 0;
-                                v_cores[i].v_tcs[j].gcd = 0;
-                                v_cores[i].v_tcs[j].v_tasks[0] = {0};
-                                v_cores[i].load = 0;
-                                v_cores[i].load_rem = v_cores[i].phi;
-                                v_cores[i].is_empty = YES;
-                        }
-                }
+                if (v_cores[i].load == 0)
+                        v_cores[i].is_empty = YES;
+                else
+                        v_cores[i].is_empty = NO;
         }
 }
 
@@ -293,6 +286,7 @@ void displacement(vector<struct core> &v_cores)
         int flag;
         int load;
         int is_found;
+        int check_empty;
         struct core dst_b;
         pair<struct tc, int> tc;
         vector<struct core> v_dst_cores;
@@ -300,11 +294,14 @@ void displacement(vector<struct core> &v_cores)
 
         flag = NO;
         is_found = NO;
+        check_empty = NO;
         gcd = 0;
         load = 0;
         dst_b = {0};
         tc.first = {0};
         tc.second = 0;
+
+        _rst_empty_cores(v_cores);
 
         /* take next unschedulable tc */
         _store_tcs_disp(v_cores, v_tcs, flag);
@@ -328,6 +325,11 @@ void displacement(vector<struct core> &v_cores)
                 for (unsigned int j = 0; j < v_cores.size(); j++) {
                         if (v_cores[j].flag == SCHED_FAILED)
                                 continue;
+                        if (check_empty == NO) {
+                                if (v_cores[j].is_empty == YES)
+                                        continue;
+                        }
+
                         if (v_tcs[i].second == v_cores[j].id)
                                 continue;
 
@@ -357,10 +359,11 @@ void displacement(vector<struct core> &v_cores)
                         v_tcs[i].second = dst_b.id;
                         _disp(v_cores, tc, dst_b);
                         is_found = NO;
-                }                
+                        check_empty = NO;
+                } else
+                        check_empty = YES;
         }
         _check_core_load(v_cores);
-        _rst_empty_cores(v_cores);
 }
 
 void swapping(vector<struct core> &v_cores)

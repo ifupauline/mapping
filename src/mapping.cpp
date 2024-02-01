@@ -70,7 +70,6 @@ void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx)
 
 void placement(vector<struct core> &v_cores, struct context &ctx)
 {
-
         clock_t start, end;
         printf("+=====================================+\n");
         printf("| PLACEMENT - DISPLACEMENT            |\n");

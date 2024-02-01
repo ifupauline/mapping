@@ -48,7 +48,7 @@ static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)
         ctx.p.ar = (float)ctx.cores_count / (float)ctx.cores_min;
 }
 
-static void _rst_empty_cores(vector<struct core> &v_cores)
+static void _rst_let_task(vector<struct core> &v_cores)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
@@ -214,7 +214,7 @@ void print_core(struct core &b)
 void print_cores(vector<struct core> &v_cores, struct context &ctx)
 {
         sort_inc_core_color(v_cores);
-        _rst_empty_cores(v_cores);
+        _rst_let_task(v_cores);
         printf("+=====================================+\n");
         if (ctx.prm.a == BFDU)
                 printf("| PRINT CORE BFDU                     |\n");
