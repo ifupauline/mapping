@@ -51,7 +51,6 @@ struct task {
         int p;
         int r;
         int id;
-        int uniq_id;
         int tc_id;
         int is_let;
         float u;

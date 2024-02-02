@@ -192,22 +192,22 @@ void print_core(struct core &b)
         printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
-                        printf("TC %-3d tc_idx %d u: %-3d || tau %-3d p: %-3d u: %-3f tc_idx: %-3d uniq_id: %-3d sched: %d\n", 
+                        printf("TC %-3d tc_idx %d u: %-3d || tau %-3d p: %-3d u: %-3f tc_idx: %-3d sched: %d\n", 
                                         b.v_tcs[i].id, b.v_tcs[i].tc_idx, 
                                         b.v_tcs[i].size,
                                         b.v_tcs[i].v_tasks[j].id, 
                                         b.v_tcs[i].v_tasks[j].p,
                                         b.v_tcs[i].v_tasks[j].u,
                                         b.v_tcs[i].v_tasks[j].idx.tc_idx, 
-                                        b.v_tcs[i].v_tasks[j].uniq_id, b.flag);
+                                        b.flag);
                 }
         }
         printf("----------------------------------------------------------------------------\n");
         for (unsigned int i = 0; i < b.v_tasks.size(); i++)
-                printf("tau %-3d u: %-3d p %-3d tc_idx %-3d tc_id: %-3d uniq_id: %-3d\n", 
+                printf("tau %-3d u: %-3d p %-3d tc_idx %-3d tc_id: %-3d\n", 
                                 b.v_tasks[i].id, (int)b.v_tasks[i].u, 
                                 b.v_tasks[i].p, b.v_tasks[i].idx.tc_idx, 
-                                b.v_tasks[i].tc_id, b.v_tasks[i].uniq_id);
+                                b.v_tasks[i].tc_id);
         printf("\n");
 }
 

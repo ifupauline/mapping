@@ -82,7 +82,7 @@ static void _save_priorities(struct core &b)
         }
 }
 
-static void _pswap(struct core &b, int p, int tc_idx, int tc_id, int uniq_id)
+static void _pswap(struct core &b, int p, int tc_idx, int tc_id)
 {
         /* starting new p */
         int newp;
@@ -94,10 +94,9 @@ static void _pswap(struct core &b, int p, int tc_idx, int tc_id, int uniq_id)
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 if (b.v_tasks[i].is_let == YES)
                         continue;
-                if (b.v_tasks[i].idx.tc_idx == tc_idx)
+                if (b.v_tasks[i].idx.tc_idx > tc_idx)
                         continue;
-                if (b.v_tasks[i].uniq_id == uniq_id)
-                        continue;
+                
                 if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id)
                         continue;
 
@@ -185,8 +184,7 @@ static void _pswapping(struct core &b)
                         /* priority swapping */
                         _pswap(tmp_b, b.v_tasks[i].p, 
                                         tmp_b.v_tasks[i].idx.tc_idx, 
-                                        tmp_b.v_tasks[i].tc_id, 
-                                        b.v_tasks[i].uniq_id);
+                                        tmp_b.v_tasks[i].tc_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;
                         }

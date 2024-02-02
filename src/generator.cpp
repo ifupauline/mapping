@@ -422,7 +422,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         int idx;
         int ret;
         int u_sum;
-        int uniq_id;
         struct tc tc;
         vector<struct task> v_tmp;
         vector<struct tc> v_new_tcs;
@@ -431,7 +430,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         idx = 0;
         ret = -1;
         u_sum = 0;
-        uniq_id = 1;
         ctx.frags_count = 0;
 
         /* store tcs */
@@ -536,12 +534,12 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
 
-        for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
-                        v_tcs[i].v_tasks[j].uniq_id = uniq_id;
-                        uniq_id++;
-                }
-        }
+        //for (unsigned int i = 0; i < v_tcs.size(); i++) {
+        //        for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
+        //                v_tcs[i].v_tasks[j].uniq_id = uniq_id;
+        //                uniq_id++;
+        //        }
+        //}
         printf("Initial Number of TC:   %d\n", ctx.prm.n);
         printf("Current Number of TC:   %ld\n", v_tcs.size());
         printf("Number of TC Cuts: %d\n", ctx.frags_count);

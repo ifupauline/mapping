@@ -102,7 +102,7 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                         cycl_count++;
                                 }
 
-                                if (cycl_count > 10000) {
+                                if (cycl_count > 100) {
                                         printf("ERR!: Impossible to allocate all TC, System Unfeasible\n");
                                         STATE = FAILED;
                                         return;
