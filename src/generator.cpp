@@ -300,7 +300,7 @@ static void _create_task(struct task &tau, int i, int color)
         }
 }
 
-static void _create_tc(struct tc &tc, int color, int minu, int maxu)
+void create_tc(struct tc &tc, int color, int minu, int maxu)
 {
         int task_nbr;
         struct task tau;
@@ -359,48 +359,48 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         /* blue */
         tc = {0};
-        _create_tc(tc, BLUE, 100, 200);
+        create_tc(tc, BLUE, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, BLUE, 100, 200);
+        create_tc(tc, BLUE, 100, 200);
         v_tcs.push_back(tc);
 
         /* yellow */
         tc = {0};
-        _create_tc(tc, YELLOW, 100, 200);
+        create_tc(tc, YELLOW, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, YELLOW, 100, 200);
+        create_tc(tc, YELLOW, 100, 200);
         v_tcs.push_back(tc);
 
         /* green */
         tc = {0};
-        _create_tc(tc, GREEN, 100, 200);
+        create_tc(tc, GREEN, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, GREEN, 100, 200);
+        create_tc(tc, GREEN, 100, 200);
         v_tcs.push_back(tc);
 
         /* cyan */
         tc = {0};
-        _create_tc(tc, CYAN, 100, 200);
+        create_tc(tc, CYAN, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, CYAN, 100, 200);
+        create_tc(tc, CYAN, 100, 200);
         v_tcs.push_back(tc);
 
         /* purple */
         tc = {0};
-        _create_tc(tc, PURPLE, 100, 200);
+        create_tc(tc, PURPLE, 100, 200);
         v_tcs.push_back(tc);
         tc = {0};
-        _create_tc(tc, PURPLE, 100, 200);
+        create_tc(tc, PURPLE, 100, 200);
         v_tcs.push_back(tc);
 
         /* white */
         for (int i = 0; i < 9; i++) {
                 tc = {0};
-                _create_tc(tc, WHITE, 100, 1000);
+                create_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);
         }
         sort_dec_tc_size(v_tcs);

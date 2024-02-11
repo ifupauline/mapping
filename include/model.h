@@ -53,6 +53,7 @@ struct task {
         int id;
         int tc_id;
         int is_let;
+        int uniq_id;
         float u;
         struct t_pos idx;
 };

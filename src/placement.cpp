@@ -360,7 +360,8 @@ void displacement(vector<struct core> &v_cores)
                         _disp(v_cores, tc, dst_b);
                         is_found = NO;
                         check_empty = NO;
-                } else
+
+                } else if (is_found == NO)
                         check_empty = YES;
         }
         _check_core_load(v_cores);

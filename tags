@@ -79,28 +79,30 @@ ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	630;"	d	f
 ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	633;"	d	file:
 ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	637;"	d	file:
 BFDU	include/model.h	9;"	d
-BLUE	include/model.h	34;"	d
+BLUE	include/model.h	33;"	d
 BUFFSIZE	include/exp.h	10;"	d
 B_ET	include/exp.h	5;"	d
 B_M	include/exp.h	4;"	d
 B_SR_ALLO	include/exp.h	6;"	d
 B_SR_DISP	include/exp.h	7;"	d
 B_SR_SWAP	include/exp.h	8;"	d
-C	include/model.h	24;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/dse/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/map/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	tests/ba/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/dse/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/map/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	tests/ba/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/dse/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/map/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	tests/ba/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	117;"	d	file:
@@ -410,7 +412,7 @@ CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	727;"	d	file:
 CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	730;"	d	file:
 CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	733;"	d	file:
 CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	735;"	d	file:
-CYAN	include/model.h	37;"	d
+CYAN	include/model.h	36;"	d
 C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	739;"	d	file:
 C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	741;"	d	file:
 C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	744;"	d	file:
@@ -424,12 +426,13 @@ EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/dse/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/map/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
+EQUALS	tests/ba/Makefile	/^EQUALS = =$/;"	m
 EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 EXP_H	include/exp.h	2;"	d
 FAILED	include/model.h	18;"	d
 FFDU	include/model.h	11;"	d
 GENERATOR_H	include/generator.h	2;"	d
-GREEN	include/model.h	36;"	d
+GREEN	include/model.h	35;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
@@ -438,16 +441,14 @@ LEFT	include/model.h	20;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
 MAXLETWCET	include/let.h	8;"	d
-MAX_DISP_COUNT	src/placement.cpp	5;"	d	file:
-MAX_SWAP_COUNT	src/placement.cpp	6;"	d	file:
 MINLETWCET	include/let.h	7;"	d
 MODEL_H	include/model.h	2;"	d
-MSEC	include/model.h	30;"	d
+MSEC	include/model.h	29;"	d
 NO	include/model.h	14;"	d
 OK	include/model.h	17;"	d
-PERCENT	include/model.h	28;"	d
-PERMILL	include/model.h	29;"	d
-PHI	include/model.h	25;"	d
+PERCENT	include/model.h	27;"	d
+PERMILL	include/model.h	28;"	d
+PHI	include/model.h	24;"	d
 PLACEMENT_H	include/placement.h	2;"	d
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	421;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	424;"	d	file:
@@ -519,13 +520,14 @@ PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
 PRECISION	include/generator.h	9;"	d
 PRINT_H	include/print.h	2;"	d
-PURPLE	include/model.h	38;"	d
-RED	include/model.h	33;"	d
+PURPLE	include/model.h	37;"	d
+RED	include/model.h	32;"	d
 RIGHT	include/model.h	21;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/dse/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/map/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	tests/ba/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
@@ -534,6 +536,7 @@ SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/dse/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/map/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	tests/ba/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	291;"	d	file:
@@ -586,13 +589,14 @@ STRINGIFY	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	402;"	d	file:
 STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	416;"	d	file:
 STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	401;"	d	file:
 WFDU	include/model.h	10;"	d
-WHITE	include/model.h	39;"	d
-YELLOW	include/model.h	35;"	d
+WHITE	include/model.h	38;"	d
+YELLOW	include/model.h	34;"	d
 YES	include/model.h	15;"	d
 __has_include	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
 __has_include	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 _assign_id	src/generator.cpp	/^static void _assign_id(vector<struct tc> &v_tcs)$/;"	f	file:
-_base_assignment	src/sched_analysis.cpp	/^static void _base_assignment(struct core &b)$/;"	f	file:
+_base_assignment	src/sched_analysis.cpp	/^void _base_assignment(struct core &b)$/;"	f
+_base_assignment	tests/ba/ba.cpp	/^static void _base_assignment(struct core &b)$/;"	f	file:
 _check_core_load	src/placement.cpp	/^static void _check_core_load(vector<struct core> &v_cores)$/;"	f	file:
 _check_prm	src/generator.cpp	/^static void _check_prm(struct params &prm)$/;"	f	file:
 _cmp_colors	src/generator.cpp	/^static int _cmp_colors(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f	file:
@@ -605,11 +609,11 @@ _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const s
 _cmp_inc_tc_color	src/model.cpp	/^static int _cmp_inc_tc_color(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_tc_id	src/model.cpp	/^static int _cmp_inc_tc_id(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_tc_tc_idx	src/model.cpp	/^static int _cmp_inc_tc_tc_idx(const struct tc &a, const struct tc &b)$/;"	f	file:
+_cmp_unsched	tests/ba/ba.cpp	/^static struct count _cmp_unsched(vector<struct core> &v_cores)$/;"	f	file:
 _cores_ratio	src/print.cpp	/^static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
 _count_pcu	src/print.cpp	/^static int _count_pcu(vector<struct core> &v_cores)$/;"	f	file:
 _count_zcu	src/print.cpp	/^static int _count_zcu(vector<struct core> &v_cores)$/;"	f	file:
-_create_task	src/generator.cpp	/^static void _create_task(struct task &tau, int i)$/;"	f	file:
-_create_tc	src/generator.cpp	/^static void _create_tc(struct tc &tc, int color, int minu, int maxu)$/;"	f	file:
+_create_task	src/generator.cpp	/^static void _create_task(struct task &tau, int i, int color)$/;"	f	file:
 _create_waters2019	src/generator.cpp	/^static void _create_waters2019(struct tc &tc)$/;"	f	file:
 _disp	src/placement.cpp	/^static void _disp(vector<struct core> &v_cores, pair<struct tc, $/;"	f	file:
 _execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
@@ -619,11 +623,12 @@ _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct
 _find_worst_core	src/wfdu.cpp	/^static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _gen_app	src/generator.cpp	/^static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, $/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct core &b)$/;"	f	file:
-_pswap	src/sched_analysis.cpp	/^static void _pswap(struct core &b, int p, int tc_idx, int tc_id, int uniq_id)$/;"	f	file:
+_naiv_assignment	tests/ba/ba.cpp	/^static void _naiv_assignment(struct core &b)$/;"	f	file:
+_pswap	src/sched_analysis.cpp	/^static void _pswap(struct core &b, int p, int tc_idx, int tc_id)$/;"	f	file:
 _pswapping	src/sched_analysis.cpp	/^static void _pswapping(struct core &b)$/;"	f	file:
 _resp	src/sched_analysis.cpp	/^static void _resp(vector<struct task> &v_tasks, int &flag)$/;"	f	file:
 _rst_empty_cores	src/placement.cpp	/^static void _rst_empty_cores(vector<struct core> &v_cores)$/;"	f	file:
-_rst_empty_cores	src/print.cpp	/^static void _rst_empty_cores(vector<struct core> &v_cores)$/;"	f	file:
+_rst_let_task	src/print.cpp	/^static void _rst_let_task(vector<struct core> &v_cores)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct core &b)$/;"	f	file:
 _schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_disp	src/placement.cpp	/^static int _search_for_disp(vector<struct core> &v_dst_cores, int tc_id, $/;"	f	file:
@@ -651,7 +656,8 @@ bfdu_sr_disp	include/exp.h	/^        float bfdu_sr_disp;$/;"	m	struct:b_stats
 bfdu_sr_swap	include/exp.h	/^        float bfdu_sr_swap;$/;"	m	struct:b_stats
 blue	include/model.h	/^        int blue;$/;"	m	struct:colorsize
 c	include/model.h	/^        int c;$/;"	m	struct:task
-chain	src/generator.cpp	/^static int chain[1][8] = {$/;"	v	file:
+chain_dynamic	src/generator.cpp	/^static int chain_dynamic[1][8] = {$/;"	v	file:
+chain_static	src/generator.cpp	/^static int chain_static[1][6] = {$/;"	v	file:
 check_if_fit_tc	src/let.cpp	/^int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)$/;"	f
 cmp_core_load	src/model.cpp	/^void cmp_core_load(struct core &b, int &load)$/;"	f
 cmp_core_memcost	src/model.cpp	/^void cmp_core_memcost(struct core &b)$/;"	f
@@ -671,11 +677,15 @@ core	include/model.h	/^struct core {$/;"	s
 core_idx	include/model.h	/^        int core_idx;$/;"	m	struct:t_pos
 cores_count	include/model.h	/^        int cores_count;$/;"	m	struct:context
 cores_min	include/model.h	/^        int cores_min;$/;"	m	struct:context
+count	tests/ba/ba.cpp	/^struct count {$/;"	s	file:
+count_task	tests/ba/ba.cpp	/^        int count_task;$/;"	m	struct:count	file:
+count_tc	tests/ba/ba.cpp	/^        int count_tc;$/;"	m	struct:count	file:
+counter	src/generator.cpp	/^static int counter = 0;$/;"	v	file:
+create_tc	src/generator.cpp	/^void create_tc(struct tc &tc, int color, int minu, int maxu)$/;"	f
 cs	include/model.h	/^        struct colorsize cs;$/;"	m	struct:context	typeref:struct:context::colorsize
 cut	src/generator.cpp	/^void cut(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f
 cyan	include/model.h	/^        int cyan;$/;"	m	struct:colorsize
 del_tc_by_id	src/model.cpp	/^void del_tc_by_id(struct core &b, int tc_id, int tc_idx)$/;"	f
-disp_count	include/model.h	/^        int disp_count;$/;"	m	struct:tc
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/model.h	/^        float disp_time;$/;"	m	struct:perf
 displacement	src/placement.cpp	/^void displacement(vector<struct core> &v_cores)$/;"	f
@@ -745,6 +755,7 @@ main	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^void main() {}$/;"	f
 main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc, char* argv[])$/;"	f
 main	exp/dse/dse.cpp	/^int main(void)$/;"	f
 main	exp/map/map.cpp	/^int main(int argc, char **argv)$/;"	f
+main	tests/ba/ba.cpp	/^int main(void)$/;"	f
 main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 maxu	include/model.h	/^        float maxu;$/;"	m	struct:perf
 memcost	include/model.h	/^        int memcost;$/;"	m	struct:core
@@ -800,7 +811,6 @@ sort_inc_task_priority	src/model.cpp	/^void sort_inc_task_priority(vector<struct
 sort_inc_tc_color	src/model.cpp	/^void sort_inc_tc_color(vector<struct tc> &v_tcs)$/;"	f
 sort_inc_tc_id	src/model.cpp	/^void sort_inc_tc_id(vector<struct tc> &v_tcs)$/;"	f
 sort_inc_tc_tc_idx	src/model.cpp	/^void sort_inc_tc_tc_idx(vector<struct tc> &v_tcs)$/;"	f
-swap_count	include/model.h	/^        int swap_count;$/;"	m	struct:tc
 swap_gain	include/model.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/model.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/placement.cpp	/^void swapping(vector<struct core> &v_cores)$/;"	f

@@ -204,8 +204,8 @@ void print_core(struct core &b)
         }
         printf("----------------------------------------------------------------------------\n");
         for (unsigned int i = 0; i < b.v_tasks.size(); i++)
-                printf("tau %-3d u: %-3d p %-3d tc_idx %-3d tc_id: %-3d\n", 
-                                b.v_tasks[i].id, (int)b.v_tasks[i].u, 
+                printf("tau %-3d uniq_id: %-3d u: %-3d p %-3d tc_idx %-3d tc_id: %-3d\n", 
+                                b.v_tasks[i].id, b.v_tasks[i].uniq_id, (int)b.v_tasks[i].u, 
                                 b.v_tasks[i].p, b.v_tasks[i].idx.tc_idx, 
                                 b.v_tasks[i].tc_id);
         printf("\n");

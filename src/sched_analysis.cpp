@@ -141,7 +141,7 @@ static void _pswap(struct core &b, int p, int tc_idx, int tc_id)
         }
 }
 
-static void _base_assignment(struct core &b)
+void _base_assignment(struct core &b)
 {
         int p;
 
