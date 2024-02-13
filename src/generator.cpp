@@ -336,7 +336,7 @@ void create_tc(struct tc &tc, int color, int minu, int maxu)
                         continue;
                 else {
                         counter++;
-                        printf("%d\n", counter);
+                        //printf("%d\n", counter);
                         return;
                 }
         }
