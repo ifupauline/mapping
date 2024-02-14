@@ -9,7 +9,7 @@ include_directories(include)
 project(mapping)
 
 add_subdirectory(src)
+add_subdirectory(exp/pa)
 add_subdirectory(exp/dse)
 add_subdirectory(exp/map)
-add_subdirectory(tests/ba)
 add_subdirectory(tests/wcrt)

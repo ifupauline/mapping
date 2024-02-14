@@ -163,7 +163,7 @@ void _base_assignment(struct core &b)
         copy_back_resp_to_tc(b);
 }
 
-static void _pswapping(struct core &b)
+static void _reassignment(struct core &b)
 {
         struct core tmp_b;
 
@@ -197,7 +197,7 @@ void priority_assignment(struct core &b)
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
                 printf("Core %d SCHED_FAILED\n", b.id);
-                _pswapping(b);
+                _reassignment(b);
         } else
                 printf("Core %d SCHED_OK\n", b.id);
 }

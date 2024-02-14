@@ -192,11 +192,13 @@ void print_core(struct core &b)
         printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
-                        printf("TC %-3d tc_idx %d u: %-3d || tau %-3d p: %-3d u: %-3f tc_idx: %-3d sched: %d\n", 
+                        printf("TC %-3d tc_idx %d u: %-3d || tau %-3d p: %-3d c: %-6d t: %-6d u: %-3f tc_idx: %-3d sched: %d\n", 
                                         b.v_tcs[i].id, b.v_tcs[i].tc_idx, 
                                         b.v_tcs[i].size,
                                         b.v_tcs[i].v_tasks[j].id, 
                                         b.v_tcs[i].v_tasks[j].p,
+                                        b.v_tcs[i].v_tasks[j].c,
+                                        b.v_tcs[i].v_tasks[j].t,
                                         b.v_tcs[i].v_tasks[j].u,
                                         b.v_tcs[i].v_tasks[j].idx.tc_idx, 
                                         b.flag);

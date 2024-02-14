@@ -2,14 +2,52 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-#define STP 100
 #define PA1 1
 #define PA2 2
+#define TCN 5
+#define STP 100
 
 struct stats {
         int count_task;
         int count_tc;
 };
+
+static int instance_count = 0;
+
+static float int_lvl_pa1 = 0;
+
+static float int_lvl_pa2 = 0;
+
+static void _cmp_int_lvl(struct core &b, int pa)
+{
+        int sum;
+        float avr;
+
+        copy_back_prio_to_tc(b);
+
+        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
+                avr = 0.0;
+                sum = 0;
+                for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
+                        sum += b.v_tcs[i].v_tasks[j].p - 1;
+                }
+
+                avr = (float)sum / (float)b.v_tcs[i].v_tasks.size();
+
+                if (pa == PA1)
+                        int_lvl_pa1 += avr;
+
+                else if (pa == PA2)
+                        int_lvl_pa2 += avr;
+        }
+
+        if (pa == PA1) {
+                printf("Instance %-4d PA1 Interference Level: %-.03f\n", instance_count, int_lvl_pa1);
+
+        } else if (pa == PA2) {
+                printf("Instance %-4d PA2 Interference Level: %-.03f\n\n", instance_count, int_lvl_pa2);
+        }
+}
 
 static void _pa1(struct core &b)
 {
@@ -21,7 +59,6 @@ static void _pa1(struct core &b)
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
                         b.v_tasks.push_back(b.v_tcs[i].v_tasks[j]);
-
                 }
         }
 
@@ -29,8 +66,10 @@ static void _pa1(struct core &b)
                 b.v_tasks[i].p = p;
                 p++;
         }
+
+        _cmp_int_lvl(b, PA1);
+
         b.flag = wcrt(b.v_tasks);
-        copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
 }
 
@@ -46,15 +85,16 @@ static void _pa2(struct core &b)
                 b.v_tasks[i].p = p;
                 p++;
         }
+
+        _cmp_int_lvl(b, PA2);
+
         b.flag = wcrt(b.v_tasks);
-        copy_back_prio_to_tc(b);
         copy_back_resp_to_tc(b);
 }
 
 static struct stats _cmp_unsched(vector<struct core> &v_cores)
 {
         struct stats c;
-        c.count_task = 0;
         c.count_tc = 0;
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
@@ -87,9 +127,9 @@ static int _create_data(vector<struct tc> &v_tcs)
 
         task_nbr = 0;
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < TCN; i++) {
                 tc = {0};
-                create_tc(tc, WHITE, 50, 500);
+                create_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);
                 task_nbr += tc.v_tasks.size();
         }
@@ -150,12 +190,11 @@ int main(void)
         struct stats cpa1;
         struct stats cpa2;
 
-        int task_win_pa1;
-        int task_win_pa2;
         int tc_win_pa1;
         int tc_win_pa2;
 
-        int task_nbr;
+        int int_count_pa1;
+        int int_count_pa2;
         int stp;
 
         pa1 = {0};
@@ -163,47 +202,57 @@ int main(void)
         cpa1 = {0};
         cpa2 = {0};
 
-        task_win_pa1 = 0;
-        task_win_pa2 = 0;
         tc_win_pa1 = 0;
         tc_win_pa2 = 0;
+        int_count_pa1 = 0;
+        int_count_pa2 = 0;
 
-        task_nbr = 0;
-        stp = 100;
+        stp = 1000;
 
         for (int i = 0; i < stp; i++) {
                 cpa1 = {0};
                 cpa2 = {0};
+
+                int_lvl_pa1 = 0;
+                int_lvl_pa2 = 0;
+
                 v_tcs.clear();
                 v_cores.clear();
 
-                task_nbr += _create_data(v_tcs);
+                instance_count++;
+                _create_data(v_tcs);
                 _add(v_tcs, v_cores);
 
                 cpa1 = _assign(v_cores, pa1, PA1);
                 cpa2 = _assign(v_cores, pa2, PA2);
 
-                if (cpa1.count_task > cpa2.count_task)
-                        task_win_pa1++;
-                else
-                        task_win_pa2++;
-
-                if (cpa1.count_tc > cpa2.count_tc)
+                if (cpa1.count_tc < cpa2.count_tc)
                         tc_win_pa1++;
-                else
+                else if (cpa1.count_tc > cpa2.count_tc)
                         tc_win_pa2++;
+
+                if (int_lvl_pa1 < int_lvl_pa2)
+                        int_count_pa1++;
+                if (int_lvl_pa2 < int_lvl_pa1)
+                        int_count_pa2++;
         }
 
-        printf("Total Number of Tasks over %d Executions: %-3d\n", stp, task_nbr);
-        printf("PA1 Total Number of Unsched Tasks over %d Executions: %-3d\n", stp, pa1.count_task);
-        printf("PA2 Total Number of Unsched Tasks over %d Executions: %-3d\n", stp, pa2.count_task);
-        printf("PA1 Number of Times with more Unsched Tasks than PA2 over %d Executions: %d\n", stp, task_win_pa1);
-        printf("PA2 Number of Times with more Unsched Tasks than PA1 over %d Executions: %d\n", stp, task_win_pa2);
         printf("\n");
-        printf("PA1 Total Number of Unsched TC over %d Executions: %-3d\n", stp, pa1.count_tc);
-        printf("PA2 Total Number of Unsched TC over %d Executions: %-3d\n", stp, pa2.count_tc);
-        printf("PA1 Number of Times with more Unsched TC than PA2 over %d Executions: %d\n", stp, tc_win_pa1);
-        printf("PA2 Number of Times with more Unsched TC than PA1 over %d Executions: %d\n", stp, tc_win_pa2);
+        printf("+===============================================================+\n");
+        printf("|%d Executions\n", stp);
+        printf("|Total Number of TC: %-3d\n", stp * TCN);
+        printf("+===============================================================+\n");
+        printf("PA1 Number of Unsched Tasks: %-3d\n", pa1.count_task);
+        printf("PA2 Number of Unsched Tasks: %-3d\n", pa2.count_task);
+        printf("\n");
+        printf("PA1 Number of Unsched TC   : %-3d\n", pa1.count_tc);
+        printf("PA2 Number of Unsched TC   : %-3d\n", pa2.count_tc);
+        printf("\n");
+        printf("PA1 Number of Times lowest Unsched TC   : %d\n", tc_win_pa1);
+        printf("PA2 Number of Times lowest Unsched TC   : %d\n", tc_win_pa2);
+        printf("\n");
+        printf("PA1 Number of Times lowest Interference Level: %d\n", int_count_pa1);
+        printf("PA2 Number of Times lowest Interference Level: %d\n", int_count_pa2);
 
         return 0;
 }
