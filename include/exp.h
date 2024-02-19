@@ -32,6 +32,8 @@ struct b_stats {
 
 void concatenate(char p[], char q[]);
 
+void write_to_file(FILE *filename, vector<float> &v_float);
+
 void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                 int type, int size);
 

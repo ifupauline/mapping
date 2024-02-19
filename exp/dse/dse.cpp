@@ -167,5 +167,11 @@ int main(void)
         write_data_to_file(sr_disp, v_stts, B_SR_DISP, ITR);
         write_data_to_file(sr_swap, v_stts, B_SR_SWAP, ITR);
 
+        fclose(m);
+        fclose(et);
+        fclose(sr_allo);
+        fclose(sr_disp);
+        fclose(sr_swap);
+
         return 0;
 }

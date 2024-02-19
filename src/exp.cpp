@@ -1,5 +1,17 @@
 #include "exp.h"
 
+void write_to_file(FILE *filename, vector<float> &v_float)
+{
+        for (unsigned int i = 0; i < v_float.size(); i++) {
+                fprintf(filename, "%-3.2f", v_float[i]);
+                if (i == v_float.size() - 1) {
+                        fprintf(filename, "\n");
+                        break;
+                }
+                fprintf(filename, ",");
+        }
+}
+
 void write_data_to_file(FILE *filename, vector<struct b_stats> &data,
                 int type, int size)
 {
