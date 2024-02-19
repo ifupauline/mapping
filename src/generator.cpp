@@ -310,7 +310,7 @@ void create_tc(struct tc &tc, int color, int minu, int maxu)
                 tc.tc_idx = 0;
                 tc.size = 0;
 
-                if (color == WHITE)
+                if (color == WHITE || color == RED)
                         task_nbr = gen_rand(2, 15);
                 else
                         task_nbr = gen_rand(2, 6); /* ZCU tc */
@@ -352,53 +352,66 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         struct tc tc;
 
-        /* red -> waters */
+        /* red */
         tc = {0};
-        _create_waters2019(tc);
+        //_create_waters2019(tc);
+        create_tc(tc, RED, 100, 500);
+        v_tcs.push_back(tc);
+
+        tc = {0};
+        create_tc(tc, RED, 100, 500);
+        v_tcs.push_back(tc);
+
+        tc = {0};
+        create_tc(tc, RED, 100, 500);
+        v_tcs.push_back(tc);
+
+        tc = {0};
+        create_tc(tc, RED, 100, 500);
         v_tcs.push_back(tc);
 
         /* blue */
         tc = {0};
-        create_tc(tc, BLUE, 100, 200);
+        create_tc(tc, BLUE, 100, 250);
         v_tcs.push_back(tc);
         tc = {0};
-        create_tc(tc, BLUE, 100, 200);
+        create_tc(tc, BLUE, 100, 250);
         v_tcs.push_back(tc);
 
         /* yellow */
         tc = {0};
-        create_tc(tc, YELLOW, 100, 200);
+        create_tc(tc, YELLOW, 100, 250);
         v_tcs.push_back(tc);
         tc = {0};
-        create_tc(tc, YELLOW, 100, 200);
+        create_tc(tc, YELLOW, 100, 250);
         v_tcs.push_back(tc);
 
         /* green */
         tc = {0};
-        create_tc(tc, GREEN, 100, 200);
+        create_tc(tc, GREEN, 100, 250);
         v_tcs.push_back(tc);
         tc = {0};
-        create_tc(tc, GREEN, 100, 200);
+        create_tc(tc, GREEN, 100, 250);
         v_tcs.push_back(tc);
 
         /* cyan */
         tc = {0};
-        create_tc(tc, CYAN, 100, 200);
+        create_tc(tc, CYAN, 100, 250);
         v_tcs.push_back(tc);
         tc = {0};
-        create_tc(tc, CYAN, 100, 200);
+        create_tc(tc, CYAN, 100, 250);
         v_tcs.push_back(tc);
 
         /* purple */
         tc = {0};
-        create_tc(tc, PURPLE, 100, 200);
+        create_tc(tc, PURPLE, 100, 250);
         v_tcs.push_back(tc);
         tc = {0};
-        create_tc(tc, PURPLE, 100, 200);
+        create_tc(tc, PURPLE, 100, 250);
         v_tcs.push_back(tc);
 
         /* white */
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 8; i++) {
                 tc = {0};
                 create_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);

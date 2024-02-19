@@ -285,6 +285,7 @@ void displacement(vector<struct core> &v_cores)
         int gcd;
         int flag;
         int load;
+        int redisp;
         int is_found;
         int check_empty;
         struct core dst_b;
@@ -293,6 +294,7 @@ void displacement(vector<struct core> &v_cores)
         vector<pair<struct tc, int>> v_tcs;
 
         flag = NO;
+        redisp = NO;
         is_found = NO;
         check_empty = NO;
         gcd = 0;
@@ -323,19 +325,20 @@ void displacement(vector<struct core> &v_cores)
                                 v_tcs[i].second);
                 v_dst_cores.clear();
                 for (unsigned int j = 0; j < v_cores.size(); j++) {
+                        /* color filter */
+                        if (v_tcs[i].first.color != v_cores[j].color && 
+                                        v_tcs[i].first.color != WHITE)
+                                continue;
+                        /* skip unschedulable cores */
                         if (v_cores[j].flag == SCHED_FAILED)
                                 continue;
+
                         if (check_empty == NO) {
                                 if (v_cores[j].is_empty == YES)
                                         continue;
                         }
 
                         if (v_tcs[i].second == v_cores[j].id)
-                                continue;
-
-                        /* color filter */
-                        if (v_tcs[i].first.color != v_cores[j].color && 
-                                        v_tcs[i].first.color != WHITE)
                                 continue;
 
                         /* search for dst cores that can accomodate tc */
@@ -359,10 +362,18 @@ void displacement(vector<struct core> &v_cores)
                         v_tcs[i].second = dst_b.id;
                         _disp(v_cores, tc, dst_b);
                         is_found = NO;
-                        check_empty = NO;
 
-                } else if (is_found == NO)
-                        check_empty = YES;
+                } 
+
+                if (is_found == NO) {
+                        if (redisp == NO) {
+                                i--;
+                                redisp = YES;
+                        } else if (redisp == YES) {
+                                check_empty = YES;
+                                redisp = NO;
+                        }
+                }
         }
         _check_core_load(v_cores);
 }
