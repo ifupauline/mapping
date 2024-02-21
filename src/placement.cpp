@@ -130,7 +130,7 @@ static int _search_for_disp(vector<struct core> &v_dst_cores, int tc_id,
         return is_found;
 }
 
-static int _search_for_swap(vector<struct core> &v_cores, 
+static int _check_if_swap(vector<struct core> &v_cores, 
                 pair<struct tc, int> &src_tc, 
                 pair<struct tc, int> &dst_tc, 
                 struct core &dst_core, struct core &src_core)
@@ -362,7 +362,6 @@ void displacement(vector<struct core> &v_cores)
                         v_tcs[i].second = dst_b.id;
                         _disp(v_cores, tc, dst_b);
                         is_found = NO;
-
                 } 
 
                 if (is_found == NO) {
@@ -392,7 +391,7 @@ void swapping(vector<struct core> &v_cores)
 
         _rst_empty_cores(v_cores);
 
-        /* store fail_cores */
+        /* store unsched tc */
         _store_tcs_swap(v_cores, v_tcs, flag);
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 printf("TC %-3d from unfeasible Core %-3d\n", 
@@ -424,7 +423,7 @@ void swapping(vector<struct core> &v_cores)
                                                 dst_core = {0};
                                                 src_core = {0};
                                                 flag = NO;
-                                                flag = _search_for_swap(v_cores, v_tcs[i], 
+                                                flag = _check_if_swap(v_cores, v_tcs[i], 
                                                                 v_tcs[j], dst_core, src_core);
 
                                                 if (flag == YES)
@@ -443,7 +442,7 @@ void swapping(vector<struct core> &v_cores)
                                 dst_core = {0};
                                 src_core = {0};
                                 flag = NO;
-                                flag = _search_for_swap(v_cores, v_tcs[i], 
+                                flag = _check_if_swap(v_cores, v_tcs[i], 
                                                 v_tcs[j], dst_core, src_core);
 
                                 if (flag == YES)
@@ -465,7 +464,7 @@ void swapping(vector<struct core> &v_cores)
                                         dst_core = {0};
                                         src_core = {0};
                                         flag = NO;
-                                        flag = _search_for_swap(v_cores, v_tcs[i], 
+                                        flag = _check_if_swap(v_cores, v_tcs[i], 
                                                         v_tcs[j], dst_core, src_core);
 
                                         if (flag == YES)
@@ -488,7 +487,7 @@ void swapping(vector<struct core> &v_cores)
                                         dst_core = {0};
                                         src_core = {0};
                                         flag = NO;
-                                        flag = _search_for_swap(v_cores, v_tcs[i], 
+                                        flag = _check_if_swap(v_cores, v_tcs[i], 
                                                         v_tcs[j], dst_core, src_core);
 
                                         if (flag == YES)
