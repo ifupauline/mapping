@@ -26,9 +26,7 @@ static int _count_zcu(vector<struct core> &v_cores)
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].is_empty == YES)
                         continue;
-                if (v_cores[i].color == RED)
-                        continue;
-                else
+                if (v_cores[i].color != RED)
                         count++;
         }
         return count;
@@ -39,12 +37,10 @@ static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
-                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[j].is_let == YES) {
+                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[j].is_let == YES)
                                 ctx.cores_count--;
-                        }
                 }
         }
-
         ctx.p.ar = (float)ctx.cores_count / (float)ctx.cores_min;
 }
 
@@ -76,9 +72,9 @@ static void _execution_time(struct context &ctx)
 static void _schedulability_rate(struct context &ctx)
 {
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
-        ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - ctx.p.sched_rate_allo;
-        ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - (ctx.p.sched_rate_disp * PERCENT);
-        ctx.p.opti_gain = ctx.p.disp_gain + ctx.p.swap_gain;
+        ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - ctx.p.sched_rate_allo;
+        ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - (ctx.p.sched_rate_swap * PERCENT);
+        ctx.p.opti_gain = ctx.p.swap_gain + ctx.p.disp_gain;
 }
 
 static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)
@@ -455,18 +451,18 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("Partitioning Time:                %-3.3f ms\n", ctx.p.part_time * PERMILL);
         printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
         printf("Schedulability Analysis Time:     %-3.3f ms\n", ctx.p.schd_time * PERMILL);
-        printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
+        printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
         printf("Placement Time:                   %-3.3f ms\n", ctx.p.plac_time * PERMILL);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
-        printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
-                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
                         ctx.p.sched_rate_swap * PERCENT, ctx.p.sched_imp_swap);
+        printf("Schedulability Rate (disp):       %-3.3f  +%-2d cores\n", 
+                        ctx.p.sched_rate_disp * PERCENT, ctx.p.sched_imp_disp);
         printf("------------------------------------------------------------------------>\n");
-        printf("Displacement SR Gain:            +%-3.3f\n", ctx.p.disp_gain);
         printf("Swapping SR Gain:                +%-3.3f\n", ctx.p.swap_gain);
+        printf("Displacement SR Gain:            +%-3.3f\n", ctx.p.disp_gain);
         printf("Total Optimization SR Gain:      +%-3.3f\n", ctx.p.opti_gain);
         printf("------------------------------------------------------------------------>\n");
         printf("Total APP Utilization (M)         %-3.3f\n", (ctx.p.appu / ctx.p.maxu) * PERCENT);

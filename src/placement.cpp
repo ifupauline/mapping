@@ -376,6 +376,7 @@ void displacement(vector<struct core> &v_cores)
                 }
         }
         _check_core_load(v_cores);
+        _rst_empty_cores(v_cores);
 }
 
 void swapping(vector<struct core> &v_cores)
@@ -388,6 +389,8 @@ void swapping(vector<struct core> &v_cores)
         vector<pair<struct tc, int>> v_tcs;
 
         flag = NO;
+
+        _rst_empty_cores(v_cores);
 
         /* store fail_cores */
         _store_tcs_swap(v_cores, v_tcs, flag);

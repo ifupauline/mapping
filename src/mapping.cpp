@@ -72,22 +72,6 @@ void placement(vector<struct core> &v_cores, struct context &ctx)
 {
         clock_t start, end;
         printf("+=====================================+\n");
-        printf("| PLACEMENT - DISPLACEMENT            |\n");
-        printf("+=====================================+\n");
-        start = clock();
-        displacement(v_cores);
-        end = clock();
-        ctx.p.disp_time = ((float) (end - start)) / CLOCKS_PER_SEC;
-        ctx.p.sched_rate_disp = sched_rate(v_cores, ctx);
-
-        /*compute improvement */
-        ctx.p.sched_imp_disp -= ctx.p.sched_imp_allo;
-        ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
-
-        /* prepare next swamp imp */
-        ctx.p.sched_imp_swap -= ctx.sched_ok_count;
-
-        printf("+=====================================+\n");
         printf("| PLACEMENT - SWAPPING                |\n");
         printf("+=====================================+\n");
         start = clock();
@@ -97,5 +81,21 @@ void placement(vector<struct core> &v_cores, struct context &ctx)
         ctx.p.sched_rate_swap = sched_rate(v_cores, ctx);
 
         /*compute improvement */
+        ctx.p.sched_imp_swap -= ctx.p.sched_imp_allo;
         ctx.p.sched_imp_swap = ctx.p.sched_imp_swap + ctx.sched_ok_count;
+
+        /* prepare next swap imp */
+        ctx.p.sched_imp_disp -= ctx.sched_ok_count;
+
+        printf("+=====================================+\n");
+        printf("| PLACEMENT - DISPLACEMENT            |\n");
+        printf("+=====================================+\n");
+        start = clock();
+        displacement(v_cores);
+        end = clock();
+        ctx.p.disp_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+        ctx.p.sched_rate_disp = sched_rate(v_cores, ctx);
+
+        /*compute improvement */
+        ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
 }

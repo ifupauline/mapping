@@ -79,13 +79,13 @@ void print_b_stats(vector<struct b_stats> &v_stts_algo, int iter)
                 printf("|WFDU_SR_ALLO: %f\n", v_stts_algo[i].wfdu_sr_allo);
                 printf("|FFDU_SR_ALLO: %f\n", v_stts_algo[i].ffdu_sr_allo);
                 printf("+-------------------------------|\n");
-                printf("|BFDU_SR_DISP: %f\n", v_stts_algo[i].bfdu_sr_disp);
-                printf("|WFDU_SR_DISP: %f\n", v_stts_algo[i].wfdu_sr_disp);
-                printf("|FFDU_SR_DISP: %f\n", v_stts_algo[i].ffdu_sr_disp);
-                printf("+-------------------------------|\n");
                 printf("|BFDU_SR_SWAP: %f\n", v_stts_algo[i].bfdu_sr_swap);
                 printf("|WFDU_SR_SWAP: %f\n", v_stts_algo[i].wfdu_sr_swap);
                 printf("|FFDU_SR_SWAP: %f\n", v_stts_algo[i].ffdu_sr_swap);
+                printf("+-------------------------------|\n");
+                printf("|BFDU_SR_DISP: %f\n", v_stts_algo[i].bfdu_sr_disp);
+                printf("|WFDU_SR_DISP: %f\n", v_stts_algo[i].wfdu_sr_disp);
+                printf("|FFDU_SR_DISP: %f\n", v_stts_algo[i].ffdu_sr_disp);
                 printf("+-------------------------------|\n");
                 printf("|BFDU_ET:      %f\n", v_stts_algo[i].bfdu_et);
                 printf("|WFDU_ET:      %f\n", v_stts_algo[i].wfdu_et);
