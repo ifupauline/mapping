@@ -145,7 +145,7 @@ static void _add(vector<struct tc> &v_tcs, vector<struct core> &v_cores)
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
                 v_tcs[i].id = i;
                 b.v_tcs.push_back(v_tcs[i]);
-                b.load += v_tcs[i].size;
+                b.load += v_tcs[i].u;
         }
 
         v_cores.push_back(b);

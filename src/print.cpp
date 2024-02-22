@@ -38,7 +38,7 @@ static void _rst_let_task(vector<struct core> &v_cores)
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         if (v_cores[i].v_tcs.size() == 1 && 
                                         v_cores[i].v_tcs[j].is_let == YES) {
-                                v_cores[i].v_tcs[j].size = 0;
+                                v_cores[i].v_tcs[j].u = 0;
                                 v_cores[i].v_tcs[j].gcd = 0;
                                 v_cores[i].v_tcs[j].v_tasks[0] = {0};
                                 v_cores[i].load = 0;
@@ -80,7 +80,7 @@ static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)
                                         v_cores[i].v_tcs[j].is_let == YES)
                                 continue;
                         if (v_cores[i].v_tcs[j].is_let == YES) 
-                                ctx.p.letu += v_cores[i].v_tcs[j].size;
+                                ctx.p.letu += v_cores[i].v_tcs[j].u;
                 }
         }
         /* substract let utilization to global sys */
@@ -154,7 +154,7 @@ void print_task_chains(vector<struct tc> &v_tcs)
                 printf("======================================================\n");
                 printf("tc.id: %-3d tc.idx: %-3d u: %.3f color: %d\n", 
                                 v_tcs[i].id, v_tcs[i].tc_idx, 
-                                (float)v_tcs[i].size / PERMILL, 
+                                (float)v_tcs[i].u / PERMILL, 
                                 v_tcs[i].color);
                 printf("======================================================\n");
                 for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
@@ -252,7 +252,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                                 printf("|--------------------------------------------------------------|\n");
                                 printf("|LET: %-3d u %.3f gcd %-6d\n", 
                                                 v_cores[i].v_tcs[j].id, 
-                                                (float)v_cores[i].v_tcs[j].size / PERMILL,
+                                                (float)v_cores[i].v_tcs[j].u / PERMILL,
                                                 v_cores[i].v_tcs[j].gcd);
                                 printf("|--------------------------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
@@ -295,7 +295,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                                 printf("|TC:  %-3d tc_idx %d u %.3f gcd %-6d color %d\n", 
                                                 v_cores[i].v_tcs[j].id, 
                                                 v_cores[i].v_tcs[j].tc_idx, 
-                                                (float)v_cores[i].v_tcs[j].size,
+                                                (float)v_cores[i].v_tcs[j].u,
                                                 v_cores[i].v_tcs[j].gcd,
                                                 v_cores[i].v_tcs[j].color);
                                 printf("\033[0m");
@@ -359,7 +359,7 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
         sched_failed = 0;
 
         for (int i = 0; i < ctx.prm.n; i++) {
-                if (v_tcs[i].is_allocated == NO) {
+                if (v_tcs[i].is_alloc == NO) {
                         printf("ERR! some TC were not allocated!\n");
                         exit(0);
                 }
@@ -367,8 +367,8 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
 
         printf("Vector:\n");
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                if (v_tcs[i].is_allocated == YES) {
-                        printf(" %u ", v_tcs[i].size);
+                if (v_tcs[i].is_alloc == YES) {
+                        printf(" %u ", v_tcs[i].u);
                         ctx.alloc_count++;
                 }
         }

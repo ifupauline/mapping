@@ -51,8 +51,8 @@ struct task {
         int p;
         int r;
         int task_id;
-        int tc_id;
         int uniq_id;
+        int tc_id;
         int is_let;
         float u;
         struct t_pos idx;
@@ -61,13 +61,13 @@ struct task {
 struct tc {
         int id;
         int tc_idx;
-        int size;
+        int u;
         int gcd;
         int comcost;
         int color;
         int is_let;
         int is_frag;
-        int is_allocated;
+        int is_alloc;
         vector<struct task> v_tasks;
 };
 

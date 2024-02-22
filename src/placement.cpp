@@ -56,7 +56,7 @@ static void _store_tcs_disp(vector<struct core> &v_cores,
 
         /* update tc load if tc is a fragment */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                v_tcs[i].first.size = 0;
+                v_tcs[i].first.u = 0;
                 cmp_tc_load(v_tcs[i].first);
         }
 }
@@ -87,7 +87,7 @@ static void _store_tcs_swap(vector<struct core> &v_cores,
 
         /* update tc load if tc is a fragment */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                v_tcs[i].first.size = 0;
+                v_tcs[i].first.u = 0;
                 cmp_tc_load(v_tcs[i].first);
         }
 }
@@ -200,9 +200,9 @@ static int _check_if_swap(vector<struct core> &v_cores,
                 if (dst_flag == YES || src_flag == YES) {
                         if (dst_core.flag == SCHED_OK && src_core.flag == SCHED_OK) {
                                 printf("\nFound Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
-                                                src_tc.first.id, src_tc.first.size, 
+                                                src_tc.first.id, src_tc.first.u, 
                                                 src_tc.second, dst_tc.first.id, 
-                                                dst_tc.first.size, dst_tc.second);
+                                                dst_tc.first.u, dst_tc.second);
 
                                 dst_tc.second = src_core.id;
                                 src_tc.second = dst_core.id;
@@ -213,9 +213,9 @@ static int _check_if_swap(vector<struct core> &v_cores,
                 if (dst_flag == NO && src_flag == NO) {
                         if (dst_core.flag == SCHED_OK || src_core.flag == SCHED_OK) {
                                 printf("\nFound Swap for src TC %d of size %d from Core %d and dst TC %d of size %d from Core %d\n", 
-                                                src_tc.first.id, src_tc.first.size, 
+                                                src_tc.first.id, src_tc.first.u, 
                                                 src_tc.second, dst_tc.first.id, 
-                                                dst_tc.first.size, dst_tc.second);
+                                                dst_tc.first.u, dst_tc.second);
 
                                 dst_tc.second = src_core.id;
                                 src_tc.second = dst_core.id;

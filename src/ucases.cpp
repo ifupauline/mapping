@@ -161,9 +161,9 @@ void create_waters2019(struct tc &tc)
         waters2019.comcost = 3;
         waters2019.color = RED;
         waters2019.is_let = NO;
-        waters2019.is_allocated = NO;
+        waters2019.is_alloc = NO;
 
-        waters2019.size = can_polling.u + lidar.u + cam_grabber.u + localization.u + 
+        waters2019.u = can_polling.u + lidar.u + cam_grabber.u + localization.u + 
                 detection.u + lane_detection.u + ekf.u + planner.u + control.u + 
                 can_write.u;
 

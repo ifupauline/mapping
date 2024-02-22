@@ -31,7 +31,7 @@ static int _cmp_tc_u(vector<struct tc> &v_tcs, struct context &ctx)
         ctx.gamma_u = 0;
 
         for (unsigned int i = 0; i < v_tcs.size(); i++)
-                ctx.gamma_u += v_tcs[i].size;
+                ctx.gamma_u += v_tcs[i].u;
 
         ctx.cores_min = ceil(ctx.gamma_u / PHI);
 
@@ -88,7 +88,7 @@ void create_tc(struct tc &tc, int color, int minu, int maxu)
         while (1) {
                 tc = {0};
                 tc.tc_idx = 0;
-                tc.size = 0;
+                tc.u = 0;
 
                 if (color == WHITE || color == RED)
                         task_nbr = gen_rand(2, 15);
@@ -99,7 +99,7 @@ void create_tc(struct tc &tc, int color, int minu, int maxu)
                 tc.color = color;
                 tc.is_frag = NO;
                 tc.is_let = NO;
-                tc.is_allocated = NO;
+                tc.is_alloc = NO;
 
                 for (int i = 0; i < task_nbr; i++) {
                         tau = {0};
@@ -109,10 +109,10 @@ void create_tc(struct tc &tc, int color, int minu, int maxu)
                         _create_task(tau, i, color);
 
                         tc.v_tasks.push_back(tau);
-                        tc.size += tau.u;
+                        tc.u += tau.u;
                 }
 
-                if (tc.size < minu || tc.size > maxu)
+                if (tc.u < minu || tc.u > maxu)
                         continue;
                 else
                         return;
@@ -240,12 +240,12 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc = {0};
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
-                                tc.size = u_sum;
+                                tc.u = u_sum;
                                 tc.comcost = v_tmp_tcs[i].comcost;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_allocated = NO;
+                                tc.is_alloc = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 j--;
@@ -262,12 +262,12 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc = {0};
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
-                                tc.size = u_sum;
+                                tc.u = u_sum;
                                 tc.comcost = v_tmp_tcs[i].comcost;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_allocated = NO;
+                                tc.is_alloc = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 j--;
@@ -284,12 +284,12 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc = {0};
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
-                                tc.size = u_sum;
+                                tc.u = u_sum;
                                 tc.comcost = v_tmp_tcs[i].comcost;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_allocated = NO;
+                                tc.is_alloc = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 j--;
@@ -303,12 +303,12 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc = {0};
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
-                                tc.size = u_sum;
+                                tc.u = u_sum;
                                 tc.comcost = v_tmp_tcs[i].comcost;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_allocated = NO;
+                                tc.is_alloc = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 u_sum = 0;

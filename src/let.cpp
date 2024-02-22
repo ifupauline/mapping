@@ -21,11 +21,11 @@ void init_let_task(struct tc &let, struct context &ctx)
 
         t = {0};
 
-        let.size = 0;
+        let.u = 0;
         let.comcost = 0;
         let.color = -1;
         let.is_let = YES;
-        let.is_allocated = NO;
+        let.is_alloc = NO;
         let.id = ctx.tcs_count++;
 
         t.c = 0;
@@ -66,7 +66,7 @@ void update_let(struct core &b, int gcd)
         let->u = ceil(((float)let->c / (float)let->t) * PERMILL);
 
         /* update let tc */
-        b.v_tcs[0].size = let->u;
+        b.v_tcs[0].u = let->u;
         b.v_tcs[0].gcd = gcd;
         b.v_tcs[0].v_tasks.clear();
         b.v_tcs[0].v_tasks.push_back(*let);
@@ -106,7 +106,7 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
         cmp_core_load(tmp_b, target_coreload);
 
         /* add utilization rate of potential tc */
-        total_coreload = tc.size + target_coreload;
+        total_coreload = tc.u + target_coreload;
 
         return total_coreload;
 }

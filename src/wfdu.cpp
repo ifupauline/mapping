@@ -72,7 +72,7 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                         gcd = 0;
                         load = 0;
                         core_id = 0;
-                        if (v_tcs[i].is_allocated == YES) 
+                        if (v_tcs[i].is_alloc == YES) 
                                 continue;
 
                         /* find best core to fit tc */
@@ -85,13 +85,13 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 core_id = ret;
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
                                                 load, gcd);
-                                v_tcs[i].is_allocated = YES;
+                                v_tcs[i].is_alloc = YES;
                                 continue;
 
                                 /* no core was found */
                         } else {
                                 printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
-                                                v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].size);
+                                                v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].u);
 
                                 if (v_tcs[i].color == WHITE) {
                                         add_core(v_cores, gen_rand(0, 5), 1, ctx);
@@ -112,7 +112,7 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 }
                 /* count remaining tc to be allocated */
                 for (int i = 0; i < n; i++) {
-                        if (v_tcs[i].is_allocated == YES)
+                        if (v_tcs[i].is_alloc == YES)
                                 alloc_count++;
                 }
         }

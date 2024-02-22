@@ -15,7 +15,7 @@ static int _cmp_inc_task_id(const struct task &a, const struct task &b)
 
 static int _cmp_dec_tc_size(const struct tc &a, const struct tc &b)
 {
-        return a.size > b.size;
+        return a.u > b.u;
 }
 
 static int _cmp_inc_tc_id(const struct tc &a, const struct tc &b)
@@ -115,19 +115,19 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
         /* create and insert let task */
         let = {0};
         init_let_task(let, ctx);
-        add_tc_to_v_cores(v_cores, let, tmp_core.id, ctx, let.size, let.v_tasks[0].t);
+        add_tc_to_v_cores(v_cores, let, tmp_core.id, ctx, let.u, let.v_tasks[0].t);
         ctx.tcs_count++;
-        let.is_allocated = YES;
+        let.is_alloc = YES;
 }
 
 void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd)
 {
         if (b.phi < load) {
                 printf("ERR Core %d Overflow with tc.size %d\n", 
-                                b.id, tc.size);
+                                b.id, tc.u);
                 exit(0);
         }
-        tc.is_allocated = YES;
+        tc.is_alloc = YES;
         b.load = load;
         b.load_rem = b.phi - load;
         b.v_tcs.push_back(tc);
@@ -153,10 +153,10 @@ void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id,
                 if (v_cores[i].id == core_id) {
                         if (v_cores[i].phi < load) {
                                 printf("ERR Core %d Overflow with tc.size %d\n", 
-                                                v_cores[i].id, tc.size);
+                                                v_cores[i].id, tc.u);
                                 exit(0);
                         }
-                        tc.is_allocated = YES;
+                        tc.is_alloc = YES;
                         v_cores[i].load = load;
                         v_cores[i].load_rem = v_cores[i].phi - load;
                         v_cores[i].v_tcs.push_back(tc);
@@ -223,13 +223,13 @@ void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx)
 void cmp_tc_load(struct tc &tc)
 {
         for (unsigned int i = 0; i < tc.v_tasks.size(); i++)
-                tc.size += tc.v_tasks[i].u;
+                tc.u += tc.v_tasks[i].u;
 }
 
 void cmp_core_load(struct core &b, int &load)
 {
         for (unsigned int i = 0; i < b.v_tcs.size(); i++)
-                load += b.v_tcs[i].size;
+                load += b.v_tcs[i].u;
 }
 
 void cmp_core_comcost(struct core &b)
