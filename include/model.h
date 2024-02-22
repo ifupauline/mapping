@@ -190,4 +190,7 @@ void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd);
 
 void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, 
                 struct context &ctx, int load, int gcd);
+
+int check_duplicata(vector<int> &v_int);
+
 #endif /* MODEL_H */

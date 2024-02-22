@@ -82,7 +82,7 @@ static void _save_priorities(struct core &b)
         }
 }
 
-static void _pswap(struct core &b, int p, int uniq_id, int tc_id)
+static void _pswap(struct core &b, int p, int tc_idx, int tc_id)
 {
         /* starting new p */
         int newp;
@@ -92,12 +92,14 @@ static void _pswap(struct core &b, int p, int uniq_id, int tc_id)
 
         /* store hp */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
+                /* let task always highest priority */
                 if (b.v_tasks[i].is_let == YES)
                         continue;
 
-                if (b.v_tasks[i].tc_id == tc_id && b.v_tasks[i].uniq_id < uniq_id)
+                /* not a task belonging to the same original task-chain */
+                if (b.v_tasks[i].p < p && b.v_tasks[i].tc_id == tc_id)
                         continue;
-                
+
                 if (b.v_tasks[i].p < p)
                         v_p.push_back(b.v_tasks[i].p);
         }
@@ -113,6 +115,9 @@ static void _pswap(struct core &b, int p, int uniq_id, int tc_id)
                         if (b.v_tasks[i].p == v_p[z]) {
                                 for (unsigned int j = i; j < b.v_tasks.size(); j++) {
                                         if (b.v_tasks[j].p == p)
+                                                continue;
+
+                                        if (b.v_tasks[j].p < p && b.v_tasks[j].tc_id == tc_id)
                                                 continue;
 
                                         b.v_tasks[j].p = newp;
@@ -142,6 +147,7 @@ void _base_assignment(struct core &b)
 
         p = 2;
 
+        /* no need to check for TC belonging to the same TC coze of ordering */
         sort_inc_task_id(b.v_tasks);
 
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
@@ -163,7 +169,7 @@ static void _reassignment(struct core &b)
 
         sort_inc_task_priority(b.v_tasks);
 
-        /* get next unschedulable task */
+        /* iterate in descending order */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 if (b.v_tasks[i].p == 0) {
                         printf("\nERR! Core %d tau %d p %d idx %d\n", 
@@ -177,7 +183,7 @@ static void _reassignment(struct core &b)
 
                         /* priority swapping */
                         _pswap(tmp_b, b.v_tasks[i].p, 
-                                        tmp_b.v_tasks[i].uniq_id, 
+                                        tmp_b.v_tasks[i].idx.tc_idx, 
                                         tmp_b.v_tasks[i].tc_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;

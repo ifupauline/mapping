@@ -386,3 +386,23 @@ void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks,
         for (unsigned int i = 0; i < src_v_tasks.size(); i++)
                 dst_v_tasks.push_back(src_v_tasks[i]);
 }
+
+int check_duplicata(vector<int> &v_int)
+{
+        int curr;
+        int count;
+
+        for (unsigned int i = 0; i < v_int.size(); i++) {
+                count = 0;
+                curr = v_int[i];
+                for (unsigned int j = 0; j < v_int.size(); j++) {
+                        if (v_int[j] == curr) {
+                                count++;
+                                if (count > 1) {
+                                        return v_int[i];
+                                }
+                        }
+                }
+        }
+        return -1;
+}
