@@ -57,9 +57,6 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
         cycl_count = 0;
         n = v_tcs.size();
-        sort_inc_tc_color(v_tcs);
-
-        /* TODO sort by size also */
 
         /* STEP - 1, place all possible tcs in cores using WFDU */
         printf("\n<--------------------------------------->\n");

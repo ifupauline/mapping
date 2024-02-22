@@ -308,7 +308,7 @@ void displacement(vector<struct core> &v_cores)
         /* take next unschedulable tc */
         _store_tcs_disp(v_cores, v_tcs, flag);
         for (unsigned int i = 0; i < v_tcs.size(); i++)
-                printf("TC %-3d  tc_idx %d from unfeasible Core %-3d\n", 
+                printf("TC %-3d  tc_idx %d from unschedulable Core %-3d\n", 
                                 v_tcs[i].first.id, 
                                 v_tcs[i].first.tc_idx, 
                                 v_tcs[i].second);
@@ -394,7 +394,7 @@ void swapping(vector<struct core> &v_cores)
         /* store unsched tc */
         _store_tcs_swap(v_cores, v_tcs, flag);
         for (unsigned int i = 0; i < v_tcs.size(); i++)
-                printf("TC %-3d from unfeasible Core %-3d\n", 
+                printf("TC %-3d from unschedulable Core %-3d\n", 
                                 v_tcs[i].first.id, v_tcs[i].second);
 
         if (flag == NO)

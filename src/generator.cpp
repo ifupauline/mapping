@@ -324,7 +324,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
 
-
         printf("Initial Number of TC:   %d\n", ctx.prm.n);
         printf("Current Number of TC:   %ld\n", v_tcs.size());
         printf("Number of TC Cuts: %d\n", ctx.frags_count);
