@@ -26,7 +26,7 @@ static void _resp(vector<struct task> &v_tasks, int &flag)
 
                 if (v_tasks[i].c > v_tasks[i].t) {
                         printf("ERR! Execution Time %d of tau %d > Period %d\n\n", 
-                                        v_tasks[i].c, v_tasks[i].id, v_tasks[i].t);
+                                        v_tasks[i].c, v_tasks[i].task_id, v_tasks[i].t);
                         exit(0);
                 }
 
@@ -173,7 +173,7 @@ static void _reassignment(struct core &b)
         for (unsigned int i = b.v_tasks.size() - 1; i > 0; i--) {
                 if (b.v_tasks[i].p == 0) {
                         printf("\nERR! Core %d tau %d p %d idx %d\n", 
-                                        b.id, b.v_tasks[i].id, b.v_tasks[i].p, 
+                                        b.id, b.v_tasks[i].task_id, b.v_tasks[i].p, 
                                         b.v_tasks[i].idx.tc_idx);
                         exit(0);
                 }
@@ -197,7 +197,7 @@ void priority_assignment(struct core &b)
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
                 printf("Core %d SCHED_FAILED\n", b.id);
-                _reassignment(b);
+                //_reassignment(b);
         } else
                 printf("Core %d SCHED_OK\n", b.id);
 }

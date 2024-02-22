@@ -32,18 +32,6 @@ static int _count_zcu(vector<struct core> &v_cores)
         return count;
 }
 
-static void _cores_ratio(vector<struct core> &v_cores, struct context &ctx)
-{
-
-        for (unsigned int i = 0; i < v_cores.size(); i++) {
-                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
-                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[j].is_let == YES)
-                                ctx.cores_count--;
-                }
-        }
-        ctx.p.ar = (float)ctx.cores_count / (float)ctx.cores_min;
-}
-
 static void _rst_let_task(vector<struct core> &v_cores)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
@@ -130,10 +118,12 @@ void cmp_stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
                 struct context &ctx)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
-                for (unsigned int j = 0; j < v_cores[i].v_tasks.size(); j++)
+                for (unsigned int j = 0; j < v_cores[i].v_tasks.size(); j++) {
                         ctx.tasks_count++;
+                        if (v_cores[i].v_tcs.size() == 1 && v_cores[i].v_tcs[j].is_let == YES)
+                                ctx.cores_count--;
+                }
         }
-        _cores_ratio(v_cores, ctx);
         _schedulability_rate(ctx);
         _execution_time(ctx);
         _utilization_rate(v_cores, ctx);
@@ -168,11 +158,12 @@ void print_task_chains(vector<struct tc> &v_tcs)
                                 v_tcs[i].color);
                 printf("======================================================\n");
                 for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
-                        printf("tau %d: u: %.3f c: %-6d t: %-6d\n",
-                                        v_tcs[i].v_tasks[j].id, 
+                        printf("tau: %-2d u: %.3f c: %-6d t: %-6d uniq_id: %-3d\n",
+                                        v_tcs[i].v_tasks[j].task_id, 
                                         v_tcs[i].v_tasks[j].u / PERMILL, 
                                         v_tcs[i].v_tasks[j].c, 
-                                        v_tcs[i].v_tasks[j].t);
+                                        v_tcs[i].v_tasks[j].t,
+                                        v_tcs[i].v_tasks[j].uniq_id);
                         tasknbr++;
                 }
                 printf("------------------------------------------------------\n");
@@ -188,22 +179,19 @@ void print_core(struct core &b)
         printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
-                        printf("TC %-3d tc_idx %d u: %-3d || tau %-3d p: %-3d c: %-6d t: %-6d u: %-3f tc_idx: %-3d sched: %d\n", 
-                                        b.v_tcs[i].id, b.v_tcs[i].tc_idx, 
-                                        b.v_tcs[i].size,
-                                        b.v_tcs[i].v_tasks[j].id, 
+                        printf("TC %-3d || tau %-3d p: %-3d c: %-6d t: %-6d u: %-3f\n", 
+                                        b.v_tcs[i].id, 
+                                        b.v_tcs[i].v_tasks[j].task_id, 
                                         b.v_tcs[i].v_tasks[j].p,
                                         b.v_tcs[i].v_tasks[j].c,
                                         b.v_tcs[i].v_tasks[j].t,
-                                        b.v_tcs[i].v_tasks[j].u,
-                                        b.v_tcs[i].v_tasks[j].idx.tc_idx, 
-                                        b.flag);
+                                        b.v_tcs[i].v_tasks[j].u);
                 }
         }
         printf("----------------------------------------------------------------------------\n");
         for (unsigned int i = 0; i < b.v_tasks.size(); i++)
                 printf("tau %-3d uniq_id: %-3d u: %-3d p %-3d tc_idx %-3d tc_id: %-3d\n", 
-                                b.v_tasks[i].id, b.v_tasks[i].uniq_id, (int)b.v_tasks[i].u, 
+                                b.v_tasks[i].task_id, b.v_tasks[i].uniq_id, (int)b.v_tasks[i].u, 
                                 b.v_tasks[i].p, b.v_tasks[i].idx.tc_idx, 
                                 b.v_tasks[i].tc_id);
         printf("\n");
@@ -223,7 +211,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
         printf("+=====================================+\n\n");
 
         for (unsigned int i = 0; i < v_cores.size(); i++)
-                cmp_core_memcost(v_cores[i]);
+                cmp_core_comcost(v_cores[i]);
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 printf("+==============================================================+\n");
@@ -233,7 +221,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 if (v_cores[i].is_empty == YES)
                         v_cores[i].load_rem = v_cores[i].phi;
                 printf("|Lrem: %.3f\n", ((float)v_cores[i].load_rem / PERMILL));
-                printf("|LETc: %d\n", v_cores[i].memcost);
+                printf("|LETc: %d\n", v_cores[i].comcost);
                 printf("|");
                 if (v_cores[i].color == RED)
                         printf("\033[0;31m");
@@ -262,14 +250,14 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         if (v_cores[i].v_tcs[j].is_let == YES){
                                 printf("|--------------------------------------------------------------|\n");
-                                printf("|LET: %-3d size %-3d gcd %-6d\n", 
+                                printf("|LET: %-3d u %.3f gcd %-6d\n", 
                                                 v_cores[i].v_tcs[j].id, 
-                                                v_cores[i].v_tcs[j].size,
+                                                (float)v_cores[i].v_tcs[j].size / PERMILL,
                                                 v_cores[i].v_tcs[j].gcd);
                                 printf("|--------------------------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
-                                                        v_cores[i].v_tcs[j].v_tasks[k].id, 
+                                                        v_cores[i].v_tcs[j].v_tasks[k].task_id, 
                                                         v_cores[i].v_tcs[j].v_tasks[k].u / PERMILL,
                                                         v_cores[i].v_tcs[j].v_tasks[k].p,
                                                         v_cores[i].v_tcs[j].v_tasks[k].r,
@@ -304,10 +292,10 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                                         printf("\033[0;35m");
                                 else
                                         printf("\033[0;37m");
-                                printf("|TC:  %-3d tc_idx %d size %-3d gcd %-6d color %d\n", 
+                                printf("|TC:  %-3d tc_idx %d u %.3f gcd %-6d color %d\n", 
                                                 v_cores[i].v_tcs[j].id, 
                                                 v_cores[i].v_tcs[j].tc_idx, 
-                                                v_cores[i].v_tcs[j].size,
+                                                (float)v_cores[i].v_tcs[j].size,
                                                 v_cores[i].v_tcs[j].gcd,
                                                 v_cores[i].v_tcs[j].color);
                                 printf("\033[0m");
@@ -328,7 +316,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                                         printf("\033[0;37m");
                                 for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
                                         printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
-                                                        v_cores[i].v_tcs[j].v_tasks[k].id, 
+                                                        v_cores[i].v_tcs[j].v_tasks[k].task_id, 
                                                         v_cores[i].v_tcs[j].v_tasks[k].u / PERMILL,
                                                         v_cores[i].v_tcs[j].v_tasks[k].p,
                                                         v_cores[i].v_tcs[j].v_tasks[k].r,
@@ -440,7 +428,6 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("Number of Cores in Use   (M):  %-3d     PCU: %-3d ZCU: %-3d\n", 
                         ctx.cores_count, _count_pcu(v_cores), _count_zcu(v_cores));
         printf("Optimal Number of Cores (M*):  %-3d\n", ctx.cores_min);
-        printf("Approximation Ratio   (M/M*):  %-3.3f\n", ctx.p.ar);
         printf("------------------------------------------------------------------------>\n");
         printf("Initial Number of TC:          %-3d\n", ctx.prm.n);
         printf("Current Number of TC:          %-3ld\n", v_tcs.size());

@@ -22,19 +22,20 @@ void init_let_task(struct tc &let, struct context &ctx)
         t = {0};
 
         let.size = 0;
-        let.memcost = 0;
+        let.comcost = 0;
         let.color = -1;
         let.is_let = YES;
         let.is_allocated = NO;
-        let.id = ctx.tcs_count;
+        let.id = ctx.tcs_count++;
 
         t.c = 0;
         t.t = 0;
         t.r = 0;
         t.u = 0;
         t.p = 1; /* always highest priority */
-        t.id = 0;
+        t.task_id = 0;
         t.tc_id = let.id;
+        t.uniq_id = -1; /* uniq_id doesn't matter for let task */
         t.is_let = YES;
 
         let.v_tasks.push_back(t);
@@ -46,7 +47,7 @@ void update_let(struct core &b, int gcd)
 
         /* update let task */
         let = _get_let_task(b);
-        switch (b.memcost) {
+        switch (b.comcost) {
 
                 case 1: 
                         let->c = gen_rand(50, 100);
@@ -58,7 +59,7 @@ void update_let(struct core &b, int gcd)
                         let->c = gen_rand(200, 300);
                         break;
                 default:
-                        let->c = 400;
+                        let->c = 350;
                         break;
         }
         let->t = gcd;
@@ -83,9 +84,9 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
         total_coreload = 0;
         target_coreload = 0;
 
-        /* add tc memcost to core memcost */
-        cmp_core_memcost(tmp_b);
-        tmp_b.memcost += tc.memcost;
+        /* add tc comcost to core comcost */
+        cmp_core_comcost(tmp_b);
+        tmp_b.comcost += tc.comcost;
 
         /* copy v_tasks */
         add_tasks_to_v_tasks(v_tasks, tc.v_tasks);
@@ -103,6 +104,8 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
 
         /* compute total core load */
         cmp_core_load(tmp_b, target_coreload);
+
+        /* add utilization rate of potential tc */
         total_coreload = tc.size + target_coreload;
 
         return total_coreload;

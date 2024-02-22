@@ -50,22 +50,12 @@ struct task {
         int t;
         int p;
         int r;
-        int id;
+        int task_id;
         int tc_id;
-        int is_let;
         int uniq_id;
+        int is_let;
         float u;
         struct t_pos idx;
-};
-
-struct colorsize {
-        int red;
-        int blue;
-        int yellow;
-        int green;
-        int cyan;
-        int purple;
-        int white;
 };
 
 struct tc {
@@ -73,7 +63,7 @@ struct tc {
         int tc_idx;
         int size;
         int gcd;
-        int memcost;
+        int comcost;
         int color;
         int is_let;
         int is_frag;
@@ -88,7 +78,7 @@ struct core {
         int load;
         int load_rem;
         int color;
-        int memcost;
+        int comcost;
         int is_empty;
         vector<struct tc> v_tcs;
         vector<struct task> v_tasks;
@@ -102,7 +92,6 @@ struct params {
 
 struct perf {
         float m;
-        float ar;
         float et;
         float letu;
         float appu;
@@ -128,8 +117,7 @@ struct perf {
 };
 
 struct context {
-        int tcs_nbr;
-        int tcs_size;
+        int gamma_u;
         int cores_min;
         int cores_count;
         int init_cores_count;
@@ -141,7 +129,6 @@ struct context {
         int sched_failed_count;
         struct perf p;
         struct params prm;
-        struct colorsize cs;
 };
 
 /* OPERATIONS ON DATA STRUCTURES */
@@ -175,7 +162,7 @@ void cmp_core_load(struct core &b, int &load);
 
 void cmp_tc_load(struct tc &tc);
 
-void cmp_core_memcost(struct core &b);
+void cmp_core_comcost(struct core &b);
 
 int cmp_gcd(vector<struct task> &v_tasks);
 

@@ -10,7 +10,7 @@ static int _cmp_inc_task_priority(const struct task &a, const struct task &b)
 
 static int _cmp_inc_task_id(const struct task &a, const struct task &b)
 {
-        return a.id < b.id;
+        return a.task_id < b.task_id;
 }
 
 static int _cmp_dec_tc_size(const struct tc &a, const struct tc &b)
@@ -106,7 +106,7 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
         tmp_core.load_rem = PHI;
         tmp_core.phi = PHI / speed_factor;
         tmp_core.color = color;
-        tmp_core.memcost = 0;
+        tmp_core.comcost = 0;
         tmp_core.is_empty = NO;
         v_cores.push_back(tmp_core);
         ctx.cores_count++;
@@ -131,7 +131,7 @@ void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd)
         b.load = load;
         b.load_rem = b.phi - load;
         b.v_tcs.push_back(tc);
-        cmp_core_memcost(b);
+        cmp_core_comcost(b);
         update_let(b, gcd);
         b.v_tasks.clear();
 
@@ -160,7 +160,7 @@ void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id,
                         v_cores[i].load = load;
                         v_cores[i].load_rem = v_cores[i].phi - load;
                         v_cores[i].v_tcs.push_back(tc);
-                        cmp_core_memcost(v_cores[i]);
+                        cmp_core_comcost(v_cores[i]);
                         update_let(v_cores[i], gcd);
                         v_cores[i].v_tasks.clear();
                         printf("TC %d added in Core %d\n\n", tc.id, v_cores[i].id);
@@ -232,19 +232,19 @@ void cmp_core_load(struct core &b, int &load)
                 load += b.v_tcs[i].size;
 }
 
-void cmp_core_memcost(struct core &b)
+void cmp_core_comcost(struct core &b)
 {
-        b.memcost = 0;
+        b.comcost = 0;
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
-                /* let task has no memcost */
+                /* let tc has no comcost */
                 if (b.v_tcs[i].is_let == YES)
                         continue;
 
-                b.memcost += b.v_tcs[i].memcost;
+                b.comcost += b.v_tcs[i].comcost;
         }
 
-        if (b.memcost < 0) {
-                printf("Core: %d memcost: %d\n", b.id, b.memcost);
+        if (b.comcost < 0) {
+                printf("Core: %d comcost: %d\n", b.id, b.comcost);
                 exit(0);
         }
 }
@@ -377,7 +377,7 @@ void del_tc_by_id(struct core &b, int tc_id, int tc_idx)
                 gcd = cmp_gcd(v_tasks);
         }
         update_let(b, gcd);
-        cmp_core_memcost(b);
+        cmp_core_comcost(b);
 }
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
