@@ -59,7 +59,6 @@ static void _create_task(struct task &tau, int i, int color)
                         real_t = period_waters2015(0, y, STATIC);
                 }
 
-
                 if (real_u < 10 || real_u > 100)
                         continue;
 

@@ -3,7 +3,7 @@
 #include "generator.h"
 
 #define STP 10
-#define ITR 61
+#define ITR 66
 
 static void dse(vector<struct b_stats> &v_stts, struct params &prm)
 {
