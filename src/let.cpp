@@ -50,16 +50,16 @@ void update_let(struct core &b, int gcd)
         switch (b.comcost) {
 
                 case 1: 
-                        let->c = gen_rand(50, 100);
+                        let->c = gen_rand(25, 50);
                         break;
                 case 2:
-                        let->c = gen_rand(100, 200);
+                        let->c = gen_rand(50, 100);
                         break;
                 case 3: 
-                        let->c = gen_rand(200, 300);
+                        let->c = gen_rand(100, 200);
                         break;
                 default:
-                        let->c = 350;
+                        let->c = 200;
                         break;
         }
         let->t = gcd;
