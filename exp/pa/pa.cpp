@@ -192,6 +192,9 @@ int main(void)
         int tc_win_pa1;
         int tc_win_pa2;
 
+        int int_pa1_win;
+        int int_pa2_win;
+
         int int_count_pa1;
         int int_count_pa2;
         int stp;
@@ -203,10 +206,14 @@ int main(void)
 
         tc_win_pa1 = 0;
         tc_win_pa2 = 0;
+
         int_count_pa1 = 0;
         int_count_pa2 = 0;
 
         stp = 1000;
+
+        int_pa1_win = 0;
+        int_pa2_win = 0;
 
         for (int i = 0; i < stp; i++) {
                 cpa1 = {0};
@@ -225,34 +232,46 @@ int main(void)
                 cpa1 = _assign(v_cores, pa1, PA1);
                 cpa2 = _assign(v_cores, pa2, PA2);
 
-                if (cpa1.count_tc < cpa2.count_tc)
+                if (cpa1.count_tc < cpa2.count_tc) {
                         tc_win_pa1++;
+                        if (int_lvl_pa1 < int_lvl_pa2)
+                                int_pa1_win++;
+                } 
 
-                else if (cpa1.count_tc > cpa2.count_tc)
+                if (cpa1.count_tc > cpa2.count_tc) {
                         tc_win_pa2++;
+                        if (int_lvl_pa2 < int_lvl_pa1)
+                                int_pa2_win++;
+                }
 
                 if (int_lvl_pa1 < int_lvl_pa2)
                         int_count_pa1++;
+
                 if (int_lvl_pa2 < int_lvl_pa1)
                         int_count_pa2++;
         }
-
         printf("\n");
-        printf("+===============================================================+\n");
-        printf("|%d Executions\n", stp);
-        printf("|Total Number of TC: %-3d\n", stp * TCN);
-        printf("+===============================================================+\n");
+        printf("+-------------------------------------------------------------------------+\n");
+        printf("Number of Executions: %-3d\n", stp);
+        printf("Number of TC per Instance: %-3d\n", TCN);
+        printf("+-------------------------------------------------------------------------+\n");
+        printf("\n");
+        printf("Total Number of TC: %-3d\n", stp * TCN);
+        printf("\n");
         printf("PA1 Number of Unsched Tasks: %-3d\n", pa1.count_task);
         printf("PA2 Number of Unsched Tasks: %-3d\n", pa2.count_task);
         printf("\n");
-        printf("PA1 Number of Unsched TC   : %-3d\n", pa1.count_tc);
-        printf("PA2 Number of Unsched TC   : %-3d\n", pa2.count_tc);
+        printf("PA1 Number of Unsched TC: %-3d\n", pa1.count_tc);
+        printf("PA2 Number of Unsched TC: %-3d\n", pa2.count_tc);
         printf("\n");
-        printf("PA1 Number of Times lowest Unsched TC   : %d\n", tc_win_pa1);
-        printf("PA2 Number of Times lowest Unsched TC   : %d\n", tc_win_pa2);
+        printf("PA1 Number of Times lowest Unsched TC: %-3d\n", tc_win_pa1);
+        printf("PA2 Number of Times lowest Unsched TC: %-3d\n", tc_win_pa2);
         printf("\n");
-        printf("PA1 Number of Times lowest Interference Level: %d\n", int_count_pa1);
-        printf("PA2 Number of Times lowest Interference Level: %d\n", int_count_pa2);
+        printf("PA1 Number of Times lowest Interference Level: %-3d\n", int_count_pa1);
+        printf("PA2 Number of Times lowest Interference Level: %-3d\n", int_count_pa2);
+        printf("\n");
+        printf("PA1 Number of Times lowest Interference Level AND lowest Unsched TC: %-3d\n", int_pa1_win);
+        printf("PA2 Number of Times lowest Interference Level AND lowest Unsched TC: %-3d\n", int_pa2_win);
 
         return 0;
 }
