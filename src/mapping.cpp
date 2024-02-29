@@ -19,39 +19,39 @@ void partitioning(vector<struct tc> &v_tcs, struct context &ctx)
         ctx.p.part_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }
 
-void allocation(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx)
 {
         clock_t start, end;
 
         if (ctx.prm.a == BFDU) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION BFDU                     |\n");
+                printf("| ASSIGNMENT BFDU                     |\n");
                 printf("+=====================================+\n");
                 start = clock();
                 bfdu(v_tcs, v_cores, ctx);
                 end = clock();
-                ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.assi_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == WFDU) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION WFDU                     |\n");
+                printf("| ASSIGNMENT WFDU                     |\n");
                 printf("+=====================================+\n");
                 start = clock();
                 wfdu(v_tcs, v_cores, ctx);
                 end = clock();
-                ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.assi_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 
         if (ctx.prm.a == FFDU) {
                 printf("+=====================================+\n");
-                printf("| ALLOCATION FFDU                     |\n");
+                printf("| ASSIGNMENT FFDU                     |\n");
                 printf("+=====================================+\n");
                 start = clock();
                 ffdu(v_tcs, v_cores, ctx);
                 end = clock();
-                ctx.p.allo_time = ((float) (end - start)) / CLOCKS_PER_SEC;
+                ctx.p.assi_time = ((float) (end - start)) / CLOCKS_PER_SEC;
         }
 }
 

@@ -63,11 +63,11 @@ struct tc {
         int tc_idx;
         int u;
         int gcd;
-        int comcost;
         int color;
+        int weight;
         int is_let;
         int is_frag;
-        int is_alloc;
+        int is_assign;
         vector<struct task> v_tasks;
 };
 
@@ -78,7 +78,7 @@ struct core {
         int load;
         int load_rem;
         int color;
-        int comcost;
+        int weight;
         int is_empty;
         vector<struct tc> v_tcs;
         vector<struct task> v_tasks;
@@ -86,45 +86,42 @@ struct core {
 
 struct params {
         int a;
-        int n;
+        int m;
         int s;
 };
 
 struct perf {
         float m;
-        float et;
         float letu;
         float appu;
         float unuu;
-        float maxu;
+        float sysu;
         float part_time;
-        float allo_time;
+        float assi_time;
         float schd_time;
         float disp_time;
         float swap_time;
         float plac_time;
+        float exec_time;
         float sched_rate_tc;
         float sched_rate_allo;
-        float sched_rate_disp;
         float sched_rate_swap;
+        float sched_rate_disp;
         float sched_rate_opti;
-        float disp_gain;
         float swap_gain;
-        float opti_gain;
+        float disp_gain;
+        float plac_gain;
         int sched_imp_allo;
-        int sched_imp_disp;
         int sched_imp_swap;
+        int sched_imp_disp;
 };
 
 struct context {
-        int gamma_u;
         int cores_min;
         int cores_count;
         int init_cores_count;
         int tcs_count;
-        int alloc_count;
         int tasks_count;
-        int frags_count;
         int sched_ok_count;
         int sched_failed_count;
         struct perf p;
@@ -158,19 +155,19 @@ void copy_v_tc_to_v_tasks_with_pos(vector<struct core> &v_cores);
 
 void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx);
 
-void cmp_core_load(struct core &b, int &load);
+void core_load(struct core &b, int &load);
 
-void cmp_tc_load(struct tc &tc);
+void tc_load(struct tc &tc);
 
-void cmp_core_comcost(struct core &b);
+void core_weight(struct core &b);
 
-int cmp_gcd(vector<struct task> &v_tasks);
+int gcd(vector<struct task> &v_tasks);
 
-void rplc_core_by_id(vector<struct core> &v_cores, struct core &b);
-
-struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id);
+void ovrw_core_by_id(vector<struct core> &v_cores, struct core &b);
 
 struct core get_core_by_id(vector<struct core> &v_cores, int core_id);
+
+struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id);
 
 int get_wcrt(struct core &b, int tc_id, int tc_idx);
 
@@ -178,7 +175,7 @@ int get_color_by_id(vector<struct core> &v_cores, int core_id);
 
 int get_core_idx_by_id(vector<struct core> &v_cores, int core_id);
 
-void del_tc_by_id(struct core &b, int tc_id, int tc_idx);
+void rmv_tc_by_id(struct core &b, int tc_id, int tc_idx);
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);
@@ -191,6 +188,12 @@ void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd);
 void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, 
                 struct context &ctx, int load, int gcd);
 
-int check_duplicata(vector<int> &v_int);
+int get_duplicata(vector<int> &v_int);
+
+void verif_core_load(vector<struct core> &v_cores);
+
+void reset_empty_cores(vector<struct core> &v_cores);
+
+void reset_let_task(vector<struct core> &v_cores);
 
 #endif /* MODEL_H */

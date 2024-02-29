@@ -1,4 +1,5 @@
 #include "print.h"
+#include "ucases.h"
 #include "generator.h"
 #include "sched_analysis.h"
 
@@ -18,6 +19,88 @@ static float int_lvl_pa1 = 0;
 
 static float int_lvl_pa2 = 0;
 
+static void _gen_task(struct task &tau, int i, int color)
+{
+        int y;
+        int real_t;
+        float udiff;
+        float real_c;
+        float real_u;
+
+        while (1) {
+                if (color == WHITE) {
+                        y  = gen_rand(0, 14);
+                        real_c = gen_rand(1000, 50000); /* microsecs */
+                        real_u = (real_c/real_t) * PERMILL;
+                        real_t = period_waters2015(0, y, DYNAMIC);
+                } else {
+                        y  = gen_rand(0, 9);
+                        real_c = gen_rand(100, 5000); /* microsecs */
+                        real_u = (real_c/real_t) * PERMILL;
+                        real_t = period_waters2015(0, y, STATIC);
+                }
+
+                if (real_u < 10 || real_u > 100)
+                        continue;
+
+                tau.u = ceil((real_c/real_t) * PERMILL);
+                tau.c = ceil(real_c);
+                tau.t = real_t;
+
+                if (tau.c >= tau.t)
+                        continue;
+
+                /* if diff too big redo */
+                udiff = tau.u - real_u;
+                if (udiff > PRECISION)
+                        continue;
+
+                tau.r = 0;
+                tau.p = i + 1; /* 1 is highest priority */
+                tau.task_id = i;
+                break;
+        }
+}
+
+static void _gen_tc(struct tc &tc, int color, int minu, int maxu)
+{
+        int task_nbr;
+        struct task tau;
+
+        while (1) {
+                tc = {0};
+                tc.tc_idx = 0;
+                tc.u = 0;
+
+                if (color == WHITE)
+                        task_nbr = gen_rand(1, 12);
+                else
+                        task_nbr = gen_rand(1, 8); /* ZCU tc */
+
+                tc.weight = gen_rand(1, 3);
+                tc.color = color;
+                tc.is_frag = NO;
+                tc.is_let = NO;
+                tc.is_assign = NO;
+
+                for (int i = 0; i < task_nbr; i++) {
+                        tau = {0};
+                        tau.is_let = NO;
+                        tau.tc_id = tc.id;
+
+                        _gen_task(tau, i, color);
+
+                        tc.v_tasks.push_back(tau);
+                        tc.u += tau.u;
+                }
+
+                if (tc.u < minu || tc.u > maxu)
+                        continue;
+                else
+                        return;
+        }
+}
+
 static void _cmp_int_lvl(struct core &b, int pa)
 {
         int sum;
@@ -28,9 +111,8 @@ static void _cmp_int_lvl(struct core &b, int pa)
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 avr = 0.0;
                 sum = 0;
-                for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++)
                         sum += b.v_tcs[i].v_tasks[j].p - 1;
-                }
 
                 avr = (float)sum / (float)b.v_tcs[i].v_tasks.size();
 
@@ -41,12 +123,13 @@ static void _cmp_int_lvl(struct core &b, int pa)
                         int_lvl_pa2 += avr;
         }
 
-        if (pa == PA1) {
-                printf("Instance %-4d PA1 Interference Level: %-.03f\n", instance_count, int_lvl_pa1);
+        if (pa == PA1)
+                printf("Instance %-4d PA1 Interference Level: %-.03f\n", 
+                                instance_count, int_lvl_pa1);
 
-        } else if (pa == PA2) {
-                printf("Instance %-4d PA2 Interference Level: %-.03f\n\n", instance_count, int_lvl_pa2);
-        }
+        else if (pa == PA2)
+                printf("Instance %-4d PA2 Interference Level: %-.03f\n\n", 
+                                instance_count, int_lvl_pa2);
 }
 
 static void _pa1(struct core &b)
@@ -57,9 +140,8 @@ static void _pa1(struct core &b)
 
         b.v_tasks.clear();
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
-                for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
+                for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++)
                         b.v_tasks.push_back(b.v_tcs[i].v_tasks[j]);
-                }
         }
 
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
@@ -100,9 +182,8 @@ static struct stats _cmp_unsched(vector<struct core> &v_cores)
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
-                                if (v_cores[i].v_tcs[j].v_tasks[k].r > v_cores[i].v_tcs[j].v_tasks[k].t) {
+                                if (v_cores[i].v_tcs[j].v_tasks[k].r > v_cores[i].v_tcs[j].v_tasks[k].t)
                                         c.count_task++;
-                                }
                         }
                 }
         }
@@ -120,7 +201,7 @@ static struct stats _cmp_unsched(vector<struct core> &v_cores)
         return c;
 }
 
-static int _create_data(vector<struct tc> &v_tcs)
+static int _gen_data(vector<struct tc> &v_tcs)
 {
         struct tc tc;
         int task_nbr;
@@ -129,7 +210,7 @@ static int _create_data(vector<struct tc> &v_tcs)
 
         for (int i = 0; i < TCN; i++) {
                 tc = {0};
-                create_tc(tc, WHITE, 100, 1000);
+                _gen_tc(tc, WHITE, 100, 1000);
                 v_tcs.push_back(tc);
                 task_nbr += tc.v_tasks.size();
         }
@@ -220,7 +301,7 @@ int main(void)
                 v_cores.clear();
 
                 instance_count++;
-                _create_data(v_tcs);
+                _gen_data(v_tcs);
                 _add(v_tcs, v_cores);
 
                 cpa1 = _assign(v_cores, pa1, PA1);
@@ -228,6 +309,7 @@ int main(void)
 
                 if (cpa1.count_tc < cpa2.count_tc)
                         tc_win_pa1++;
+
                 else if (cpa1.count_tc > cpa2.count_tc)
                         tc_win_pa2++;
 

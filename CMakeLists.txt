@@ -10,6 +10,6 @@ project(mapping)
 
 add_subdirectory(src)
 add_subdirectory(exp/pa)
-add_subdirectory(exp/dse)
 add_subdirectory(exp/map)
+add_subdirectory(exp/exp1)
 add_subdirectory(tests/wcrt)

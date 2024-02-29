@@ -2,33 +2,6 @@
 #include "print.h"
 #include "sched_analysis.h"
 
-static void _check_core_load(vector<struct core> &v_cores)
-{
-        for (unsigned int i = 0; i < v_cores.size(); i++) {
-                if (v_cores[i].load_rem < 0) {
-                        printf("Core %d load_rem %d\n", 
-                                        v_cores[i].id, v_cores[i].load_rem);
-                        exit(0);
-
-                }
-                if (v_cores[i].load > v_cores[i].phi) {
-                        printf("Core %d load %d\n", 
-                                        v_cores[i].id, v_cores[i].load);
-                        exit(0);
-                }
-        }
-}
-
-static void _rst_empty_cores(vector<struct core> &v_cores)
-{
-        for (unsigned int i = 0; i < v_cores.size(); i++) {
-                if (v_cores[i].load == 0)
-                        v_cores[i].is_empty = YES;
-                else
-                        v_cores[i].is_empty = NO;
-        }
-}
-
 static void _store_tcs_disp(vector<struct core> &v_cores, 
                 vector<pair<struct tc, int>> &v_tcs, int &flag)
 {
@@ -57,7 +30,7 @@ static void _store_tcs_disp(vector<struct core> &v_cores,
         /* update tc load if tc is a fragment */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
                 v_tcs[i].first.u = 0;
-                cmp_tc_load(v_tcs[i].first);
+                tc_load(v_tcs[i].first);
         }
 }
 
@@ -88,7 +61,7 @@ static void _store_tcs_swap(vector<struct core> &v_cores,
         /* update tc load if tc is a fragment */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
                 v_tcs[i].first.u = 0;
-                cmp_tc_load(v_tcs[i].first);
+                tc_load(v_tcs[i].first);
         }
 }
 
@@ -160,7 +133,7 @@ static int _check_if_swap(vector<struct core> &v_cores,
 
                         /* check if fit */
                         dst_core = v_cores[i];
-                        del_tc_by_id(dst_core, dst_tc.first.id, dst_tc.first.tc_idx);
+                        rmv_tc_by_id(dst_core, dst_tc.first.id, dst_tc.first.tc_idx);
                         load = check_if_fit_tc(dst_core, src_tc.first, gcd);
 
                         if (load <= dst_core.phi) {
@@ -182,7 +155,7 @@ static int _check_if_swap(vector<struct core> &v_cores,
 
                         /* check if fit */
                         src_core = v_cores[i];
-                        del_tc_by_id(src_core, src_tc.first.id, src_tc.first.tc_idx);
+                        rmv_tc_by_id(src_core, src_tc.first.id, src_tc.first.tc_idx);
                         load = check_if_fit_tc(src_core, dst_tc.first, gcd);
 
                         if (load <= src_core.phi) {
@@ -228,8 +201,8 @@ static int _check_if_swap(vector<struct core> &v_cores,
 
 void _swap(vector<struct core> &v_cores, struct core &dst_core, struct core &src_core)
 {
-        rplc_core_by_id(v_cores, dst_core);
-        rplc_core_by_id(v_cores, src_core);
+        ovrw_core_by_id(v_cores, dst_core);
+        ovrw_core_by_id(v_cores, src_core);
         printf("<---------------- SWAP SUCCESS ---------------->\n\n\n");
 }
 
@@ -247,7 +220,7 @@ static void _disp(vector<struct core> &v_cores, pair<struct tc,
                         for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                                 if (v_cores[i].v_tcs[j].id == tc.first.id && 
                                                 v_cores[i].v_tcs[j].tc_idx == tc.first.tc_idx) {
-                                        del_tc_by_id(v_cores[i], tc.first.id, tc.first.tc_idx);
+                                        rmv_tc_by_id(v_cores[i], tc.first.id, tc.first.tc_idx);
                                         copy_v_tc_to_v_tasks_with_pos(v_cores);
                                         priority_assignment(v_cores[i]);
                                         src_core_idx = i;
@@ -259,7 +232,7 @@ static void _disp(vector<struct core> &v_cores, pair<struct tc,
         /* insert tc to target core by core copy */
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].id == dst_b.id) {
-                        rplc_core_by_id(v_cores, dst_b);
+                        ovrw_core_by_id(v_cores, dst_b);
                         copy_v_tc_to_v_tasks_with_pos(v_cores);
                         priority_assignment(v_cores[i]);
                         dst_core_idx = i;
@@ -303,7 +276,7 @@ void displacement(vector<struct core> &v_cores)
         tc.first = {0};
         tc.second = 0;
 
-        _rst_empty_cores(v_cores);
+        reset_empty_cores(v_cores);
 
         /* take next unschedulable tc */
         _store_tcs_disp(v_cores, v_tcs, flag);
@@ -374,8 +347,8 @@ void displacement(vector<struct core> &v_cores)
                         }
                 }
         }
-        _check_core_load(v_cores);
-        _rst_empty_cores(v_cores);
+        verif_core_load(v_cores);
+        reset_empty_cores(v_cores);
 }
 
 void swapping(vector<struct core> &v_cores)
@@ -389,7 +362,7 @@ void swapping(vector<struct core> &v_cores)
 
         flag = NO;
 
-        _rst_empty_cores(v_cores);
+        reset_empty_cores(v_cores);
 
         /* store unsched tc */
         _store_tcs_swap(v_cores, v_tcs, flag);
@@ -496,6 +469,6 @@ void swapping(vector<struct core> &v_cores)
                         }
                 }
         }
-        _check_core_load(v_cores);
-        _rst_empty_cores(v_cores);
+        verif_core_load(v_cores);
+        reset_empty_cores(v_cores);
 }

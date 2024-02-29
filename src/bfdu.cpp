@@ -51,7 +51,7 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         int load;
         int gcd;
         int core_id;
-        int alloc_count;
+        int assign_count;
         int cycl_count;
 
         cycl_count = 0;
@@ -61,14 +61,14 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, BFDU\n");
         printf("<--------------------------------------->\n");
-        while (alloc_count != n) {
-                alloc_count = 0;
+        while (assign_count != n) {
+                assign_count = 0;
                 for (int i = 0; i < n; i++) {
                         ret = 0;
                         gcd = 0;
                         load = 0;
                         core_id = 0;
-                        if (v_tcs[i].is_alloc == YES) 
+                        if (v_tcs[i].is_assign == YES) 
                                 continue;
 
                         /* find best core to fit tc */
@@ -81,7 +81,7 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 core_id = ret;
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
                                                 load, gcd);
-                                v_tcs[i].is_alloc = YES;
+                                v_tcs[i].is_assign = YES;
                                 continue;
 
                                 /* no core was found */
@@ -99,7 +99,7 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 } 
 
                                 if (cycl_count > 100) {
-                                        printf("ERR!: Impossible to allocate all TC, System Unfeasible\n");
+                                        printf("ERR!: Impossible to assign all TC, System Unfeasible\n");
                                         STATE = FAILED;
                                         return;
                                 }
@@ -108,8 +108,8 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 }
                 /* count remaining tc to be allocated */
                 for (int i = 0; i < n; i++) {
-                        if (v_tcs[i].is_alloc == YES)
-                                alloc_count++;
+                        if (v_tcs[i].is_assign == YES)
+                                assign_count++;
                 }
         }
 }

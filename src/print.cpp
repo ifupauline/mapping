@@ -32,26 +32,9 @@ static int _count_zcu(vector<struct core> &v_cores)
         return count;
 }
 
-static void _rst_let_task(vector<struct core> &v_cores)
-{
-        for (unsigned int i = 0; i < v_cores.size(); i++) {
-                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
-                        if (v_cores[i].v_tcs.size() == 1 && 
-                                        v_cores[i].v_tcs[j].is_let == YES) {
-                                v_cores[i].v_tcs[j].u = 0;
-                                v_cores[i].v_tcs[j].gcd = 0;
-                                v_cores[i].v_tcs[j].v_tasks[0] = {0};
-                                v_cores[i].load = 0;
-                                v_cores[i].load_rem = 0;
-                                v_cores[i].is_empty = YES;
-                        }
-                }
-        }
-}
-
 static void _execution_time(struct context &ctx)
 {
-        ctx.p.et = ctx.p.part_time+ ctx.p.allo_time + ctx.p.schd_time + 
+        ctx.p.exec_time = ctx.p.part_time+ ctx.p.assi_time + ctx.p.schd_time + 
                 ctx.p.disp_time + ctx.p.swap_time;
 
         ctx.p.plac_time = ctx.p.disp_time + ctx.p.swap_time;
@@ -62,7 +45,7 @@ static void _schedulability_rate(struct context &ctx)
         ctx.p.sched_rate_allo = ctx.p.sched_rate_allo * PERCENT;
         ctx.p.swap_gain = (ctx.p.sched_rate_swap * PERCENT) - ctx.p.sched_rate_allo;
         ctx.p.disp_gain = (ctx.p.sched_rate_disp * PERCENT) - (ctx.p.sched_rate_swap * PERCENT);
-        ctx.p.opti_gain = ctx.p.swap_gain + ctx.p.disp_gain;
+        ctx.p.plac_gain = ctx.p.swap_gain + ctx.p.disp_gain;
 }
 
 static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)
@@ -70,11 +53,13 @@ static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)
         ctx.p.letu = 0.0;
         ctx.p.appu = 0.0;
         ctx.p.unuu = 0.0;
-        ctx.p.maxu = 0.0;
+        ctx.p.sysu = 0.0;
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].is_empty == YES)
+                        continue;
                 ctx.p.appu += v_cores[i].load;
-                ctx.p.unuu += v_cores[i].load_rem;
+                ctx.p.unuu += (float)v_cores[i].load_rem;
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         if (v_cores[i].v_tcs.size() == 1 && 
                                         v_cores[i].v_tcs[j].is_let == YES)
@@ -88,7 +73,7 @@ static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)
         ctx.p.letu /= PERMILL;
         ctx.p.appu /= PERMILL;
         ctx.p.unuu /= PERMILL;
-        ctx.p.maxu = ctx.cores_count * ((float)PHI / (float)PERMILL);
+        ctx.p.sysu = ctx.cores_count * ((float)PHI / (float)PERMILL);
 }
 
 static void _verify_pa(vector<struct core> &v_cores)
@@ -106,7 +91,7 @@ static void _verify_pa(vector<struct core> &v_cores)
                         v_int.push_back(v_cores[i].v_tcs[j].id);
                         v_tc.push_back(v_cores[i].v_tcs[j]);
                 }
-                ret = check_duplicata(v_int);
+                ret = get_duplicata(v_int);
 
                 if (ret > -1) {
                         vector<struct task> v_tasks;
@@ -163,7 +148,7 @@ float sched_rate(vector<struct core> &v_cores, struct context &ctx)
         return sched_rate;
 }
 
-void cmp_stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
+void stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
                 struct context &ctx)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
@@ -250,7 +235,7 @@ void print_core(struct core &b)
 void print_cores(vector<struct core> &v_cores, struct context &ctx)
 {
         sort_inc_core_color(v_cores);
-        _rst_let_task(v_cores);
+        reset_let_task(v_cores);
         printf("+=====================================+\n");
         if (ctx.prm.a == BFDU)
                 printf("| PRINT CORE BFDU                     |\n");
@@ -261,7 +246,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
         printf("+=====================================+\n\n");
 
         for (unsigned int i = 0; i < v_cores.size(); i++)
-                cmp_core_comcost(v_cores[i]);
+                core_weight(v_cores[i]);
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 printf("+==================================================================+\n");
@@ -271,7 +256,7 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 if (v_cores[i].is_empty == YES)
                         v_cores[i].load_rem = v_cores[i].phi;
                 printf("|Lrem: %.3f\n", ((float)v_cores[i].load_rem / PERMILL));
-                printf("|LETc: %d\n", v_cores[i].comcost);
+                printf("|LETc: %d\n", v_cores[i].weight);
                 printf("|");
                 if (v_cores[i].color == RED)
                         printf("\033[0;31m");
@@ -396,11 +381,11 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
 {
         printf("\n+=====================================+\n");
         if (ctx.prm.a == BFDU)
-                printf("| PRINT VECTORS BFDU                  |\n");
+                printf("| BFDU                                |\n");
         if (ctx.prm.a == WFDU)
-                printf("| PRINT VECTORS WFDU                  |\n");
+                printf("| WFDU                                |\n");
         if (ctx.prm.a == FFDU)
-                printf("| PRINT VECTORS FFDU                  |\n");
+                printf("| FFDU                                |\n");
         printf("+=====================================+\n");
 
         int sched_ok;
@@ -409,25 +394,13 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
         sched_ok = 0;
         sched_failed = 0;
 
-        for (int i = 0; i < ctx.prm.n; i++) {
-                if (v_tcs[i].is_alloc == NO) {
-                        printf("ERR! some TC were not allocated!\n");
+        for (int i = 0; i < ctx.prm.m; i++) {
+                if (v_tcs[i].is_assign == NO) {
+                        printf("ERR! some TC were not assigned!\n");
                         exit(0);
                 }
         }
 
-        printf("Vector:\n");
-        for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                if (v_tcs[i].is_alloc == YES) {
-                        printf(" %u ", v_tcs[i].u);
-                        ctx.alloc_count++;
-                }
-        }
-        printf("\n");
-        printf("Number of Task-Chains allocated: %u\n", ctx.alloc_count);
-        printf("\n");
-
-        printf("Vector:\n");
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].flag == SCHED_OK) {
                         printf("%d  ", v_cores[i].id);
@@ -438,7 +411,6 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
         printf("Number of Cores SCHED_OK: %u\n", sched_ok);
         printf("\n");
 
-        printf("Vector:\n");
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].flag == SCHED_FAILED) {
                         printf("%d  ", v_cores[i].id);
@@ -464,36 +436,37 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 printf("| PRINT STATS FFDU                          |\n");
         printf("+===========================================+\n");
 
-        cmp_stats(v_cores, v_tcs, ctx);
+        stats(v_cores, v_tcs, ctx);
 
         printf("------------------------------------------------------------------------>\n");
-        printf("n:      %u\n", ctx.prm.n);
-        printf("phi:    %u\n", PHI);
-        printf("sigma:  %u\n", ctx.prm.s);
+        printf("m:  %u\n", ctx.prm.m);
+        printf("ф:  %u\n", PHI);
+        printf("σ:  %u\n", ctx.prm.s);
         if (ctx.prm.a == BFDU)
-                printf("alpha:  BFDU\n");
+                printf("α:  BFDU\n");
         if (ctx.prm.a == WFDU)
-                printf("alpha:  WFDU\n");
+                printf("α:  WFDU\n");
         if (ctx.prm.a == FFDU)
-                printf("alpha:  FFDU\n");
+                printf("α:  FFDU\n");
         printf("------------------------------------------------------------------------>\n");
-        printf("Initial Number of Cores:       %-d\n", ctx.init_cores_count);
-        printf("Number of Cores in Use   (M):  %-3d     PCU: %-3d ZCU: %-3d\n", 
+        printf("|P| ∈ A:                       %-d\n", ctx.init_cores_count);
+        printf(" M:                            %-3d     PCU: %-3d ZCU: %-3d\n", 
                         ctx.cores_count, _count_pcu(v_cores), _count_zcu(v_cores));
-        printf("Optimal Number of Cores (M*):  %-3d\n", ctx.cores_min);
+        printf(" M*:                           %-3d\n", ctx.cores_min);
         printf("------------------------------------------------------------------------>\n");
-        printf("Initial Number of TC:          %-3d\n", ctx.prm.n);
-        printf("Current Number of TC:          %-3ld\n", v_tcs.size());
-        printf("Number of TC Partitioned:      %-3d\n", ctx.frags_count);
-        printf("Number of TC Allocated:        %-3d\n", ctx.alloc_count);
-        printf("Number of Tasks:               %-3d\n", ctx.tasks_count);
+        printf("|ξ| ∈ Γ:                       %-3d\n", ctx.prm.m);
+        printf("|ξ| ∈ Γ(after partitioning):   %-3ld\n", v_tcs.size());
+        printf("|τ| ∈ Г:                       %-3d\n", ctx.tasks_count);
         printf("------------------------------------------------------------------------>\n");
         printf("Partitioning Time:                %-3.3f ms\n", ctx.p.part_time * PERMILL);
-        printf("Allocation Time:                  %-3.3f ms\n", ctx.p.allo_time * PERMILL);
+        printf("Assignment Time:                  %-3.3f ms\n", ctx.p.assi_time * PERMILL);
         printf("Schedulability Analysis Time:     %-3.3f ms\n", ctx.p.schd_time * PERMILL);
+        printf("Placement Time:                   %-3.3f ms\n", ctx.p.plac_time * PERMILL);
+        printf("------------------------------------------------------------------------>\n");
         printf("Swapping Time:                    %-3.3f ms\n", ctx.p.swap_time * PERMILL);
         printf("Displacement Time:                %-3.3f ms\n", ctx.p.disp_time * PERMILL);
-        printf("Placement Time:                   %-3.3f ms\n", ctx.p.plac_time * PERMILL);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Total Execution Time:             %-3.3f ms\n", ctx.p.exec_time * MSEC);
         printf("------------------------------------------------------------------------>\n");
         printf("Schedulability Rate (allo):       %-3.3f\n", ctx.p.sched_rate_allo);
         printf("Schedulability Rate (swap):       %-3.3f  +%-2d cores\n", 
@@ -503,11 +476,11 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("------------------------------------------------------------------------>\n");
         printf("Swapping SR Gain:                +%-3.3f\n", ctx.p.swap_gain);
         printf("Displacement SR Gain:            +%-3.3f\n", ctx.p.disp_gain);
-        printf("Total Optimization SR Gain:      +%-3.3f\n", ctx.p.opti_gain);
+        printf("Total Optimization SR Gain:      +%-3.3f\n", ctx.p.plac_gain);
         printf("------------------------------------------------------------------------>\n");
-        printf("Total APP Utilization (M)         %-3.3f\n", (ctx.p.appu / ctx.p.maxu) * PERCENT);
-        printf("Total LET Utilization (M)         %-3.3f\n", (ctx.p.letu / ctx.p.maxu) * PERCENT);
-        printf("------------------------------------------------------------------------>\n");
-        printf("Total Execution Time:             %-3.3f ms\n", ctx.p.et * MSEC);
+        printf("Total SYS Utilization             %-3.3f\n", ctx.p.sysu);
+        printf("Total APP Utilization             %-3.3f\n", ctx.p.appu);
+        printf("Total LET Utilization             %-3.3f\n", ctx.p.letu);
+        printf("Total FRE Utilization             %-3.3f\n", ctx.p.unuu);
         printf("------------------------------------------------------------------------>\n");
 }

@@ -53,17 +53,17 @@ redo:   struct params prm;
         gen_arch(v_cores_ffdu, ctx_ffdu);
 
         /* allocation */
-        allocation(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
+        assignment(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
         if (STATE == FAILED) {
                 STATE = OK;
                 goto redo;
         }
-        allocation(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
+        assignment(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
         if (STATE == FAILED) {
                 STATE = OK;
                 goto redo;
         }
-        allocation(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
+        assignment(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
         if (STATE == FAILED) {
                 STATE = OK;
                 goto redo;

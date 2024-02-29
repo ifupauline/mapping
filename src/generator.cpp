@@ -17,7 +17,7 @@ static void _assign_ids(vector<struct tc> &v_tcs)
         }
 }
 
-static void _check_prm(struct params &prm)
+static void _verif_prm(struct params &prm)
 {
         if (prm.s < 150 || prm.s > PHI) {
                 printf("Invalid params: prm.s rule -> [%d <= s <= %d]\n\n", 
@@ -26,19 +26,19 @@ static void _check_prm(struct params &prm)
         }
 }
 
-static int _cmp_tc_u(vector<struct tc> &v_tcs, struct context &ctx)
+static int _tc_u(vector<struct tc> &v_tcs, struct context &ctx)
 {
-        ctx.gamma_u = 0;
+        ctx.p.appu = 0;
 
         for (unsigned int i = 0; i < v_tcs.size(); i++)
-                ctx.gamma_u += v_tcs[i].u;
+                ctx.p.appu += v_tcs[i].u;
 
-        ctx.cores_min = ceil(ctx.gamma_u / PHI);
+        ctx.cores_min = ceil(ctx.p.appu / PHI);
 
         return 0;
 }
 
-static void _create_task(struct task &tau, int i, int color)
+static void _gen_task(struct task &tau, int i, int color)
 {
         int y;
         int real_t;
@@ -81,7 +81,7 @@ static void _create_task(struct task &tau, int i, int color)
         }
 }
 
-void create_tc(struct tc &tc, int color, int minu, int maxu)
+static void _gen_tc(struct tc &tc, int color, int minu, int maxu)
 {
         int task_nbr;
         struct task tau;
@@ -96,18 +96,18 @@ void create_tc(struct tc &tc, int color, int minu, int maxu)
                 else
                         task_nbr = gen_rand(1, 8); /* ZCU tc */
 
-                tc.comcost = gen_rand(1, 3);
+                tc.weight = gen_rand(1, 3);
                 tc.color = color;
                 tc.is_frag = NO;
                 tc.is_let = NO;
-                tc.is_alloc = NO;
+                tc.is_assign = NO;
 
                 for (int i = 0; i < task_nbr; i++) {
                         tau = {0};
                         tau.is_let = NO;
                         tau.tc_id = tc.id;
 
-                        _create_task(tau, i, color);
+                        _gen_task(tau, i, color);
 
                         tc.v_tasks.push_back(tau);
                         tc.u += tau.u;
@@ -144,12 +144,12 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
                 tc_green = {0};
                 tc_cyan = {0};
                 tc_purple = {0};
-                create_tc(tc_red, RED, 100, 500);
-                create_tc(tc_blue, BLUE, 100, 500);
-                create_tc(tc_yellow, YELLOW, 100, 500);
-                create_tc(tc_green, GREEN, 100, 500);
-                create_tc(tc_cyan, CYAN, 100, 500);
-                create_tc(tc_purple, PURPLE, 100, 500);
+                _gen_tc(tc_red, RED, 100, 500);
+                _gen_tc(tc_blue, BLUE, 100, 500);
+                _gen_tc(tc_yellow, YELLOW, 100, 500);
+                _gen_tc(tc_green, GREEN, 100, 500);
+                _gen_tc(tc_cyan, CYAN, 100, 500);
+                _gen_tc(tc_purple, PURPLE, 100, 500);
                 v_tcs.push_back(tc_red);
                 v_tcs.push_back(tc_blue);
                 v_tcs.push_back(tc_yellow);
@@ -161,19 +161,19 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         /* dynamic */
         for (int i = 0; i < 18; i++) {
                 tc_white = {0};
-                create_tc(tc_white, WHITE, 100, 1000);
+                _gen_tc(tc_white, WHITE, 100, 1000);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);
         _assign_ids(v_tcs);
 
-        ctx.prm.n = v_tcs.size();
-        prm.n = v_tcs.size();
+        ctx.prm.m = v_tcs.size();
+        prm.m = v_tcs.size();
 
         for (unsigned int i = 0; i < v_tcs.size(); i++)
-                v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
+                v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
 
-        _cmp_tc_u(v_tcs, ctx);
+        _tc_u(v_tcs, ctx);
 
         return 0;
 }
@@ -191,7 +191,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         idx = 0;
         ret = -1;
         u_sum = 0;
-        ctx.frags_count = 0;
 
         /* store tcs */
         for (unsigned int i = 0; i < v_tcs.size(); i++)
@@ -213,11 +212,11 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.comcost = v_tmp_tcs[i].comcost;
+                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_alloc = NO;
+                                tc.is_assign = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 j--;
@@ -235,11 +234,11 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.comcost = v_tmp_tcs[i].comcost;
+                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_alloc = NO;
+                                tc.is_assign = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 j--;
@@ -257,11 +256,11 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.comcost = v_tmp_tcs[i].comcost;
+                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_alloc = NO;
+                                tc.is_assign = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 j--;
@@ -276,16 +275,15 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.comcost = v_tmp_tcs[i].comcost;
+                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
-                                tc.is_alloc = NO;
+                                tc.is_assign = NO;
                                 tc.v_tasks = v_tmp;
                                 v_new_tcs.push_back(tc);
                                 u_sum = 0;
                                 v_tmp.clear();
-                                ctx.frags_count++;
                                 continue;
                         }
                 }
@@ -294,11 +292,10 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         v_tcs = v_new_tcs;
         sort_dec_tc_size(v_tcs);
         for (unsigned int i = 0; i < v_tcs.size(); i++)
-                v_tcs[i].gcd = cmp_gcd(v_tcs[i].v_tasks);
+                v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
 
-        printf("Initial Number of TC:   %d\n", ctx.prm.n);
+        printf("Initial Number of TC:   %d\n", ctx.prm.m);
         printf("Current Number of TC:   %ld\n", v_tcs.size());
-        printf("Number of TC Cuts: %d\n", ctx.frags_count);
 }
 
 int gen_rand(int min, int max) 
@@ -317,7 +314,7 @@ void input_prm(int argc, char **argv, struct params &prm)
                 exit(0);
         }
         prm.s = atoi(argv[1]);
-        _check_prm(prm);
+        _verif_prm(prm);
 }
 
 void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 
@@ -327,12 +324,10 @@ void init_ctx(vector<struct tc> &v_tcs, struct params &prm,
 
         ctx.prm = prm;
         ctx.cores_count = 0;
-        ctx.alloc_count = 0;
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
-        ctx.gamma_u = 0;
-        ctx.tcs_count = ctx.prm.n;
+        ctx.tcs_count = ctx.prm.m;
 
         part_time = ctx.p.part_time;
         ctx.p = {0};

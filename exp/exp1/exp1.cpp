@@ -5,7 +5,7 @@
 #define STP 10
 #define ITR 66
 
-static void dse(vector<struct b_stats> &v_stts, struct params &prm)
+static void exp1(vector<struct b_stats> &v_stts, struct params &prm)
 {
         int SIGMA;
         struct context ctx;
@@ -74,17 +74,17 @@ redo:   SIGMA = PHI;
                 gen_arch(v_cores_wfdu, ctx_wfdu);
                 gen_arch(v_cores_ffdu, ctx_ffdu);
 
-                allocation(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
+                assignment(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
                 if (STATE == FAILED) {
                         STATE = OK;
                         goto redo;
                 }
-                allocation(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
+                assignment(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
                 if (STATE == FAILED) {
                         STATE = OK;
                         goto redo;
                 }
-                allocation(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
+                assignment(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
                 if (STATE == FAILED) {
                         STATE = OK;
                         goto redo;
@@ -98,9 +98,9 @@ redo:   SIGMA = PHI;
                 placement(v_cores_wfdu, ctx_wfdu);
                 placement(v_cores_ffdu, ctx_ffdu);
 
-                cmp_stats(v_cores_bfdu, v_tcs_bfdu, ctx_bfdu);
-                cmp_stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
-                cmp_stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
+                stats(v_cores_bfdu, v_tcs_bfdu, ctx_bfdu);
+                stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
+                stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
 
                 stts.bfdu_m = ctx_bfdu.cores_count;
                 stts.wfdu_m = ctx_wfdu.cores_count;
@@ -118,9 +118,9 @@ redo:   SIGMA = PHI;
                 stts.wfdu_sr_swap = ctx_wfdu.p.sched_rate_swap * PERCENT;
                 stts.ffdu_sr_swap = ctx_ffdu.p.sched_rate_swap * PERCENT;
 
-                stts.bfdu_et = ctx_bfdu.p.et * MSEC;
-                stts.wfdu_et = ctx_wfdu.p.et * MSEC;
-                stts.ffdu_et = ctx_ffdu.p.et * MSEC;
+                stts.bfdu_et = ctx_bfdu.p.exec_time * MSEC;
+                stts.wfdu_et = ctx_wfdu.p.exec_time * MSEC;
+                stts.ffdu_et = ctx_ffdu.p.exec_time * MSEC;
 
                 stts.sig = (float)((float)SIGMA/PERMILL);
 
@@ -152,7 +152,7 @@ int main(void)
         struct params prm;
         vector<struct b_stats> v_stts;
 
-        dse(v_stts, prm);
+        exp1(v_stts, prm);
         print_b_stats(v_stts, ITR);
 
         FILE *m = (FILE*)fopen("data.m_sig", "w");

@@ -13,7 +13,7 @@ extern int STATE;
 /* mapping */
 void partitioning(vector<struct tc> &v_tcs, struct context &ctx);
 
-void allocation(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
 void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx);

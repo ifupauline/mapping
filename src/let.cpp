@@ -22,10 +22,10 @@ void init_let_task(struct tc &let, struct context &ctx)
         t = {0};
 
         let.u = 0;
-        let.comcost = 0;
+        let.weight = 0;
         let.color = -1;
         let.is_let = YES;
-        let.is_alloc = NO;
+        let.is_assign = NO;
         let.id = ctx.tcs_count++;
 
         t.c = 0;
@@ -47,7 +47,7 @@ void update_let(struct core &b, int gcd)
 
         /* update let task */
         let = _get_let_task(b);
-        switch (b.comcost) {
+        switch (b.weight) {
 
                 case 1: 
                         let->c = gen_rand(25, 50);
@@ -72,21 +72,21 @@ void update_let(struct core &b, int gcd)
         b.v_tcs[0].v_tasks.push_back(*let);
 }
 
-int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
+int check_if_fit_tc(struct core &b, struct tc &tc, int &_gcd)
 {
         struct core tmp_b;
         int total_coreload;
         int target_coreload;
         vector<struct task> v_tasks;
 
-        gcd = 0;
+        _gcd = 0;
         tmp_b = b;
         total_coreload = 0;
         target_coreload = 0;
 
-        /* add tc comcost to core comcost */
-        cmp_core_comcost(tmp_b);
-        tmp_b.comcost += tc.comcost;
+        /* add tc weight to core weight */
+        core_weight(tmp_b);
+        tmp_b.weight += tc.weight;
 
         /* copy v_tasks */
         add_tasks_to_v_tasks(v_tasks, tc.v_tasks);
@@ -97,13 +97,13 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd)
         }
 
         /* cmp gcd */
-        gcd = cmp_gcd(v_tasks);
+        _gcd = gcd(v_tasks);
 
         /* update let tc and let task */
-        update_let(tmp_b, gcd);
+        update_let(tmp_b, _gcd);
 
         /* compute total core load */
-        cmp_core_load(tmp_b, target_coreload);
+        core_load(tmp_b, target_coreload);
 
         /* add utilization rate of potential tc */
         total_coreload = tc.u + target_coreload;

@@ -106,7 +106,7 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
         tmp_core.load_rem = PHI;
         tmp_core.phi = PHI / speed_factor;
         tmp_core.color = color;
-        tmp_core.comcost = 0;
+        tmp_core.weight = 0;
         tmp_core.is_empty = NO;
         v_cores.push_back(tmp_core);
         ctx.cores_count++;
@@ -117,7 +117,7 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
         init_let_task(let, ctx);
         add_tc_to_v_cores(v_cores, let, tmp_core.id, ctx, let.u, let.v_tasks[0].t);
         ctx.tcs_count++;
-        let.is_alloc = YES;
+        let.is_assign = YES;
 }
 
 void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd)
@@ -127,11 +127,11 @@ void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd)
                                 b.id, tc.u);
                 exit(0);
         }
-        tc.is_alloc = YES;
+        tc.is_assign = YES;
         b.load = load;
         b.load_rem = b.phi - load;
         b.v_tcs.push_back(tc);
-        cmp_core_comcost(b);
+        core_weight(b);
         update_let(b, gcd);
         b.v_tasks.clear();
 
@@ -156,11 +156,11 @@ void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id,
                                                 v_cores[i].id, tc.u);
                                 exit(0);
                         }
-                        tc.is_alloc = YES;
+                        tc.is_assign = YES;
                         v_cores[i].load = load;
                         v_cores[i].load_rem = v_cores[i].phi - load;
                         v_cores[i].v_tcs.push_back(tc);
-                        cmp_core_comcost(v_cores[i]);
+                        core_weight(v_cores[i]);
                         update_let(v_cores[i], gcd);
                         v_cores[i].v_tasks.clear();
                         printf("TC %d added in Core %d\n\n", tc.id, v_cores[i].id);
@@ -220,36 +220,36 @@ void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx)
         sort_inc_task_id(b.v_tasks);
 }
 
-void cmp_tc_load(struct tc &tc)
+void tc_load(struct tc &tc)
 {
         for (unsigned int i = 0; i < tc.v_tasks.size(); i++)
                 tc.u += tc.v_tasks[i].u;
 }
 
-void cmp_core_load(struct core &b, int &load)
+void core_load(struct core &b, int &load)
 {
         for (unsigned int i = 0; i < b.v_tcs.size(); i++)
                 load += b.v_tcs[i].u;
 }
 
-void cmp_core_comcost(struct core &b)
+void core_weight(struct core &b)
 {
-        b.comcost = 0;
+        b.weight = 0;
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
-                /* let tc has no comcost */
+                /* let tc has no weight */
                 if (b.v_tcs[i].is_let == YES)
                         continue;
 
-                b.comcost += b.v_tcs[i].comcost;
+                b.weight += b.v_tcs[i].weight;
         }
 
-        if (b.comcost < 0) {
-                printf("Core: %d comcost: %d\n", b.id, b.comcost);
+        if (b.weight < 0) {
+                printf("ERR! Core: %d weight: %d\n", b.id, b.weight);
                 exit(0);
         }
 }
 
-int cmp_gcd(vector<struct task> &v_tasks)
+int gcd(vector<struct task> &v_tasks)
 {
         int gcd;
 
@@ -276,7 +276,7 @@ int cmp_gcd(vector<struct task> &v_tasks)
         return gcd;
 }
 
-void rplc_core_by_id(vector<struct core> &v_cores, struct core &b)
+void ovrw_core_by_id(vector<struct core> &v_cores, struct core &b)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].id == b.id) {
@@ -340,13 +340,13 @@ int get_core_idx_by_id(vector<struct core> &v_cores, int core_id)
         return -1;
 }
 
-void del_tc_by_id(struct core &b, int tc_id, int tc_idx)
+void rmv_tc_by_id(struct core &b, int tc_id, int tc_idx)
 {
-        int gcd;
+        int _gcd;
         int flag;
         vector<struct task> v_tasks;
 
-        gcd = 0;
+        _gcd = 0;
         flag = NO;
 
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
@@ -358,15 +358,14 @@ void del_tc_by_id(struct core &b, int tc_id, int tc_idx)
         }
 
         if (flag == NO) {
-                printf("tc_idx: %d\n", tc_idx);
-                printf("ERR! TC %d idx: %d not removed from Core %d\n", tc_id, tc_idx, b.id);
-                print_core(b);
+                printf("ERR! TC %d idx: %d not removed from Core %d\n", 
+                                tc_id, tc_idx, b.id);
                 exit(0);
         }
 
         /* check if there is only LET tc */
         if (b.v_tcs.size() == 1)
-                gcd = b.v_tcs[0].v_tasks[0].t;
+                _gcd = b.v_tcs[0].v_tasks[0].t;
 
         else {
                 for (unsigned int j = 0; j < b.v_tcs.size(); j++) {
@@ -374,10 +373,10 @@ void del_tc_by_id(struct core &b, int tc_id, int tc_idx)
                                 continue;
                         add_tasks_to_v_tasks(v_tasks, b.v_tcs[j].v_tasks);
                 }
-                gcd = cmp_gcd(v_tasks);
+                _gcd = gcd(v_tasks);
         }
-        update_let(b, gcd);
-        cmp_core_comcost(b);
+        update_let(b, _gcd);
+        core_weight(b);
 }
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
@@ -387,7 +386,7 @@ void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks,
                 dst_v_tasks.push_back(src_v_tasks[i]);
 }
 
-int check_duplicata(vector<int> &v_int)
+int get_duplicata(vector<int> &v_int)
 {
         int curr;
         int count;
@@ -398,11 +397,54 @@ int check_duplicata(vector<int> &v_int)
                 for (unsigned int j = 0; j < v_int.size(); j++) {
                         if (v_int[j] == curr) {
                                 count++;
-                                if (count > 1) {
+                                if (count > 1)
                                         return v_int[i];
-                                }
                         }
                 }
         }
         return -1;
+}
+
+void verif_core_load(vector<struct core> &v_cores)
+{
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].load_rem < 0) {
+                        printf("Core %d load_rem %d\n", 
+                                        v_cores[i].id, v_cores[i].load_rem);
+                        exit(0);
+
+                }
+                if (v_cores[i].load > v_cores[i].phi) {
+                        printf("Core %d load %d\n", 
+                                        v_cores[i].id, v_cores[i].load);
+                        exit(0);
+                }
+        }
+}
+
+void reset_empty_cores(vector<struct core> &v_cores)
+{
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].load == 0)
+                        v_cores[i].is_empty = YES;
+                else
+                        v_cores[i].is_empty = NO;
+        }
+}
+
+void reset_let_task(vector<struct core> &v_cores)
+{
+        for (unsigned int i = 0; i < v_cores.size(); i++) {
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        if (v_cores[i].v_tcs.size() == 1 && 
+                                        v_cores[i].v_tcs[j].is_let == YES) {
+                                v_cores[i].v_tcs[j].u = 0;
+                                v_cores[i].v_tcs[j].gcd = 0;
+                                v_cores[i].v_tcs[j].v_tasks[0] = {0};
+                                v_cores[i].load = 0;
+                                v_cores[i].load_rem = 0;
+                                v_cores[i].is_empty = YES;
+                        }
+                }
+        }
 }
