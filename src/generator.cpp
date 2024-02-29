@@ -2,124 +2,6 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-static void _assign_ids(vector<struct tc> &v_tcs)
-{
-        unsigned int uniq_id;
-
-        uniq_id = 0;
-
-        for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                v_tcs[i].id = i;
-                for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
-                        v_tcs[i].v_tasks[j].uniq_id = uniq_id;
-                        uniq_id++;
-                }
-        }
-}
-
-static void _verif_prm(struct params &prm)
-{
-        if (prm.s < 150 || prm.s > PHI) {
-                printf("Invalid params: prm.s rule -> [%d <= s <= %d]\n\n", 
-                                150,  PHI);
-                exit(0);
-        }
-}
-
-static int _tc_u(vector<struct tc> &v_tcs, struct context &ctx)
-{
-        ctx.p.appu = 0;
-
-        for (unsigned int i = 0; i < v_tcs.size(); i++)
-                ctx.p.appu += v_tcs[i].u;
-
-        ctx.cores_min = ceil(ctx.p.appu / PHI);
-
-        return 0;
-}
-
-static void _gen_task(struct task &tau, int i, int color)
-{
-        int y;
-        int real_t;
-        float udiff;
-        float real_c;
-        float real_u;
-
-        while (1) {
-                if (color == WHITE) {
-                        y  = gen_rand(0, 14);
-                        real_c = gen_rand(1000, 50000); /* microsecs */
-                        real_u = (real_c/real_t) * PERMILL;
-                        real_t = period_waters2015(0, y, DYNAMIC);
-                } else {
-                        y  = gen_rand(0, 9);
-                        real_c = gen_rand(100, 5000); /* microsecs */
-                        real_u = (real_c/real_t) * PERMILL;
-                        real_t = period_waters2015(0, y, STATIC);
-                }
-
-                if (real_u < 10 || real_u > 100)
-                        continue;
-
-                tau.u = ceil((real_c/real_t) * PERMILL);
-                tau.c = ceil(real_c);
-                tau.t = real_t;
-
-                if (tau.c >= tau.t)
-                        continue;
-
-                /* if diff too big redo */
-                udiff = tau.u - real_u;
-                if (udiff > PRECISION)
-                        continue;
-
-                tau.r = 0;
-                tau.p = i + 1; /* 1 is highest priority */
-                tau.task_id = i;
-                break;
-        }
-}
-
-static void _gen_tc(struct tc &tc, int color, int minu, int maxu)
-{
-        int task_nbr;
-        struct task tau;
-
-        while (1) {
-                tc = {0};
-                tc.tc_idx = 0;
-                tc.u = 0;
-
-                if (color == WHITE)
-                        task_nbr = gen_rand(1, 12);
-                else
-                        task_nbr = gen_rand(1, 8); /* ZCU tc */
-
-                tc.weight = gen_rand(1, 3);
-                tc.color = color;
-                tc.is_frag = NO;
-                tc.is_let = NO;
-                tc.is_assign = NO;
-
-                for (int i = 0; i < task_nbr; i++) {
-                        tau = {0};
-                        tau.is_let = NO;
-                        tau.tc_id = tc.id;
-
-                        _gen_task(tau, i, color);
-
-                        tc.v_tasks.push_back(tau);
-                        tc.u += tau.u;
-                }
-
-                if (tc.u < minu || tc.u > maxu)
-                        continue;
-                else
-                        return;
-        }
-}
-
 static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
@@ -144,12 +26,12 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
                 tc_green = {0};
                 tc_cyan = {0};
                 tc_purple = {0};
-                _gen_tc(tc_red, RED, 100, 500);
-                _gen_tc(tc_blue, BLUE, 100, 500);
-                _gen_tc(tc_yellow, YELLOW, 100, 500);
-                _gen_tc(tc_green, GREEN, 100, 500);
-                _gen_tc(tc_cyan, CYAN, 100, 500);
-                _gen_tc(tc_purple, PURPLE, 100, 500);
+                gen_tc(tc_red, RED, 1, 500);
+                gen_tc(tc_blue, BLUE, 1, 500);
+                gen_tc(tc_yellow, YELLOW, 1, 500);
+                gen_tc(tc_green, GREEN, 1, 500);
+                gen_tc(tc_cyan, CYAN, 1, 500);
+                gen_tc(tc_purple, PURPLE, 1, 500);
                 v_tcs.push_back(tc_red);
                 v_tcs.push_back(tc_blue);
                 v_tcs.push_back(tc_yellow);
@@ -161,19 +43,17 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         /* dynamic */
         for (int i = 0; i < 18; i++) {
                 tc_white = {0};
-                _gen_tc(tc_white, WHITE, 100, 1000);
+                gen_tc(tc_white, WHITE, 1, 1000);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);
-        _assign_ids(v_tcs);
+        assign_ids(v_tcs);
 
         ctx.prm.m = v_tcs.size();
         prm.m = v_tcs.size();
 
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
-
-        _tc_u(v_tcs, ctx);
 
         return 0;
 }
@@ -298,15 +178,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         printf("Current Number of TC:   %ld\n", v_tcs.size());
 }
 
-int gen_rand(int min, int max) 
-{
-        random_device rd;
-        mt19937 gen(rd());
-        uniform_int_distribution<> distr(min, max);
-
-        return distr(gen);
-}
-
 void input_prm(int argc, char **argv, struct params &prm)
 {
         if (argc != 2) {
@@ -314,7 +185,7 @@ void input_prm(int argc, char **argv, struct params &prm)
                 exit(0);
         }
         prm.s = atoi(argv[1]);
-        _verif_prm(prm);
+        verif_prm(prm);
 }
 
 void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 
@@ -327,6 +198,8 @@ void init_ctx(vector<struct tc> &v_tcs, struct params &prm,
         ctx.tasks_count = 0;
         ctx.sched_ok_count = 0;
         ctx.sched_failed_count = 0;
+        ctx.pcu_cores_count = 0;
+        ctx.zcu_cores_count = 0;
         ctx.tcs_count = ctx.prm.m;
 
         part_time = ctx.p.part_time;
@@ -334,11 +207,102 @@ void init_ctx(vector<struct tc> &v_tcs, struct params &prm,
         ctx.p.part_time = part_time;
 }
 
+int gen_rand(int min, int max) 
+{
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<> distr(min, max);
+
+        return distr(gen);
+}
+
 void gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
         ctx.prm = prm;
         _gen_app(v_tcs, prm, ctx);
+}
+
+void gen_task(struct task &tau, int i, int color)
+{
+        int y;
+        int real_t;
+        float udiff;
+        float real_c;
+        float real_u;
+
+        while (1) {
+                if (color == WHITE) {
+                        y  = gen_rand(0, 14);
+                        real_c = gen_rand(10, 30000); /* microsecs */
+                        real_u = (real_c/real_t) * PERMILL;
+                        real_t = period_waters2015(0, y, DYNAMIC);
+                } else {
+                        y  = gen_rand(0, 9);
+                        real_c = gen_rand(10, 3000); /* microsecs */
+                        real_u = (real_c/real_t) * PERMILL;
+                        real_t = period_waters2015(0, y, STATIC);
+                }
+
+                if (real_u < 10 || real_u > 100)
+                        continue;
+
+                tau.u = ceil((real_c/real_t) * PERMILL);
+                tau.c = ceil(real_c);
+                tau.t = real_t;
+
+                if (tau.c >= tau.t)
+                        continue;
+
+                /* if diff too big redo */
+                udiff = tau.u - real_u;
+                if (udiff > PRECISION)
+                        continue;
+
+                tau.r = 0;
+                tau.p = i + 1; /* 1 is highest priority */
+                tau.task_id = i;
+                break;
+        }
+}
+
+void gen_tc(struct tc &tc, int color, int minu, int maxu)
+{
+        int task_nbr;
+        struct task tau;
+
+        while (1) {
+                tc = {0};
+                tc.tc_idx = 0;
+                tc.u = 0;
+
+                if (color == WHITE)
+                        task_nbr = gen_rand(1, 12);
+                else
+                        task_nbr = gen_rand(1, 8);
+
+                tc.weight = gen_rand(1, 3);
+                tc.color = color;
+                tc.is_frag = NO;
+                tc.is_let = NO;
+                tc.is_assign = NO;
+
+                for (int i = 0; i < task_nbr; i++) {
+                        tau = {0};
+                        tau.is_let = NO;
+                        tau.tc_id = tc.id;
+
+                        gen_task(tau, i, color);
+
+                        tc.v_tasks.push_back(tau);
+                        tc.u += tau.u;
+                }
+
+                if (tc.u < minu || tc.u > maxu)
+                        continue;
+                else
+                        return;
+        }
 }
 
 void gen_arch(vector<struct core> &v_cores, struct context &ctx)
@@ -353,5 +317,5 @@ void gen_arch(vector<struct core> &v_cores, struct context &ctx)
                 add_core(v_cores, CYAN, 1, ctx);
                 add_core(v_cores, PURPLE, 1, ctx);
         }
-        ctx.init_cores_count = v_cores.size();
+        ctx.p_arch = v_cores.size();
 }

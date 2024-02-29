@@ -5,7 +5,7 @@
 
 #define PA1 1
 #define PA2 2
-#define TCN 5
+#define TCN 10
 #define STP 100
 
 struct stats {
@@ -13,95 +13,13 @@ struct stats {
         int count_tc;
 };
 
-static int instance_count = 0;
+static int count_ins = 0;
 
 static float int_lvl_pa1 = 0;
 
 static float int_lvl_pa2 = 0;
 
-static void _gen_task(struct task &tau, int i, int color)
-{
-        int y;
-        int real_t;
-        float udiff;
-        float real_c;
-        float real_u;
-
-        while (1) {
-                if (color == WHITE) {
-                        y  = gen_rand(0, 14);
-                        real_c = gen_rand(1000, 50000); /* microsecs */
-                        real_u = (real_c/real_t) * PERMILL;
-                        real_t = period_waters2015(0, y, DYNAMIC);
-                } else {
-                        y  = gen_rand(0, 9);
-                        real_c = gen_rand(100, 5000); /* microsecs */
-                        real_u = (real_c/real_t) * PERMILL;
-                        real_t = period_waters2015(0, y, STATIC);
-                }
-
-                if (real_u < 10 || real_u > 100)
-                        continue;
-
-                tau.u = ceil((real_c/real_t) * PERMILL);
-                tau.c = ceil(real_c);
-                tau.t = real_t;
-
-                if (tau.c >= tau.t)
-                        continue;
-
-                /* if diff too big redo */
-                udiff = tau.u - real_u;
-                if (udiff > PRECISION)
-                        continue;
-
-                tau.r = 0;
-                tau.p = i + 1; /* 1 is highest priority */
-                tau.task_id = i;
-                break;
-        }
-}
-
-static void _gen_tc(struct tc &tc, int color, int minu, int maxu)
-{
-        int task_nbr;
-        struct task tau;
-
-        while (1) {
-                tc = {0};
-                tc.tc_idx = 0;
-                tc.u = 0;
-
-                if (color == WHITE)
-                        task_nbr = gen_rand(1, 12);
-                else
-                        task_nbr = gen_rand(1, 8); /* ZCU tc */
-
-                tc.weight = gen_rand(1, 3);
-                tc.color = color;
-                tc.is_frag = NO;
-                tc.is_let = NO;
-                tc.is_assign = NO;
-
-                for (int i = 0; i < task_nbr; i++) {
-                        tau = {0};
-                        tau.is_let = NO;
-                        tau.tc_id = tc.id;
-
-                        _gen_task(tau, i, color);
-
-                        tc.v_tasks.push_back(tau);
-                        tc.u += tau.u;
-                }
-
-                if (tc.u < minu || tc.u > maxu)
-                        continue;
-                else
-                        return;
-        }
-}
-
-static void _cmp_int_lvl(struct core &b, int pa)
+static void _int_lvl(struct core &b, int pa)
 {
         int sum;
         float avr;
@@ -125,11 +43,11 @@ static void _cmp_int_lvl(struct core &b, int pa)
 
         if (pa == PA1)
                 printf("Instance %-4d PA1 Interference Level: %-.03f\n", 
-                                instance_count, int_lvl_pa1);
+                                count_ins, int_lvl_pa1);
 
         else if (pa == PA2)
                 printf("Instance %-4d PA2 Interference Level: %-.03f\n\n", 
-                                instance_count, int_lvl_pa2);
+                                count_ins, int_lvl_pa2);
 }
 
 static void _pa1(struct core &b)
@@ -149,7 +67,7 @@ static void _pa1(struct core &b)
                 p++;
         }
 
-        _cmp_int_lvl(b, PA1);
+        _int_lvl(b, PA1);
 
         b.flag = wcrt(b.v_tasks);
         copy_back_resp_to_tc(b);
@@ -168,13 +86,13 @@ static void _pa2(struct core &b)
                 p++;
         }
 
-        _cmp_int_lvl(b, PA2);
+        _int_lvl(b, PA2);
 
         b.flag = wcrt(b.v_tasks);
         copy_back_resp_to_tc(b);
 }
 
-static struct stats _cmp_unsched(vector<struct core> &v_cores)
+static struct stats _unsched(vector<struct core> &v_cores)
 {
         struct stats c;
         c.count_tc = 0;
@@ -210,7 +128,7 @@ static int _gen_data(vector<struct tc> &v_tcs)
 
         for (int i = 0; i < TCN; i++) {
                 tc = {0};
-                _gen_tc(tc, WHITE, 100, 1000);
+                gen_tc(tc, WHITE, 1, 500);
                 v_tcs.push_back(tc);
                 task_nbr += tc.v_tasks.size();
         }
@@ -251,7 +169,7 @@ static struct stats _assign(vector<struct core> &v_cores, struct stats &pa, int 
                         _pa2(v_cores[i]);
         }
         //print_cores(v_cores, ctx);
-        c = _cmp_unsched(v_cores);
+        c = _unsched(v_cores);
         pa.count_task += c.count_task;
         pa.count_tc += c.count_tc;
 
@@ -300,7 +218,7 @@ int main(void)
                 v_tcs.clear();
                 v_cores.clear();
 
-                instance_count++;
+                count_ins++;
                 _gen_data(v_tcs);
                 _add(v_tcs, v_cores);
 

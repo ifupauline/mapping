@@ -117,9 +117,10 @@ struct perf {
 };
 
 struct context {
-        int cores_min;
+        int p_arch;
         int cores_count;
-        int init_cores_count;
+        int pcu_cores_count;
+        int zcu_cores_count;
         int tcs_count;
         int tasks_count;
         int sched_ok_count;
@@ -157,13 +158,9 @@ void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx);
 
 void core_load(struct core &b, int &load);
 
-void tc_load(struct tc &tc);
-
 void core_weight(struct core &b);
 
-int gcd(vector<struct task> &v_tasks);
-
-void ovrw_core_by_id(vector<struct core> &v_cores, struct core &b);
+void tc_load(struct tc &tc);
 
 struct core get_core_by_id(vector<struct core> &v_cores, int core_id);
 
@@ -175,7 +172,7 @@ int get_color_by_id(vector<struct core> &v_cores, int core_id);
 
 int get_core_idx_by_id(vector<struct core> &v_cores, int core_id);
 
-void rmv_tc_by_id(struct core &b, int tc_id, int tc_idx);
+int get_duplicata(vector<int> &v_int);
 
 void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, 
                 vector<struct task> &src_v_tasks);
@@ -186,14 +183,22 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
 void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd);
 
 void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, 
-                struct context &ctx, int load, int gcd);
-
-int get_duplicata(vector<int> &v_int);
+                int load, int gcd);
 
 void verif_core_load(vector<struct core> &v_cores);
+
+void verif_prm(struct params &prm);
 
 void reset_empty_cores(vector<struct core> &v_cores);
 
 void reset_let_task(vector<struct core> &v_cores);
+
+void ovrw_core_by_id(vector<struct core> &v_cores, struct core &b);
+
+void rmv_tc_by_id(struct core &b, int tc_id, int tc_idx);
+
+void assign_ids(vector<struct tc> &v_tcs);
+
+int gcd(vector<struct task> &v_tasks);
 
 #endif /* MODEL_H */

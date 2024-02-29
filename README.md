@@ -1,10 +1,9 @@
-# *Modeling and Mapping of Automotive Real-Time Applications on Future E/E Architectures*
-
-## **Run Example**
+## **Run Mapping**
 ```sh
-./bin/map 400
+./bin/map 300
 ```
-## **Run Full Exploration**
+## **Run Experiments**
 ```sh
-./bin/dse
+./bin/pa
+./bin/exp1
 ```

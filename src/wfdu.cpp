@@ -1,5 +1,4 @@
 #include "let.h"
-#include "print.h"
 #include "mapping.h"
 #include "generator.h"
 
@@ -47,7 +46,7 @@ static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,
 void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx)
 {
-        int n;
+        int m;
         int ret;
         int load;
         int gcd;
@@ -56,15 +55,15 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         int cycl_count;
 
         cycl_count = 0;
-        n = v_tcs.size();
+        m = v_tcs.size();
 
         /* STEP - 1, place all possible tcs in cores using WFDU */
         printf("\n<--------------------------------------->\n");
         printf("STEP 1, WFDU\n");
         printf("<--------------------------------------->\n");
-        while (assign_count != n) {
+        while (assign_count != m) {
                 assign_count = 0;
-                for (int i = 0; i < n; i++) {
+                for (int i = 0; i < m; i++) {
                         ret = 0;
                         gcd = 0;
                         load = 0;
@@ -80,7 +79,7 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 printf("Worst Core to accomodate TC %d idx: %d is core %d\n", 
                                                 v_tcs[i].id, v_tcs[i].tc_idx, ret);
                                 core_id = ret;
-                                add_tc_to_v_cores(v_cores, v_tcs[i], core_id, ctx, 
+                                add_tc_to_v_cores(v_cores, v_tcs[i], core_id, 
                                                 load, gcd);
                                 v_tcs[i].is_assign = YES;
                                 continue;
@@ -108,7 +107,7 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                         }
                 }
                 /* count remaining tc to be allocated */
-                for (int i = 0; i < n; i++) {
+                for (int i = 0; i < m; i++) {
                         if (v_tcs[i].is_assign == YES)
                                 assign_count++;
                 }

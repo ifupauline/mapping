@@ -91,19 +91,16 @@ CMAKE_BINARY_DIR	exp/exp1/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier
 CMAKE_BINARY_DIR	exp/map/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/pa/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_BINARY_DIR	tests/wcrt/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/exp1/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/map/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/pa/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
-CMAKE_COMMAND	tests/wcrt/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/exp1/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/map/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/pa/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
-CMAKE_SOURCE_DIR	tests/wcrt/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	109;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	117;"	d	file:
 COMPILER_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	123;"	d	file:
@@ -428,7 +425,6 @@ EQUALS	exp/exp1/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/map/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/pa/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
-EQUALS	tests/wcrt/Makefile	/^EQUALS = =$/;"	m
 EXP_H	include/exp.h	2;"	d
 FAILED	include/model.h	18;"	d
 FFDU	include/model.h	11;"	d
@@ -437,7 +433,7 @@ GREEN	include/model.h	35;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
-ITR	exp/exp1/exp1.cpp	6;"	d	file:
+ITR	exp/exp1/exp1.cpp	7;"	d	file:
 LEFT	include/model.h	20;"	d
 LET_H	include/let.h	2;"	d
 MAPPING_H	include/mapping.h	2;"	d
@@ -531,7 +527,6 @@ RM	exp/exp1/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/map/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/pa/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
-RM	tests/wcrt/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 SCHED_ANALYSIS_H	include/sched_analysis.h	2;"	d
 SCHED_FAILED	include/sched_analysis.h	9;"	d
 SCHED_OK	include/sched_analysis.h	8;"	d
@@ -540,7 +535,6 @@ SHELL	exp/exp1/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/map/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/pa/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SHELL	tests/wcrt/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	291;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	30;"	d	file:
@@ -587,7 +581,8 @@ SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	10
 SIMULATE_VERSION_PATCH	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	67;"	d	file:
 STATE	src/mapping.cpp	/^int STATE = OK;$/;"	v
 STATIC	include/ucases.h	7;"	d
-STP	exp/exp1/exp1.cpp	5;"	d	file:
+STATS_H	include/stats.h	2;"	d
+STP	exp/exp1/exp1.cpp	6;"	d	file:
 STP	exp/pa/pa.cpp	9;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	417;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	402;"	d	file:
@@ -603,7 +598,6 @@ __has_include	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
 __has_include	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 _add	exp/pa/pa.cpp	/^static void _add(vector<struct tc> &v_tcs, vector<struct core> &v_cores)$/;"	f	file:
 _assign	exp/pa/pa.cpp	/^static struct stats _assign(vector<struct core> &v_cores, struct stats &pa, int a)$/;"	f	file:
-_assign_ids	src/generator.cpp	/^static void _assign_ids(vector<struct tc> &v_tcs)$/;"	f	file:
 _base_assignment	src/sched_analysis.cpp	/^void _base_assignment(struct core &b)$/;"	f
 _check_if_swap	src/placement.cpp	/^static int _check_if_swap(vector<struct core> &v_cores, $/;"	f	file:
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
@@ -615,38 +609,31 @@ _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const s
 _cmp_inc_tc_color	src/model.cpp	/^static int _cmp_inc_tc_color(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_tc_id	src/model.cpp	/^static int _cmp_inc_tc_id(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_tc_tc_idx	src/model.cpp	/^static int _cmp_inc_tc_tc_idx(const struct tc &a, const struct tc &b)$/;"	f	file:
-_cmp_int_lvl	exp/pa/pa.cpp	/^static void _cmp_int_lvl(struct core &b, int pa)$/;"	f	file:
-_cmp_unsched	exp/pa/pa.cpp	/^static struct stats _cmp_unsched(vector<struct core> &v_cores)$/;"	f	file:
-_count_pcu	src/print.cpp	/^static int _count_pcu(vector<struct core> &v_cores)$/;"	f	file:
-_count_zcu	src/print.cpp	/^static int _count_zcu(vector<struct core> &v_cores)$/;"	f	file:
+_count_cores	src/stats.cpp	/^static void _count_cores(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
 _disp	src/placement.cpp	/^static void _disp(vector<struct core> &v_cores, pair<struct tc, $/;"	f	file:
-_execution_time	src/print.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
+_execution_time	src/stats.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_core	src/bfdu.cpp	/^static int _find_best_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
-_find_frst_core	src/ffdu.cpp	/^static int _find_frst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
+_find_first	src/ffdu.cpp	/^static int _find_first(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, $/;"	f	file:
 _find_worst_core	src/wfdu.cpp	/^static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _gen_app	src/generator.cpp	/^static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, $/;"	f	file:
 _gen_data	exp/pa/pa.cpp	/^static int _gen_data(vector<struct tc> &v_tcs)$/;"	f	file:
-_gen_task	exp/pa/pa.cpp	/^static void _gen_task(struct task &tau, int i, int color)$/;"	f	file:
-_gen_task	src/generator.cpp	/^static void _gen_task(struct task &tau, int i, int color)$/;"	f	file:
-_gen_tc	exp/pa/pa.cpp	/^static void _gen_tc(struct tc &tc, int color, int minu, int maxu)$/;"	f	file:
-_gen_tc	src/generator.cpp	/^static void _gen_tc(struct tc &tc, int color, int minu, int maxu)$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct core &b)$/;"	f	file:
+_int_lvl	exp/pa/pa.cpp	/^static void _int_lvl(struct core &b, int pa)$/;"	f	file:
 _pa1	exp/pa/pa.cpp	/^static void _pa1(struct core &b)$/;"	f	file:
 _pa2	exp/pa/pa.cpp	/^static void _pa2(struct core &b)$/;"	f	file:
 _pswap	src/sched_analysis.cpp	/^static void _pswap(struct core &b, int p, int tc_idx, int tc_id)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct core &b)$/;"	f	file:
 _resp	src/sched_analysis.cpp	/^static void _resp(vector<struct task> &v_tasks, int &flag)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct core &b)$/;"	f	file:
-_schedulability_rate	src/print.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
+_schedulability_rate	src/stats.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_disp	src/placement.cpp	/^static int _search_for_disp(vector<struct core> &v_dst_cores, int tc_id, $/;"	f	file:
 _store_tcs_disp	src/placement.cpp	/^static void _store_tcs_disp(vector<struct core> &v_cores, $/;"	f	file:
 _store_tcs_swap	src/placement.cpp	/^static void _store_tcs_swap(vector<struct core> &v_cores, $/;"	f	file:
 _swap	src/placement.cpp	/^void _swap(vector<struct core> &v_cores, struct core &dst_core, struct core &src_core)$/;"	f
-_tc_u	src/generator.cpp	/^static int _tc_u(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f	file:
-_utilization_rate	src/print.cpp	/^static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
-_verif_prm	src/generator.cpp	/^static void _verif_prm(struct params &prm)$/;"	f	file:
-_verify_pa	src/print.cpp	/^static void _verify_pa(vector<struct core> &v_cores)$/;"	f	file:
+_unsched	exp/pa/pa.cpp	/^static struct stats _unsched(vector<struct core> &v_cores)$/;"	f	file:
+_utilization_rate	src/stats.cpp	/^static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
+_verify_pa	src/stats.cpp	/^static void _verify_pa(vector<struct core> &v_cores)$/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
 add_core	src/model.cpp	/^void add_core(vector<struct core> &v_cores, int color, int speed_factor, $/;"	f
 add_tasks_to_v_tasks	src/model.cpp	/^void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, $/;"	f
@@ -654,6 +641,7 @@ add_tc_to_core	src/model.cpp	/^void add_tc_to_core(struct core &b, struct tc &tc
 add_tc_to_v_cores	src/model.cpp	/^void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, $/;"	f
 appu	include/model.h	/^        float appu;$/;"	m	struct:perf
 assi_time	include/model.h	/^        float assi_time;$/;"	m	struct:perf
+assign_ids	src/model.cpp	/^void assign_ids(vector<struct tc> &v_tcs)$/;"	f
 assignment	src/mapping.cpp	/^void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
 b_stats	include/exp.h	/^struct b_stats {$/;"	s
 bfdu	src/bfdu.cpp	/^void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
@@ -679,7 +667,7 @@ core_idx	include/model.h	/^        int core_idx;$/;"	m	struct:t_pos
 core_load	src/model.cpp	/^void core_load(struct core &b, int &load)$/;"	f
 core_weight	src/model.cpp	/^void core_weight(struct core &b)$/;"	f
 cores_count	include/model.h	/^        int cores_count;$/;"	m	struct:context
-cores_min	include/model.h	/^        int cores_min;$/;"	m	struct:context
+count_ins	exp/pa/pa.cpp	/^static int count_ins = 0;$/;"	v	file:
 count_task	exp/pa/pa.cpp	/^        int count_task;$/;"	m	struct:stats	file:
 count_tc	exp/pa/pa.cpp	/^        int count_tc;$/;"	m	struct:stats	file:
 create_waters2019	src/ucases.cpp	/^void create_waters2019(struct tc &tc)$/;"	f
@@ -701,6 +689,8 @@ gcd	src/model.cpp	/^int gcd(vector<struct task> &v_tasks)$/;"	f
 gen_app	src/generator.cpp	/^void gen_app(vector<struct tc> &v_tcs, struct params &prm, $/;"	f
 gen_arch	src/generator.cpp	/^void gen_arch(vector<struct core> &v_cores, struct context &ctx)$/;"	f
 gen_rand	src/generator.cpp	/^int gen_rand(int min, int max) $/;"	f
+gen_task	src/generator.cpp	/^void gen_task(struct task &tau, int i, int color)$/;"	f
+gen_tc	src/generator.cpp	/^void gen_tc(struct tc &tc, int color, int minu, int maxu)$/;"	f
 get_color_by_id	src/model.cpp	/^int get_color_by_id(vector<struct core> &v_cores, int core_id)$/;"	f
 get_core_by_id	src/model.cpp	/^struct core get_core_by_id(vector<struct core> &v_cores, int core_id)$/;"	f
 get_core_idx_by_id	src/model.cpp	/^int get_core_idx_by_id(vector<struct core> &v_cores, int core_id)$/;"	f
@@ -734,11 +724,9 @@ info_version_internal	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char co
 info_version_internal	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";$/;"	v
 info_version_internal	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const info_version_internal[] = {$/;"	v
 info_version_internal	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INTERNAL_STR "]";$/;"	v
-init_cores_count	include/model.h	/^        int init_cores_count;$/;"	m	struct:context
 init_ctx	src/generator.cpp	/^void init_ctx(vector<struct tc> &v_tcs, struct params &prm, $/;"	f
 init_let_task	src/let.cpp	/^void init_let_task(struct tc &let, struct context &ctx)$/;"	f
 input_prm	src/generator.cpp	/^void input_prm(int argc, char **argv, struct params &prm)$/;"	f
-instance_count	exp/pa/pa.cpp	/^static int instance_count = 0;$/;"	v	file:
 int_lvl_pa1	exp/pa/pa.cpp	/^static float int_lvl_pa1 = 0;$/;"	v	file:
 int_lvl_pa2	exp/pa/pa.cpp	/^static float int_lvl_pa2 = 0;$/;"	v	file:
 is_assign	include/model.h	/^        int is_assign;$/;"	m	struct:tc
@@ -757,13 +745,14 @@ main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc,
 main	exp/exp1/exp1.cpp	/^int main(void)$/;"	f
 main	exp/map/map.cpp	/^int main(int argc, char **argv)$/;"	f
 main	exp/pa/pa.cpp	/^int main(void)$/;"	f
-main	tests/wcrt/wcrt.cpp	/^int main(void)$/;"	f
 ovrw_core_by_id	src/model.cpp	/^void ovrw_core_by_id(vector<struct core> &v_cores, struct core &b)$/;"	f
 p	include/model.h	/^        int p;$/;"	m	struct:task
 p	include/model.h	/^        struct perf p;$/;"	m	struct:context	typeref:struct:context::perf
+p_arch	include/model.h	/^        int p_arch;$/;"	m	struct:context
 params	include/model.h	/^struct params {$/;"	s
 part_time	include/model.h	/^        float part_time;$/;"	m	struct:perf
 partitioning	src/mapping.cpp	/^void partitioning(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f
+pcu_cores_count	include/model.h	/^        int pcu_cores_count;$/;"	m	struct:context
 perf	include/model.h	/^struct perf {$/;"	s
 period_waters2015	src/ucases.cpp	/^int period_waters2015(int x, int y, int tc_type)$/;"	f
 phi	include/model.h	/^        int phi;$/;"	m	struct:core
@@ -792,7 +781,7 @@ sched_imp_allo	include/model.h	/^        int sched_imp_allo;$/;"	m	struct:perf
 sched_imp_disp	include/model.h	/^        int sched_imp_disp;$/;"	m	struct:perf
 sched_imp_swap	include/model.h	/^        int sched_imp_swap;$/;"	m	struct:perf
 sched_ok_count	include/model.h	/^        int sched_ok_count;$/;"	m	struct:context
-sched_rate	src/print.cpp	/^float sched_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f
+sched_rate	src/stats.cpp	/^float sched_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f
 sched_rate_allo	include/model.h	/^        float sched_rate_allo;$/;"	m	struct:perf
 sched_rate_disp	include/model.h	/^        float sched_rate_disp;$/;"	m	struct:perf
 sched_rate_opti	include/model.h	/^        float sched_rate_opti;$/;"	m	struct:perf
@@ -810,7 +799,7 @@ sort_inc_tc_color	src/model.cpp	/^void sort_inc_tc_color(vector<struct tc> &v_tc
 sort_inc_tc_id	src/model.cpp	/^void sort_inc_tc_id(vector<struct tc> &v_tcs)$/;"	f
 sort_inc_tc_tc_idx	src/model.cpp	/^void sort_inc_tc_tc_idx(vector<struct tc> &v_tcs)$/;"	f
 stats	exp/pa/pa.cpp	/^struct stats {$/;"	s	file:
-stats	src/print.cpp	/^void stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, $/;"	f
+stats	src/stats.cpp	/^void stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, $/;"	f
 swap_gain	include/model.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/model.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/placement.cpp	/^void swapping(vector<struct core> &v_cores)$/;"	f
@@ -836,6 +825,7 @@ v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:core
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:tc
 v_tcs	include/model.h	/^        vector<struct tc> v_tcs;$/;"	m	struct:core
 verif_core_load	src/model.cpp	/^void verif_core_load(vector<struct core> &v_cores)$/;"	f
+verif_prm	src/model.cpp	/^void verif_prm(struct params &prm)$/;"	f
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
 weight	include/model.h	/^        int weight;$/;"	m	struct:core
@@ -848,3 +838,4 @@ wfdu_sr_disp	include/exp.h	/^        float wfdu_sr_disp;$/;"	m	struct:b_stats
 wfdu_sr_swap	include/exp.h	/^        float wfdu_sr_swap;$/;"	m	struct:b_stats
 write_data_to_file	src/exp.cpp	/^void write_data_to_file(FILE *filename, vector<struct b_stats> &data,$/;"	f
 write_to_file	src/exp.cpp	/^void write_to_file(FILE *filename, vector<float> &v_float)$/;"	f
+zcu_cores_count	include/model.h	/^        int zcu_cores_count;$/;"	m	struct:context

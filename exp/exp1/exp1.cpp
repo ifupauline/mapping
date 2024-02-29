@@ -1,5 +1,6 @@
 #include "exp.h"
 #include "print.h"
+#include "stats.h"
 #include "generator.h"
 
 #define STP 10
