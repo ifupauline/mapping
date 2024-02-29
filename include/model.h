@@ -118,11 +118,11 @@ struct perf {
 
 struct context {
         int p_arch;
+        int tcs_count;
+        int tasks_count;
         int cores_count;
         int pcu_cores_count;
         int zcu_cores_count;
-        int tcs_count;
-        int tasks_count;
         int sched_ok_count;
         int sched_failed_count;
         struct perf p;
