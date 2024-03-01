@@ -604,13 +604,14 @@ _cmp_inc_task_priority	src/model.cpp	/^static int _cmp_inc_task_priority(const s
 _cmp_inc_tc_color	src/model.cpp	/^static int _cmp_inc_tc_color(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_tc_id	src/model.cpp	/^static int _cmp_inc_tc_id(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_tc_tc_idx	src/model.cpp	/^static int _cmp_inc_tc_tc_idx(const struct tc &a, const struct tc &b)$/;"	f	file:
-_count_cores	src/stats.cpp	/^static void _count_cores(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
+_count_cores_tasks	src/stats.cpp	/^static void _count_cores_tasks(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
 _disp	src/placement.cpp	/^static void _disp(vector<struct core> &v_cores, pair<struct tc, $/;"	f	file:
 _execution_time	src/stats.cpp	/^static void _execution_time(struct context &ctx)$/;"	f	file:
 _find_best_core	src/bfdu.cpp	/^static int _find_best_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _find_first	src/ffdu.cpp	/^static int _find_first(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct task> &v_tasks, $/;"	f	file:
 _find_worst_core	src/wfdu.cpp	/^static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
+_fragmentation_rate	src/stats.cpp	/^static void _fragmentation_rate(struct context &ctx)$/;"	f	file:
 _gen_app	src/generator.cpp	/^static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, $/;"	f	file:
 _gen_data	exp/pa/pa.cpp	/^static int _gen_data(vector<struct tc> &v_tcs)$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct core &b)$/;"	f	file:
@@ -623,13 +624,14 @@ _resp	src/sched_analysis.cpp	/^static void _resp(vector<struct task> &v_tasks, i
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct core &b)$/;"	f	file:
 _schedulability_rate	src/stats.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_disp	src/placement.cpp	/^static int _search_for_disp(vector<struct core> &v_dst_cores, int tc_id, $/;"	f	file:
+_store_results	exp/exp1/exp1.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
 _store_tcs_disp	src/placement.cpp	/^static void _store_tcs_disp(vector<struct core> &v_cores, $/;"	f	file:
 _store_tcs_swap	src/placement.cpp	/^static void _store_tcs_swap(vector<struct core> &v_cores, $/;"	f	file:
 _swap	src/placement.cpp	/^void _swap(vector<struct core> &v_cores, struct core &dst_core, struct core &src_core)$/;"	f
 _unsched	exp/pa/pa.cpp	/^static struct stats _unsched(vector<struct core> &v_cores)$/;"	f	file:
 _utilization_rate	src/stats.cpp	/^static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
 _verify_pa	src/stats.cpp	/^static void _verify_pa(vector<struct core> &v_cores)$/;"	f	file:
-_write_table	exp/exp1/exp1.cpp	/^static void _write_table(FILE *file, vector<struct results> &v_res)$/;"	f	file:
+_write_results	exp/exp1/exp1.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
 add_core	src/model.cpp	/^void add_core(vector<struct core> &v_cores, int color, int speed_factor, $/;"	f
 add_tasks_to_v_tasks	src/model.cpp	/^void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, $/;"	f
@@ -640,7 +642,10 @@ assi_time	include/model.h	/^        float assi_time;$/;"	m	struct:perf
 assign_ids	src/model.cpp	/^void assign_ids(vector<struct tc> &v_tcs)$/;"	f
 assignment	src/mapping.cpp	/^void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
 bfdu	src/bfdu.cpp	/^void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+bfdu_fr	include/stats.h	/^        float bfdu_fr;$/;"	m	struct:results
+bfdu_letu	include/stats.h	/^        float bfdu_letu;$/;"	m	struct:results
 bfdu_m	include/stats.h	/^        float bfdu_m;$/;"	m	struct:results
+bfdu_plac_gain	include/stats.h	/^        float bfdu_plac_gain;$/;"	m	struct:results
 bfdu_sr_allo	include/stats.h	/^        float bfdu_sr_allo;$/;"	m	struct:results
 bfdu_sr_disp	include/stats.h	/^        float bfdu_sr_disp;$/;"	m	struct:results
 bfdu_sr_swap	include/stats.h	/^        float bfdu_sr_swap;$/;"	m	struct:results
@@ -664,6 +669,7 @@ cores_count	include/model.h	/^        int cores_count;$/;"	m	struct:context
 count_ins	exp/pa/pa.cpp	/^static int count_ins = 0;$/;"	v	file:
 count_task	exp/pa/pa.cpp	/^        int count_task;$/;"	m	struct:stats	file:
 count_tc	exp/pa/pa.cpp	/^        int count_tc;$/;"	m	struct:stats	file:
+counter	src/generator.cpp	/^static int counter = 0;$/;"	v	file:
 create_waters2019	src/ucases.cpp	/^void create_waters2019(struct tc &tc)$/;"	f
 cut	src/generator.cpp	/^void cut(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
@@ -672,11 +678,15 @@ displacement	src/placement.cpp	/^void displacement(vector<struct core> &v_cores)
 exec_time	include/model.h	/^        float exec_time;$/;"	m	struct:perf
 exp1	exp/exp1/exp1.cpp	/^static void exp1(vector<struct results> &v_res, struct params &prm)$/;"	f	file:
 ffdu	src/ffdu.cpp	/^void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+ffdu_fr	include/stats.h	/^        float ffdu_fr;$/;"	m	struct:results
+ffdu_letu	include/stats.h	/^        float ffdu_letu;$/;"	m	struct:results
 ffdu_m	include/stats.h	/^        float ffdu_m;$/;"	m	struct:results
+ffdu_plac_gain	include/stats.h	/^        float ffdu_plac_gain;$/;"	m	struct:results
 ffdu_sr_allo	include/stats.h	/^        float ffdu_sr_allo;$/;"	m	struct:results
 ffdu_sr_disp	include/stats.h	/^        float ffdu_sr_disp;$/;"	m	struct:results
 ffdu_sr_swap	include/stats.h	/^        float ffdu_sr_swap;$/;"	m	struct:results
 flag	include/model.h	/^        int flag;$/;"	m	struct:core
+fr	include/model.h	/^        float fr;$/;"	m	struct:perf
 gcd	include/model.h	/^        int gcd;$/;"	m	struct:tc
 gcd	src/model.cpp	/^int gcd(vector<struct task> &v_tasks)$/;"	f
 gen_app	src/generator.cpp	/^void gen_app(vector<struct tc> &v_tcs, struct params &prm, $/;"	f
@@ -690,6 +700,7 @@ get_core_idx_by_id	src/model.cpp	/^int get_core_idx_by_id(vector<struct core> &v
 get_duplicata	src/model.cpp	/^int get_duplicata(vector<int> &v_int)$/;"	f
 get_tc_by_id	src/model.cpp	/^struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id)$/;"	f
 get_wcrt	src/model.cpp	/^int get_wcrt(struct core &b, int tc_id, int tc_idx)$/;"	f
+hdr_table	exp/exp1/exp1.cpp	/^static const char *hdr_table = "SIGMA, FR (%),"$/;"	v	file:
 id	include/model.h	/^        int id;$/;"	m	struct:core
 id	include/model.h	/^        int id;$/;"	m	struct:tc
 idx	include/model.h	/^        struct t_pos idx;$/;"	m	struct:task	typeref:struct:task::t_pos
@@ -727,6 +738,8 @@ is_empty	include/model.h	/^        int is_empty;$/;"	m	struct:core
 is_frag	include/model.h	/^        int is_frag;$/;"	m	struct:tc
 is_let	include/model.h	/^        int is_let;$/;"	m	struct:task
 is_let	include/model.h	/^        int is_let;$/;"	m	struct:tc
+k	include/model.h	/^        int k;$/;"	m	struct:context
+k_max	include/model.h	/^        int k_max;$/;"	m	struct:context
 letu	include/model.h	/^        float letu;$/;"	m	struct:perf
 load	include/model.h	/^        int load;$/;"	m	struct:core
 load_rem	include/model.h	/^        int load_rem;$/;"	m	struct:core
@@ -781,6 +794,7 @@ sched_rate_opti	include/model.h	/^        float sched_rate_opti;$/;"	m	struct:pe
 sched_rate_swap	include/model.h	/^        float sched_rate_swap;$/;"	m	struct:perf
 sched_rate_tc	include/model.h	/^        float sched_rate_tc;$/;"	m	struct:perf
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx)$/;"	f
+sigma	exp/exp1/exp1.cpp	/^static int sigma = 0;$/;"	v	file:
 sigma	include/stats.h	/^        float sigma;$/;"	m	struct:results
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
 sort_dec_tc_size	src/model.cpp	/^void sort_dec_tc_size(vector<struct tc> &v_tcs)$/;"	f
@@ -799,6 +813,7 @@ swapping	src/placement.cpp	/^void swapping(vector<struct core> &v_cores)$/;"	f
 sysu	include/model.h	/^        float sysu;$/;"	m	struct:perf
 t	include/model.h	/^        int t;$/;"	m	struct:task
 t_pos	include/model.h	/^struct t_pos {$/;"	s
+table	exp/exp1/exp1.cpp	/^static const char *table = "data_table.txt";$/;"	v	file:
 task	include/model.h	/^struct task {$/;"	s
 task_id	include/model.h	/^        int task_id;$/;"	m	struct:task
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
@@ -824,9 +839,13 @@ wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
 weight	include/model.h	/^        int weight;$/;"	m	struct:core
 weight	include/model.h	/^        int weight;$/;"	m	struct:tc
 wfdu	src/wfdu.cpp	/^void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+wfdu_fr	include/stats.h	/^        float wfdu_fr;$/;"	m	struct:results
+wfdu_letu	include/stats.h	/^        float wfdu_letu;$/;"	m	struct:results
 wfdu_m	include/stats.h	/^        float wfdu_m;$/;"	m	struct:results
+wfdu_plac_gain	include/stats.h	/^        float wfdu_plac_gain;$/;"	m	struct:results
 wfdu_sr_allo	include/stats.h	/^        float wfdu_sr_allo;$/;"	m	struct:results
 wfdu_sr_disp	include/stats.h	/^        float wfdu_sr_disp;$/;"	m	struct:results
 wfdu_sr_swap	include/stats.h	/^        float wfdu_sr_swap;$/;"	m	struct:results
-write_to_file	src/file.cpp	/^void write_to_file(FILE *file, vector<float> &v_float)$/;"	f
+write_data	src/file.cpp	/^void write_data(FILE *file, vector<float> &v_float)$/;"	f
+write_header	src/file.cpp	/^void write_header(FILE *file, const char *header)$/;"	f
 zcu_cores_count	include/model.h	/^        int zcu_cores_count;$/;"	m	struct:context

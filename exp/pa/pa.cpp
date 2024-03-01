@@ -163,12 +163,13 @@ static struct stats _assign(vector<struct core> &v_cores, struct stats &pa, int 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].load == 0)
                         continue;
+
                 else if (a == PA1)
                         _pa1(v_cores[i]);
+
                 else
                         _pa2(v_cores[i]);
         }
-        //print_cores(v_cores, ctx);
         c = _unsched(v_cores);
         pa.count_task += c.count_task;
         pa.count_tc += c.count_tc;

@@ -1,7 +1,7 @@
 #include "stats.h"
 #include "sched_analysis.h"
 
-static void _count_cores(vector<struct core> &v_cores, struct context &ctx)
+static void _count_cores_tasks(vector<struct core> &v_cores, struct context &ctx)
 {
         ctx.cores_count = 0;
 
@@ -17,8 +17,15 @@ static void _count_cores(vector<struct core> &v_cores, struct context &ctx)
                 if (v_cores[i].color != RED)
                         ctx.zcu_cores_count++;
 
-                for (unsigned int j = 0; j < v_cores[i].v_tasks.size(); j++)
-                        ctx.tasks_count++;
+                /* count tasks without LET */
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
+                                if (v_cores[i].v_tcs[j].v_tasks[k].is_let == YES)
+                                        continue;
+                                else
+                                        ctx.tasks_count++;
+                        }
+                }
         }
 }
 
@@ -64,6 +71,11 @@ static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)
         ctx.p.appu /= PERMILL;
         ctx.p.unuu /= PERMILL;
         ctx.p.sysu = ctx.cores_count * ((float)PHI / (float)PERMILL);
+}
+
+static void _fragmentation_rate(struct context &ctx)
+{
+        ctx.p.fr = ((float)ctx.k/(float)ctx.k_max) * PERCENT;
 }
 
 static void _verify_pa(vector<struct core> &v_cores)
@@ -141,9 +153,10 @@ float sched_rate(vector<struct core> &v_cores, struct context &ctx)
 void stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
                 struct context &ctx)
 {
+        _count_cores_tasks(v_cores, ctx);
         _verify_pa(v_cores);
         _schedulability_rate(ctx);
         _execution_time(ctx);
         _utilization_rate(v_cores, ctx);
-        _count_cores(v_cores, ctx);
+        _fragmentation_rate(ctx);
 }

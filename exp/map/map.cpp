@@ -36,6 +36,7 @@ redo:   struct params prm;
         ctx_bfdu = ctx;
         ctx_wfdu = ctx;
         ctx_ffdu = ctx;
+
         ctx_bfdu.prm.a = BFDU;
         ctx_wfdu.prm.a = WFDU;
         ctx_ffdu.prm.a = FFDU;
@@ -43,6 +44,7 @@ redo:   struct params prm;
         v_tcs_bfdu = v_tcs;
         v_tcs_wfdu = v_tcs;
         v_tcs_ffdu = v_tcs;
+
         v_cores_bfdu = v_cores;
         v_cores_wfdu = v_cores;
         v_cores_ffdu = v_cores;
@@ -83,9 +85,11 @@ redo:   struct params prm;
         print_cores(v_cores_bfdu, ctx_bfdu);
         print_cores(v_cores_wfdu, ctx_wfdu);
         print_cores(v_cores_ffdu, ctx_ffdu);
+
         print_vectors(v_cores_bfdu, v_tcs_bfdu, ctx_bfdu);
         print_vectors(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
         print_vectors(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
+
         print_stats(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
         print_stats(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
         print_stats(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);

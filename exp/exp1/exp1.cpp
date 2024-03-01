@@ -5,42 +5,91 @@
 #define STP 10
 #define ITR 66
 
+static int sigma = 0;
+
 static const char *table = "data_table.txt";
 
-static const char *table_hdr = "SIGMA, BFDU_M, SR_ALLO, SR_SWAP, SR_DISP,"
-"WFDU_M, SR_ALLO, SR_SWAP, SR_DISP,"
-"FFDU_M, SR_ALLO, SR_SWAP, SR_DISP";
+static const char *hdr_table = "SIGMA, FR (%),"
+"BFDU_M, SR_ALLO, SR_SWAP, SR_DISP, PLAC_GAIN (%), LETU (%),"
+"WFDU_M, SR_ALLO, SR_SWAP, SR_DISP, PLAC_GAIN (%), LETU (%),"
+"FFDU_M, SR_ALLO, SR_SWAP, SR_DISP, PLAC_GAIN (%), LETU (%)";
 
-static void _write_table(FILE *file, vector<struct results> &v_res, 
-                const char *header)
+static void _store_results(vector<struct results> &v_res, struct results &res, 
+                struct context &ctx_bfdu, struct context &ctx_wfdu, 
+                struct context &ctx_ffdu)
 {
+        res.bfdu_fr = ctx_bfdu.p.fr;
+        res.wfdu_fr = ctx_wfdu.p.fr;
+        res.ffdu_fr = ctx_ffdu.p.fr;
+
+        res.bfdu_letu = (ctx_bfdu.p.letu / ctx_bfdu.p.sysu) * PERCENT;
+        res.wfdu_letu = (ctx_wfdu.p.letu / ctx_wfdu.p.sysu) * PERCENT;
+        res.ffdu_letu = (ctx_ffdu.p.letu / ctx_ffdu.p.sysu) * PERCENT;
+
+        res.bfdu_m = ctx_bfdu.cores_count;
+        res.wfdu_m = ctx_wfdu.cores_count;
+        res.ffdu_m = ctx_ffdu.cores_count;
+
+        res.bfdu_sr_allo = ctx_bfdu.p.sched_rate_allo;
+        res.wfdu_sr_allo = ctx_wfdu.p.sched_rate_allo;
+        res.ffdu_sr_allo = ctx_ffdu.p.sched_rate_allo;
+
+        res.bfdu_sr_disp = ctx_bfdu.p.sched_rate_disp * PERCENT;
+        res.wfdu_sr_disp = ctx_wfdu.p.sched_rate_disp * PERCENT;
+        res.ffdu_sr_disp = ctx_ffdu.p.sched_rate_disp * PERCENT;
+
+        res.bfdu_sr_swap = ctx_bfdu.p.sched_rate_swap * PERCENT;
+        res.wfdu_sr_swap = ctx_wfdu.p.sched_rate_swap * PERCENT;
+        res.ffdu_sr_swap = ctx_ffdu.p.sched_rate_swap * PERCENT;
+
+        res.bfdu_plac_gain = ctx_bfdu.p.plac_gain;
+        res.wfdu_plac_gain = ctx_wfdu.p.plac_gain;
+        res.ffdu_plac_gain = ctx_ffdu.p.plac_gain;
+
+        res.sigma = (float)((float)sigma/PERMILL);
+        v_res.push_back(res);
+}
+
+static void _write_results(vector<struct results> &v_res)
+{
+        FILE *file;
+
         vector<float> v_float;
 
-        write_header(file, header);
+        file = (FILE*)fopen(table, "w");
+
+        write_header(file, hdr_table);
 
         for (unsigned int i = 0; i < v_res.size(); i++) {
                 v_float.push_back(v_res[i].sigma);
+                v_float.push_back(v_res[i].bfdu_fr);
                 v_float.push_back(v_res[i].bfdu_m);
                 v_float.push_back(v_res[i].bfdu_sr_allo);
                 v_float.push_back(v_res[i].bfdu_sr_swap);
                 v_float.push_back(v_res[i].bfdu_sr_disp);
+                v_float.push_back(v_res[i].bfdu_plac_gain);
+                v_float.push_back(v_res[i].bfdu_letu);
                 v_float.push_back(v_res[i].wfdu_m);
                 v_float.push_back(v_res[i].wfdu_sr_allo);
                 v_float.push_back(v_res[i].wfdu_sr_swap);
                 v_float.push_back(v_res[i].wfdu_sr_disp);
+                v_float.push_back(v_res[i].wfdu_plac_gain);
+                v_float.push_back(v_res[i].wfdu_letu);
                 v_float.push_back(v_res[i].ffdu_m);
                 v_float.push_back(v_res[i].ffdu_sr_allo);
                 v_float.push_back(v_res[i].ffdu_sr_swap);
                 v_float.push_back(v_res[i].ffdu_sr_disp);
+                v_float.push_back(v_res[i].ffdu_plac_gain);
+                v_float.push_back(v_res[i].ffdu_letu);
 
                 write_data(file, v_float);
                 v_float.clear();
         }
+        fclose(file);
 }
 
 static void exp1(vector<struct results> &v_res, struct params &prm)
 {
-        int sigma;
         struct context ctx;
         struct results res;
         vector<struct core> v_cores;
@@ -65,7 +114,7 @@ redo:   sigma = PHI;
 
         gen_app(v_tcs, prm, ctx);
 
-        for (int i = 0; i < ITR; i++) {
+        for (unsigned int i = 0; i < ITR; i++) {
                 ctx_bfdu = {0};
                 ctx_wfdu = {0};
                 ctx_ffdu = {0};
@@ -134,26 +183,7 @@ redo:   sigma = PHI;
                 stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
                 stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
 
-                /* store results */
-                res.bfdu_m = ctx_bfdu.cores_count;
-                res.wfdu_m = ctx_wfdu.cores_count;
-                res.ffdu_m = ctx_ffdu.cores_count;
-
-                res.bfdu_sr_allo = ctx_bfdu.p.sched_rate_allo;
-                res.wfdu_sr_allo = ctx_wfdu.p.sched_rate_allo;
-                res.ffdu_sr_allo = ctx_ffdu.p.sched_rate_allo;
-
-                res.bfdu_sr_disp = ctx_bfdu.p.sched_rate_disp * PERCENT;
-                res.wfdu_sr_disp = ctx_wfdu.p.sched_rate_disp * PERCENT;
-                res.ffdu_sr_disp = ctx_ffdu.p.sched_rate_disp * PERCENT;
-
-                res.bfdu_sr_swap = ctx_bfdu.p.sched_rate_swap * PERCENT;
-                res.wfdu_sr_swap = ctx_wfdu.p.sched_rate_swap * PERCENT;
-                res.ffdu_sr_swap = ctx_ffdu.p.sched_rate_swap * PERCENT;
-
-                res.sigma = (float)((float)sigma/PERMILL);
-
-                v_res.push_back(res);
+                _store_results(v_res, res, ctx_bfdu, ctx_wfdu, ctx_ffdu);
 
                 sigma -= STP;
         }
@@ -166,11 +196,7 @@ int main(void)
 
         exp1(v_res, prm);
 
-        FILE *file1 = (FILE*)fopen(table, "w");
-
-        _write_table(file1, v_res, table_hdr);
-
-        fclose(file1);
+        _write_results(v_res);
 
         return 0;
 }

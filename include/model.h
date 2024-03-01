@@ -92,6 +92,7 @@ struct params {
 
 struct perf {
         float m;
+        float fr;
         float letu;
         float appu;
         float unuu;
@@ -117,6 +118,8 @@ struct perf {
 };
 
 struct context {
+        int k;
+        int k_max;
         int p_arch;
         int tcs_count;
         int tasks_count;

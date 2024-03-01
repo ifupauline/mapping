@@ -275,8 +275,8 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("+===========================================+\n");
         printf("------------------------------------------------------------------------>\n");
         printf("m:  %u\n", ctx.prm.m);
-        printf("ф:  %u\n", PHI);
-        printf("σ:  %u\n", ctx.prm.s);
+        printf("ф:  %.2f\n", (float)PHI/PERMILL);
+        printf("σ:  %.2f\n", (float)ctx.prm.s/PERMILL);
         if (ctx.prm.a == BFDU)
                 printf("α:  BFDU\n");
         if (ctx.prm.a == WFDU)
@@ -291,6 +291,9 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("|ξ| ∈ Γ:                       %-3d\n", ctx.prm.m);
         printf("|ξ| ∈ Γ(after partitioning):   %-3ld\n", v_tcs.size());
         printf("|τ| ∈ Г:                       %-3d\n", ctx.tasks_count);
+        printf("|K|:                           %-3d\n", ctx.k);
+        printf("|K|max:                        %-3d\n", ctx.k_max);
+        printf("Fragmentation Rate:            %-3.3f\n", ctx.p.fr);
         printf("------------------------------------------------------------------------>\n");
         printf("Partitioning Time:                %-3.3f ms\n", ctx.p.part_time * PERMILL);
         printf("Assignment Time:                  %-3.3f ms\n", ctx.p.assi_time * PERMILL);

@@ -2,6 +2,8 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
+static int counter = 0;
+
 static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
@@ -18,8 +20,11 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         struct tc tc_purple;
         struct tc tc_white;
 
+        //create_waters2019(tc_red);
+        //v_tcs.push_back(tc_red);
+
         /* static */
-        for (unsigned int i = 0; i < 3; i++) {
+        for (unsigned int i = 0; i < 2; i++) {
                 tc_red = {0};
                 tc_blue = {0};
                 tc_yellow = {0};
@@ -41,9 +46,9 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         }
 
         /* dynamic */
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 12; i++) {
                 tc_white = {0};
-                gen_tc(tc_white, WHITE, 1, 1000);
+                gen_tc(tc_white, WHITE, 500, 1000);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);
@@ -56,155 +61,6 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
                 v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
 
         return 0;
-}
-
-void cut(vector<struct tc> &v_tcs, struct context &ctx)
-{
-        int idx;
-        int ret;
-        int u_sum;
-        struct tc tc;
-        vector<struct task> v_tmp;
-        vector<struct tc> v_new_tcs;
-        vector<struct tc> v_tmp_tcs;
-
-        idx = 0;
-        ret = -1;
-        u_sum = 0;
-
-        /* store tcs */
-        for (unsigned int i = 0; i < v_tcs.size(); i++)
-                v_tmp_tcs.push_back(v_tcs[i]);
-
-        /* partitioning */
-        for (unsigned int i = 0; i < v_tmp_tcs.size(); i++) {
-                idx = 0;
-                for (unsigned int j = 0; j < v_tmp_tcs[i].v_tasks.size(); j++) {
-                        ret = -1;
-                        u_sum += v_tmp_tcs[i].v_tasks[j].u;
-                        v_tmp_tcs[i].v_tasks[j].tc_id = v_tmp_tcs[i].id;
-                        v_tmp.push_back(v_tmp_tcs[i].v_tasks[j]);
-                        ret = wcrt(v_tmp);
-                        if (ret == SCHED_FAILED)  {
-                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
-                                v_tmp.pop_back();
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                j--;
-                                idx++;
-                                u_sum = 0;
-                                v_tmp.clear();
-                                continue;
-                        }
-
-                        /* only for the waters2019 task-chain */
-                        if (i == 0 && u_sum > PHI) {
-                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
-                                v_tmp.pop_back();
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                j--;
-                                idx++;
-                                u_sum = 0;
-                                v_tmp.clear();
-                                continue;
-                        }
-
-                        /* -10 to account for increase of let size */
-                        if (i > 0 && u_sum > ctx.prm.s - 10) {
-                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
-                                v_tmp.pop_back();
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                j--;
-                                idx++;
-                                u_sum = 0;
-                                v_tmp.clear();
-                                continue;
-                        }
-                        /* add last fragment */
-                        if (j == v_tmp_tcs[i].v_tasks.size() - 1) {
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                u_sum = 0;
-                                v_tmp.clear();
-                                continue;
-                        }
-                }
-        }
-        v_tcs.clear();
-        v_tcs = v_new_tcs;
-        sort_dec_tc_size(v_tcs);
-        for (unsigned int i = 0; i < v_tcs.size(); i++)
-                v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
-
-        printf("Initial Number of TC:   %d\n", ctx.prm.m);
-        printf("Current Number of TC:   %ld\n", v_tcs.size());
-}
-
-void input_prm(int argc, char **argv, struct params &prm)
-{
-        if (argc != 2) {
-                printf("Wrong Number of Arguments!\n");
-                exit(0);
-        }
-        prm.s = atoi(argv[1]);
-        verif_prm(prm);
-}
-
-void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 
-                struct context &ctx)
-{
-        float part_time;
-
-        ctx.prm = prm;
-        ctx.cores_count = 0;
-        ctx.tasks_count = 0;
-        ctx.sched_ok_count = 0;
-        ctx.sched_failed_count = 0;
-        ctx.pcu_cores_count = 0;
-        ctx.zcu_cores_count = 0;
-        ctx.tcs_count = ctx.prm.m;
-
-        part_time = ctx.p.part_time;
-        ctx.p = {0};
-        ctx.p.part_time = part_time;
 }
 
 int gen_rand(int min, int max) 
@@ -231,12 +87,19 @@ void gen_task(struct task &tau, int i, int color)
         float real_c;
         float real_u;
 
+        y = 0;
+        udiff = 0;
+        real_c = 0;
+        real_u = 0;
+        real_t = 0;
+
         while (1) {
                 if (color == WHITE) {
                         y  = gen_rand(0, 14);
                         real_c = gen_rand(10, 30000); /* microsecs */
                         real_u = (real_c/real_t) * PERMILL;
                         real_t = period_waters2015(0, y, DYNAMIC);
+
                 } else {
                         y  = gen_rand(0, 9);
                         real_c = gen_rand(10, 3000); /* microsecs */
@@ -244,7 +107,8 @@ void gen_task(struct task &tau, int i, int color)
                         real_t = period_waters2015(0, y, STATIC);
                 }
 
-                if (real_u < 10 || real_u > 100)
+                /* 0.1 < u < 0.8 */
+                if (real_u > PHI)
                         continue;
 
                 tau.u = ceil((real_c/real_t) * PERMILL);
@@ -300,8 +164,11 @@ void gen_tc(struct tc &tc, int color, int minu, int maxu)
 
                 if (tc.u < minu || tc.u > maxu)
                         continue;
-                else
+                else {
+                        counter++;
+                        //printf("%d\n", counter);
                         return;
+                }
         }
 }
 
@@ -318,4 +185,194 @@ void gen_arch(vector<struct core> &v_cores, struct context &ctx)
                 add_core(v_cores, PURPLE, 1, ctx);
         }
         ctx.p_arch = v_cores.size();
+}
+
+void cut(vector<struct tc> &v_tcs, struct context &ctx)
+{
+        int idx;
+        int ret;
+        int u_sum;
+        int count_e;
+        struct tc tc;
+        vector<struct task> v_tmp;
+        vector<struct tc> v_new_tcs;
+        vector<struct tc> v_tmp_tcs;
+
+        idx = 0;
+        ret = -1;
+        u_sum = 0;
+        ctx.k = 0;
+        count_e = 0;
+        ctx.k_max = 0;
+
+        /* compute k max */
+        for (unsigned int i = 0; i < v_tcs.size(); i++) {
+                count_e = 0;
+                if (v_tcs[i].is_let == YES)
+                        continue;
+
+                count_e = v_tcs[i].v_tasks.size();
+                count_e--;
+                ctx.k_max += count_e;
+        }
+
+        /* store tcs */
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tmp_tcs.push_back(v_tcs[i]);
+
+        /* partitioning */
+        for (unsigned int i = 0; i < v_tmp_tcs.size(); i++) {
+                idx = 0;
+                for (unsigned int j = 0; j < v_tmp_tcs[i].v_tasks.size(); j++) {
+                        ret = -1;
+
+                        /* if utilization rate of next task > sigma */
+                        if (v_tmp_tcs[i].v_tasks[j].u > ctx.prm.s - 10)  {
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.u = v_tmp_tcs[i].v_tasks[j].u;
+                                tc.weight = v_tmp_tcs[i].weight;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_assign = NO;
+                                tc.v_tasks.push_back(v_tmp_tcs[i].v_tasks[j]);
+                                v_new_tcs.push_back(tc);
+                                idx++;
+                                u_sum = 0;
+                                ctx.k++;
+                                continue;
+                        }
+
+                        u_sum += v_tmp_tcs[i].v_tasks[j].u;
+                        v_tmp_tcs[i].v_tasks[j].tc_id = v_tmp_tcs[i].id;
+                        v_tmp.push_back(v_tmp_tcs[i].v_tasks[j]);
+                        ret = wcrt(v_tmp);
+
+                        if (ret == SCHED_FAILED)  {
+                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
+                                v_tmp.pop_back();
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.u = u_sum;
+                                tc.weight = v_tmp_tcs[i].weight;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_assign = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
+                                j--;
+                                idx++;
+                                u_sum = 0;
+                                v_tmp.clear();
+                                ctx.k++;
+                                continue;
+                        }
+
+                        /* only for the waters2019 task-chain */
+                        if (i == 0 && u_sum > PHI) {
+                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
+                                v_tmp.pop_back();
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.u = u_sum;
+                                tc.weight = v_tmp_tcs[i].weight;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_assign = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
+                                j--;
+                                idx++;
+                                u_sum = 0;
+                                v_tmp.clear();
+                                ctx.k++;
+                                continue;
+                        }
+
+                        /* -10 to account for increase of let size */
+                        if (i > 0 && u_sum > ctx.prm.s - 10) {
+                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
+                                v_tmp.pop_back();
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.u = u_sum;
+                                tc.weight = v_tmp_tcs[i].weight;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_assign = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
+                                j--;
+                                idx++;
+                                u_sum = 0;
+                                v_tmp.clear();
+                                ctx.k++;
+                                continue;
+                        }
+                        /* add last fragment */
+                        if (j == v_tmp_tcs[i].v_tasks.size() - 1) {
+                                tc = {0};
+                                tc.id = v_tmp_tcs[i].id;
+                                tc.tc_idx = idx;
+                                tc.u = u_sum;
+                                tc.weight = v_tmp_tcs[i].weight;
+                                tc.color = v_tmp_tcs[i].color;
+                                tc.is_let = NO;
+                                tc.is_frag = YES;
+                                tc.is_assign = NO;
+                                tc.v_tasks = v_tmp;
+                                v_new_tcs.push_back(tc);
+                                u_sum = 0;
+                                v_tmp.clear();
+                                continue;
+                        }
+                }
+        }
+        v_tcs.clear();
+        v_tcs = v_new_tcs;
+        sort_dec_tc_size(v_tcs);
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
+
+        printf("Initial Number of TC:   %d\n", ctx.prm.m);
+        printf("Current Number of TC:   %ld\n", v_tcs.size());
+        printf("Number of Cuts:         %d\n", ctx.k);
+        printf("Number of CutsMax:      %d\n", ctx.k_max);
+}
+
+void input_prm(int argc, char **argv, struct params &prm)
+{
+        if (argc != 2) {
+                printf("Wrong Number of Arguments!\n");
+                exit(0);
+        }
+        prm.s = atoi(argv[1]);
+        verif_prm(prm);
+}
+
+void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 
+                struct context &ctx)
+{
+        float part_time;
+
+        ctx.prm = prm;
+        ctx.cores_count = 0;
+        ctx.tasks_count = 0;
+        ctx.sched_ok_count = 0;
+        ctx.sched_failed_count = 0;
+        ctx.pcu_cores_count = 0;
+        ctx.zcu_cores_count = 0;
+        ctx.tcs_count = ctx.prm.m;
+
+        part_time = ctx.p.part_time;
+        ctx.p = {0};
+        ctx.p.part_time = part_time;
 }
