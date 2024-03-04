@@ -4,6 +4,15 @@
 #include "model.h"
 
 struct results {
+        float m;
+
+        float et_part;
+        float et_assi;
+        float et_schd;
+        float et_swap;
+        float et_disp;
+        float et_tool;
+
         float bfdu_fr;
         float wfdu_fr;
         float ffdu_fr;
