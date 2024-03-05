@@ -4,7 +4,42 @@
 
 static int counter = 0;
 
-static int _gen_app(vector<struct tc> &v_tcs, struct params &prm, 
+int gen_rand(int min, int max) 
+{
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<> distr(min, max);
+
+        return distr(gen);
+}
+
+void gen_waters2019(vector<struct tc> &v_tcs, struct params &prm, 
+                struct context &ctx)
+{
+        printf("\n\n");
+        printf("+=====================================+\n");
+        printf("| CASE-STUDY WATERS2019 CHALLENGE     |\n");
+        printf("+=====================================+\n");
+
+        struct tc tc_red;
+
+        ctx.prm = prm;
+
+        create_waters2019(tc_red);
+        v_tcs.push_back(tc_red);
+
+        sort_dec_tc_size(v_tcs);
+        assign_ids(v_tcs);
+
+        ctx.prm.m = v_tcs.size();
+        prm.m = v_tcs.size();
+
+        for (unsigned int i = 0; i < v_tcs.size(); i++)
+                v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
+
+}
+
+void gen_app(vector<struct tc> &v_tcs, struct params &prm, 
                 struct context &ctx)
 {
         printf("\n\n");
@@ -20,8 +55,7 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
         struct tc tc_purple;
         struct tc tc_white;
 
-        //create_waters2019(tc_red);
-        //v_tcs.push_back(tc_red);
+        ctx.prm = prm;
 
         /* static */
         for (unsigned int i = 0; i < 2; i++) {
@@ -59,24 +93,21 @@ static int _gen_app(vector<struct tc> &v_tcs, struct params &prm,
 
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
-
-        return 0;
 }
 
-int gen_rand(int min, int max) 
+void gen_arch(vector<struct core> &v_cores, struct context &ctx)
 {
-        random_device rd;
-        mt19937 gen(rd());
-        uniform_int_distribution<> distr(min, max);
+        for (int i = 0; i < 8; i++)
+                add_core(v_cores, RED, 1, ctx);
 
-        return distr(gen);
-}
-
-void gen_app(vector<struct tc> &v_tcs, struct params &prm, 
-                struct context &ctx)
-{
-        ctx.prm = prm;
-        _gen_app(v_tcs, prm, ctx);
+        for (int i = 0; i < 4; i++) {
+                add_core(v_cores, BLUE, 1, ctx);
+                add_core(v_cores, YELLOW, 1, ctx);
+                add_core(v_cores, GREEN, 1, ctx);
+                add_core(v_cores, CYAN, 1, ctx);
+                add_core(v_cores, PURPLE, 1, ctx);
+        }
+        ctx.p_arch = v_cores.size();
 }
 
 void gen_task(struct task &tau, int i, int color)
@@ -168,21 +199,6 @@ void gen_tc(struct tc &tc, int color, int minu, int maxu)
                         return;
                 }
         }
-}
-
-void gen_arch(vector<struct core> &v_cores, struct context &ctx)
-{
-        for (int i = 0; i < 8; i++)
-                add_core(v_cores, RED, 1, ctx);
-
-        for (int i = 0; i < 4; i++) {
-                add_core(v_cores, BLUE, 1, ctx);
-                add_core(v_cores, YELLOW, 1, ctx);
-                add_core(v_cores, GREEN, 1, ctx);
-                add_core(v_cores, CYAN, 1, ctx);
-                add_core(v_cores, PURPLE, 1, ctx);
-        }
-        ctx.p_arch = v_cores.size();
 }
 
 void cut(vector<struct tc> &v_tcs, struct context &ctx)

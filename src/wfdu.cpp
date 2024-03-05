@@ -99,7 +99,7 @@ void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                         cycl_count++;
                                 }
 
-                                if (cycl_count > 1) {
+                                if (cycl_count > 2) {
                                         printf("ERR!: Impossible to assign all TC, System Unfeasible\n");
                                         STATE = FAILED;
                                         return;

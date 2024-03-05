@@ -57,6 +57,8 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
 
 static void _write_results(vector<struct results> &v_res)
 {
+        printf("\nWriting Results to %s\n", table);
+
         FILE *file;
 
         vector<float> v_float;

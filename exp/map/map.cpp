@@ -18,16 +18,16 @@ redo:   struct params prm;
         vector<struct tc> v_tcs_wfdu;
         vector<struct tc> v_tcs_ffdu;
 
+        ctx = {0};
+
         /* parameters */
         input_prm(argc, argv, prm);
 
         /* generate set of task-chains and initialize context */
         gen_app(v_tcs, prm, ctx);
-        print_task_chains(v_tcs);
 
         /* offline partitioning */
         partitioning(v_tcs, ctx);
-        print_task_chains(v_tcs);
 
         /* cmp min cores req */
         init_ctx(v_tcs, prm, ctx);

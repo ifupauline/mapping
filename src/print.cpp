@@ -25,13 +25,13 @@ void print_task_chains(vector<struct tc> &v_tcs)
                 else
                         printf("\033[0;37m");
                 printf("======================================================\n");
-                printf("tc.id: %-3d tc.idx: %-3d u: %.3f color: %d\n", 
+                printf("tc.id: %-3d tc.idx: %-3d u: %-3d color: %d\n", 
                                 v_tcs[i].id, v_tcs[i].tc_idx, 
-                                (float)v_tcs[i].u / PERMILL, 
+                                v_tcs[i].u, 
                                 v_tcs[i].color);
                 printf("======================================================\n");
                 for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
-                        printf("tau: %-2d u: %.df c: %-6d t: %-6d uniq_id: %-3d\n",
+                        printf("tau: %-2d u: %-3d c: %-6d t: %-6d uniq_id: %-3d\n",
                                         v_tcs[i].v_tasks[j].task_id, 
                                         v_tcs[i].v_tasks[j].u, 
                                         v_tcs[i].v_tasks[j].c, 

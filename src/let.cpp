@@ -50,7 +50,7 @@ void update_let(struct core &b, int gcd)
         let->t = gcd;
 
         if (let->t != 0)
-                let->u = ((float)let->c / (float)let->t) * PERMILL;
+                let->u = ceil(((float)let->c/(float)let->t) * PERMILL);
 
         else
                 let->u = 0;

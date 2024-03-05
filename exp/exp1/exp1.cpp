@@ -8,6 +8,8 @@
 
 static int sigma = 0;
 
+static int counter = 0;
+
 static const char *table = "res_exp1.txt";
 
 static const char *hdr_table = 
@@ -86,7 +88,8 @@ static void _average_results(struct results &res)
 
 static void _write_results(vector<struct results> &v_res)
 {
-        printf("Writing Results to %s\n", table);
+        printf("\nWriting Results to %s\n", table);
+
         FILE *file;
 
         vector<float> v_float;
@@ -123,8 +126,9 @@ static void _write_results(vector<struct results> &v_res)
         fclose(file);
 }
 
-static void exp1(vector<struct results> &v_res, struct params &prm)
+static void exp1(vector<struct results> &v_res)
 {
+        struct params prm;
         struct context ctx;
         struct results res;
         vector<struct core> v_cores;
@@ -220,7 +224,14 @@ redo:                   ctx = {0};
                         stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
 
                         _store_results(v_res, res, ctx_bfdu, ctx_wfdu, ctx_ffdu);
+
+                        counter++;
+                        printf("\n---------------------------------------------"
+                                        "---------------------------------------> σ: %d\n", sigma);
+                        printf("\n---------------------------------------------"
+                                        "---------------------------------------> c: %d\n", counter);
                 }
+                counter = 0;
                 _average_results(res);
                 v_res.push_back(res);
         }
@@ -229,10 +240,9 @@ redo:                   ctx = {0};
 
 int main(void)
 {
-        struct params prm;
         vector<struct results> v_res;
 
-        exp1(v_res, prm);
+        exp1(v_res);
 
         return 0;
 }
