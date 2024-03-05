@@ -78,55 +78,6 @@ static void _fragmentation_rate(struct context &ctx)
         ctx.p.fr = ((float)ctx.k/(float)ctx.k_max) * PERCENT;
 }
 
-static void _verify_pa(vector<struct core> &v_cores)
-{
-        int ret;
-
-        vector<struct tc> v_tc;
-        vector<int> v_int;
-
-        ret = 0;
-        for (unsigned int i = 0; i < v_cores.size(); i++) {
-                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
-                        if (v_cores[i].v_tcs[j].is_let == YES)
-                                continue;
-                        v_int.push_back(v_cores[i].v_tcs[j].id);
-                        v_tc.push_back(v_cores[i].v_tcs[j]);
-                }
-                ret = get_duplicata(v_int);
-
-                if (ret > -1) {
-                        vector<struct task> v_tasks;
-                        for (unsigned int j = 0; j < v_tc.size(); j++) {
-                                for (unsigned int k = 0; k < v_tc[j].v_tasks.size(); k++) {
-                                        if (v_tc[j].v_tasks[k].tc_id == ret)
-                                                v_tasks.push_back(v_tc[j].v_tasks[k]);
-                                }
-                        }
-                        sort_inc_task_priority(v_tasks);
-
-                        for (unsigned int j = 0; j < v_tasks.size(); j++) {
-                                if (j == 1) {
-                                        if (v_tasks[j].task_id < v_tasks[j - 1].task_id) {
-                                                printf("ERR! PA CORE %d\n", v_cores[i].id);
-                                                printf("TC %d tau: %d p: %d\n", 
-                                                                v_tasks[j].tc_id, 
-                                                                v_tasks[j].task_id, 
-                                                                v_tasks[j].p);
-                                                printf("TC %d tau: %d p: %d\n", 
-                                                                v_tasks[j - 1].tc_id, 
-                                                                v_tasks[j - 1].task_id, 
-                                                                v_tasks[j - 1].p);
-                                                exit(0);
-                                        }
-                                }
-                        }
-                }
-                v_tc.clear();
-                v_int.clear();
-        }
-}
-
 float sched_rate(vector<struct core> &v_cores, struct context &ctx)
 {
         float sched_rate;
@@ -153,8 +104,9 @@ float sched_rate(vector<struct core> &v_cores, struct context &ctx)
 void stats(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
                 struct context &ctx)
 {
+        verify_cores_load(v_cores);
+        verify_pa(v_cores);
         _count_cores_tasks(v_cores, ctx);
-        _verify_pa(v_cores);
         _schedulability_rate(ctx);
         _execution_time(ctx);
         _utilization_rate(v_cores, ctx);

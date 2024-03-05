@@ -31,9 +31,9 @@ void print_task_chains(vector<struct tc> &v_tcs)
                                 v_tcs[i].color);
                 printf("======================================================\n");
                 for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
-                        printf("tau: %-2d u: %.3f c: %-6d t: %-6d uniq_id: %-3d\n",
+                        printf("tau: %-2d u: %.df c: %-6d t: %-6d uniq_id: %-3d\n",
                                         v_tcs[i].v_tasks[j].task_id, 
-                                        v_tcs[i].v_tasks[j].u / PERMILL, 
+                                        v_tcs[i].v_tasks[j].u, 
                                         v_tcs[i].v_tasks[j].c, 
                                         v_tcs[i].v_tasks[j].t,
                                         v_tcs[i].v_tasks[j].uniq_id);
@@ -52,7 +52,7 @@ void print_core(struct core &b)
         printf("Core: %d Load: %d Lrem: %d \n", b.id, b.load, b.load_rem);
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
-                        printf("TC %-3d || tau %-3d p: %-3d c: %-6d t: %-6d u: %-3f\n", 
+                        printf("TC %-3d || tau %-3d p: %-3d c: %-6d t: %-6d u: %-3d\n", 
                                         b.v_tcs[i].id, 
                                         b.v_tcs[i].v_tasks[j].task_id, 
                                         b.v_tcs[i].v_tasks[j].p,
@@ -83,18 +83,14 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 printf("| PRINT CORE FFDU                     |\n");
         printf("+=====================================+\n\n");
 
-        for (unsigned int i = 0; i < v_cores.size(); i++)
-                core_weight(v_cores[i]);
-
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 printf("+==================================================================+\n");
                 printf("|Core: %d\n", v_cores[i].id);
-                printf("|Capa: %.3f\n", (float)v_cores[i].phi / PERMILL);
-                printf("|Load: %.3f\n", (float)v_cores[i].load / PERMILL);
+                printf("|Capa: %-3d\n", v_cores[i].phi);
+                printf("|Load: %-3d\n", v_cores[i].load);
                 if (v_cores[i].is_empty == YES)
                         v_cores[i].load_rem = v_cores[i].phi;
-                printf("|Lrem: %.3f\n", ((float)v_cores[i].load_rem / PERMILL));
-                printf("|LETc: %d\n", v_cores[i].weight);
+                printf("|Lrem: %-3d\n", v_cores[i].load_rem);
                 printf("|");
                 if (v_cores[i].color == RED)
                         printf("\033[0;31m");
@@ -123,15 +119,15 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         if (v_cores[i].v_tcs[j].is_let == YES){
                                 printf("|------------------------------------------------------------------|\n");
-                                printf("|LET: %-3d u %.3f gcd %-6d\n", 
+                                printf("|LET: %-3d u %-3d gcd %-6d\n", 
                                                 v_cores[i].v_tcs[j].id, 
-                                                (float)v_cores[i].v_tcs[j].u / PERMILL,
+                                                v_cores[i].v_tcs[j].u,
                                                 v_cores[i].v_tcs[j].gcd);
                                 printf("|------------------------------------------------------------------|\n");
                                 for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
-                                        printf("|tau: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
+                                        printf("|tau: %-2d u: %-3d p: %-2d r: %-8d c: %-8d t: %d", 
                                                         v_cores[i].v_tcs[j].v_tasks[k].task_id, 
-                                                        v_cores[i].v_tcs[j].v_tasks[k].u / PERMILL,
+                                                        v_cores[i].v_tcs[j].v_tasks[k].u,
                                                         v_cores[i].v_tcs[j].v_tasks[k].p,
                                                         v_cores[i].v_tcs[j].v_tasks[k].r,
                                                         v_cores[i].v_tcs[j].v_tasks[k].c,
@@ -165,10 +161,10 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                                         printf("\033[0;35m");
                                 else
                                         printf("\033[0;37m");
-                                printf("|TC:  %-3d tc_idx %d u %.3f gcd %-6d color %d\n", 
+                                printf("|TC:  %-3d tc_idx %d u %-3d gcd %-6d color %d\n", 
                                                 v_cores[i].v_tcs[j].id, 
                                                 v_cores[i].v_tcs[j].tc_idx, 
-                                                (float)v_cores[i].v_tcs[j].u,
+                                                v_cores[i].v_tcs[j].u,
                                                 v_cores[i].v_tcs[j].gcd,
                                                 v_cores[i].v_tcs[j].color);
                                 printf("\033[0m");
@@ -188,10 +184,10 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx)
                                 else
                                         printf("\033[0;37m");
                                 for (unsigned int k = 0; k < v_cores[i].v_tcs[j].v_tasks.size(); k++) {
-                                        printf("|tau: %-2d id: %-2d u: %-.3f p: %-2d r: %-8d c: %-8d t: %d", 
+                                        printf("|tau: %-2d id: %-2d u: %-3d p: %-2d r: %-8d c: %-8d t: %d", 
                                                         v_cores[i].v_tcs[j].v_tasks[k].task_id, 
                                                         v_cores[i].v_tcs[j].v_tasks[k].uniq_id, 
-                                                        v_cores[i].v_tcs[j].v_tasks[k].u / PERMILL,
+                                                        v_cores[i].v_tcs[j].v_tasks[k].u,
                                                         v_cores[i].v_tcs[j].v_tasks[k].p,
                                                         v_cores[i].v_tcs[j].v_tasks[k].r,
                                                         v_cores[i].v_tcs[j].v_tasks[k].c,

@@ -107,7 +107,6 @@ void gen_task(struct task &tau, int i, int color)
                         real_t = period_waters2015(0, y, STATIC);
                 }
 
-                /* 0.1 < u < 0.8 */
                 if (real_u > PHI)
                         continue;
 
@@ -145,7 +144,6 @@ void gen_tc(struct tc &tc, int color, int minu, int maxu)
                 else
                         task_nbr = gen_rand(1, 8);
 
-                tc.weight = gen_rand(1, 3);
                 tc.color = color;
                 tc.is_frag = NO;
                 tc.is_let = NO;
@@ -232,7 +230,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = v_tmp_tcs[i].v_tasks[j].u;
-                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -257,7 +254,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -280,7 +276,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -303,7 +298,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -323,7 +317,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 tc.id = v_tmp_tcs[i].id;
                                 tc.tc_idx = idx;
                                 tc.u = u_sum;
-                                tc.weight = v_tmp_tcs[i].weight;
                                 tc.color = v_tmp_tcs[i].color;
                                 tc.is_let = NO;
                                 tc.is_frag = YES;
@@ -355,7 +348,7 @@ void input_prm(int argc, char **argv, struct params &prm)
                 exit(0);
         }
         prm.s = atoi(argv[1]);
-        verif_prm(prm);
+        verify_prm(prm);
 }
 
 void init_ctx(vector<struct tc> &v_tcs, struct params &prm, 

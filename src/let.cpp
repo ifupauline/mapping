@@ -21,7 +21,6 @@ void init_let_task(struct tc &let, struct context &ctx)
         t = {0};
 
         let.u = 0;
-        let.weight = 0;
         let.color = -1;
         let.is_let = YES;
         let.is_assign = NO;
@@ -46,23 +45,35 @@ void update_let(struct core &b, int gcd)
 
         /* update let task */
         let = _get_let_task(b);
-        switch (b.weight) {
 
-                case 1: 
-                        let->c = gen_rand(25, 50);
-                        break;
-                case 2:
-                        let->c = gen_rand(50, 100);
-                        break;
-                case 3: 
-                        let->c = gen_rand(100, 200);
-                        break;
-                default:
-                        let->c = 200;
-                        break;
-        }
+        let->c = 200;
         let->t = gcd;
-        let->u = ceil(((float)let->c / (float)let->t) * PERMILL);
+
+        if (let->t != 0)
+                let->u = ((float)let->c / (float)let->t) * PERMILL;
+
+        else
+                let->u = 0;
+
+        /* update let tc */
+        b.v_tcs[0].u = let->u;
+        b.v_tcs[0].gcd = gcd;
+        b.v_tcs[0].v_tasks.clear();
+        b.v_tcs[0].v_tasks.push_back(*let);
+}
+
+void update_let_with_c(struct core &b, int gcd, int let_c)
+{
+        struct task *let;
+
+
+        /* update let task */
+        let = _get_let_task(b);
+
+
+        let->c = let_c;
+        let->t = gcd;
+        let->u = ((float)let->c / (float)let->t) * PERMILL;
 
         /* update let tc */
         b.v_tcs[0].u = let->u;
@@ -79,13 +90,11 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &_gcd)
         vector<struct task> v_tasks;
 
         _gcd = 0;
+        tmp_b = {0};
+
         tmp_b = b;
         total_coreload = 0;
         target_coreload = 0;
-
-        /* add tc weight to core weight */
-        core_weight(tmp_b);
-        tmp_b.weight += tc.weight;
 
         /* copy v_tasks */
         add_tasks_to_v_tasks(v_tasks, tc.v_tasks);
@@ -102,7 +111,7 @@ int check_if_fit_tc(struct core &b, struct tc &tc, int &_gcd)
         update_let(tmp_b, _gcd);
 
         /* compute total core load */
-        core_load(tmp_b, target_coreload);
+        target_coreload = core_load(tmp_b);
 
         /* add utilization rate of potential tc */
         total_coreload = tc.u + target_coreload;

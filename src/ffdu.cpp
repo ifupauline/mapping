@@ -55,12 +55,13 @@ void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
                         /* core found add tc to it */
                         if (ret != -1) {
-                                printf("First Core to accomodate TC %d idx: %d is core %d\n", 
-                                                v_tcs[i].id, v_tcs[i].tc_idx, ret);
+                                printf("First Core to accomodate TC %d idx: %d size: %d is core %d\n", 
+                                                v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].u, ret);
                                 core_id = ret;
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, 
                                                 load, gcd);
                                 v_tcs[i].is_assign = YES;
+                                cycl_count = 0;
                                 continue;
 
                                 /* no core was found */
@@ -77,7 +78,7 @@ void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                         cycl_count++;
                                 }
 
-                                if (cycl_count > 100) {
+                                if (cycl_count > 1) {
                                         printf("ERR!: Impossible to assign all TC, System Unfeasible\n");
                                         STATE = FAILED;
                                         return;
@@ -91,4 +92,5 @@ void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 assign_count++;
                 }
         }
+        verify_cores_load(v_cores);
 }

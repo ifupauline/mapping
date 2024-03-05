@@ -32,8 +32,8 @@ static int _find_best_core(vector<struct core> &v_cores, struct tc &tc,
                                 best_load = tmp_load;
                                 best_gcd = tmp_gcd;
                                 core_id = v_cores[i].id;
+                                is_found = YES;
                         }
-                        is_found = YES;
                         continue;
                 }
         }
@@ -82,6 +82,7 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 add_tc_to_v_cores(v_cores, v_tcs[i], core_id, 
                                                 load, gcd);
                                 v_tcs[i].is_assign = YES;
+                                cycl_count = 0;
                                 continue;
 
                                 /* no core was found */
@@ -98,7 +99,7 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                         cycl_count++;
                                 } 
 
-                                if (cycl_count > 100) {
+                                if (cycl_count > 1) {
                                         printf("ERR!: Impossible to assign all TC, System Unfeasible\n");
                                         STATE = FAILED;
                                         return;
@@ -112,4 +113,5 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                 assign_count++;
                 }
         }
+        verify_cores_load(v_cores);
 }

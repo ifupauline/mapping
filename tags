@@ -664,7 +664,6 @@ _store_tcs_swap	src/placement.cpp	/^static void _store_tcs_swap(vector<struct co
 _swap	src/placement.cpp	/^void _swap(vector<struct core> &v_cores, struct core &dst_core, struct core &src_core)$/;"	f
 _unsched	exp/pa/pa.cpp	/^static struct stats _unsched(vector<struct core> &v_cores)$/;"	f	file:
 _utilization_rate	src/stats.cpp	/^static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
-_verify_pa	src/stats.cpp	/^static void _verify_pa(vector<struct core> &v_cores)$/;"	f	file:
 _write_results	exp/exp1/exp1.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
 _write_results	exp/exp2/exp2.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
@@ -698,8 +697,7 @@ copy_tc_to_v_tasks_with_pos	src/model.cpp	/^void copy_tc_to_v_tasks_with_pos(str
 copy_v_tc_to_v_tasks_with_pos	src/model.cpp	/^void copy_v_tc_to_v_tasks_with_pos(vector<struct core> &v_cores)$/;"	f
 core	include/model.h	/^struct core {$/;"	s
 core_idx	include/model.h	/^        int core_idx;$/;"	m	struct:t_pos
-core_load	src/model.cpp	/^void core_load(struct core &b, int &load)$/;"	f
-core_weight	src/model.cpp	/^void core_weight(struct core &b)$/;"	f
+core_load	src/model.cpp	/^int core_load(struct core &core)$/;"	f
 cores_count	include/model.h	/^        int cores_count;$/;"	m	struct:context
 count_ins	exp/pa/pa.cpp	/^static int count_ins = 0;$/;"	v	file:
 count_task	exp/pa/pa.cpp	/^        int count_task;$/;"	m	struct:stats	file:
@@ -871,20 +869,20 @@ tc_idx	include/model.h	/^        int tc_idx;$/;"	m	struct:t_pos
 tc_idx	include/model.h	/^        int tc_idx;$/;"	m	struct:tc
 tc_load	src/model.cpp	/^void tc_load(struct tc &tc)$/;"	f
 tcs_count	include/model.h	/^        int tcs_count;$/;"	m	struct:context
-u	include/model.h	/^        float u;$/;"	m	struct:task
+u	include/model.h	/^        int u;$/;"	m	struct:task
 u	include/model.h	/^        int u;$/;"	m	struct:tc
 uniq_id	include/model.h	/^        int uniq_id;$/;"	m	struct:task
 unuu	include/model.h	/^        float unuu;$/;"	m	struct:perf
 update_let	src/let.cpp	/^void update_let(struct core &b, int gcd)$/;"	f
+update_let_with_c	src/let.cpp	/^void update_let_with_c(struct core &b, int gcd, int let_c)$/;"	f
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:core
 v_tasks	include/model.h	/^        vector<struct task> v_tasks;$/;"	m	struct:tc
 v_tcs	include/model.h	/^        vector<struct tc> v_tcs;$/;"	m	struct:core
-verif_core_load	src/model.cpp	/^void verif_core_load(vector<struct core> &v_cores)$/;"	f
-verif_prm	src/model.cpp	/^void verif_prm(struct params &prm)$/;"	f
+verify_cores_load	src/model.cpp	/^void verify_cores_load(vector<struct core> &v_cores)$/;"	f
+verify_pa	src/model.cpp	/^void verify_pa(vector<struct core> &v_cores)$/;"	f
+verify_prm	src/model.cpp	/^void verify_prm(struct params &prm)$/;"	f
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
-weight	include/model.h	/^        int weight;$/;"	m	struct:core
-weight	include/model.h	/^        int weight;$/;"	m	struct:tc
 wfdu	src/wfdu.cpp	/^void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
 wfdu_fr	include/stats.h	/^        float wfdu_fr;$/;"	m	struct:results
 wfdu_letu	include/stats.h	/^        float wfdu_letu;$/;"	m	struct:results

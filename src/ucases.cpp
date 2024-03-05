@@ -158,7 +158,6 @@ void create_waters2019(struct tc &tc)
         waters2019 = {0};
         waters2019.id = 0;
         waters2019.tc_idx = 0;
-        waters2019.weight = 3;
         waters2019.color = RED;
         waters2019.is_let = NO;
         waters2019.is_assign = NO;

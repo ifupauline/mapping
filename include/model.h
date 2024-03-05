@@ -50,11 +50,11 @@ struct task {
         int t;
         int p;
         int r;
+        int u;
         int task_id;
         int uniq_id;
         int tc_id;
         int is_let;
-        float u;
         struct t_pos idx;
 };
 
@@ -64,7 +64,6 @@ struct tc {
         int u;
         int gcd;
         int color;
-        int weight;
         int is_let;
         int is_frag;
         int is_assign;
@@ -78,7 +77,6 @@ struct core {
         int load;
         int load_rem;
         int color;
-        int weight;
         int is_empty;
         vector<struct tc> v_tcs;
         vector<struct task> v_tasks;
@@ -159,9 +157,7 @@ void copy_v_tc_to_v_tasks_with_pos(vector<struct core> &v_cores);
 
 void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx);
 
-void core_load(struct core &b, int &load);
-
-void core_weight(struct core &b);
+int core_load(struct core &core);
 
 void tc_load(struct tc &tc);
 
@@ -188,9 +184,11 @@ void add_tc_to_core(struct core &b, struct tc &tc, int load, int gcd);
 void add_tc_to_v_cores(vector<struct core> &v_cores, struct tc &tc, int core_id, 
                 int load, int gcd);
 
-void verif_core_load(vector<struct core> &v_cores);
+void verify_prm(struct params &prm);
 
-void verif_prm(struct params &prm);
+void verify_cores_load(vector<struct core> &v_cores);
+
+void verify_pa(vector<struct core> &v_cores);
 
 void reset_empty_cores(vector<struct core> &v_cores);
 

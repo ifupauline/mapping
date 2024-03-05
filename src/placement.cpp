@@ -1,6 +1,8 @@
 #include "let.h"
 #include "sched_analysis.h"
 
+#include "print.h"
+
 static void _store_tcs_disp(vector<struct core> &v_cores, 
                 vector<pair<struct tc, int>> &v_tcs, int &flag)
 {
@@ -346,8 +348,8 @@ void displacement(vector<struct core> &v_cores)
                         }
                 }
         }
-        verif_core_load(v_cores);
         reset_empty_cores(v_cores);
+        verify_cores_load(v_cores);
 }
 
 void swapping(vector<struct core> &v_cores)
@@ -468,6 +470,6 @@ void swapping(vector<struct core> &v_cores)
                         }
                 }
         }
-        verif_core_load(v_cores);
         reset_empty_cores(v_cores);
+        verify_cores_load(v_cores);
 }
