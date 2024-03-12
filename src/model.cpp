@@ -173,19 +173,6 @@ struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id)
         exit(0);
 }
 
-int get_wcrt(struct core &b, int tc_id, int tc_idx)
-{
-        for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
-                if (b.v_tcs[i].id == tc_id && b.v_tcs[i].tc_idx == tc_idx) {
-                        for (unsigned int j = 0; j < b.v_tcs[i].v_tasks.size(); j++) {
-                                if (j == b.v_tcs[i].v_tasks.size() - 1)
-                                        return b.v_tcs[i].v_tasks[j].r;
-                        }
-                }
-        }
-        return -1;
-}
-
 int get_color_by_id(vector<struct core> &v_cores, int core_id)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {

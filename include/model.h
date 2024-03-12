@@ -165,8 +165,6 @@ struct core get_core_by_id(vector<struct core> &v_cores, int core_id);
 
 struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id);
 
-int get_wcrt(struct core &b, int tc_id, int tc_idx);
-
 int get_color_by_id(vector<struct core> &v_cores, int core_id);
 
 int get_core_idx_by_id(vector<struct core> &v_cores, int core_id);

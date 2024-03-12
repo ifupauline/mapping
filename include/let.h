@@ -12,4 +12,5 @@ void init_let_task(struct tc &let, struct context &ctx);
 void update_let(struct core &b, int gcd);
 
 int check_if_fit_tc(struct core &b, struct tc &tc, int &gcd);
+
 #endif /* LET_H */

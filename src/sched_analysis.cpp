@@ -169,7 +169,6 @@ static void _reassignment(struct core &b)
 
         sort_inc_task_priority(b.v_tasks);
 
-        /* iterate in descending order */
         for (unsigned int i = 0; i < b.v_tasks.size(); i++) {
                 if (b.v_tasks[i].p == 0) {
                         printf("\nERR! Core %d tau %d p %d idx %d\n", 

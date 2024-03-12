@@ -633,7 +633,6 @@ _add	exp/pa/pa.cpp	/^static void _add(vector<struct tc> &v_tcs, vector<struct co
 _assign	exp/pa/pa.cpp	/^static struct stats _assign(vector<struct core> &v_cores, struct stats &pa, int a)$/;"	f	file:
 _average_results	exp/exp1/exp1.cpp	/^static void _average_results(struct results &res)$/;"	f	file:
 _base_assignment	src/sched_analysis.cpp	/^void _base_assignment(struct core &b)$/;"	f
-_check_if_swap	src/placement.cpp	/^static int _check_if_swap(vector<struct core> &v_cores, $/;"	f	file:
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
 _cmp_dec_tc_size	src/model.cpp	/^static int _cmp_dec_tc_size(const struct tc &a, const struct tc &b)$/;"	f	file:
 _cmp_inc_core_color	src/model.cpp	/^static int _cmp_inc_core_color(const struct core &a, const struct core &b)$/;"	f	file:
@@ -664,6 +663,7 @@ _resp	src/sched_analysis.cpp	/^static void _resp(vector<struct task> &v_tasks, i
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct core &b)$/;"	f	file:
 _schedulability_rate	src/stats.cpp	/^static void _schedulability_rate(struct context &ctx)$/;"	f	file:
 _search_for_disp	src/placement.cpp	/^static int _search_for_disp(vector<struct core> &v_dst_cores, int tc_id, $/;"	f	file:
+_search_for_swap	src/placement.cpp	/^static int _search_for_swap(vector<struct core> &v_cores, $/;"	f	file:
 _store_results	exp/exp1/exp1.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
 _store_results	exp/exp2/exp2.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
 _store_results	exp/exp3/exp3.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
@@ -711,6 +711,7 @@ cores_count	include/model.h	/^        int cores_count;$/;"	m	struct:context
 count_ins	exp/pa/pa.cpp	/^static int count_ins = 0;$/;"	v	file:
 count_task	exp/pa/pa.cpp	/^        int count_task;$/;"	m	struct:stats	file:
 count_tc	exp/pa/pa.cpp	/^        int count_tc;$/;"	m	struct:stats	file:
+counter	exp/exp1/exp1.cpp	/^static int counter = 0;$/;"	v	file:
 counter	src/generator.cpp	/^static int counter = 0;$/;"	v	file:
 create_waters2019	src/ucases.cpp	/^void create_waters2019(struct tc &tc)$/;"	f
 cut	src/generator.cpp	/^void cut(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f
@@ -751,7 +752,6 @@ get_core_by_id	src/model.cpp	/^struct core get_core_by_id(vector<struct core> &v
 get_core_idx_by_id	src/model.cpp	/^int get_core_idx_by_id(vector<struct core> &v_cores, int core_id)$/;"	f
 get_duplicata	src/model.cpp	/^int get_duplicata(vector<int> &v_int)$/;"	f
 get_tc_by_id	src/model.cpp	/^struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id)$/;"	f
-get_wcrt	src/model.cpp	/^int get_wcrt(struct core &b, int tc_id, int tc_idx)$/;"	f
 hdr_table	exp/exp1/exp1.cpp	/^static const char *hdr_table = $/;"	v	file:
 hdr_table	exp/exp2/exp2.cpp	/^static const char *hdr_table = $/;"	v	file:
 hdr_table	exp/exp3/exp3.cpp	/^static const char *hdr_table = $/;"	v	file:
