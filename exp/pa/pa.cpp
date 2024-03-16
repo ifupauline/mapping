@@ -42,11 +42,11 @@ static void _int_lvl(struct core &b, int pa)
         }
 
         if (pa == PA1)
-                printf("Instance %-4d PA1 Interference Level: %-.03f\n", 
+                printf("Instance %-4d/1000 PA1 Interference Level: %-.03f\n", 
                                 count_ins, int_lvl_pa1);
 
         else if (pa == PA2)
-                printf("Instance %-4d PA2 Interference Level: %-.03f\n\n", 
+                printf("Instance %-4d/1000 PA2 Interference Level: %-.03f\n\n", 
                                 count_ins, int_lvl_pa2);
 }
 

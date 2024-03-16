@@ -1,8 +1,6 @@
 #ifndef FILE_H
 #define FILE_H
 
-#define BUFFSIZE  256
-
 #include "mapping.h"
 
 void write_header(FILE *file, const char *header);

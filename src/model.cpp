@@ -146,6 +146,7 @@ void copy_tc_to_v_tasks_with_pos(struct core &b, int core_idx, int tc_idx)
 void tc_load(struct tc &tc)
 {
         tc.u = 0;
+
         for (unsigned int i = 0; i < tc.v_tasks.size(); i++)
                 tc.u += tc.v_tasks[i].u;
 }
