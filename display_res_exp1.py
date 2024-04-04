@@ -13,6 +13,8 @@ FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU
 
 """
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
 import pandas as pd
 
 "print table"
@@ -43,22 +45,74 @@ FFDU_LETU = pd.read_table("res_exp1.txt", sep=",", usecols=[19])
 
 "sigma and fr"
 plt.plot(SIGMA, FR)
+plt.xlabel('SIGMA')
+plt.ylabel('Fragmentation Rate')
+plt.legend(["blue"], loc="upper right")
 plt.show()
 
-"sigma and m"
+"fr and m"
 plt.scatter(FR, BFDU_M)
 plt.scatter(FR, WFDU_M)
 plt.scatter(FR, FFDU_M)
+plt.xlabel('Fragmentation Rate')
+plt.ylabel('M')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
 plt.show()
 
-"sigma and let"
-plt.scatter(FR, BFDU_LETU)
-plt.scatter(FR, WFDU_LETU)
-plt.scatter(FR, FFDU_LETU)
+"sr and m"
+plt.scatter(BFDU_SR_ALLO, BFDU_M)
+plt.scatter(WFDU_SR_ALLO, WFDU_M)
+plt.scatter(FFDU_SR_ALLO, FFDU_M)
+plt.xlabel('Schedulability Rate ALLOCATION')
+plt.ylabel('M')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
 plt.show()
 
-"sigma and sr_allo"
-plt.scatter(FR, BFDU_SR_ALLO)
-plt.scatter(FR, WFDU_SR_ALLO)
-plt.scatter(FR, FFDU_SR_ALLO)
+"sr and m"
+plt.scatter(BFDU_SR_DISP, BFDU_M)
+plt.scatter(WFDU_SR_DISP, WFDU_M)
+plt.scatter(FFDU_SR_DISP, FFDU_M)
+plt.xlabel('Schedulability Rate PLACEMENT')
+plt.ylabel('M')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.show()
+
+"sr and let"
+plt.scatter(BFDU_SR_ALLO, BFDU_LETU)
+plt.scatter(WFDU_SR_ALLO, WFDU_LETU)
+plt.scatter(FFDU_SR_ALLO, FFDU_LETU)
+plt.xlabel('Schedulability Rate ALLOCATION')
+plt.ylabel('LET Utilization')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.show()
+
+"sr and let"
+plt.scatter(BFDU_SR_DISP, BFDU_LETU)
+plt.scatter(WFDU_SR_DISP, WFDU_LETU)
+plt.scatter(FFDU_SR_DISP, FFDU_LETU)
+plt.xlabel('Schedulability Rate PLACEMENT')
+plt.ylabel('LET Utilization')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.show()
+
+fig = plt.figure(figsize=(100,100))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(BFDU_SR_ALLO, BFDU_M, BFDU_LETU)
+ax.scatter(WFDU_SR_ALLO, WFDU_M, WFDU_LETU)
+ax.scatter(FFDU_SR_ALLO, FFDU_M, FFDU_LETU)
+ax.set_xlabel('Schedulability Rate ALLOCATION')
+ax.set_ylabel('M')
+ax.set_zlabel('LET Utilization')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.show()
+
+fig = plt.figure(figsize=(100,100))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(BFDU_SR_DISP, BFDU_M, BFDU_LETU)
+ax.scatter(WFDU_SR_DISP, WFDU_M, WFDU_LETU)
+ax.scatter(FFDU_SR_DISP, FFDU_M, FFDU_LETU)
+ax.set_xlabel('Schedulability Rate PLACEMENT')
+ax.set_ylabel('M')
+ax.set_zlabel('LET Utilization')
+plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
 plt.show()
