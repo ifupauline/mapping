@@ -86,7 +86,6 @@ BFDU_SR_ALLO	display_res_exp1.py	/^BFDU_SR_ALLO = pd.read_table("res_exp1.txt", 
 BFDU_SR_DISP	display_res_exp1.py	/^BFDU_SR_DISP = pd.read_table("res_exp1.txt", sep=",", usecols=[5])$/;"	v
 BFDU_SR_SWAP	display_res_exp1.py	/^BFDU_SR_SWAP = pd.read_table("res_exp1.txt", sep=",", usecols=[4])$/;"	v
 BLUE	include/model.h	33;"	d
-BUFFSIZE	include/file.h	4;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/exp1/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/exp2/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
@@ -684,6 +683,7 @@ appu	include/model.h	/^        float appu;$/;"	m	struct:perf
 assi_time	include/model.h	/^        float assi_time;$/;"	m	struct:perf
 assign_ids	src/model.cpp	/^void assign_ids(vector<struct tc> &v_tcs)$/;"	f
 assignment	src/mapping.cpp	/^void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+ax	display_res_exp1.py	/^ax = fig.add_subplot(111, projection='3d')$/;"	v
 bfdu	src/bfdu.cpp	/^void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
 bfdu_fr	include/stats.h	/^        float bfdu_fr;$/;"	m	struct:results
 bfdu_letu	include/stats.h	/^        float bfdu_letu;$/;"	m	struct:results
@@ -737,6 +737,7 @@ ffdu_plac_gain	include/stats.h	/^        float ffdu_plac_gain;$/;"	m	struct:resu
 ffdu_sr_allo	include/stats.h	/^        float ffdu_sr_allo;$/;"	m	struct:results
 ffdu_sr_disp	include/stats.h	/^        float ffdu_sr_disp;$/;"	m	struct:results
 ffdu_sr_swap	include/stats.h	/^        float ffdu_sr_swap;$/;"	m	struct:results
+fig	display_res_exp1.py	/^fig = plt.figure(figsize=(100,100))$/;"	v
 flag	include/model.h	/^        int flag;$/;"	m	struct:core
 fr	include/model.h	/^        float fr;$/;"	m	struct:perf
 gcd	include/model.h	/^        int gcd;$/;"	m	struct:tc
