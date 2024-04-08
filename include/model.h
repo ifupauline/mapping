@@ -27,6 +27,7 @@
 #define PERCENT 100
 #define PERMILL 1000
 #define MSEC    1000
+#define USEC    1000000
 
 /* colors */
 #define RED    0
