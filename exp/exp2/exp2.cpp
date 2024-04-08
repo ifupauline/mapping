@@ -4,8 +4,10 @@
 #include "generator.h"
 
 #define ITR   10
-#define STP   30
+#define STP   10
 #define SIGMA 400
+
+#define QUAD  2
 
 static const char *table = "res_exp2.txt";
 
@@ -16,7 +18,8 @@ static const char *hdr_table =
 "ET_SCHD (ms),"
 "ET_SWAP (ms),"
 "ET_DISP (ms),"
-"ET_TOOL (ms)";
+"ET_TOOL (ms),"
+"ET_QUAD  (ms)";
 
 static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 {
@@ -42,8 +45,10 @@ static void _gen_arch(vector<struct core> &v_cores, struct context &ctx)
                 add_core(v_cores, RED, 1, ctx);
 }
 
+static float first = 0;
+
 static void _store_results(vector<struct results> &v_res, struct results &res, 
-                struct context &ctx_ffdu)
+                struct context &ctx_ffdu, int iter)
 {
         res.m = ctx_ffdu.prm.m;
         res.et_part = ctx_ffdu.p.part_time * MSEC;
@@ -52,6 +57,13 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.et_swap = ctx_ffdu.p.swap_time * MSEC;
         res.et_disp = ctx_ffdu.p.disp_time * MSEC;
         res.et_tool = ctx_ffdu.p.exec_time * MSEC;
+        if (iter == 0) {
+                res.et_exp = first;
+                v_res.push_back(res);
+                return;
+        }
+        res.et_exp = first * QUAD;
+        first = res.et_exp;
         v_res.push_back(res);
 }
 
@@ -75,6 +87,7 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].et_swap);
                 v_float.push_back(v_res[i].et_disp);
                 v_float.push_back(v_res[i].et_tool);
+                v_float.push_back(v_res[i].et_exp);
                 write_data(file, v_float);
                 v_float.clear();
         }
@@ -116,7 +129,10 @@ redo:           res = {0};
                 schedulability_analysis(v_cores_ffdu, ctx_ffdu);
                 placement(v_cores_ffdu, ctx_ffdu);
                 stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
-                _store_results(v_res, res, ctx_ffdu);
+                if (i == 0) {
+                        first = ctx_ffdu.p.exec_time * MSEC;
+                }
+                _store_results(v_res, res, ctx_ffdu, i);
         }
         _write_results(v_res);
 }

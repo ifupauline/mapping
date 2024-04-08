@@ -12,6 +12,7 @@ struct results {
         float et_swap;
         float et_disp;
         float et_tool;
+        float et_exp;
 
         float bfdu_fr;
         float wfdu_fr;
