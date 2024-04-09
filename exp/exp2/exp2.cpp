@@ -4,7 +4,7 @@
 #include "generator.h"
 
 #define ITR   10
-#define STP   10
+#define STP   50
 #define SIGMA 400
 
 #define QUAD  2
@@ -19,7 +19,7 @@ static const char *hdr_table =
 "ET_SWAP (ms),"
 "ET_DISP (ms),"
 "ET_TOOL (ms),"
-"ET_QUAD  (ms)";
+"ET_QUAD (ms)";
 
 static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 {
@@ -27,7 +27,7 @@ static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 
         for (int i = 0; i < ctx.prm.m; i++) {
                 tc_white = {0};
-                gen_tc(tc_white, WHITE, 500, 1000);
+                gen_tc(tc_white, WHITE, 1, 500);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);

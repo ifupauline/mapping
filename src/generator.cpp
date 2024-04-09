@@ -82,7 +82,7 @@ void gen_app(vector<struct tc> &v_tcs, struct params &prm,
         /* dynamic */
         for (int i = 0; i < 12; i++) {
                 tc_white = {0};
-                gen_tc(tc_white, WHITE, 500, 1000);
+                gen_tc(tc_white, WHITE, 1, 500);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);
@@ -127,13 +127,13 @@ void gen_task(struct task &tau, int i, int color)
         while (1) {
                 if (color == WHITE) {
                         y  = gen_rand(0, 14);
-                        real_c = gen_rand(10, 30000); /* microsecs */
+                        real_c = gen_rand(10, 10000); /* microsecs */
                         real_u = (real_c/real_t) * PERMILL;
                         real_t = period_waters2015(0, y, DYNAMIC);
 
                 } else {
                         y  = gen_rand(0, 9);
-                        real_c = gen_rand(10, 3000); /* microsecs */
+                        real_c = gen_rand(10, 1000); /* microsecs */
                         real_u = (real_c/real_t) * PERMILL;
                         real_t = period_waters2015(0, y, STATIC);
                 }
@@ -283,7 +283,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 ctx.k++;
                                 continue;
                         }
-
                         /* only for the waters2019 task-chain */
                         if (i == 0 && u_sum > PHI) {
                                 u_sum -= v_tmp_tcs[i].v_tasks[j].u;
@@ -305,7 +304,6 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 ctx.k++;
                                 continue;
                         }
-
                         /* -10 to account for increase of let size */
                         if (i > 0 && u_sum > ctx.prm.s - 10) {
                                 u_sum -= v_tmp_tcs[i].v_tasks[j].u;
