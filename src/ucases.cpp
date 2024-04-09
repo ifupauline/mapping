@@ -32,53 +32,53 @@ int period_waters2015(int x, int y, int tc_type)
 void create_waters2019(struct tc &tc)
 {
         struct tc waters2019;
-        struct task can_polling;
-        struct task lidar;
+        struct task gps_grabber;
+        struct task lidar_grabber;
         struct task cam_grabber;
         struct task localization;
         struct task detection;
-        struct task lane_detection;
+        struct task fusion;
         struct task ekf;
         struct task planner;
         struct task control;
         struct task can_write;
 
         waters2019 = {0};
-        can_polling = {0};
-        lidar = {0};
+        gps_grabber = {0};
+        lidar_grabber = {0};
         cam_grabber = {0};
         localization = {0};
         detection = {0};
-        lane_detection = {0};
+        fusion = {0};
         ekf = {0};
         planner = {0};
         control = {0};
         can_write = {0};
 
-        /* can_polling */
-        can_polling = {0};
-        can_polling.c = 499;
-        can_polling.t = 10000;
-        can_polling.r = 0;
-        can_polling.task_id = 0;
-        can_polling.tc_id = tc.id;
-        can_polling.is_let = NO;
-        can_polling.u = ceil(((float)can_polling.c/(float)can_polling.t) * PERMILL);
+        /* gps_grabber */
+        gps_grabber = {0};
+        gps_grabber.c = 700;
+        gps_grabber.t = 50000;
+        gps_grabber.r = 0;
+        gps_grabber.task_id = 0;
+        gps_grabber.tc_id = tc.id;
+        gps_grabber.is_let = NO;
+        gps_grabber.u = ceil(((float)gps_grabber.c/(float)gps_grabber.t) * PERMILL);
 
-        /* lidar */
-        lidar = {0};
-        lidar.c = 11759;
-        lidar.t = 33000;
-        lidar.r = 0;
-        lidar.task_id = 1;
-        lidar.tc_id = tc.id;
-        lidar.is_let = NO;
-        lidar.u = ceil(((float)lidar.c/(float)lidar.t) * PERMILL);
+        /* lidar_grabber */
+        lidar_grabber = {0};
+        lidar_grabber.c = 12000;
+        lidar_grabber.t = 50000;
+        lidar_grabber.r = 0;
+        lidar_grabber.task_id = 1;
+        lidar_grabber.tc_id = tc.id;
+        lidar_grabber.is_let = NO;
+        lidar_grabber.u = ceil(((float)lidar_grabber.c/(float)lidar_grabber.t) * PERMILL);
 
         /* cam_grabber */
         cam_grabber = {0};
-        cam_grabber.c = 14986;
-        cam_grabber.t = 33000;
+        cam_grabber.c = 2000;
+        cam_grabber.t = 25000;
         cam_grabber.r = 0;
         cam_grabber.task_id = 2;
         cam_grabber.tc_id = tc.id;
@@ -87,8 +87,8 @@ void create_waters2019(struct tc &tc)
 
         /* localization */
         localization = {0};
-        localization.c = 142375;
-        localization.t = 400000;
+        localization.c = 28000;
+        localization.t = 50000;
         localization.r = 0;
         localization.task_id = 3;
         localization.tc_id = tc.id;
@@ -97,63 +97,53 @@ void create_waters2019(struct tc &tc)
 
         /* detection */
         detection = {0};
-        detection.c = 124956;
-        detection.t = 200000;
+        detection.c = 28000;
+        detection.t = 50000;
         detection.r = 0;
         detection.task_id = 4;
         detection.tc_id = tc.id;
         detection.is_let = NO;
         detection.u = ceil(((float)detection.c/(float)detection.t) * PERMILL);
 
-        /* lane detection */
-        lane_detection = {0};
-        lane_detection.c = 36416;
-        lane_detection.t = 66000;
-        lane_detection.r = 0;
-        lane_detection.task_id = 5;
-        lane_detection.tc_id = tc.id;
-        lane_detection.is_let = NO;
-        lane_detection.u = ceil(((float)lane_detection.c/(float)lane_detection.t) * PERMILL);
+        /* fusion */
+        fusion = {0};
+        fusion.c = 25000;
+        fusion.t = 50000;
+        fusion.r = 0;
+        fusion.task_id = 6;
+        fusion.tc_id = tc.id;
+        fusion.is_let = NO;
+        fusion.u = ceil(((float)fusion.c/(float)fusion.t) * PERMILL);
 
         /* ekf */
         ekf = {0};
-        ekf.c = 4399;
-        ekf.t = 15000;
+        ekf.c = 6500;
+        ekf.t = 10000;
         ekf.r = 0;
-        ekf.task_id = 6;
+        ekf.task_id = 7;
         ekf.tc_id = tc.id;
         ekf.is_let = NO;
         ekf.u = ceil(((float)ekf.c/(float)ekf.t) * PERMILL);
 
         /* planner */
         planner = {0};
-        planner.c = 11371;
-        planner.t = 15000;
+        planner.c = 5000;
+        planner.t = 10000;
         planner.r = 0;
-        planner.task_id = 7;
+        planner.task_id = 8;
         planner.tc_id = tc.id;
         planner.is_let = NO;
         planner.u = ceil(((float)planner.c/(float)planner.t) * PERMILL);
 
         /* control */
         control = {0};
-        control.c = 1609;
-        control.t = 5000;
+        control.c = 4500;
+        control.t = 10000;
         control.r = 0;
-        control.task_id = 8;
+        control.task_id = 9;
         control.tc_id = tc.id;
         control.is_let = NO;
         control.u = ceil(((float)control.c/(float)control.t) * PERMILL);
-
-        /* can write */
-        can_write = {0};
-        can_write.c = 499;
-        can_write.t = 10000;
-        can_write.r = 0;
-        can_write.task_id = 9;
-        can_write.tc_id = tc.id;
-        can_write.is_let = NO;
-        can_write.u = ceil(((float)can_write.c/(float)can_write.t) * PERMILL);
 
         waters2019 = {0};
         waters2019.id = 0;
@@ -162,20 +152,18 @@ void create_waters2019(struct tc &tc)
         waters2019.is_let = NO;
         waters2019.is_assign = NO;
 
-        waters2019.u = can_polling.u + lidar.u + cam_grabber.u + localization.u + 
-                detection.u + lane_detection.u + ekf.u + planner.u + control.u + 
-                can_write.u;
+        waters2019.u = gps_grabber.u + lidar_grabber.u + cam_grabber.u + localization.u + 
+                detection.u + fusion.u + ekf.u + planner.u + control.u;
 
-        waters2019.v_tasks.push_back(can_polling);
-        waters2019.v_tasks.push_back(lidar);
+        waters2019.v_tasks.push_back(gps_grabber);
+        waters2019.v_tasks.push_back(lidar_grabber);
         waters2019.v_tasks.push_back(cam_grabber);
         waters2019.v_tasks.push_back(localization);
         waters2019.v_tasks.push_back(detection);
-        waters2019.v_tasks.push_back(lane_detection);
+        waters2019.v_tasks.push_back(fusion);
         waters2019.v_tasks.push_back(ekf);
         waters2019.v_tasks.push_back(planner);
         waters2019.v_tasks.push_back(control);
-        waters2019.v_tasks.push_back(can_write);
 
         tc = waters2019;
 }

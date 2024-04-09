@@ -83,7 +83,6 @@ void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                                         STATE = FAILED;
                                         return;
                                 }
-                                continue;
                         }
                 }
                 /* count remaining tc to be allocated */
