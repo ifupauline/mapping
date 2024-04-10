@@ -2,6 +2,8 @@
 #include "mapping.h"
 #include "generator.h"
 
+int EXP = EXPM;
+
 int main(int argc, char **argv)
 {
 redo:   struct params prm;

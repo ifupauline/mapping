@@ -7,8 +7,6 @@
 #define STP   50
 #define SIGMA 400
 
-#define QUAD  2
-
 static const char *table = "res_exp2.txt";
 
 static const char *hdr_table = 
@@ -19,7 +17,7 @@ static const char *hdr_table =
 "ET_SWAP (ms),"
 "ET_DISP (ms),"
 "ET_TOOL (ms),"
-"ET_QUAD (ms)";
+"ET_TOOL_QUAD (ms)";
 
 static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 {
@@ -27,7 +25,7 @@ static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 
         for (int i = 0; i < ctx.prm.m; i++) {
                 tc_white = {0};
-                gen_tc(tc_white, WHITE, 1, 500);
+                gen_tc(tc_white, WHITE, 1, 1000);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);
@@ -58,12 +56,12 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.et_disp = ctx_ffdu.p.disp_time * MSEC;
         res.et_tool = ctx_ffdu.p.exec_time * MSEC;
         if (iter == 0) {
-                res.et_exp = first;
+                res.et_quad = first;
                 v_res.push_back(res);
                 return;
         }
-        res.et_exp = first * QUAD;
-        first = res.et_exp;
+        res.et_quad = first * 2; /* quadratic growth */
+        first = res.et_quad;
         v_res.push_back(res);
 }
 
@@ -87,7 +85,7 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].et_swap);
                 v_float.push_back(v_res[i].et_disp);
                 v_float.push_back(v_res[i].et_tool);
-                v_float.push_back(v_res[i].et_exp);
+                v_float.push_back(v_res[i].et_quad);
                 write_data(file, v_float);
                 v_float.clear();
         }
