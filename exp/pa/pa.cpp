@@ -8,6 +8,8 @@
 #define TCN 10
 #define STP 100
 
+int EXP = EXPP;
+
 struct stats {
         int count_task;
         int count_tc;
@@ -128,7 +130,7 @@ static int _gen_data(vector<struct tc> &v_tcs)
 
         for (int i = 0; i < TCN; i++) {
                 tc = {0};
-                gen_tc(tc, WHITE, 1, 500);
+                gen_tc(tc, WHITE, 1, 1000);
                 v_tcs.push_back(tc);
                 task_nbr += tc.v_tasks.size();
         }

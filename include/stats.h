@@ -4,7 +4,10 @@
 #include "model.h"
 
 struct results {
+        int tasks_count;
+
         float m;
+        float sigma;
 
         float et_part;
         float et_assi;
@@ -12,13 +15,12 @@ struct results {
         float et_swap;
         float et_disp;
         float et_tool;
-        float et_exp;
+        float et_quad;
 
         float bfdu_fr;
         float wfdu_fr;
         float ffdu_fr;
 
-        float sigma;
         float bfdu_m;
         float wfdu_m;
         float ffdu_m;
@@ -42,6 +44,10 @@ struct results {
         float bfdu_plac_gain;
         float wfdu_plac_gain;
         float ffdu_plac_gain;
+
+        float bfdu_et_tool;
+        float wfdu_et_tool;
+        float ffdu_et_tool;
 };
 
 float sched_rate(vector<struct core> &v_cores, struct context &ctx);

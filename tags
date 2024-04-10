@@ -79,17 +79,32 @@ ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	630;"	d	f
 ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	633;"	d	file:
 ARCHITECTURE_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	637;"	d	file:
 BFDU	include/model.h	9;"	d
-BFDU_LETU	display_res_exp1.py	/^BFDU_LETU = pd.read_table("res_exp1.txt", sep=",", usecols=[7])$/;"	v
-BFDU_M	display_res_exp1.py	/^BFDU_M = pd.read_table("res_exp1.txt", sep=",", usecols=[2])$/;"	v
-BFDU_PLAC_GAIN	display_res_exp1.py	/^BFDU_PLAC_GAIN = pd.read_table("res_exp1.txt", sep=",", usecols=[6])$/;"	v
-BFDU_SR_ALLO	display_res_exp1.py	/^BFDU_SR_ALLO = pd.read_table("res_exp1.txt", sep=",", usecols=[3])$/;"	v
-BFDU_SR_DISP	display_res_exp1.py	/^BFDU_SR_DISP = pd.read_table("res_exp1.txt", sep=",", usecols=[5])$/;"	v
-BFDU_SR_SWAP	display_res_exp1.py	/^BFDU_SR_SWAP = pd.read_table("res_exp1.txt", sep=",", usecols=[4])$/;"	v
-BLUE	include/model.h	33;"	d
+BFDU_ET_TOOL	display_res_exp1r.py	/^BFDU_ET_TOOL = pd.read_table("res_exp1r.txt", sep=",", usecols=[8])$/;"	v
+BFDU_ET_TOOL	display_res_exp1s.py	/^BFDU_ET_TOOL = pd.read_table("res_exp1s.txt", sep=",", usecols=[8])$/;"	v
+BFDU_LETU	display_res_exp1r.py	/^BFDU_LETU = pd.read_table("res_exp1r.txt", sep=",", usecols=[7])$/;"	v
+BFDU_LETU	display_res_exp1s.py	/^BFDU_LETU = pd.read_table("res_exp1s.txt", sep=",", usecols=[7])$/;"	v
+BFDU_LETU	display_res_exp3.py	/^BFDU_LETU = pd.read_table("res_exp3.txt", sep=",", usecols=[7])$/;"	v
+BFDU_M	display_res_exp1r.py	/^BFDU_M = pd.read_table("res_exp1r.txt", sep=",", usecols=[2])$/;"	v
+BFDU_M	display_res_exp1s.py	/^BFDU_M = pd.read_table("res_exp1s.txt", sep=",", usecols=[2])$/;"	v
+BFDU_M	display_res_exp3.py	/^BFDU_M = pd.read_table("res_exp3.txt", sep=",", usecols=[2])$/;"	v
+BFDU_PLAC_GAIN	display_res_exp1r.py	/^BFDU_PLAC_GAIN = pd.read_table("res_exp1r.txt", sep=",", usecols=[6])$/;"	v
+BFDU_PLAC_GAIN	display_res_exp1s.py	/^BFDU_PLAC_GAIN = pd.read_table("res_exp1s.txt", sep=",", usecols=[6])$/;"	v
+BFDU_PLAC_GAIN	display_res_exp3.py	/^BFDU_PLAC_GAIN = pd.read_table("res_exp3.txt", sep=",", usecols=[6])$/;"	v
+BFDU_SR_ALLO	display_res_exp1r.py	/^BFDU_SR_ALLO = pd.read_table("res_exp1r.txt", sep=",", usecols=[3])$/;"	v
+BFDU_SR_ALLO	display_res_exp1s.py	/^BFDU_SR_ALLO = pd.read_table("res_exp1s.txt", sep=",", usecols=[3])$/;"	v
+BFDU_SR_ALLO	display_res_exp3.py	/^BFDU_SR_ALLO = pd.read_table("res_exp3.txt", sep=",", usecols=[3])$/;"	v
+BFDU_SR_DISP	display_res_exp1r.py	/^BFDU_SR_DISP = pd.read_table("res_exp1r.txt", sep=",", usecols=[5])$/;"	v
+BFDU_SR_DISP	display_res_exp1s.py	/^BFDU_SR_DISP = pd.read_table("res_exp1s.txt", sep=",", usecols=[5])$/;"	v
+BFDU_SR_DISP	display_res_exp3.py	/^BFDU_SR_DISP = pd.read_table("res_exp3.txt", sep=",", usecols=[5])$/;"	v
+BFDU_SR_SWAP	display_res_exp1r.py	/^BFDU_SR_SWAP = pd.read_table("res_exp1r.txt", sep=",", usecols=[4])$/;"	v
+BFDU_SR_SWAP	display_res_exp1s.py	/^BFDU_SR_SWAP = pd.read_table("res_exp1s.txt", sep=",", usecols=[4])$/;"	v
+BFDU_SR_SWAP	display_res_exp3.py	/^BFDU_SR_SWAP = pd.read_table("res_exp3.txt", sep=",", usecols=[4])$/;"	v
+BLUE	include/model.h	34;"	d
 CMAKE_BINARY_DIR	Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/exp1/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/exp2/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/exp3/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_BINARY_DIR	exp/exp4/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/map/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	exp/pa/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_BINARY_DIR	src/Makefile	/^CMAKE_BINARY_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
@@ -97,6 +112,7 @@ CMAKE_COMMAND	Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/exp1/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/exp2/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/exp3/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
+CMAKE_COMMAND	exp/exp4/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/map/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	exp/pa/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
 CMAKE_COMMAND	src/Makefile	/^CMAKE_COMMAND = \/usr\/bin\/cmake$/;"	m
@@ -104,6 +120,7 @@ CMAKE_SOURCE_DIR	Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documen
 CMAKE_SOURCE_DIR	exp/exp1/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/exp2/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/exp3/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
+CMAKE_SOURCE_DIR	exp/exp4/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/map/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	exp/pa/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
 CMAKE_SOURCE_DIR	src/Makefile	/^CMAKE_SOURCE_DIR = \/home\/disc\/m.gauthier\/Documents\/repos\/mapping$/;"	m
@@ -415,7 +432,7 @@ CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	727;"	d	file:
 CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	730;"	d	file:
 CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	733;"	d	file:
 CXX_STD	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	735;"	d	file:
-CYAN	include/model.h	36;"	d
+CYAN	include/model.h	37;"	d
 C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	739;"	d	file:
 C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	741;"	d	file:
 C_VERSION	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	744;"	d	file:
@@ -430,21 +447,56 @@ EQUALS	Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/exp1/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/exp2/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/exp3/Makefile	/^EQUALS = =$/;"	m
+EQUALS	exp/exp4/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/map/Makefile	/^EQUALS = =$/;"	m
 EQUALS	exp/pa/Makefile	/^EQUALS = =$/;"	m
 EQUALS	src/Makefile	/^EQUALS = =$/;"	m
+ET_ASSI	display_res_exp2.py	/^ET_ASSI = pd.read_table("res_exp2.txt", sep=",", usecols=[2])$/;"	v
+ET_DISP	display_res_exp2.py	/^ET_DISP = pd.read_table("res_exp2.txt", sep=",", usecols=[5])$/;"	v
+ET_EXP	display_res_exp2.py	/^ET_EXP = pd.read_table("res_exp2.txt", sep=",", usecols=[7])$/;"	v
+ET_PART	display_res_exp2.py	/^ET_PART = pd.read_table("res_exp2.txt", sep=",", usecols=[1])$/;"	v
+ET_SCHD	display_res_exp2.py	/^ET_SCHD = pd.read_table("res_exp2.txt", sep=",", usecols=[3])$/;"	v
+ET_SWAP	display_res_exp2.py	/^ET_SWAP = pd.read_table("res_exp2.txt", sep=",", usecols=[4])$/;"	v
+ET_TOOL	display_res_exp2.py	/^ET_TOOL = pd.read_table("res_exp2.txt", sep=",", usecols=[6])$/;"	v
+EXP	exp/exp1/exp1.cpp	/^int EXP = EXP1;$/;"	v
+EXP	exp/exp4/exp4.cpp	/^int EXP = EXP4;$/;"	v
+EXP	exp/map/map.cpp	/^int EXP = EXPM;$/;"	v
+EXP	exp/pa/pa.cpp	/^int EXP = EXPP;$/;"	v
+EXP	src/generator.cpp	/^int EXP;$/;"	v
+EXP1	include/model.h	42;"	d
+EXP2	include/model.h	43;"	d
+EXP3	include/model.h	44;"	d
+EXP4	include/model.h	45;"	d
+EXPM	include/model.h	46;"	d
+EXPP	include/model.h	47;"	d
 FAILED	include/model.h	18;"	d
 FFDU	include/model.h	11;"	d
-FFDU_LETU	display_res_exp1.py	/^FFDU_LETU = pd.read_table("res_exp1.txt", sep=",", usecols=[19])$/;"	v
-FFDU_M	display_res_exp1.py	/^FFDU_M = pd.read_table("res_exp1.txt", sep=",", usecols=[14])$/;"	v
-FFDU_PLAC_GAIN	display_res_exp1.py	/^FFDU_PLAC_GAIN = pd.read_table("res_exp1.txt", sep=",", usecols=[18])$/;"	v
-FFDU_SR_ALLO	display_res_exp1.py	/^FFDU_SR_ALLO = pd.read_table("res_exp1.txt", sep=",", usecols=[15])$/;"	v
-FFDU_SR_DISP	display_res_exp1.py	/^FFDU_SR_DISP = pd.read_table("res_exp1.txt", sep=",", usecols=[17])$/;"	v
-FFDU_SR_SWAP	display_res_exp1.py	/^FFDU_SR_SWAP = pd.read_table("res_exp1.txt", sep=",", usecols=[16])$/;"	v
+FFDU_ET_TOOL	display_res_exp1r.py	/^FFDU_ET_TOOL = pd.read_table("res_exp1r.txt", sep=",", usecols=[22])$/;"	v
+FFDU_ET_TOOL	display_res_exp1s.py	/^FFDU_ET_TOOL = pd.read_table("res_exp1s.txt", sep=",", usecols=[22])$/;"	v
+FFDU_LETU	display_res_exp1r.py	/^FFDU_LETU = pd.read_table("res_exp1r.txt", sep=",", usecols=[21])$/;"	v
+FFDU_LETU	display_res_exp1s.py	/^FFDU_LETU = pd.read_table("res_exp1s.txt", sep=",", usecols=[21])$/;"	v
+FFDU_LETU	display_res_exp3.py	/^FFDU_LETU = pd.read_table("res_exp3.txt", sep=",", usecols=[19])$/;"	v
+FFDU_M	display_res_exp1r.py	/^FFDU_M = pd.read_table("res_exp1r.txt", sep=",", usecols=[16])$/;"	v
+FFDU_M	display_res_exp1s.py	/^FFDU_M = pd.read_table("res_exp1s.txt", sep=",", usecols=[16])$/;"	v
+FFDU_M	display_res_exp3.py	/^FFDU_M = pd.read_table("res_exp3.txt", sep=",", usecols=[14])$/;"	v
+FFDU_PLAC_GAIN	display_res_exp1r.py	/^FFDU_PLAC_GAIN = pd.read_table("res_exp1r.txt", sep=",", usecols=[20])$/;"	v
+FFDU_PLAC_GAIN	display_res_exp1s.py	/^FFDU_PLAC_GAIN = pd.read_table("res_exp1s.txt", sep=",", usecols=[20])$/;"	v
+FFDU_PLAC_GAIN	display_res_exp3.py	/^FFDU_PLAC_GAIN = pd.read_table("res_exp3.txt", sep=",", usecols=[18])$/;"	v
+FFDU_SR_ALLO	display_res_exp1r.py	/^FFDU_SR_ALLO = pd.read_table("res_exp1r.txt", sep=",", usecols=[17])$/;"	v
+FFDU_SR_ALLO	display_res_exp1s.py	/^FFDU_SR_ALLO = pd.read_table("res_exp1s.txt", sep=",", usecols=[17])$/;"	v
+FFDU_SR_ALLO	display_res_exp3.py	/^FFDU_SR_ALLO = pd.read_table("res_exp3.txt", sep=",", usecols=[15])$/;"	v
+FFDU_SR_DISP	display_res_exp1r.py	/^FFDU_SR_DISP = pd.read_table("res_exp1r.txt", sep=",", usecols=[19])$/;"	v
+FFDU_SR_DISP	display_res_exp1s.py	/^FFDU_SR_DISP = pd.read_table("res_exp1s.txt", sep=",", usecols=[19])$/;"	v
+FFDU_SR_DISP	display_res_exp3.py	/^FFDU_SR_DISP = pd.read_table("res_exp3.txt", sep=",", usecols=[17])$/;"	v
+FFDU_SR_SWAP	display_res_exp1r.py	/^FFDU_SR_SWAP = pd.read_table("res_exp1r.txt", sep=",", usecols=[18])$/;"	v
+FFDU_SR_SWAP	display_res_exp1s.py	/^FFDU_SR_SWAP = pd.read_table("res_exp1s.txt", sep=",", usecols=[18])$/;"	v
+FFDU_SR_SWAP	display_res_exp3.py	/^FFDU_SR_SWAP = pd.read_table("res_exp3.txt", sep=",", usecols=[16])$/;"	v
 FILE_H	include/file.h	2;"	d
-FR	display_res_exp1.py	/^FR = pd.read_table("res_exp1.txt", sep=",", usecols=[1])$/;"	v
+FR	display_res_exp1r.py	/^FR = pd.read_table("res_exp1r.txt", sep=",", usecols=[1])$/;"	v
+FR	display_res_exp1s.py	/^FR = pd.read_table("res_exp1s.txt", sep=",", usecols=[1])$/;"	v
+FR	display_res_exp3.py	/^FR = pd.read_table("res_exp3.txt", sep=",", usecols=[1])$/;"	v
 GENERATOR_H	include/generator.h	2;"	d
-GREEN	include/model.h	35;"	d
+GREEN	include/model.h	36;"	d
 HEX	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	667;"	d	file:
 HEX	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	652;"	d	file:
 ID_VOID_MAIN	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	6;"	d	file:
@@ -536,13 +588,14 @@ PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	505;"	d	file:
 PLATFORM_ID	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	509;"	d	file:
 PRECISION	include/generator.h	9;"	d
 PRINT_H	include/print.h	2;"	d
-PURPLE	include/model.h	37;"	d
-RED	include/model.h	32;"	d
+PURPLE	include/model.h	38;"	d
+RED	include/model.h	33;"	d
 RIGHT	include/model.h	21;"	d
 RM	Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/exp1/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/exp2/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/exp3/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
+RM	exp/exp4/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/map/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	exp/pa/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
 RM	src/Makefile	/^RM = \/usr\/bin\/cmake -E rm -f$/;"	m
@@ -553,10 +606,13 @@ SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/exp1/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/exp2/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/exp3/Makefile	/^SHELL = \/bin\/sh$/;"	m
+SHELL	exp/exp4/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/map/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	exp/pa/Makefile	/^SHELL = \/bin\/sh$/;"	m
 SHELL	src/Makefile	/^SHELL = \/bin\/sh$/;"	m
-SIGMA	display_res_exp1.py	/^SIGMA = pd.read_table("res_exp1.txt", sep=",", usecols=[0])$/;"	v
+SIGMA	display_res_exp1r.py	/^SIGMA = pd.read_table("res_exp1r.txt", sep=",", usecols=[0])$/;"	v
+SIGMA	display_res_exp1s.py	/^SIGMA = pd.read_table("res_exp1s.txt", sep=",", usecols=[0])$/;"	v
+SIGMA	display_res_exp3.py	/^SIGMA = pd.read_table("res_exp3.txt", sep=",", usecols=[0])$/;"	v
 SIGMA	exp/exp2/exp2.cpp	8;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	27;"	d	file:
 SIMULATE_ID	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	291;"	d	file:
@@ -613,24 +669,41 @@ STRINGIFY	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	417;"	d	file:
 STRINGIFY	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	402;"	d	file:
 STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	416;"	d	file:
 STRINGIFY_HELPER	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	401;"	d	file:
+TCC	exp/exp1/exp1.cpp	7;"	d	file:
+TCC	exp/exp4/exp4.cpp	5;"	d	file:
 TCN	exp/pa/pa.cpp	8;"	d	file:
-TIM	exp/exp1/exp1.cpp	7;"	d	file:
+TIM	exp/exp3/exp3.cpp	7;"	d	file:
 UCASES_H	include/ucases.h	2;"	d
+USEC	include/model.h	30;"	d
 WFDU	include/model.h	10;"	d
-WFDU_LETU	display_res_exp1.py	/^WFDU_LETU = pd.read_table("res_exp1.txt", sep=",", usecols=[13])$/;"	v
-WFDU_M	display_res_exp1.py	/^WFDU_M = pd.read_table("res_exp1.txt", sep=",", usecols=[8])$/;"	v
-WFDU_PLAC_GAIN	display_res_exp1.py	/^WFDU_PLAC_GAIN = pd.read_table("res_exp1.txt", sep=",", usecols=[12])$/;"	v
-WFDU_SR_ALLO	display_res_exp1.py	/^WFDU_SR_ALLO = pd.read_table("res_exp1.txt", sep=",", usecols=[9])$/;"	v
-WFDU_SR_DISP	display_res_exp1.py	/^WFDU_SR_DISP = pd.read_table("res_exp1.txt", sep=",", usecols=[11])$/;"	v
-WFDU_SR_SWAP	display_res_exp1.py	/^WFDU_SR_SWAP = pd.read_table("res_exp1.txt", sep=",", usecols=[10])$/;"	v
-WHITE	include/model.h	38;"	d
-YELLOW	include/model.h	34;"	d
+WFDU_ET_TOOL	display_res_exp1r.py	/^WFDU_ET_TOOL = pd.read_table("res_exp1r.txt", sep=",", usecols=[15])$/;"	v
+WFDU_ET_TOOL	display_res_exp1s.py	/^WFDU_ET_TOOL = pd.read_table("res_exp1s.txt", sep=",", usecols=[15])$/;"	v
+WFDU_LETU	display_res_exp1r.py	/^WFDU_LETU = pd.read_table("res_exp1r.txt", sep=",", usecols=[14])$/;"	v
+WFDU_LETU	display_res_exp1s.py	/^WFDU_LETU = pd.read_table("res_exp1s.txt", sep=",", usecols=[14])$/;"	v
+WFDU_LETU	display_res_exp3.py	/^WFDU_LETU = pd.read_table("res_exp3.txt", sep=",", usecols=[13])$/;"	v
+WFDU_M	display_res_exp1r.py	/^WFDU_M = pd.read_table("res_exp1r.txt", sep=",", usecols=[9])$/;"	v
+WFDU_M	display_res_exp1s.py	/^WFDU_M = pd.read_table("res_exp1s.txt", sep=",", usecols=[9])$/;"	v
+WFDU_M	display_res_exp3.py	/^WFDU_M = pd.read_table("res_exp3.txt", sep=",", usecols=[8])$/;"	v
+WFDU_PLAC_GAIN	display_res_exp1r.py	/^WFDU_PLAC_GAIN = pd.read_table("res_exp1r.txt", sep=",", usecols=[13])$/;"	v
+WFDU_PLAC_GAIN	display_res_exp1s.py	/^WFDU_PLAC_GAIN = pd.read_table("res_exp1s.txt", sep=",", usecols=[13])$/;"	v
+WFDU_PLAC_GAIN	display_res_exp3.py	/^WFDU_PLAC_GAIN = pd.read_table("res_exp3.txt", sep=",", usecols=[12])$/;"	v
+WFDU_SR_ALLO	display_res_exp1r.py	/^WFDU_SR_ALLO = pd.read_table("res_exp1r.txt", sep=",", usecols=[10])$/;"	v
+WFDU_SR_ALLO	display_res_exp1s.py	/^WFDU_SR_ALLO = pd.read_table("res_exp1s.txt", sep=",", usecols=[10])$/;"	v
+WFDU_SR_ALLO	display_res_exp3.py	/^WFDU_SR_ALLO = pd.read_table("res_exp3.txt", sep=",", usecols=[9])$/;"	v
+WFDU_SR_DISP	display_res_exp1r.py	/^WFDU_SR_DISP = pd.read_table("res_exp1r.txt", sep=",", usecols=[12])$/;"	v
+WFDU_SR_DISP	display_res_exp1s.py	/^WFDU_SR_DISP = pd.read_table("res_exp1s.txt", sep=",", usecols=[12])$/;"	v
+WFDU_SR_DISP	display_res_exp3.py	/^WFDU_SR_DISP = pd.read_table("res_exp3.txt", sep=",", usecols=[11])$/;"	v
+WFDU_SR_SWAP	display_res_exp1r.py	/^WFDU_SR_SWAP = pd.read_table("res_exp1r.txt", sep=",", usecols=[11])$/;"	v
+WFDU_SR_SWAP	display_res_exp1s.py	/^WFDU_SR_SWAP = pd.read_table("res_exp1s.txt", sep=",", usecols=[11])$/;"	v
+WFDU_SR_SWAP	display_res_exp3.py	/^WFDU_SR_SWAP = pd.read_table("res_exp3.txt", sep=",", usecols=[10])$/;"	v
+WHITE	include/model.h	39;"	d
+YELLOW	include/model.h	35;"	d
 YES	include/model.h	15;"	d
 __has_include	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	17;"	d	file:
 __has_include	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	11;"	d	file:
 _add	exp/pa/pa.cpp	/^static void _add(vector<struct tc> &v_tcs, vector<struct core> &v_cores)$/;"	f	file:
 _assign	exp/pa/pa.cpp	/^static struct stats _assign(vector<struct core> &v_cores, struct stats &pa, int a)$/;"	f	file:
-_average_results	exp/exp1/exp1.cpp	/^static void _average_results(struct results &res)$/;"	f	file:
+_average_results	exp/exp3/exp3.cpp	/^static void _average_results(struct results &res)$/;"	f	file:
 _base_assignment	src/sched_analysis.cpp	/^void _base_assignment(struct core &b)$/;"	f
 _cmp_dec_int	src/model.cpp	/^static int _cmp_dec_int(const int &a, const int &b)$/;"	f	file:
 _cmp_dec_tc_size	src/model.cpp	/^static int _cmp_dec_tc_size(const struct tc &a, const struct tc &b)$/;"	f	file:
@@ -650,13 +723,16 @@ _find_hp_tasks	src/sched_analysis.cpp	/^static void _find_hp_tasks(vector<struct
 _find_worst_core	src/wfdu.cpp	/^static int _find_worst_core(vector<struct core> &v_cores, struct tc &tc,$/;"	f	file:
 _fragmentation_rate	src/stats.cpp	/^static void _fragmentation_rate(struct context &ctx)$/;"	f	file:
 _gen_app	exp/exp2/exp2.cpp	/^static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f	file:
+_gen_app	exp/exp4/exp4.cpp	/^static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f	file:
 _gen_arch	exp/exp2/exp2.cpp	/^static void _gen_arch(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
+_gen_arch	exp/exp4/exp4.cpp	/^static void _gen_arch(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
 _gen_data	exp/pa/pa.cpp	/^static int _gen_data(vector<struct tc> &v_tcs)$/;"	f	file:
 _get_let_task	src/let.cpp	/^static struct task *_get_let_task(struct core &b)$/;"	f	file:
 _int_lvl	exp/pa/pa.cpp	/^static void _int_lvl(struct core &b, int pa)$/;"	f	file:
 _pa1	exp/pa/pa.cpp	/^static void _pa1(struct core &b)$/;"	f	file:
 _pa2	exp/pa/pa.cpp	/^static void _pa2(struct core &b)$/;"	f	file:
 _pswap	src/sched_analysis.cpp	/^static void _pswap(struct core &b, int p, int tc_idx, int tc_id)$/;"	f	file:
+_realistic	exp/exp1/exp1.cpp	/^static void _realistic(vector<struct results> &v_res)$/;"	f	file:
 _reassignment	src/sched_analysis.cpp	/^static void _reassignment(struct core &b)$/;"	f	file:
 _resp	src/sched_analysis.cpp	/^static void _resp(vector<struct task> &v_tasks, int &flag)$/;"	f	file:
 _save_priorities	src/sched_analysis.cpp	/^static void _save_priorities(struct core &b)$/;"	f	file:
@@ -666,14 +742,18 @@ _search_for_swap	src/placement.cpp	/^static int _search_for_swap(vector<struct c
 _store_results	exp/exp1/exp1.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
 _store_results	exp/exp2/exp2.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
 _store_results	exp/exp3/exp3.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
+_store_results	exp/exp4/exp4.cpp	/^static void _store_results(vector<struct results> &v_res, struct results &res, $/;"	f	file:
 _store_tcs_disp	src/placement.cpp	/^static void _store_tcs_disp(vector<struct core> &v_cores, $/;"	f	file:
 _store_tcs_swap	src/placement.cpp	/^static void _store_tcs_swap(vector<struct core> &v_cores, $/;"	f	file:
 _swap	src/placement.cpp	/^void _swap(vector<struct core> &v_cores, struct core &dst_core, struct core &src_core)$/;"	f
+_synthetic	exp/exp1/exp1.cpp	/^static void _synthetic(vector<struct results> &v_res)$/;"	f	file:
+_synthetic	exp/exp4/exp4.cpp	/^static void _synthetic(vector<struct results> &v_res)$/;"	f	file:
 _unsched	exp/pa/pa.cpp	/^static struct stats _unsched(vector<struct core> &v_cores)$/;"	f	file:
 _utilization_rate	src/stats.cpp	/^static void _utilization_rate(vector<struct core> &v_cores, struct context &ctx)$/;"	f	file:
-_write_results	exp/exp1/exp1.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
+_write_results	exp/exp1/exp1.cpp	/^static void _write_results(vector<struct results> &v_res, const char *filename)$/;"	f	file:
 _write_results	exp/exp2/exp2.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
 _write_results	exp/exp3/exp3.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
+_write_results	exp/exp4/exp4.cpp	/^static void _write_results(vector<struct results> &v_res)$/;"	f	file:
 a	include/model.h	/^        int a;$/;"	m	struct:params
 add_core	src/model.cpp	/^void add_core(vector<struct core> &v_cores, int color, int speed_factor, $/;"	f
 add_tasks_to_v_tasks	src/model.cpp	/^void add_tasks_to_v_tasks(vector<struct task> &dst_v_tasks, $/;"	f
@@ -683,8 +763,11 @@ appu	include/model.h	/^        float appu;$/;"	m	struct:perf
 assi_time	include/model.h	/^        float assi_time;$/;"	m	struct:perf
 assign_ids	src/model.cpp	/^void assign_ids(vector<struct tc> &v_tcs)$/;"	f
 assignment	src/mapping.cpp	/^void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
-ax	display_res_exp1.py	/^ax = fig.add_subplot(111, projection='3d')$/;"	v
+ax	display_res_exp1r.py	/^ax = fig.add_subplot(111, projection='3d')$/;"	v
+ax	display_res_exp1s.py	/^ax = fig.add_subplot(111, projection='3d')$/;"	v
+ax	display_res_exp3.py	/^ax = fig.add_subplot(111, projection='3d')$/;"	v
 bfdu	src/bfdu.cpp	/^void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+bfdu_et_tool	include/stats.h	/^        float bfdu_et_tool;$/;"	m	struct:results
 bfdu_fr	include/stats.h	/^        float bfdu_fr;$/;"	m	struct:results
 bfdu_letu	include/stats.h	/^        float bfdu_letu;$/;"	m	struct:results
 bfdu_m	include/stats.h	/^        float bfdu_m;$/;"	m	struct:results
@@ -711,25 +794,29 @@ cores_count	include/model.h	/^        int cores_count;$/;"	m	struct:context
 count_ins	exp/pa/pa.cpp	/^static int count_ins = 0;$/;"	v	file:
 count_task	exp/pa/pa.cpp	/^        int count_task;$/;"	m	struct:stats	file:
 count_tc	exp/pa/pa.cpp	/^        int count_tc;$/;"	m	struct:stats	file:
-counter	exp/exp1/exp1.cpp	/^static int counter = 0;$/;"	v	file:
+counter	exp/exp3/exp3.cpp	/^static int counter = 0;$/;"	v	file:
 counter	src/generator.cpp	/^static int counter = 0;$/;"	v	file:
 create_waters2019	src/ucases.cpp	/^void create_waters2019(struct tc &tc)$/;"	f
 cut	src/generator.cpp	/^void cut(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f
-df	display_res_exp1.py	/^df = pd.read_table("res_exp1.txt", sep=",")$/;"	v
+df	display_res_exp1r.py	/^df = pd.read_table("res_exp1r.txt", sep=",")$/;"	v
+df	display_res_exp1s.py	/^df = pd.read_table("res_exp1s.txt", sep=",")$/;"	v
+df	display_res_exp2.py	/^df = pd.read_table("res_exp1.txt", sep=",")$/;"	v
+df	display_res_exp3.py	/^df = pd.read_table("res_exp3.txt", sep=",")$/;"	v
 disp_gain	include/model.h	/^        float disp_gain;$/;"	m	struct:perf
 disp_time	include/model.h	/^        float disp_time;$/;"	m	struct:perf
 displacement	src/placement.cpp	/^void displacement(vector<struct core> &v_cores)$/;"	f
 et_assi	include/stats.h	/^        float et_assi;$/;"	m	struct:results
 et_disp	include/stats.h	/^        float et_disp;$/;"	m	struct:results
 et_part	include/stats.h	/^        float et_part;$/;"	m	struct:results
+et_quad	include/stats.h	/^        float et_quad;$/;"	m	struct:results
 et_schd	include/stats.h	/^        float et_schd;$/;"	m	struct:results
 et_swap	include/stats.h	/^        float et_swap;$/;"	m	struct:results
 et_tool	include/stats.h	/^        float et_tool;$/;"	m	struct:results
 exec_time	include/model.h	/^        float exec_time;$/;"	m	struct:perf
-exp1	exp/exp1/exp1.cpp	/^static void exp1(vector<struct results> &v_res)$/;"	f	file:
+exp1	exp/exp3/exp3.cpp	/^static void exp1(vector<struct results> &v_res)$/;"	f	file:
 exp2	exp/exp2/exp2.cpp	/^static void exp2(vector<struct results> &v_res)$/;"	f	file:
-exp3	exp/exp3/exp3.cpp	/^static void exp3(vector<struct results> &v_res)$/;"	f	file:
 ffdu	src/ffdu.cpp	/^void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+ffdu_et_tool	include/stats.h	/^        float ffdu_et_tool;$/;"	m	struct:results
 ffdu_fr	include/stats.h	/^        float ffdu_fr;$/;"	m	struct:results
 ffdu_letu	include/stats.h	/^        float ffdu_letu;$/;"	m	struct:results
 ffdu_m	include/stats.h	/^        float ffdu_m;$/;"	m	struct:results
@@ -737,7 +824,10 @@ ffdu_plac_gain	include/stats.h	/^        float ffdu_plac_gain;$/;"	m	struct:resu
 ffdu_sr_allo	include/stats.h	/^        float ffdu_sr_allo;$/;"	m	struct:results
 ffdu_sr_disp	include/stats.h	/^        float ffdu_sr_disp;$/;"	m	struct:results
 ffdu_sr_swap	include/stats.h	/^        float ffdu_sr_swap;$/;"	m	struct:results
-fig	display_res_exp1.py	/^fig = plt.figure(figsize=(100,100))$/;"	v
+fig	display_res_exp1r.py	/^fig = plt.figure(figsize=(100,100))$/;"	v
+fig	display_res_exp1s.py	/^fig = plt.figure(figsize=(100,100))$/;"	v
+fig	display_res_exp3.py	/^fig = plt.figure(figsize=(100,100))$/;"	v
+first	exp/exp2/exp2.cpp	/^static float first = 0;$/;"	v	file:
 flag	include/model.h	/^        int flag;$/;"	m	struct:core
 fr	include/model.h	/^        float fr;$/;"	m	struct:perf
 gcd	include/model.h	/^        int gcd;$/;"	m	struct:tc
@@ -756,6 +846,7 @@ get_tc_by_id	src/model.cpp	/^struct tc get_tc_by_id(vector<struct core> &v_cores
 hdr_table	exp/exp1/exp1.cpp	/^static const char *hdr_table = $/;"	v	file:
 hdr_table	exp/exp2/exp2.cpp	/^static const char *hdr_table = $/;"	v	file:
 hdr_table	exp/exp3/exp3.cpp	/^static const char *hdr_table = $/;"	v	file:
+hdr_table	exp/exp4/exp4.cpp	/^static const char *hdr_table =$/;"	v	file:
 id	include/model.h	/^        int id;$/;"	m	struct:core
 id	include/model.h	/^        int id;$/;"	m	struct:tc
 idx	include/model.h	/^        struct t_pos idx;$/;"	m	struct:task	typeref:struct:task::t_pos
@@ -798,6 +889,7 @@ k_max	include/model.h	/^        int k_max;$/;"	m	struct:context
 letu	include/model.h	/^        float letu;$/;"	m	struct:perf
 load	include/model.h	/^        int load;$/;"	m	struct:core
 load_rem	include/model.h	/^        int load_rem;$/;"	m	struct:core
+m	display_res_exp2.py	/^m = pd.read_table("res_exp2.txt", sep=",", usecols=[0])$/;"	v
 m	include/model.h	/^        float m;$/;"	m	struct:perf
 m	include/model.h	/^        int m;$/;"	m	struct:params
 m	include/stats.h	/^        float m;$/;"	m	struct:results
@@ -807,6 +899,7 @@ main	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^int main(int argc,
 main	exp/exp1/exp1.cpp	/^int main(void)$/;"	f
 main	exp/exp2/exp2.cpp	/^int main(void)$/;"	f
 main	exp/exp3/exp3.cpp	/^int main(void)$/;"	f
+main	exp/exp4/exp4.cpp	/^int main(void)$/;"	f
 main	exp/map/map.cpp	/^int main(int argc, char **argv)$/;"	f
 main	exp/pa/pa.cpp	/^int main(void)$/;"	f
 ovrw_core_by_id	src/model.cpp	/^void ovrw_core_by_id(vector<struct core> &v_cores, struct core &b)$/;"	f
@@ -833,6 +926,7 @@ prm	include/model.h	/^        struct params prm;$/;"	m	struct:context	typeref:st
 qnxnto	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 qnxnto	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 r	include/model.h	/^        int r;$/;"	m	struct:task
+realistic	exp/exp1/exp1.cpp	/^static const char *realistic  = "res_exp1r.txt";$/;"	v	file:
 reset_empty_cores	src/model.cpp	/^void reset_empty_cores(vector<struct core> &v_cores)$/;"	f
 reset_let_task	src/model.cpp	/^void reset_let_task(vector<struct core> &v_cores)$/;"	f
 results	include/stats.h	/^struct results {$/;"	s
@@ -854,6 +948,7 @@ sched_rate_tc	include/model.h	/^        float sched_rate_tc;$/;"	m	struct:perf
 schedulability_analysis	src/mapping.cpp	/^void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx)$/;"	f
 sigma	exp/exp1/exp1.cpp	/^static int sigma = 0;$/;"	v	file:
 sigma	exp/exp3/exp3.cpp	/^static int sigma = 0;$/;"	v	file:
+sigma	exp/exp4/exp4.cpp	/^static int sigma = 0;$/;"	v	file:
 sigma	include/stats.h	/^        float sigma;$/;"	m	struct:results
 sort_dec_int	src/model.cpp	/^void sort_dec_int(vector<int> &v_int)$/;"	f
 sort_dec_tc_size	src/model.cpp	/^void sort_dec_tc_size(vector<struct tc> &v_tcs)$/;"	f
@@ -869,16 +964,18 @@ stats	src/stats.cpp	/^void stats(vector<struct core> &v_cores, vector<struct tc>
 swap_gain	include/model.h	/^        float swap_gain;$/;"	m	struct:perf
 swap_time	include/model.h	/^        float swap_time;$/;"	m	struct:perf
 swapping	src/placement.cpp	/^void swapping(vector<struct core> &v_cores)$/;"	f
+synthetic	exp/exp1/exp1.cpp	/^static const char *synthetic  = "res_exp1s.txt";$/;"	v	file:
+synthetic	exp/exp4/exp4.cpp	/^static const char *synthetic  = "res_exp4.txt";$/;"	v	file:
 sysu	include/model.h	/^        float sysu;$/;"	m	struct:perf
 t	include/model.h	/^        int t;$/;"	m	struct:task
 t_pos	include/model.h	/^struct t_pos {$/;"	s
-table	exp/exp1/exp1.cpp	/^static const char *table = "res_exp1.txt";$/;"	v	file:
 table	exp/exp2/exp2.cpp	/^static const char *table = "res_exp2.txt";$/;"	v	file:
 table	exp/exp3/exp3.cpp	/^static const char *table = "res_exp3.txt";$/;"	v	file:
 task	include/model.h	/^struct task {$/;"	s
 task_id	include/model.h	/^        int task_id;$/;"	m	struct:task
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
 tasks_count	include/model.h	/^        int tasks_count;$/;"	m	struct:context
+tasks_count	include/stats.h	/^        int tasks_count;$/;"	m	struct:results
 tc	include/model.h	/^struct tc {$/;"	s
 tc_id	include/model.h	/^        int tc_id;$/;"	m	struct:task
 tc_idx	include/model.h	/^        int tc_idx;$/;"	m	struct:t_pos
@@ -900,6 +997,7 @@ verify_prm	src/model.cpp	/^void verify_prm(struct params &prm)$/;"	f
 volatile	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	11;"	d	file:
 wcrt	src/sched_analysis.cpp	/^int wcrt(vector<struct task> &v_tasks)$/;"	f
 wfdu	src/wfdu.cpp	/^void wfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+wfdu_et_tool	include/stats.h	/^        float wfdu_et_tool;$/;"	m	struct:results
 wfdu_fr	include/stats.h	/^        float wfdu_fr;$/;"	m	struct:results
 wfdu_letu	include/stats.h	/^        float wfdu_letu;$/;"	m	struct:results
 wfdu_m	include/stats.h	/^        float wfdu_m;$/;"	m	struct:results

@@ -38,6 +38,14 @@
 #define PURPLE 5
 #define WHITE  6
 
+/* experiments */
+#define EXP1 1
+#define EXP2 2
+#define EXP3 3
+#define EXP4 4
+#define EXPM 5
+#define EXPP 6
+
 using namespace std;
 
 struct t_pos {

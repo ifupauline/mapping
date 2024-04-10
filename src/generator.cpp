@@ -2,6 +2,8 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
+int EXP;
+
 static int counter = 0;
 
 int gen_rand(int min, int max) 
@@ -82,7 +84,7 @@ void gen_app(vector<struct tc> &v_tcs, struct params &prm,
         /* dynamic */
         for (int i = 0; i < 12; i++) {
                 tc_white = {0};
-                gen_tc(tc_white, WHITE, 1, 500);
+                gen_tc(tc_white, WHITE, 1, 1000);
                 v_tcs.push_back(tc_white);
         }
         sort_dec_tc_size(v_tcs);
@@ -138,8 +140,35 @@ void gen_task(struct task &tau, int i, int color)
                         real_t = period_waters2015(0, y, STATIC);
                 }
 
-                if (real_u > PHI)
-                        continue;
+                if (EXP == EXP1) {
+                        if (real_u > PHI)
+                                continue;
+                }
+
+                if (EXP == EXP2) {
+                        if (real_u > PHI)
+                                continue;
+                }
+
+                if (EXP == EXP3) {
+                        if (real_u > PHI)
+                                continue;
+                }
+
+                if (EXP == EXP4) {
+                        if (real_u > PHI/8)
+                                continue;
+                }
+
+                if (EXP == EXPM) {
+                        if (real_u > PHI)
+                                continue;
+                }
+
+                if (EXP == EXPP) {
+                        if (real_u > PHI)
+                                continue;
+                }
 
                 tau.u = ceil((real_c/real_t) * PERMILL);
                 tau.c = ceil(real_c);
