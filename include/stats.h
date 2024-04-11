@@ -9,6 +9,7 @@ struct results {
         int tk_count;
 
         float m;
+        float fr;
         float sigma;
 
         float et_part;

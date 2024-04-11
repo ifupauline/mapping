@@ -10,17 +10,21 @@ int EXP = EXP3;
 
 static const char *synthetic  = "res_exp3.txt";
 static const char *hdr_table =
-"SIGMA, FR, TC_COUNT, TASK_COUNT, PA_COUNT, WFDU_ET_TOOL";
+"SIGMA, FR, TC_COUNT, TASK_COUNT, PA_COUNT, ET_PART, ET_ASSI, ET_SWAP, ET_DISP, ET_TOOL";
 
 static void _store_results(vector<struct results> &v_res, struct results &res, 
                 struct context &ctx)
 {
         res.sigma = (float)((float)SIG/PERMILL);
+        res.fr = ctx.p.fr;
         res.tk_count = ctx.tasks_count;
         res.pa_count = ext_pa_count;
         res.tc_count = TCC;
-        res.wfdu_fr = ctx.p.fr;
-        res.wfdu_et_tool = ctx.p.exec_time * MSEC;
+        res.et_part = ctx.p.part_time * MSEC;
+        res.et_assi = ctx.p.assi_time * MSEC;
+        res.et_swap = ctx.p.swap_time * MSEC;
+        res.et_disp = ctx.p.disp_time * MSEC;
+        res.et_tool = ctx.p.exec_time * MSEC;
         v_res.push_back(res);
 }
 
@@ -41,7 +45,11 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].tc_count);
                 v_float.push_back(v_res[i].tk_count);
                 v_float.push_back(v_res[i].pa_count);
-                v_float.push_back(v_res[i].wfdu_et_tool);
+                v_float.push_back(v_res[i].et_part);
+                v_float.push_back(v_res[i].et_assi);
+                v_float.push_back(v_res[i].et_swap);
+                v_float.push_back(v_res[i].et_disp);
+                v_float.push_back(v_res[i].et_tool);
                 write_data(file, v_float);
                 v_float.clear();
         }
