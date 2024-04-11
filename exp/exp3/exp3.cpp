@@ -10,7 +10,8 @@ int EXP = EXP3;
 
 static const char *synthetic  = "res_exp3.txt";
 static const char *hdr_table =
-"SIGMA, FR, TC_COUNT, TASK_COUNT, PA_COUNT, ET_PART, ET_ASSI, ET_SWAP, ET_DISP, ET_TOOL";
+"SIGMA, FR,"
+"TC_COUNT, TASK_COUNT, PA_COUNT, ET_PART, ET_ASSI, ET_SWAP, ET_DISP, ET_TOOL";
 
 static void _store_results(vector<struct results> &v_res, struct results &res, 
                 struct context &ctx)
@@ -41,7 +42,7 @@ static void _write_results(vector<struct results> &v_res)
 
         for (unsigned int i = 0; i < v_res.size(); i++) {
                 v_float.push_back(v_res[i].sigma);
-                v_float.push_back(v_res[i].wfdu_fr);
+                v_float.push_back(v_res[i].fr);
                 v_float.push_back(v_res[i].tc_count);
                 v_float.push_back(v_res[i].tk_count);
                 v_float.push_back(v_res[i].pa_count);
@@ -70,12 +71,6 @@ static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 v_tcs[i].gcd = gcd(v_tcs[i].v_tasks);
-}
-
-static void _gen_arch(vector<struct core> &v_cores, struct context &ctx)
-{
-        for (int i = 0; i < ctx.prm.m; i++)
-                add_core(v_cores, RED, 1, ctx);
 }
 
 static void _synthetic(vector<struct results> &v_res)
@@ -110,7 +105,6 @@ redo:
 
         partitioning(v_tcs_wfdu, ctx_wfdu);
         init_ctx(v_tcs_wfdu, ctx_wfdu.prm, ctx_wfdu);
-        _gen_arch(v_cores_wfdu, ctx_wfdu);
 
         assignment(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
         if (STATE == FAILED) {
