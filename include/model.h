@@ -46,6 +46,9 @@
 #define EXPM 5
 #define EXPP 6
 
+extern int STATE;
+extern int ext_pa_count;
+
 using namespace std;
 
 struct t_pos {

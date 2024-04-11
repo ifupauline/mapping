@@ -1,6 +1,8 @@
 #include "stats.h"
 #include "sched_analysis.h"
 
+int ext_pa_count = 0;
+
 static void _find_hp_tasks(vector<struct task> &v_tasks, 
                 vector<struct task> &hp_tasks, struct task &tau, int &r_prev)
 {
@@ -193,6 +195,8 @@ static void _reassignment(struct core &b)
 
 void priority_assignment(struct core &b)
 {
+        ext_pa_count++;
+
         _base_assignment(b);
         if (b.flag == SCHED_FAILED) {
                 printf("Core %d SCHED_FAILED\n", b.id);

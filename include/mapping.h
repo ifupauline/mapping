@@ -8,7 +8,6 @@
 
 #include "model.h"
 
-extern int STATE;
 
 /* mapping */
 void partitioning(vector<struct tc> &v_tcs, struct context &ctx);

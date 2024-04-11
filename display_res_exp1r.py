@@ -69,18 +69,6 @@ plt.ylabel('CC (%)')
 plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
 plt.show()
 
-"sr, m and let"
-fig = plt.figure(figsize=(100,100))
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(BFDU_SR_DISP, BFDU_M, BFDU_LETU)
-ax.scatter(WFDU_SR_DISP, WFDU_M, WFDU_LETU)
-ax.scatter(FFDU_SR_DISP, FFDU_M, FFDU_LETU)
-ax.set_xlabel('SR (%)')
-ax.set_ylabel('M (number of cores in use)')
-ax.set_zlabel('CC (%)')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper left")
-plt.show()
-
 "fr and et"
 plt.scatter(FR, BFDU_ET_TOOL)
 plt.scatter(FR, WFDU_ET_TOOL)

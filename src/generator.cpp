@@ -2,8 +2,6 @@
 #include "generator.h"
 #include "sched_analysis.h"
 
-int EXP;
-
 static int counter = 0;
 
 int gen_rand(int min, int max) 
