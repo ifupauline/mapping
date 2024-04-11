@@ -149,12 +149,12 @@ void gen_task(struct task &tau, int i, int color)
                 }
 
                 if (EXP == EXP3) {
-                        if (real_u > PHI)
+                        if (real_u > PHI/8)
                                 continue;
                 }
 
                 if (EXP == EXP4) {
-                        if (real_u > PHI/8)
+                        if (real_u > PHI)
                                 continue;
                 }
 
