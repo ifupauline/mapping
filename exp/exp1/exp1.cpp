@@ -6,13 +6,15 @@
 #define ITR 66
 #define TCC 100
 
+/*
+ * test mapping methodology by conducting an exploration on parameters based on 
+ * a synthetic and realistic use case 
+ */
 int EXP = EXP1;
 
 static int sigma = 0;
-
 static const char *realistic  = "res_exp1r.txt";
 static const char *synthetic  = "res_exp1s.txt";
-
 static const char *hdr_table = 
 "SIGMA, FR,"
 "BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_PLAC_GAIN, BFDU_LETU, BFDU_ET_TOOL,"

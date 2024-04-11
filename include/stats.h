@@ -4,7 +4,9 @@
 #include "model.h"
 
 struct results {
-        int tasks_count;
+        int tc_count;
+        int pa_count;
+        int tk_count;
 
         float m;
         float sigma;
