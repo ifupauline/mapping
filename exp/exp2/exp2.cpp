@@ -18,9 +18,8 @@ static const char *hdr_table =
 "WFDU_M, WFDU_SR_ALLO, WFDU_SR_SWAP, WFDU_SR_DISP, WFDU_PLAC_GAIN, WFDU_LETU,"
 "FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU";
 
-static void _store_results(vector<struct results> &v_res, struct results &res, 
-                struct context &ctx_bfdu, struct context &ctx_wfdu, 
-                struct context &ctx_ffdu)
+static void _store_results(struct results &res, struct context &ctx_bfdu, 
+                struct context &ctx_wfdu, struct context &ctx_ffdu)
 {
         res.bfdu_fr += ctx_bfdu.p.fr;
         res.wfdu_fr += ctx_wfdu.p.fr;
@@ -126,7 +125,7 @@ static void _write_results(vector<struct results> &v_res)
         fclose(file);
 }
 
-static void exp1(vector<struct results> &v_res)
+static void _synthetic(vector<struct results> &v_res)
 {
         struct params prm;
         struct context ctx;
@@ -223,7 +222,7 @@ redo:                   ctx = {0};
                         stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
                         stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
 
-                        _store_results(v_res, res, ctx_bfdu, ctx_wfdu, ctx_ffdu);
+                        _store_results(res, ctx_bfdu, ctx_wfdu, ctx_ffdu);
 
                         counter++;
                         printf("\n---------------------------------------------"
@@ -242,7 +241,7 @@ int main(void)
 {
         vector<struct results> v_res;
 
-        exp1(v_res);
+        _synthetic(v_res);
 
         return 0;
 }
