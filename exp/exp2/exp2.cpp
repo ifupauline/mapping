@@ -4,7 +4,7 @@
 
 #define STP 10
 #define ITR 66
-#define TIM 10
+#define TIM 1000
 
 /* test the mapping methodology a large number of time for average analysis */
 int EXP = EXP2;
@@ -14,9 +14,9 @@ static int counter = 0;
 static const char *table = "res_exp2.txt";
 static const char *hdr_table = 
 "SIGMA, FR,"
-"BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_PLAC_GAIN, BFDU_LETU,"
-"WFDU_M, WFDU_SR_ALLO, WFDU_SR_SWAP, WFDU_SR_DISP, WFDU_PLAC_GAIN, WFDU_LETU,"
-"FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU";
+"BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_SWAP_GAIN, BFDU_DISP_GAIN, BFDU_PLAC_GAIN, BFDU_LETU, BFDU_ET_TOOL,"
+"WFDU_M, WFDU_SR_ALLO, WFDU_SR_SWAP, WFDU_SR_DISP, WFDU_SWAP_GAIN, WFDU_DISP_GAIN, WFDU_PLAC_GAIN, WFDU_LETU, WFDU_ET_TOOL,"
+"FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_SWAP_GAIN, FFDU_DISP_GAIN, FFDU_PLAC_GAIN, FFDU_LETU, FFDU_ET_TOOL";
 
 static void _store_results(struct results &res, struct context &ctx_bfdu, 
                 struct context &ctx_wfdu, struct context &ctx_ffdu)
@@ -45,9 +45,21 @@ static void _store_results(struct results &res, struct context &ctx_bfdu,
         res.wfdu_sr_swap += ctx_wfdu.p.sched_rate_swap * PERCENT;
         res.ffdu_sr_swap += ctx_ffdu.p.sched_rate_swap * PERCENT;
 
-        res.bfdu_plac_gain += ctx_bfdu.p.plac_gain;
-        res.wfdu_plac_gain += ctx_wfdu.p.plac_gain;
-        res.ffdu_plac_gain += ctx_ffdu.p.plac_gain;
+        res.bfdu_swap_gain += ctx_bfdu.p.swap_gain;
+        res.wfdu_swap_gain += ctx_wfdu.p.swap_gain;
+        res.ffdu_swap_gain += ctx_ffdu.p.swap_gain;
+
+        res.bfdu_disp_gain += ctx_bfdu.p.disp_gain;
+        res.wfdu_disp_gain += ctx_wfdu.p.disp_gain;
+        res.ffdu_disp_gain += ctx_ffdu.p.disp_gain;
+
+        res.bfdu_plac_gain += (ctx_bfdu.p.swap_gain + ctx_bfdu.p.disp_gain);
+        res.wfdu_plac_gain += (ctx_wfdu.p.swap_gain + ctx_wfdu.p.disp_gain);
+        res.ffdu_plac_gain += (ctx_ffdu.p.swap_gain + ctx_ffdu.p.disp_gain);
+
+        res.bfdu_et_tool += ctx_bfdu.p.exec_time * MSEC;
+        res.wfdu_et_tool += ctx_wfdu.p.exec_time * MSEC;
+        res.ffdu_et_tool += ctx_ffdu.p.exec_time * MSEC;
 
         res.sigma = (float)((float)sigma/PERMILL);
 }
@@ -78,9 +90,21 @@ static void _average_results(struct results &res)
                 res.wfdu_sr_swap /= TIM;
                 res.ffdu_sr_swap /= TIM;
 
+                res.bfdu_swap_gain /= TIM;
+                res.wfdu_swap_gain /= TIM;
+                res.ffdu_swap_gain /= TIM;
+
+                res.bfdu_disp_gain /= TIM;
+                res.wfdu_disp_gain /= TIM;
+                res.ffdu_disp_gain /= TIM;
+
                 res.bfdu_plac_gain /= TIM;
                 res.wfdu_plac_gain /= TIM;
                 res.ffdu_plac_gain /= TIM;
+
+                res.bfdu_et_tool /= TIM;
+                res.wfdu_et_tool /= TIM;
+                res.ffdu_et_tool /= TIM;
 
                 res.sigma = (float)((float)sigma/PERMILL);
 }
@@ -104,20 +128,29 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].bfdu_sr_allo);
                 v_float.push_back(v_res[i].bfdu_sr_swap);
                 v_float.push_back(v_res[i].bfdu_sr_disp);
+                v_float.push_back(v_res[i].bfdu_swap_gain);
+                v_float.push_back(v_res[i].bfdu_disp_gain);
                 v_float.push_back(v_res[i].bfdu_plac_gain);
                 v_float.push_back(v_res[i].bfdu_letu);
+                v_float.push_back(v_res[i].bfdu_et_tool);
                 v_float.push_back(v_res[i].wfdu_m);
                 v_float.push_back(v_res[i].wfdu_sr_allo);
                 v_float.push_back(v_res[i].wfdu_sr_swap);
                 v_float.push_back(v_res[i].wfdu_sr_disp);
+                v_float.push_back(v_res[i].wfdu_swap_gain);
+                v_float.push_back(v_res[i].wfdu_disp_gain);
                 v_float.push_back(v_res[i].wfdu_plac_gain);
                 v_float.push_back(v_res[i].wfdu_letu);
+                v_float.push_back(v_res[i].wfdu_et_tool);
                 v_float.push_back(v_res[i].ffdu_m);
                 v_float.push_back(v_res[i].ffdu_sr_allo);
                 v_float.push_back(v_res[i].ffdu_sr_swap);
                 v_float.push_back(v_res[i].ffdu_sr_disp);
+                v_float.push_back(v_res[i].ffdu_swap_gain);
+                v_float.push_back(v_res[i].ffdu_disp_gain);
                 v_float.push_back(v_res[i].ffdu_plac_gain);
                 v_float.push_back(v_res[i].ffdu_letu);
+                v_float.push_back(v_res[i].ffdu_et_tool);
 
                 write_data(file, v_float);
                 v_float.clear();

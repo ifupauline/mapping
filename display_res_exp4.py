@@ -26,41 +26,41 @@ ET_TOOL_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[15])
 ET_TOOL_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[16])
 
 "et_part and quad"
-plt.plot(m, ET_PART)
-plt.plot(m, ET_PART_LINE)
+plt.plot(m, ET_PART, color = "black")
+plt.plot(m, ET_PART_LINE, linestyle = "dashed", color = "#4f4f4f")
 plt.xlabel('m')
 plt.ylabel('ET ms')
 plt.legend(["ET PART","(O)n", "(O)n^2"], loc="upper left")
 plt.show()
 
 "et_assi and quad"
-plt.plot(m, ET_ASSI)
-plt.plot(m, ET_ASSI_LINE)
+plt.plot(m, ET_ASSI, color = "black")
+plt.plot(m, ET_ASSI_LINE, linestyle = "dashed", color = "#4f4f4f")
 plt.xlabel('m')
 plt.ylabel('ET ms')
 plt.legend(["ET ASSI","(O)n", "(O)n^2"], loc="upper left")
 plt.show()
 
 "et_swap and quad"
-plt.plot(m, ET_SWAP)
-plt.plot(m, ET_SWAP_LINE)
+plt.plot(m, ET_SWAP, color = "black")
+plt.plot(m, ET_SWAP_LINE, linestyle = "dashed", color = "#4f4f4f")
 plt.xlabel('m')
 plt.ylabel('ET ms')
 plt.legend(["ET SWAP","(O)n", "(O)n^2"], loc="upper left")
 plt.show()
 
 "et_disp and quad"
-plt.plot(m, ET_DISP)
-plt.plot(m, ET_DISP_LINE)
+plt.plot(m, ET_DISP, color = "black")
+plt.plot(m, ET_DISP_LINE, linestyle = "dashed", color = "#4f4f4f")
 plt.xlabel('m')
 plt.ylabel('ET ms')
 plt.legend(["ET DISP","(O)n", "(O)n^2"], loc="upper left")
 plt.show()
 
 "et_tool and quad"
-plt.plot(m, ET_TOOL)
-plt.plot(m, ET_TOOL_LINE)
-plt.plot(m, ET_TOOL_QUAD)
+plt.plot(m, ET_TOOL, color = "black")
+plt.plot(m, ET_TOOL_LINE, linestyle = "dashed", color = "#4f4f4f")
+plt.plot(m, ET_TOOL_QUAD, linestyle = "dashed", color = "silver")
 plt.xlabel('m')
 plt.ylabel('ET ms')
 plt.legend(["ET TOOL","(O)n", "(O)n^2"], loc="upper left")

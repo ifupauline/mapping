@@ -55,6 +55,14 @@ struct results {
         float wfdu_letu;
         float ffdu_letu;
 
+        float bfdu_swap_gain;
+        float wfdu_swap_gain;
+        float ffdu_swap_gain;
+
+        float bfdu_disp_gain;
+        float wfdu_disp_gain;
+        float ffdu_disp_gain;
+
         float bfdu_plac_gain;
         float wfdu_plac_gain;
         float ffdu_plac_gain;
