@@ -1,20 +1,5 @@
-"""
-[0]    [1]
-SIGMA, FR,
-
-[2]     [3]           [4]           [5]           [6]             [7]
-BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_PLAC_GAIN, BFDU_LETU,
-
-[8]     [9]           [10]          [11]          [12]            [13]
-WFDU_M, WFDU_SR_ALLO, WFDU_SR_SWAP, WFDU_SR_DISP, WFDU_PLAC_GAIN, WFDU_LETU,
-
-[14]    [15]          [16]          [17]          [18]            [19]
-FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU
-
-"""
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
 import pandas as pd
 
 "print table"
@@ -28,91 +13,87 @@ BFDU_M = pd.read_table("res_exp2.txt", sep=",", usecols=[2])
 BFDU_SR_ALLO = pd.read_table("res_exp2.txt", sep=",", usecols=[3])
 BFDU_SR_SWAP = pd.read_table("res_exp2.txt", sep=",", usecols=[4])
 BFDU_SR_DISP = pd.read_table("res_exp2.txt", sep=",", usecols=[5])
-BFDU_PLAC_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[6])
-BFDU_LETU = pd.read_table("res_exp2.txt", sep=",", usecols=[7])
-WFDU_M = pd.read_table("res_exp2.txt", sep=",", usecols=[8])
-WFDU_SR_ALLO = pd.read_table("res_exp2.txt", sep=",", usecols=[9])
-WFDU_SR_SWAP = pd.read_table("res_exp2.txt", sep=",", usecols=[10])
-WFDU_SR_DISP = pd.read_table("res_exp2.txt", sep=",", usecols=[11])
-WFDU_PLAC_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[12])
-WFDU_LETU = pd.read_table("res_exp2.txt", sep=",", usecols=[13])
-FFDU_M = pd.read_table("res_exp2.txt", sep=",", usecols=[14])
-FFDU_SR_ALLO = pd.read_table("res_exp2.txt", sep=",", usecols=[15])
-FFDU_SR_SWAP = pd.read_table("res_exp2.txt", sep=",", usecols=[16])
-FFDU_SR_DISP = pd.read_table("res_exp2.txt", sep=",", usecols=[17])
-FFDU_PLAC_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[18])
-FFDU_LETU = pd.read_table("res_exp2.txt", sep=",", usecols=[19])
+BFDU_SWAP_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[6])
+BFDU_DISP_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[7])
+BFDU_PLAC_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[8])
+BFDU_LETU = pd.read_table("res_exp2.txt", sep=",", usecols=[9])
+BFDU_ET_TOOL = pd.read_table("res_exp2.txt", sep=",", usecols=[10])
+WFDU_M = pd.read_table("res_exp2.txt", sep=",", usecols=[11])
+WFDU_SR_ALLO = pd.read_table("res_exp2.txt", sep=",", usecols=[12])
+WFDU_SR_SWAP = pd.read_table("res_exp2.txt", sep=",", usecols=[13])
+WFDU_SR_DISP = pd.read_table("res_exp2.txt", sep=",", usecols=[14])
+WFDU_SWAP_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[15])
+WFDU_DISP_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[16])
+WFDU_PLAC_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[17])
+WFDU_LETU = pd.read_table("res_exp2.txt", sep=",", usecols=[18])
+WFDU_ET_TOOL = pd.read_table("res_exp2.txt", sep=",", usecols=[19])
+FFDU_M = pd.read_table("res_exp2.txt", sep=",", usecols=[20])
+FFDU_SR_ALLO = pd.read_table("res_exp2.txt", sep=",", usecols=[21])
+FFDU_SR_SWAP = pd.read_table("res_exp2.txt", sep=",", usecols=[22])
+FFDU_SR_DISP = pd.read_table("res_exp2.txt", sep=",", usecols=[23])
+FFDU_SWAP_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[24])
+FFDU_DISP_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[25])
+FFDU_PLAC_GAIN = pd.read_table("res_exp2.txt", sep=",", usecols=[26])
+FFDU_LETU = pd.read_table("res_exp2.txt", sep=",", usecols=[27])
+FFDU_ET_TOOL = pd.read_table("res_exp2.txt", sep=",", usecols=[28])
 
 "sigma and fr"
-plt.plot(SIGMA, FR)
-plt.xlabel('SIGMA')
-plt.ylabel('Fragmentation Rate')
-plt.legend(["blue"], loc="upper right")
-plt.show()
-
-"fr and m"
-plt.scatter(FR, BFDU_M)
-plt.scatter(FR, WFDU_M)
-plt.scatter(FR, FFDU_M)
-plt.xlabel('Fragmentation Rate')
-plt.ylabel('M')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.plot(SIGMA, FR, color = "black")
+plt.xlabel('SIGMA (U)')
+plt.ylabel('FR (%)')
 plt.show()
 
 "sr and m"
-plt.scatter(BFDU_SR_ALLO, BFDU_M)
-plt.scatter(WFDU_SR_ALLO, WFDU_M)
-plt.scatter(FFDU_SR_ALLO, FFDU_M)
-plt.xlabel('Schedulability Rate ALLOCATION')
+plt.scatter(BFDU_SR_DISP, BFDU_M, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_SR_DISP, WFDU_M, color = "black")
+plt.scatter(FFDU_SR_DISP, FFDU_M, marker = "s", color = "silver")
+plt.xlabel('SR (%)')
 plt.ylabel('M')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
-plt.show()
-
-"sr and m"
-plt.scatter(BFDU_SR_DISP, BFDU_M)
-plt.scatter(WFDU_SR_DISP, WFDU_M)
-plt.scatter(FFDU_SR_DISP, FFDU_M)
-plt.xlabel('Schedulability Rate PLACEMENT')
-plt.ylabel('M')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="center left")
 plt.show()
 
 "sr and let"
-plt.scatter(BFDU_SR_ALLO, BFDU_LETU)
-plt.scatter(WFDU_SR_ALLO, WFDU_LETU)
-plt.scatter(FFDU_SR_ALLO, FFDU_LETU)
-plt.xlabel('Schedulability Rate ALLOCATION')
-plt.ylabel('LET Utilization')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+plt.scatter(BFDU_SR_DISP, BFDU_LETU, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_SR_DISP, WFDU_LETU, color = "black")
+plt.scatter(FFDU_SR_DISP, FFDU_LETU, marker = "s", color = "silver")
+plt.xlim(95, 105)
+plt.xlabel('SR (%)')
+plt.ylabel('CC (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="center left")
 plt.show()
 
-"sr and let"
-plt.scatter(BFDU_SR_DISP, BFDU_LETU)
-plt.scatter(WFDU_SR_DISP, WFDU_LETU)
-plt.scatter(FFDU_SR_DISP, FFDU_LETU)
-plt.xlabel('Schedulability Rate PLACEMENT')
-plt.ylabel('LET Utilization')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+"fr and et"
+plt.scatter(FR, BFDU_ET_TOOL, marker = "v", color = "#4f4f4f")
+plt.scatter(FR, WFDU_ET_TOOL, color = "black")
+plt.scatter(FR, FFDU_ET_TOOL, marker = "s", color = "silver")
+plt.xlabel('FR (%)')
+plt.ylabel('ET (ms)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
 plt.show()
 
-fig = plt.figure(figsize=(100,100))
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(BFDU_SR_ALLO, BFDU_M, BFDU_LETU)
-ax.scatter(WFDU_SR_ALLO, WFDU_M, WFDU_LETU)
-ax.scatter(FFDU_SR_ALLO, FFDU_M, FFDU_LETU)
-ax.set_xlabel('Schedulability Rate ALLOCATION')
-ax.set_ylabel('M')
-ax.set_zlabel('LET Utilization')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+"m and sr allo"
+plt.scatter(BFDU_M, BFDU_SR_ALLO, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_SR_ALLO, color = "black")
+plt.scatter(FFDU_M, FFDU_SR_ALLO, marker = "s", color = "silver")
+plt.xlabel('M')
+plt.ylabel('SR ALLO (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
 plt.show()
 
-fig = plt.figure(figsize=(100,100))
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(BFDU_SR_DISP, BFDU_M, BFDU_LETU)
-ax.scatter(WFDU_SR_DISP, WFDU_M, WFDU_LETU)
-ax.scatter(FFDU_SR_DISP, FFDU_M, FFDU_LETU)
-ax.set_xlabel('Schedulability Rate PLACEMENT')
-ax.set_ylabel('M')
-ax.set_zlabel('LET Utilization')
-plt.legend(["FFDU", "WFDU", "BFDU"], loc="upper right")
+"m and sr plac"
+plt.scatter(BFDU_M, BFDU_SR_DISP, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_SR_DISP, color = "black")
+plt.scatter(FFDU_M, FFDU_SR_DISP, marker = "s", color = "silver")
+plt.xlabel('M')
+plt.ylabel('SR PLAC (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
+plt.show()
+
+"m and sr plac gain"
+plt.scatter(BFDU_M, BFDU_PLAC_GAIN, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_PLAC_GAIN, color = "black")
+plt.scatter(FFDU_M, FFDU_PLAC_GAIN, marker = "s", color = "silver")
+plt.xlabel('M')
+plt.ylabel('SR PLAC GAIN (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
 plt.show()
