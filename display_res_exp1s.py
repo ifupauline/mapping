@@ -34,7 +34,7 @@ FFDU_ET_TOOL = pd.read_table("res_exp1s.txt", sep=",", usecols=[22])
 
 "sigma and fr"
 plt.plot(SIGMA, FR, color = "black")
-plt.xlabel('SIGMA (U)')
+plt.xlabel('SIGMA')
 plt.ylabel('FR (%)')
 plt.show()
 

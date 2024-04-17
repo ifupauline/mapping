@@ -39,27 +39,26 @@ FFDU_ET_TOOL = pd.read_table("res_exp2.txt", sep=",", usecols=[28])
 
 "sigma and fr"
 plt.plot(SIGMA, FR, color = "black")
-plt.xlabel('SIGMA (U)')
+plt.xlabel('SIGMA')
 plt.ylabel('FR (%)')
 plt.show()
 
-"sr and m"
-plt.scatter(BFDU_SR_DISP, BFDU_M, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_SR_DISP, WFDU_M, color = "black")
-plt.scatter(FFDU_SR_DISP, FFDU_M, marker = "s", color = "silver")
-plt.xlabel('SR (%)')
-plt.ylabel('M')
-plt.legend(["BFDU", "WFDU", "FFDU"], loc="center left")
+"fr and m"
+plt.scatter(FR, BFDU_M, marker = "v", color = "#4f4f4f")
+plt.scatter(FR, WFDU_M, color = "black")
+plt.scatter(FR, FFDU_M, marker = "s", color = "silver")
+plt.xlabel('FR (%)')
+plt.ylabel('M (number of cores in use)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower right")
 plt.show()
 
-"sr and let"
-plt.scatter(BFDU_SR_DISP, BFDU_LETU, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_SR_DISP, WFDU_LETU, color = "black")
-plt.scatter(FFDU_SR_DISP, FFDU_LETU, marker = "s", color = "silver")
-plt.xlim(95, 105)
-plt.xlabel('SR (%)')
+"m and let"
+plt.scatter(BFDU_M, BFDU_LETU, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_LETU, color = "black")
+plt.scatter(FFDU_M, FFDU_LETU, marker = "s", color = "silver")
+plt.xlabel('M (number of cores in use)')
 plt.ylabel('CC (%)')
-plt.legend(["BFDU", "WFDU", "FFDU"], loc="center left")
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper right")
 plt.show()
 
 "fr and et"
@@ -71,29 +70,29 @@ plt.ylabel('ET (ms)')
 plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
 plt.show()
 
-"m and sr allo"
-plt.scatter(BFDU_M, BFDU_SR_ALLO, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_M, WFDU_SR_ALLO, color = "black")
-plt.scatter(FFDU_M, FFDU_SR_ALLO, marker = "s", color = "silver")
-plt.xlabel('M')
-plt.ylabel('SR ALLO (%)')
-plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
+"fr and sr swap gain"
+plt.scatter(FR, BFDU_SWAP_GAIN, marker = "v", color = "#4f4f4f")
+plt.scatter(FR, WFDU_SWAP_GAIN, color = "black")
+plt.scatter(FR, FFDU_SWAP_GAIN, marker = "s", color = "silver")
+plt.xlabel('FR (%)')
+plt.ylabel('SR SWAP GAIN (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower right")
 plt.show()
 
-"m and sr plac"
-plt.scatter(BFDU_M, BFDU_SR_DISP, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_M, WFDU_SR_DISP, color = "black")
-plt.scatter(FFDU_M, FFDU_SR_DISP, marker = "s", color = "silver")
-plt.xlabel('M')
-plt.ylabel('SR PLAC (%)')
-plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
+"fr and sr disp gain"
+plt.scatter(FR, BFDU_DISP_GAIN, marker = "v", color = "#4f4f4f")
+plt.scatter(FR, WFDU_DISP_GAIN, color = "black")
+plt.scatter(FR, FFDU_DISP_GAIN, marker = "s", color = "silver")
+plt.xlabel('FR (%)')
+plt.ylabel('SR DISP GAIN (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="center right")
 plt.show()
 
-"m and sr plac gain"
-plt.scatter(BFDU_M, BFDU_PLAC_GAIN, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_M, WFDU_PLAC_GAIN, color = "black")
-plt.scatter(FFDU_M, FFDU_PLAC_GAIN, marker = "s", color = "silver")
-plt.xlabel('M')
+"fr and sr plac gain"
+plt.scatter(FR, BFDU_PLAC_GAIN, marker = "v", color = "#4f4f4f")
+plt.scatter(FR, WFDU_PLAC_GAIN, color = "black")
+plt.scatter(FR, FFDU_PLAC_GAIN, marker = "s", color = "silver")
+plt.xlabel('FR (%)')
 plt.ylabel('SR PLAC GAIN (%)')
-plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="center right")
 plt.show()
