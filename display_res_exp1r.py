@@ -33,24 +33,42 @@ FFDU_ET_TOOL = pd.read_table("res_exp1r.txt", sep=",", usecols=[22])
 
 "sigma and fr"
 plt.plot(SIGMA, FR, color = "black")
-plt.xlabel('SIGMA (U)')
+plt.xlabel('SIGMA')
 plt.ylabel('FR (%)')
 plt.show()
 
-"sr and m"
-plt.scatter(BFDU_SR_DISP, BFDU_M, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_SR_DISP, WFDU_M, color = "black")
-plt.scatter(FFDU_SR_DISP, FFDU_M, marker = "s", color = "silver")
-plt.xlabel('SR (%)')
-plt.ylabel('M (number of cores in use)')
+"sigma and sr"
+plt.scatter(SIGMA, BFDU_SR_DISP, marker = "v", color = "#4f4f4f")
+plt.scatter(SIGMA, WFDU_SR_DISP, color = "black")
+plt.scatter(SIGMA, FFDU_SR_DISP, marker = "s", color = "silver")
+plt.xlabel('SIGMA')
+plt.ylabel('SR (%)')
 plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper left")
 plt.show()
 
-"sr and let"
-plt.scatter(BFDU_SR_DISP, BFDU_LETU, marker = "v", color = "#4f4f4f")
-plt.scatter(WFDU_SR_DISP, WFDU_LETU, color = "black")
-plt.scatter(FFDU_SR_DISP, FFDU_LETU, marker = "s", color = "silver")
-plt.xlabel('SR (%)')
+"sigma and m"
+plt.scatter(SIGMA, BFDU_M, marker = "v", color = "#4f4f4f")
+plt.scatter(SIGMA, WFDU_M, color = "black")
+plt.scatter(SIGMA, FFDU_M, marker = "s", color = "silver")
+plt.xlabel('SIGMA')
+plt.ylabel('M (number of cores in use)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="center right")
+plt.show()
+
+"sigma and let"
+plt.scatter(SIGMA, BFDU_LETU, marker = "v", color = "#4f4f4f")
+plt.scatter(SIGMA, WFDU_LETU, color = "black")
+plt.scatter(SIGMA, FFDU_LETU, marker = "s", color = "silver")
+plt.xlabel('SIGMA')
+plt.ylabel('CC (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper right")
+plt.show()
+
+"m and let"
+plt.scatter(BFDU_M, BFDU_LETU, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_LETU, color = "black")
+plt.scatter(FFDU_M, FFDU_LETU, marker = "s", color = "silver")
+plt.xlabel('M')
 plt.ylabel('CC (%)')
 plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper right")
 plt.show()
