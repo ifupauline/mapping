@@ -1,8 +1,6 @@
 #include "let.h"
 #include "sched_analysis.h"
 
-#include "print.h"
-
 static void _store_tcs_disp(vector<struct core> &v_cores, 
                 vector<pair<struct tc, int>> &v_tcs, int &flag)
 {
@@ -45,6 +43,8 @@ static void _store_tcs_swap(vector<struct core> &v_cores,
 
         /* take next unschedulable tc */
         for (unsigned int i = 0; i < v_cores.size(); i++) {
+                if (v_cores[i].flag == SCHED_OK)
+                        continue;
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         /* skip LET */
                         if (v_cores[i].v_tcs[j].is_let == YES)
@@ -279,7 +279,7 @@ void displacement(vector<struct core> &v_cores)
 
         reset_empty_cores(v_cores);
 
-        /* take next unschedulable tc */
+        /* store tc from unschedulable cores */
         _store_tcs_disp(v_cores, v_tcs, flag);
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 printf("TC %-3d  tc_idx %d from unschedulable Core %-3d\n", 
@@ -365,7 +365,7 @@ void swapping(vector<struct core> &v_cores)
 
         reset_empty_cores(v_cores);
 
-        /* store unsched tc */
+        /* store tc from unsched cores */
         _store_tcs_swap(v_cores, v_tcs, flag);
         for (unsigned int i = 0; i < v_tcs.size(); i++)
                 printf("TC %-3d from unschedulable Core %-3d\n", 
@@ -374,7 +374,7 @@ void swapping(vector<struct core> &v_cores)
         if (flag == NO)
                 return;
 
-        /* iterate over unsched tcs */
+        /* iterate over tcs */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
                 for (unsigned int j = 0; j < v_tcs.size(); j++) {
                         /* skip tcs in same core */
