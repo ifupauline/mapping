@@ -13,18 +13,21 @@ static float growth_rate = 0;
 
 static float prev_res_et_part = 0;
 static float prev_res_et_assi = 0;
+static float prev_res_et_schd = 0;
 static float prev_res_et_swap = 0;
 static float prev_res_et_disp = 0;
 static float prev_res_et_tool = 0;
 
 static float prev_res_et_part_quad = 0;
 static float prev_res_et_assi_quad = 0;
+static float prev_res_et_schd_quad = 0;
 static float prev_res_et_swap_quad = 0;
 static float prev_res_et_disp_quad = 0;
 static float prev_res_et_tool_quad = 0;
 
 static float prev_res_et_part_line = 0;
 static float prev_res_et_assi_line = 0;
+static float prev_res_et_schd_line = 0;
 static float prev_res_et_swap_line = 0;
 static float prev_res_et_disp_line = 0;
 static float prev_res_et_tool_line = 0;
@@ -39,6 +42,9 @@ static const char *hdr_table =
 "ET_ASSI,"
 "ET_ASSI_LINE,"
 "ET_ASSI_QUAD,"
+"ET_SCHD,"
+"ET_SCHD_LINE,"
+"ET_SCHD_QUAD,"
 "ET_SWAP,"
 "ET_SWAP_LINE,"
 "ET_SWAP_QUAD,"
@@ -74,6 +80,7 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.growth_rate = growth_rate;
         res.et_part = ctx.p.part_time * (MSEC * 10); /* to be above 0 */
         res.et_assi = ctx.p.assi_time * MSEC;
+        res.et_schd = ctx.p.schd_time * (MSEC * 10); /* to be above 0 */
         res.et_swap = ctx.p.swap_time * MSEC;
         res.et_disp = ctx.p.disp_time * MSEC;
         res.et_tool = ctx.p.exec_time * MSEC;
@@ -82,24 +89,28 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
                 res.growth_rate = 1;
                 res.et_part_quad = res.et_part;
                 res.et_assi_quad = res.et_assi;
+                res.et_schd_quad = res.et_schd;
                 res.et_swap_quad = res.et_swap;
                 res.et_disp_quad = res.et_disp;
                 res.et_tool_quad = res.et_tool;
 
                 res.et_part_line = res.et_part;
                 res.et_assi_line = res.et_assi;
+                res.et_schd_line = res.et_schd;
                 res.et_swap_line = res.et_swap;
                 res.et_disp_line = res.et_disp;
                 res.et_tool_line = res.et_tool;
 
                 prev_res_et_part_quad = res.et_part_quad;
                 prev_res_et_assi_quad = res.et_assi_quad;
+                prev_res_et_schd_quad = res.et_schd_quad;
                 prev_res_et_swap_quad = res.et_swap_quad;
                 prev_res_et_disp_quad = res.et_disp_quad;
                 prev_res_et_tool_quad = res.et_tool_quad;
 
                 prev_res_et_part_line = res.et_part_line;
                 prev_res_et_assi_line = res.et_assi_line;
+                prev_res_et_schd_line = res.et_schd_line;
                 prev_res_et_swap_line = res.et_swap_line;
                 prev_res_et_disp_line = res.et_disp_line;
                 prev_res_et_tool_line = res.et_tool_line;
@@ -109,12 +120,14 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
 
         res.et_part_line = prev_res_et_part_line * growth_rate;
         res.et_assi_line = prev_res_et_assi_line * growth_rate;
+        res.et_schd_line = prev_res_et_schd_line * growth_rate;
         res.et_swap_line = prev_res_et_swap_line * growth_rate;
         res.et_disp_line = prev_res_et_disp_line * growth_rate;
         res.et_tool_line = prev_res_et_tool_line * growth_rate;
 
         res.et_part_quad = prev_res_et_part_quad * growth_rate * 2;
         res.et_assi_quad = prev_res_et_assi_quad * growth_rate * 2;
+        res.et_schd_quad = prev_res_et_schd_quad * growth_rate * 2;
         res.et_swap_quad = prev_res_et_swap_quad * growth_rate * 2;
         res.et_disp_quad = prev_res_et_disp_quad * growth_rate * 2;
         res.et_tool_quad = prev_res_et_tool_quad * growth_rate * 2;
@@ -122,12 +135,14 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         /* save previous execution time */
         prev_res_et_part_line = res.et_part_line;
         prev_res_et_assi_line = res.et_assi_line;
+        prev_res_et_schd_line = res.et_schd_line;
         prev_res_et_swap_line = res.et_swap_line;
         prev_res_et_disp_line = res.et_disp_line;
         prev_res_et_tool_line = res.et_tool_line;
 
         prev_res_et_part_quad = res.et_part_quad;
         prev_res_et_assi_quad = res.et_assi_quad;
+        prev_res_et_schd_quad = res.et_schd_quad;
         prev_res_et_swap_quad = res.et_swap_quad;
         prev_res_et_disp_quad = res.et_disp_quad;
         prev_res_et_tool_quad = res.et_tool_quad;
@@ -156,6 +171,9 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].et_assi);
                 v_float.push_back(v_res[i].et_assi_line);
                 v_float.push_back(v_res[i].et_assi_quad);
+                v_float.push_back(v_res[i].et_schd);
+                v_float.push_back(v_res[i].et_schd_line);
+                v_float.push_back(v_res[i].et_schd_quad);
                 v_float.push_back(v_res[i].et_swap);
                 v_float.push_back(v_res[i].et_swap_line);
                 v_float.push_back(v_res[i].et_swap_quad);
@@ -193,7 +211,7 @@ redo:           res = {0};
 
                 ctx_wfdu.prm.m = m;
                 ctx_wfdu.prm.a = WFDU;
-                ctx_wfdu.prm.s = 150;
+                ctx_wfdu.prm.s = 800;
 
                 _gen_app(v_tcs_wfdu, ctx_wfdu);
 
@@ -211,6 +229,7 @@ redo:           res = {0};
                 if (i == 0) {
                         prev_res_et_part = ctx_wfdu.p.part_time * MSEC;
                         prev_res_et_assi = ctx_wfdu.p.assi_time * MSEC;
+                        prev_res_et_schd = ctx_wfdu.p.schd_time * MSEC;
                         prev_res_et_swap = ctx_wfdu.p.swap_time * MSEC;
                         prev_res_et_disp = ctx_wfdu.p.disp_time * MSEC;
                         prev_res_et_tool = ctx_wfdu.p.exec_time * MSEC;

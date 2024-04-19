@@ -15,18 +15,21 @@ struct results {
 
         float et_part;
         float et_assi;
+        float et_schd;
         float et_swap;
         float et_disp;
         float et_tool;
 
         float et_part_quad;
         float et_assi_quad;
+        float et_schd_quad;
         float et_swap_quad;
         float et_disp_quad;
         float et_tool_quad;
 
         float et_part_line;
         float et_assi_line;
+        float et_schd_line;
         float et_swap_line;
         float et_disp_line;
         float et_tool_line;
