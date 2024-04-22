@@ -457,18 +457,21 @@ EQUALS	src/Makefile	/^EQUALS = =$/;"	m
 ET_ASSI	display_res_exp4.py	/^ET_ASSI = pd.read_table("res_exp4.txt", sep=",", usecols=[5])$/;"	v
 ET_ASSI_LINE	display_res_exp4.py	/^ET_ASSI_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[6])$/;"	v
 ET_ASSI_QUAD	display_res_exp4.py	/^ET_ASSI_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[7])$/;"	v
-ET_DISP	display_res_exp4.py	/^ET_DISP = pd.read_table("res_exp4.txt", sep=",", usecols=[11])$/;"	v
-ET_DISP_LINE	display_res_exp4.py	/^ET_DISP_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[12])$/;"	v
-ET_DISP_QUAD	display_res_exp4.py	/^ET_DISP_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[13])$/;"	v
+ET_DISP	display_res_exp4.py	/^ET_DISP = pd.read_table("res_exp4.txt", sep=",", usecols=[14])$/;"	v
+ET_DISP_LINE	display_res_exp4.py	/^ET_DISP_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[15])$/;"	v
+ET_DISP_QUAD	display_res_exp4.py	/^ET_DISP_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[16])$/;"	v
 ET_PART	display_res_exp4.py	/^ET_PART = pd.read_table("res_exp4.txt", sep=",", usecols=[2])$/;"	v
 ET_PART_LINE	display_res_exp4.py	/^ET_PART_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[3])$/;"	v
 ET_PART_QUAD	display_res_exp4.py	/^ET_PART_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[4])$/;"	v
-ET_SWAP	display_res_exp4.py	/^ET_SWAP = pd.read_table("res_exp4.txt", sep=",", usecols=[8])$/;"	v
-ET_SWAP_LINE	display_res_exp4.py	/^ET_SWAP_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[9])$/;"	v
-ET_SWAP_QUAD	display_res_exp4.py	/^ET_SWAP_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[10])$/;"	v
-ET_TOOL	display_res_exp4.py	/^ET_TOOL = pd.read_table("res_exp4.txt", sep=",", usecols=[14])$/;"	v
-ET_TOOL_LINE	display_res_exp4.py	/^ET_TOOL_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[15])$/;"	v
-ET_TOOL_QUAD	display_res_exp4.py	/^ET_TOOL_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[16])$/;"	v
+ET_SCHD	display_res_exp4.py	/^ET_SCHD = pd.read_table("res_exp4.txt", sep=",", usecols=[8])$/;"	v
+ET_SCHD_LINE	display_res_exp4.py	/^ET_SCHD_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[9])$/;"	v
+ET_SCHD_QUAD	display_res_exp4.py	/^ET_SCHD_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[10])$/;"	v
+ET_SWAP	display_res_exp4.py	/^ET_SWAP = pd.read_table("res_exp4.txt", sep=",", usecols=[11])$/;"	v
+ET_SWAP_LINE	display_res_exp4.py	/^ET_SWAP_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[12])$/;"	v
+ET_SWAP_QUAD	display_res_exp4.py	/^ET_SWAP_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[13])$/;"	v
+ET_TOOL	display_res_exp4.py	/^ET_TOOL = pd.read_table("res_exp4.txt", sep=",", usecols=[17])$/;"	v
+ET_TOOL_LINE	display_res_exp4.py	/^ET_TOOL_LINE = pd.read_table("res_exp4.txt", sep=",", usecols=[18])$/;"	v
+ET_TOOL_QUAD	display_res_exp4.py	/^ET_TOOL_QUAD = pd.read_table("res_exp4.txt", sep=",", usecols=[19])$/;"	v
 EXP	exp/exp1/exp1.cpp	/^int EXP = EXP1;$/;"	v
 EXP	exp/exp2/exp2.cpp	/^int EXP = EXP2;$/;"	v
 EXP	exp/exp3/exp3.cpp	/^int EXP = EXP3;$/;"	v
@@ -832,6 +835,9 @@ et_disp_quad	include/stats.h	/^        float et_disp_quad;$/;"	m	struct:results
 et_part	include/stats.h	/^        float et_part;$/;"	m	struct:results
 et_part_line	include/stats.h	/^        float et_part_line;$/;"	m	struct:results
 et_part_quad	include/stats.h	/^        float et_part_quad;$/;"	m	struct:results
+et_schd	include/stats.h	/^        float et_schd;$/;"	m	struct:results
+et_schd_line	include/stats.h	/^        float et_schd_line;$/;"	m	struct:results
+et_schd_quad	include/stats.h	/^        float et_schd_quad;$/;"	m	struct:results
 et_swap	include/stats.h	/^        float et_swap;$/;"	m	struct:results
 et_swap_line	include/stats.h	/^        float et_swap_line;$/;"	m	struct:results
 et_swap_quad	include/stats.h	/^        float et_swap_quad;$/;"	m	struct:results
@@ -952,6 +958,9 @@ prev_res_et_disp_quad	exp/exp4/exp4.cpp	/^static float prev_res_et_disp_quad = 0
 prev_res_et_part	exp/exp4/exp4.cpp	/^static float prev_res_et_part = 0;$/;"	v	file:
 prev_res_et_part_line	exp/exp4/exp4.cpp	/^static float prev_res_et_part_line = 0;$/;"	v	file:
 prev_res_et_part_quad	exp/exp4/exp4.cpp	/^static float prev_res_et_part_quad = 0;$/;"	v	file:
+prev_res_et_schd	exp/exp4/exp4.cpp	/^static float prev_res_et_schd = 0;$/;"	v	file:
+prev_res_et_schd_line	exp/exp4/exp4.cpp	/^static float prev_res_et_schd_line = 0;$/;"	v	file:
+prev_res_et_schd_quad	exp/exp4/exp4.cpp	/^static float prev_res_et_schd_quad = 0;$/;"	v	file:
 prev_res_et_swap	exp/exp4/exp4.cpp	/^static float prev_res_et_swap = 0;$/;"	v	file:
 prev_res_et_swap_line	exp/exp4/exp4.cpp	/^static float prev_res_et_swap_line = 0;$/;"	v	file:
 prev_res_et_swap_quad	exp/exp4/exp4.cpp	/^static float prev_res_et_swap_quad = 0;$/;"	v	file:
