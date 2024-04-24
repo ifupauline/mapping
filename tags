@@ -785,6 +785,7 @@ appu	include/model.h	/^        float appu;$/;"	m	struct:perf
 assi_time	include/model.h	/^        float assi_time;$/;"	m	struct:perf
 assign_ids	src/model.cpp	/^void assign_ids(vector<struct tc> &v_tcs)$/;"	f
 assignment	src/mapping.cpp	/^void assignment(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
+ba_win_rate	include/stats.h	/^        float ba_win_rate;$/;"	m	struct:results
 bfdu	src/bfdu.cpp	/^void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
 bfdu_disp_gain	include/stats.h	/^        float bfdu_disp_gain;$/;"	m	struct:results
 bfdu_et_tool	include/stats.h	/^        float bfdu_et_tool;$/;"	m	struct:results
@@ -845,7 +846,9 @@ et_tool	include/stats.h	/^        float et_tool;$/;"	m	struct:results
 et_tool_line	include/stats.h	/^        float et_tool_line;$/;"	m	struct:results
 et_tool_quad	include/stats.h	/^        float et_tool_quad;$/;"	m	struct:results
 exec_time	include/model.h	/^        float exec_time;$/;"	m	struct:perf
+ext_ba_win_count	src/sched_analysis.cpp	/^int ext_ba_win_count = 0;$/;"	v
 ext_pa_count	src/sched_analysis.cpp	/^int ext_pa_count = 0;$/;"	v
+ext_re_win_count	src/sched_analysis.cpp	/^int ext_re_win_count = 0;$/;"	v
 ffdu	src/ffdu.cpp	/^void ffdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, $/;"	f
 ffdu_disp_gain	include/stats.h	/^        float ffdu_disp_gain;$/;"	m	struct:results
 ffdu_et_tool	include/stats.h	/^        float ffdu_et_tool;$/;"	m	struct:results
@@ -938,7 +941,8 @@ ovrw_core_by_id	src/model.cpp	/^void ovrw_core_by_id(vector<struct core> &v_core
 p	include/model.h	/^        int p;$/;"	m	struct:task
 p	include/model.h	/^        struct perf p;$/;"	m	struct:context	typeref:struct:context::perf
 p_arch	include/model.h	/^        int p_arch;$/;"	m	struct:context
-pa_count	include/stats.h	/^        int pa_count;$/;"	m	struct:results
+pa_count	include/stats.h	/^        float pa_count;$/;"	m	struct:results
+pa_win_rate	include/stats.h	/^        float pa_win_rate;$/;"	m	struct:results
 params	include/model.h	/^struct params {$/;"	s
 part_time	include/model.h	/^        float part_time;$/;"	m	struct:perf
 partitioning	src/mapping.cpp	/^void partitioning(vector<struct tc> &v_tcs, struct context &ctx)$/;"	f
@@ -977,6 +981,7 @@ prm	include/model.h	/^        struct params prm;$/;"	m	struct:context	typeref:st
 qnxnto	CMakeFiles/3.22.1/CompilerIdC/CMakeCCompilerId.c	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 qnxnto	CMakeFiles/3.22.1/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* qnxnto = "INFO" ":" "qnxnto[]";$/;"	v
 r	include/model.h	/^        int r;$/;"	m	struct:task
+re_win_rate	include/stats.h	/^        float re_win_rate;$/;"	m	struct:results
 realistic	exp/exp1/exp1.cpp	/^static const char *realistic  = "res_exp1r.txt";$/;"	v	file:
 reset_empty_cores	src/model.cpp	/^void reset_empty_cores(vector<struct core> &v_cores)$/;"	f
 reset_let_task	src/model.cpp	/^void reset_let_task(vector<struct core> &v_cores)$/;"	f
@@ -1026,13 +1031,13 @@ task_id	include/model.h	/^        int task_id;$/;"	m	struct:task
 task_idx	include/model.h	/^        int task_idx;$/;"	m	struct:t_pos
 tasks_count	include/model.h	/^        int tasks_count;$/;"	m	struct:context
 tc	include/model.h	/^struct tc {$/;"	s
-tc_count	include/stats.h	/^        int tc_count;$/;"	m	struct:results
+tc_count	include/stats.h	/^        float tc_count;$/;"	m	struct:results
 tc_id	include/model.h	/^        int tc_id;$/;"	m	struct:task
 tc_idx	include/model.h	/^        int tc_idx;$/;"	m	struct:t_pos
 tc_idx	include/model.h	/^        int tc_idx;$/;"	m	struct:tc
 tc_load	src/model.cpp	/^void tc_load(struct tc &tc)$/;"	f
 tcs_count	include/model.h	/^        int tcs_count;$/;"	m	struct:context
-tk_count	include/stats.h	/^        int tk_count;$/;"	m	struct:results
+tk_count	include/stats.h	/^        float tk_count;$/;"	m	struct:results
 u	include/model.h	/^        int u;$/;"	m	struct:task
 u	include/model.h	/^        int u;$/;"	m	struct:tc
 uniq_id	include/model.h	/^        int uniq_id;$/;"	m	struct:task

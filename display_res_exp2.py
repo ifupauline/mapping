@@ -58,7 +58,7 @@ plt.scatter(WFDU_M, WFDU_LETU, color = "black")
 plt.scatter(FFDU_M, FFDU_LETU, marker = "s", color = "silver")
 plt.xlabel('M (number of cores in use)')
 plt.ylabel('CC (%)')
-plt.legend(["BFDU", "WFDU", "FFDU"], loc="upper right")
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower left")
 plt.show()
 
 "fr and et"

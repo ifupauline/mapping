@@ -316,4 +316,9 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         printf("Total LET Utilization             %-3.3f\n", ctx.p.letu);
         printf("Total FRE Utilization             %-3.3f\n", ctx.p.unuu);
         printf("------------------------------------------------------------------------>\n");
+        printf("Number of Execution of PA:        %-3d\n", ext_pa_count);
+        printf("Number of Times PA OK:            %-3d\n", ext_ba_win_count + ext_re_win_count);
+        printf("Number of Times BA OK:            %-3d\n", ext_ba_win_count);
+        printf("Number of Times RE OK:            %-3d\n", ext_re_win_count);
+        printf("------------------------------------------------------------------------>\n");
 }

@@ -47,7 +47,11 @@
 #define EXPP 6
 
 extern int STATE;
+
+/* TODO temporary solution */
 extern int ext_pa_count;
+extern int ext_ba_win_count;
+extern int ext_re_win_count;
 
 using namespace std;
 
