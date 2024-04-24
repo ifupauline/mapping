@@ -16,11 +16,16 @@ static const char *hdr_table =
 "SIGMA, FR,"
 "BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_SWAP_GAIN, BFDU_DISP_GAIN, BFDU_PLAC_GAIN, BFDU_LETU, BFDU_ET_TOOL,"
 "WFDU_M, WFDU_SR_ALLO, WFDU_SR_SWAP, WFDU_SR_DISP, WFDU_SWAP_GAIN, WFDU_DISP_GAIN, WFDU_PLAC_GAIN, WFDU_LETU, WFDU_ET_TOOL,"
-"FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_SWAP_GAIN, FFDU_DISP_GAIN, FFDU_PLAC_GAIN, FFDU_LETU, FFDU_ET_TOOL";
+"FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_SWAP_GAIN, FFDU_DISP_GAIN, FFDU_PLAC_GAIN, FFDU_LETU, FFDU_ET_TOOL,"
+"PA_WIN_RATE, BA_WIN_RATE, RE_WIN_RATE";
 
 static void _store_results(struct results &res, struct context &ctx_bfdu, 
                 struct context &ctx_wfdu, struct context &ctx_ffdu)
 {
+        res.pa_win_rate += ((float)(ext_ba_win_count + ext_re_win_count) / (float)ext_pa_count) * PERCENT;
+        res.ba_win_rate += ((float) ext_ba_win_count / (float)(ext_ba_win_count + ext_re_win_count)) * PERCENT;
+        res.re_win_rate += ((float) ext_re_win_count / (float)(ext_ba_win_count + ext_re_win_count)) * PERCENT;
+
         res.bfdu_fr += ctx_bfdu.p.fr;
         res.wfdu_fr += ctx_wfdu.p.fr;
         res.ffdu_fr += ctx_ffdu.p.fr;
@@ -66,6 +71,10 @@ static void _store_results(struct results &res, struct context &ctx_bfdu,
 
 static void _average_results(struct results &res)
 {
+                res.pa_win_rate /= TIM;
+                res.ba_win_rate /= TIM;
+                res.re_win_rate /= TIM;
+
                 res.bfdu_fr /= TIM;
                 res.wfdu_fr /= TIM;
                 res.ffdu_fr /= TIM;
@@ -151,6 +160,9 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].ffdu_plac_gain);
                 v_float.push_back(v_res[i].ffdu_letu);
                 v_float.push_back(v_res[i].ffdu_et_tool);
+                v_float.push_back(v_res[i].pa_win_rate);
+                v_float.push_back(v_res[i].ba_win_rate);
+                v_float.push_back(v_res[i].re_win_rate);
 
                 write_data(file, v_float);
                 v_float.clear();

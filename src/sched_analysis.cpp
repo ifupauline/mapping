@@ -2,6 +2,8 @@
 #include "sched_analysis.h"
 
 int ext_pa_count = 0;
+int ext_ba_win_count = 0;
+int ext_re_win_count = 0;
 
 static void _find_hp_tasks(vector<struct task> &v_tasks, 
                 vector<struct task> &hp_tasks, struct task &tau, int &r_prev)
@@ -188,6 +190,7 @@ static void _reassignment(struct core &b)
                                         tmp_b.v_tasks[i].tc_id);
                         if (tmp_b.flag == SCHED_OK) {
                                 b = tmp_b;
+                                ext_re_win_count++;
                         }
                 }
         }
@@ -201,8 +204,12 @@ void priority_assignment(struct core &b)
         if (b.flag == SCHED_FAILED) {
                 printf("Core %d SCHED_FAILED\n", b.id);
                 _reassignment(b);
-        } else
+
+        } else if (b.flag == SCHED_OK) {
                 printf("Core %d SCHED_OK\n", b.id);
+                ext_ba_win_count++;
+                return;
+        }
 }
 
 void sched_analysis(vector<struct core> &v_cores, struct context &ctx)

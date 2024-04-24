@@ -4,9 +4,13 @@
 #include "model.h"
 
 struct results {
-        int tc_count;
-        int pa_count;
-        int tk_count;
+        float tc_count;
+        float pa_count;
+        float tk_count;
+
+        float pa_win_rate;
+        float ba_win_rate;
+        float re_win_rate;
 
         float m;
         float fr;
