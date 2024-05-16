@@ -8,13 +8,12 @@
 
 /*
  * test mapping methodology by conducting an exploration on parameters based on 
- * a synthetic and realistic use case 
+ * a synthetic use case 
  */
 int EXP = EXP1;
 
 static int sigma = 0;
-static const char *realistic  = "res_exp1r.txt";
-static const char *synthetic  = "res_exp1s.txt";
+static const char *synthetic  = "res_exp1.txt";
 static const char *hdr_table = 
 "SIGMA, FR,"
 "BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_PLAC_GAIN, BFDU_LETU, BFDU_ET_TOOL,"
@@ -101,97 +100,6 @@ static void _write_results(vector<struct results> &v_res, const char *filename)
                 v_float.clear();
         }
         fclose(file);
-}
-
-static void _realistic(vector<struct results> &v_res)
-{
-        struct context ctx;
-        struct results res;
-        struct params prm;
-        vector<struct core> v_cores;
-        vector<struct tc> v_tcs;
-        struct context ctx_bfdu;
-        struct context ctx_wfdu;
-        struct context ctx_ffdu;
-        vector<struct core> v_cores_bfdu;
-        vector<struct core> v_cores_wfdu;
-        vector<struct core> v_cores_ffdu;
-        vector<struct tc> v_tcs_bfdu;
-        vector<struct tc> v_tcs_wfdu;
-        vector<struct tc> v_tcs_ffdu;
-
-        sigma = PHI;
-
-        ctx = {0};
-        res = {0};
-        prm = {0};
-
-        v_tcs.clear();
-
-        gen_waters2019(v_tcs, prm, ctx);
-
-        for (unsigned int i = 0; i < ITR; i++) {
-                ctx_bfdu = {0};
-                ctx_wfdu = {0};
-                ctx_ffdu = {0};
-
-                ctx_bfdu = ctx;
-                ctx_wfdu = ctx;
-                ctx_ffdu = ctx;
-
-                v_tcs_bfdu.clear();
-                v_tcs_wfdu.clear();
-                v_tcs_ffdu.clear();
-
-                v_cores_bfdu.clear();
-                v_cores_wfdu.clear();
-                v_cores_ffdu.clear();
-
-                v_tcs_wfdu = v_tcs;
-                v_tcs_ffdu = v_tcs;
-                v_tcs_bfdu = v_tcs;
-
-                ctx_bfdu.prm.s = sigma;
-                ctx_wfdu.prm.s = sigma;
-                ctx_ffdu.prm.s = sigma;
-
-                partitioning(v_tcs_bfdu, ctx_bfdu);
-                partitioning(v_tcs_wfdu, ctx_wfdu);
-                partitioning(v_tcs_ffdu, ctx_ffdu);
-
-                init_ctx(v_tcs_bfdu, ctx_bfdu.prm, ctx_bfdu);
-                init_ctx(v_tcs_wfdu, ctx_wfdu.prm, ctx_wfdu);
-                init_ctx(v_tcs_ffdu, ctx_ffdu.prm, ctx_ffdu);
-
-                ctx_bfdu.prm.a = BFDU;
-                ctx_wfdu.prm.a = WFDU;
-                ctx_ffdu.prm.a = FFDU;
-
-                gen_arch(v_cores_bfdu, ctx_bfdu);
-                gen_arch(v_cores_wfdu, ctx_wfdu);
-                gen_arch(v_cores_ffdu, ctx_ffdu);
-
-                assignment(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
-                assignment(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
-                assignment(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
-
-                schedulability_analysis(v_cores_bfdu, ctx_bfdu);
-                schedulability_analysis(v_cores_wfdu, ctx_wfdu);
-                schedulability_analysis(v_cores_ffdu, ctx_ffdu);
-
-                placement(v_cores_bfdu, ctx_bfdu);
-                placement(v_cores_wfdu, ctx_wfdu);
-                placement(v_cores_ffdu, ctx_ffdu);
-
-                stats(v_cores_bfdu, v_tcs_bfdu, ctx_bfdu);
-                stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
-                stats(v_cores_ffdu, v_tcs_ffdu, ctx_ffdu);
-
-                _store_results(v_res, res, ctx_bfdu, ctx_wfdu, ctx_ffdu);
-
-                sigma -= STP;
-        }
-        _write_results(v_res, realistic);
 }
 
 static void _synthetic(vector<struct results> &v_res)
@@ -299,10 +207,8 @@ redo:   sigma = PHI;
 
 int main(void)
 {
-        vector<struct results> v_res_r;
         vector<struct results> v_res_s;
 
-        _realistic(v_res_r);
         _synthetic(v_res_s);
 
         return 0;
