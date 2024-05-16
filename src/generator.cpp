@@ -310,27 +310,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
                                 ctx.k++;
                                 continue;
                         }
-                        /* only for the waters2019 task-chain */
-                        if (i == 0 && u_sum > PHI) {
-                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
-                                v_tmp.pop_back();
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                j--;
-                                idx++;
-                                u_sum = 0;
-                                v_tmp.clear();
-                                ctx.k++;
-                                continue;
-                        }
+                        
                         /* -10 to account for increase of let size */
                         if (i > 0 && u_sum > ctx.prm.s - 10) {
                                 u_sum -= v_tmp_tcs[i].v_tasks[j].u;

@@ -281,8 +281,7 @@ void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 printf("α:  FFDU\n");
         printf("------------------------------------------------------------------------>\n");
         printf("|P| ∈ A:                       %-3d\n", ctx.p_arch);
-        printf("|M| ∈ A:                       %-3d     PCU: %-3d ZCU: %-3d\n", 
-                        ctx.cores_count, ctx.pcu_cores_count, ctx.zcu_cores_count);
+        printf("|M| ∈ A:                       %-3d\n", ctx.cores_count);
         printf("------------------------------------------------------------------------>\n");
         printf("|ξ| ∈ Γ:                       %-3d\n", ctx.prm.m);
         printf("|ξ| ∈ Γ(after partitioning):   %-3ld\n", v_tcs.size());

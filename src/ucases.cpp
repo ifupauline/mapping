@@ -57,7 +57,7 @@ void create_waters2019(struct tc &tc)
 
         /* gps_grabber */
         gps_grabber = {0};
-        gps_grabber.c = 700;
+        gps_grabber.c = 7000;
         gps_grabber.t = 50000;
         gps_grabber.r = 0;
         gps_grabber.task_id = 0;
@@ -105,6 +105,16 @@ void create_waters2019(struct tc &tc)
         detection.is_let = NO;
         detection.u = ceil(((float)detection.c/(float)detection.t) * PERMILL);
 
+        /* ekf */
+        ekf = {0};
+        ekf.c = 6500;
+        ekf.t = 10000;
+        ekf.r = 0;
+        ekf.task_id = 5;
+        ekf.tc_id = tc.id;
+        ekf.is_let = NO;
+        ekf.u = ceil(((float)ekf.c/(float)ekf.t) * PERMILL);
+
         /* fusion */
         fusion = {0};
         fusion.c = 25000;
@@ -115,22 +125,12 @@ void create_waters2019(struct tc &tc)
         fusion.is_let = NO;
         fusion.u = ceil(((float)fusion.c/(float)fusion.t) * PERMILL);
 
-        /* ekf */
-        ekf = {0};
-        ekf.c = 6500;
-        ekf.t = 10000;
-        ekf.r = 0;
-        ekf.task_id = 7;
-        ekf.tc_id = tc.id;
-        ekf.is_let = NO;
-        ekf.u = ceil(((float)ekf.c/(float)ekf.t) * PERMILL);
-
         /* planner */
         planner = {0};
         planner.c = 5000;
         planner.t = 10000;
         planner.r = 0;
-        planner.task_id = 8;
+        planner.task_id = 7;
         planner.tc_id = tc.id;
         planner.is_let = NO;
         planner.u = ceil(((float)planner.c/(float)planner.t) * PERMILL);
@@ -140,7 +140,7 @@ void create_waters2019(struct tc &tc)
         control.c = 4500;
         control.t = 10000;
         control.r = 0;
-        control.task_id = 9;
+        control.task_id = 8;
         control.tc_id = tc.id;
         control.is_let = NO;
         control.u = ceil(((float)control.c/(float)control.t) * PERMILL);
