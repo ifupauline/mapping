@@ -61,6 +61,43 @@ plt.ylabel('CC (%)')
 plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower left")
 plt.show()
 
+"m and sr allo"
+plt.scatter(BFDU_M, BFDU_SR_ALLO, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_SR_ALLO, color = "black")
+plt.scatter(FFDU_M, FFDU_SR_ALLO, marker = "s", color = "silver")
+plt.xlabel('M (number of cores in use)')
+plt.ylabel('SR (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower left")
+plt.show()
+
+"m and sr disp"
+plt.scatter(BFDU_M, BFDU_SR_DISP, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_SR_DISP, color = "black")
+plt.scatter(FFDU_M, FFDU_SR_DISP, marker = "s", color = "silver")
+plt.xlabel('M (number of cores in use)')
+plt.ylabel('SR (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower center")
+plt.show()
+
+"m and sr disp_gain"
+plt.scatter(BFDU_M, BFDU_PLAC_GAIN, marker = "v", color = "#4f4f4f")
+plt.scatter(WFDU_M, WFDU_PLAC_GAIN, color = "black")
+plt.scatter(FFDU_M, FFDU_PLAC_GAIN, marker = "s", color = "silver")
+plt.xlabel('M (number of cores in use)')
+plt.ylabel('SR (%)')
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="lower left")
+plt.show()
+
+"fr and sr disp"
+plt.scatter(FR, BFDU_SR_DISP, marker = "v", color = "#4f4f4f")
+plt.scatter(FR, WFDU_SR_DISP, color = "black")
+plt.scatter(FR, FFDU_SR_DISP, marker = "s", color = "silver")
+plt.xlabel('FR (%)')
+plt.ylabel('SR (%)')
+plt.ylim(90,100)
+plt.legend(["BFDU", "WFDU", "FFDU"], loc="center right")
+plt.show()
+
 "fr and et"
 plt.scatter(FR, BFDU_ET_TOOL, marker = "v", color = "#4f4f4f")
 plt.scatter(FR, WFDU_ET_TOOL, color = "black")
