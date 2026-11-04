@@ -83,6 +83,14 @@ redo:   struct params prm;
         placement(v_cores_wfdu, ctx_wfdu);
         placement(v_cores_ffdu, ctx_ffdu);
 
+        /* communication: paths core by core and end-to-end latency */
+        vector<struct tc_comm> v_comm_bfdu;
+        vector<struct tc_comm> v_comm_wfdu;
+        vector<struct tc_comm> v_comm_ffdu;
+        communication(v_cores_bfdu, v_comm_bfdu, ctx_bfdu);
+        communication(v_cores_wfdu, v_comm_wfdu, ctx_wfdu);
+        communication(v_cores_ffdu, v_comm_ffdu, ctx_ffdu);
+
         /* results */
         print_cores(v_cores_bfdu, ctx_bfdu);
         print_cores(v_cores_wfdu, ctx_wfdu);
@@ -95,6 +103,10 @@ redo:   struct params prm;
         print_stats(v_tcs_bfdu, v_cores_bfdu, ctx_bfdu);
         print_stats(v_tcs_wfdu, v_cores_wfdu, ctx_wfdu);
         print_stats(v_tcs_ffdu, v_cores_ffdu, ctx_ffdu);
+
+        print_comm(v_comm_bfdu, ctx_bfdu);
+        print_comm(v_comm_wfdu, ctx_wfdu);
+        print_comm(v_comm_ffdu, ctx_ffdu);
 
         return 0;
 }

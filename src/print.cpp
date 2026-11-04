@@ -256,7 +256,61 @@ void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
         printf("\n");
 }
 
-void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
+static const char *_ecu_name(int color)
+{
+        static const char *names[] = {"PCU", "ZCU1", "ZCU2", "ZCU3", "ZCU4", "ZCU5"};
+
+        if (color >= 0 && color < 6)
+                return names[color];
+        return "?";
+}
+
+void print_tc_comm(struct tc_comm &com)
+{
+        printf("<--------------- TC %d PATH (%d fragments) --------------->\n",
+                        com.tc_id, com.frag_count);
+        for (unsigned int i = 0; i < com.v_segs.size(); i++) {
+                struct segment &s = com.v_segs[i];
+                if (s.first_tc_idx == s.last_tc_idx)
+                        printf("  Core %-3d %-4s  frag %-3d          R %-8d\n",
+                                        s.core, _ecu_name(s.ecu), s.first_tc_idx, s.r);
+                else
+                        printf("  Core %-3d %-4s  frags %-3d..%-3d     R %-8d\n",
+                                        s.core, _ecu_name(s.ecu), s.first_tc_idx,
+                                        s.last_tc_idx, s.r);
+                if (i < com.path.size())
+                        printf("     | %s\n", com.path[i].comm_type == INTRA_ECU ?
+                                        "inter-core (LET, global memory)" :
+                                        "inter-ECU  (LET, network)");
+        }
+        printf("  E2E latency: %d microsecs%s\n\n", com.e2e,
+                        com.is_sched == YES ? "" : "  (TC UNSCHEDULABLE: lower bound)");
+}
+
+void print_comm(vector<struct tc_comm> &v_comm, struct context &ctx)
+{
+        printf("\n+===========================================+\n");
+        if (ctx.prm.a == BFDU)
+                printf("| PRINT COMMUNICATION BFDU                  |\n");
+        if (ctx.prm.a == WFDU)
+                printf("| PRINT COMMUNICATION WFDU                  |\n");
+        if (ctx.prm.a == FFDU)
+                printf("| PRINT COMMUNICATION FFDU                  |\n");
+        printf("+===========================================+\n");
+        for (unsigned int i = 0; i < v_comm.size(); i++)
+                print_tc_comm(v_comm[i]);
+        printf("------------------------------------------------------------------------>\n");
+        printf("Number of Inter-Core Comm         %-3d\n", ctx.intra_comm_count);
+        printf("Number of Inter-ECU Comm          %-3d\n", ctx.inter_comm_count);
+        printf("Total Number of Communication     %-3d\n",
+                        ctx.intra_comm_count + ctx.inter_comm_count);
+        printf("TC Schedulable / Unschedulable    %-3d / %-3d (%.2f%%)\n",
+                        ctx.e2e_ok_count, ctx.e2e_failed_count, ctx.p.sched_rate_tc);
+        printf("Communication Time:               %-3.3f ms\n", ctx.p.comm_time * MSEC);
+        printf("------------------------------------------------------------------------>\n");
+}
+
+void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
                 struct context &ctx)
 {
         stats(v_cores, v_tcs, ctx);
