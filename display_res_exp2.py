@@ -211,3 +211,16 @@ if "FFDU_IC" in COLS:
     "m and e2e latency"
     scatter_all("M", "E2E_AVG", "M (number of cores in use)", "average e2e latency (us)", "upper right")
     show("m_and_e2e_avg")
+
+if "FFDU_NET_MAX" in COLS:
+    "FR and network delay bound"
+    scatter_all("FR", "NET_MAX", "FR (%)", "max TSN delay bound of a message (us)", "upper left")
+    show("fr_and_net_max")
+
+    "FR and average network delay bound"
+    scatter_all("FR", "NET_AVG", "FR (%)", "average TSN delay bound (us)", "upper left")
+    show("fr_and_net_avg")
+
+    "FR and port load"
+    scatter_all("FR", "NET_UTIL", "FR (%)", "max port load by LET traffic (%)", "upper left")
+    show("fr_and_net_util")

@@ -1,3 +1,4 @@
+#include "network.h"
 #include "communication.h"
 
 /* a fragment of a task-chain as found in a core after mapping */
@@ -6,6 +7,9 @@ struct frag {
         int core;
         int ecu;
         int last_r;     /* WCRT of the last task of the fragment */
+        int last_t;     /* period of the last task (message period) */
+        int last_size;  /* message size of the last task (bytes) */
+        int let_t;      /* period of the LET task of the core */
         int is_sched;   /* all tasks of the fragment schedulable */
 };
 
@@ -20,6 +24,14 @@ static map<int, vector<struct frag>> _collect_frags(vector<struct core> &v_cores
         map<int, vector<struct frag>> m_frags;
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
+                int let_t = 0;
+
+                for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        if (v_cores[i].v_tcs[j].is_let == YES && 
+                                        !v_cores[i].v_tcs[j].v_tasks.empty())
+                                let_t = v_cores[i].v_tcs[j].v_tasks[0].t;
+                }
+
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         struct tc &tc = v_cores[i].v_tcs[j];
                         struct frag f;
@@ -32,6 +44,9 @@ static map<int, vector<struct frag>> _collect_frags(vector<struct core> &v_cores
                         f.ecu = v_cores[i].color;
                         /* tasks of a fragment are in topological order */
                         f.last_r = tc.v_tasks.back().r;
+                        f.last_t = tc.v_tasks.back().t;
+                        f.last_size = tc.v_tasks.back().datasize;
+                        f.let_t = let_t;
                         f.is_sched = YES;
                         for (unsigned int k = 0; k < tc.v_tasks.size(); k++) {
                                 if (tc.v_tasks[k].r > tc.v_tasks[k].t)
@@ -93,6 +108,14 @@ void comm_paths(vector<struct core> &v_cores, vector<struct tc_comm> &v_comm,
                                 lk.src_tc_idx = prev.last_tc_idx;
                                 lk.dst_tc_idx = v_f[k].tc_idx;
 
+                                /* message produced by the last task of the
+                                 * previous segment, written by the LET task
+                                 * of its core at its next activation */
+                                lk.msg_bytes = v_f[k - 1].last_size;
+                                lk.msg_t = v_f[k - 1].last_t;
+                                lk.msg_j = v_f[k - 1].last_r + v_f[k - 1].let_t;
+                                lk.net_ok = YES;
+
                                 if (lk.src_ecu == lk.dst_ecu) {
                                         lk.comm_type = INTRA_ECU;
                                         ctx.intra_comm_count++;
@@ -122,6 +145,8 @@ void comm_paths(vector<struct core> &v_cores, vector<struct tc_comm> &v_comm,
  * so the WCRT of the last task covers the whole segment. At each hop the
  * output of the segment is available once its last task completes.
  * A non-fragmented task-chain has one segment: e2e = WCRT of its last task.
+ * Each inter-ECU hop adds the Network Calculus bound of its transfer over
+ * the TSN network (net_analysis must have been run on v_comm).
  */
 void e2e_latency(vector<struct tc_comm> &v_comm, vector<struct core> &v_cores,
                 struct context &ctx)
@@ -140,6 +165,19 @@ void e2e_latency(vector<struct tc_comm> &v_comm, vector<struct core> &v_cores,
                 for (unsigned int j = 0; j < v_comm[i].v_segs.size(); j++)
                         v_comm[i].e2e += v_comm[i].v_segs[j].r;
 
+                /* network transfer of the inter-ECU hops */
+                v_comm[i].net_ok = YES;
+                for (unsigned int j = 0; j < v_comm[i].path.size(); j++) {
+                        struct link &lk = v_comm[i].path[j];
+                        if (lk.comm_type != INTER_ECU)
+                                continue;
+                        if (lk.net_ok == NO) {
+                                v_comm[i].net_ok = NO;
+                                continue;
+                        }
+                        v_comm[i].e2e += (int)ceil(lk.net_delay);
+                }
+
                 /* Rule 3.2 */
                 v_comm[i].is_sched = YES;
                 for (unsigned int j = 0; j < v_f.size(); j++) {
@@ -157,16 +195,21 @@ void e2e_latency(vector<struct tc_comm> &v_comm, vector<struct core> &v_cores,
                 ctx.p.sched_rate_tc = ((float)ctx.e2e_ok_count /
                                 (float)v_comm.size()) * PERCENT;
 
-        /* latency of an unschedulable chain is only a lower bound: skip it */
+        /*
+         * latency of an unschedulable chain is only a lower bound, and has no
+         * bound through an overloaded network port: skip them
+         */
+        int count = 0;
         ctx.p.e2e_avg = 0;
         ctx.p.e2e_max = 0;
         for (unsigned int i = 0; i < v_comm.size(); i++) {
-                if (v_comm[i].is_sched == NO)
+                if (v_comm[i].is_sched == NO || v_comm[i].net_ok == NO)
                         continue;
                 ctx.p.e2e_avg += v_comm[i].e2e;
                 if (v_comm[i].e2e > ctx.p.e2e_max)
                         ctx.p.e2e_max = v_comm[i].e2e;
+                count++;
         }
-        if (ctx.e2e_ok_count > 0)
-                ctx.p.e2e_avg /= ctx.e2e_ok_count;
+        if (count > 0)
+                ctx.p.e2e_avg /= count;
 }

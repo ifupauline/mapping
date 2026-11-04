@@ -2,6 +2,7 @@
 #include "mapping.h"
 #include "generator.h"
 #include "placement.h"
+#include "network.h"
 #include "communication.h"
 #include "sched_analysis.h"
 
@@ -110,6 +111,7 @@ void communication(vector<struct core> &v_cores, vector<struct tc_comm> &v_comm,
         printf("+=====================================+\n");
         start = clock();
         comm_paths(v_cores, v_comm, ctx);
+        net_analysis(v_comm, ctx);
         e2e_latency(v_comm, v_cores, ctx);
         end = clock();
         ctx.p.comm_time = ((float) (end - start)) / CLOCKS_PER_SEC;

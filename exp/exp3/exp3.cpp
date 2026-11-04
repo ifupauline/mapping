@@ -12,7 +12,7 @@ static const char *synthetic  = "res_exp3.txt";
 static const char *hdr_table =
 "SIGMA, FR,"
 "TC_COUNT, TASK_COUNT, PA_COUNT, ET_PART, ET_ASSI, ET_SWAP, ET_DISP, ET_TOOL,"
-"IC, IE, SR_TC, E2E_AVG, E2E_MAX, ET_COMM";
+"IC, IE, SR_TC, E2E_AVG, E2E_MAX, ET_COMM, NET_AVG, NET_MAX, NET_UTIL";
 
 static void _store_results(vector<struct results> &v_res, struct results &res, 
                 struct context &ctx)
@@ -33,6 +33,9 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.e2e_avg = ctx.p.e2e_avg;
         res.e2e_max = ctx.p.e2e_max;
         res.et_comm = ctx.p.comm_time * MSEC;
+        res.net_avg = ctx.p.net_avg;
+        res.net_max = ctx.p.net_max;
+        res.net_util = ctx.p.net_util;
         v_res.push_back(res);
 }
 
@@ -64,6 +67,9 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].e2e_avg);
                 v_float.push_back(v_res[i].e2e_max);
                 v_float.push_back(v_res[i].et_comm);
+                v_float.push_back(v_res[i].net_avg);
+                v_float.push_back(v_res[i].net_max);
+                v_float.push_back(v_res[i].net_util);
                 write_data(file, v_float);
                 v_float.clear();
         }

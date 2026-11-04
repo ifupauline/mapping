@@ -1,4 +1,5 @@
 #include "print.h"
+#include "network.h"
 #include "stats.h"
 #include "sched_analysis.h"
 
@@ -278,13 +279,28 @@ void print_tc_comm(struct tc_comm &com)
                         printf("  Core %-3d %-4s  frags %-3d..%-3d     R %-8d\n",
                                         s.core, _ecu_name(s.ecu), s.first_tc_idx,
                                         s.last_tc_idx, s.r);
-                if (i < com.path.size())
-                        printf("     | %s\n", com.path[i].comm_type == INTRA_ECU ?
-                                        "inter-core (LET, global memory)" :
-                                        "inter-ECU  (LET, network)");
+                if (i < com.path.size()) {
+                        struct link &lk = com.path[i];
+                        if (lk.comm_type == INTRA_ECU)
+                                printf("     | inter-core (LET, global memory)\n");
+                        else if (lk.net_ok == YES)
+                                printf("     | inter-ECU  (LET, TSN) %d B every %d us: "
+                                                "net <= %.1f us (src port %.1f + switch %d + "
+                                                "dst port %.1f)\n", lk.msg_bytes, lk.msg_t,
+                                                lk.net_delay, lk.net_src, NET_SW_LAT_US,
+                                                lk.net_sw);
+                        else
+                                printf("     | inter-ECU  (LET, TSN) %d B every %d us: "
+                                                "UNBOUNDED (port overloaded)\n",
+                                                lk.msg_bytes, lk.msg_t);
+                }
         }
-        printf("  E2E latency: %d microsecs%s\n\n", com.e2e,
-                        com.is_sched == YES ? "" : "  (TC UNSCHEDULABLE: lower bound)");
+        if (com.net_ok == NO)
+                printf("  E2E latency: unbounded (overloaded network port)\n\n");
+        else
+                printf("  E2E latency: %d microsecs%s\n\n", com.e2e,
+                                com.is_sched == YES ? "" :
+                                "  (TC UNSCHEDULABLE: lower bound)");
 }
 
 void print_comm(vector<struct tc_comm> &v_comm, struct context &ctx)
@@ -306,6 +322,12 @@ void print_comm(vector<struct tc_comm> &v_comm, struct context &ctx)
                         ctx.intra_comm_count + ctx.inter_comm_count);
         printf("TC Schedulable / Unschedulable    %-3d / %-3d (%.2f%%)\n",
                         ctx.e2e_ok_count, ctx.e2e_failed_count, ctx.p.sched_rate_tc);
+        printf("TSN: %d Mbit/s, CBS idle slope %d%%, switch latency %d us\n",
+                        NET_LINK_MBPS, NET_IDLE_SLOPE_PCT, NET_SW_LAT_US);
+        printf("Max Port Utilization (LET class)  %-3.2f%%\n", ctx.p.net_util);
+        printf("Network Delay Bound avg / max     %-3.1f / %-3.1f us\n",
+                        ctx.p.net_avg, ctx.p.net_max);
+        printf("Inter-ECU Hops Unbounded          %-3d\n", ctx.net_failed_count);
         printf("Communication Time:               %-3.3f ms\n", ctx.p.comm_time * MSEC);
         printf("------------------------------------------------------------------------>\n");
 }

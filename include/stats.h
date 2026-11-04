@@ -112,6 +112,24 @@ struct results {
         float bfdu_et_comm;
         float wfdu_et_comm;
         float ffdu_et_comm;
+
+        /* TSN network (per algorithm): delay bounds (us), port load (%) */
+        float bfdu_net_avg;
+        float wfdu_net_avg;
+        float ffdu_net_avg;
+
+        float bfdu_net_max;
+        float wfdu_net_max;
+        float ffdu_net_max;
+
+        float bfdu_net_util;
+        float wfdu_net_util;
+        float ffdu_net_util;
+
+        /* TSN network (one algorithm) */
+        float net_avg;
+        float net_max;
+        float net_util;
 };
 
 float sched_rate(vector<struct core> &v_cores, struct context &ctx);

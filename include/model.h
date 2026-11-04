@@ -71,6 +71,7 @@ struct task {
         int uniq_id;
         int tc_id;
         int is_let;
+        int datasize;   /* bytes of the message the task produces */
         struct t_pos idx;
 };
 
@@ -111,6 +112,15 @@ struct link {
         int src_tc_idx; /* last fragment on the source core */
         int dst_tc_idx; /* first fragment on the destination core */
         int comm_type;  /* INTRA_ECU or INTER_ECU */
+        /* message sent over the hop (by the last task of the source) */
+        int msg_bytes;  /* payload */
+        int msg_t;      /* period of the producing task (us) */
+        int msg_j;      /* release jitter: producer WCRT + source LET period */
+        /* network (INTER_ECU only), Network Calculus bounds in microsecs */
+        float net_src;  /* source controller egress port */
+        float net_sw;   /* switch egress port towards the destination */
+        float net_delay;/* total: net_src + switch latency + net_sw */
+        int net_ok;     /* NO if a port on the path is overloaded */
 };
 
 /* a maximal run of consecutive fragments of a task-chain on one core */
@@ -128,6 +138,7 @@ struct tc_comm {
         int frag_count;
         int is_sched;   /* Rule 3.2: all tasks of the chain schedulable */
         int e2e;        /* end-to-end latency (microsecs) */
+        int net_ok;     /* NO if a hop crosses an overloaded port */
         vector<struct segment> v_segs; /* core-by-core path */
         vector<struct link> path;      /* hops between cores */
 };
@@ -154,6 +165,9 @@ struct perf {
         float comm_time;
         float e2e_avg;  /* mean e2e latency of schedulable chains (us) */
         float e2e_max;  /* max e2e latency of schedulable chains (us) */
+        float net_max;  /* max network delay bound of an inter-ECU hop (us) */
+        float net_avg;  /* mean network delay bound of inter-ECU hops (us) */
+        float net_util; /* max utilization of a port by LET traffic (%) */
         float exec_time;
         float sched_rate_tc;
         float sched_rate_allo;
@@ -183,6 +197,7 @@ struct context {
         int inter_comm_count;
         int e2e_ok_count;
         int e2e_failed_count;
+        int net_failed_count;
         struct perf p;
         struct params prm;
 };

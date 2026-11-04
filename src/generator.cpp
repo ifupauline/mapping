@@ -1,4 +1,5 @@
 #include "ucases.h"
+#include "network.h"
 #include "generator.h"
 #include "sched_analysis.h"
 
@@ -184,6 +185,7 @@ void gen_task(struct task &tau, int i, int color)
                 tau.r = 0;
                 tau.p = i + 1; /* 1 is highest priority */
                 tau.task_id = i;
+                tau.datasize = gen_rand(MIN_MSG_BYTES, MAX_MSG_BYTES);
                 break;
         }
 }

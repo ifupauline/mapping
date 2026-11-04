@@ -2,7 +2,7 @@ add_library(mapping
         SHARED
         mapping.cpp generator.cpp print.cpp bfdu.cpp wfdu.cpp ffdu.cpp stats.cpp
         file.cpp sched_analysis.cpp placement.cpp model.cpp let.cpp ucases.cpp
-        communication.cpp)
+        communication.cpp network.cpp)
 
 install (TARGETS mapping
         DESTINATION lib)

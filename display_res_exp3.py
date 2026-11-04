@@ -38,3 +38,13 @@ if "IC" in COLS:
         "ET comm (s)": row["ET_COMM"] / 1000,
     }])
     print(comm.to_string(index=False))
+
+if "NET_MAX" in COLS:
+    print()
+    print("TSN network (Network Calculus bounds)")
+    net = pd.DataFrame([{
+        "avg delay bound (us)": row["NET_AVG"],
+        "max delay bound (us)": row["NET_MAX"],
+        "max port load (%)": row["NET_UTIL"],
+    }])
+    print(net.to_string(index=False))

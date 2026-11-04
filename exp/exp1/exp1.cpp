@@ -21,7 +21,10 @@ static const char *hdr_table =
 "FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU, FFDU_ET_TOOL,"
 "BFDU_IC, BFDU_IE, BFDU_SR_TC, BFDU_E2E_AVG, BFDU_E2E_MAX, BFDU_ET_COMM,"
 "WFDU_IC, WFDU_IE, WFDU_SR_TC, WFDU_E2E_AVG, WFDU_E2E_MAX, WFDU_ET_COMM,"
-"FFDU_IC, FFDU_IE, FFDU_SR_TC, FFDU_E2E_AVG, FFDU_E2E_MAX, FFDU_ET_COMM";
+"FFDU_IC, FFDU_IE, FFDU_SR_TC, FFDU_E2E_AVG, FFDU_E2E_MAX, FFDU_ET_COMM,"
+"BFDU_NET_AVG, BFDU_NET_MAX, BFDU_NET_UTIL,"
+"WFDU_NET_AVG, WFDU_NET_MAX, WFDU_NET_UTIL,"
+"FFDU_NET_AVG, FFDU_NET_MAX, FFDU_NET_UTIL";
 
 /* communication metrics of one mapping (appended after the original columns) */
 static void _store_comm(float &ic, float &ie, float &sr_tc, float &e2e_avg,
@@ -77,6 +80,16 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
                         res.wfdu_e2e_max, res.wfdu_et_comm, ctx_wfdu);
         _store_comm(res.ffdu_ic, res.ffdu_ie, res.ffdu_sr_tc, res.ffdu_e2e_avg,
                         res.ffdu_e2e_max, res.ffdu_et_comm, ctx_ffdu);
+
+        res.bfdu_net_avg = ctx_bfdu.p.net_avg;
+        res.wfdu_net_avg = ctx_wfdu.p.net_avg;
+        res.ffdu_net_avg = ctx_ffdu.p.net_avg;
+        res.bfdu_net_max = ctx_bfdu.p.net_max;
+        res.wfdu_net_max = ctx_wfdu.p.net_max;
+        res.ffdu_net_max = ctx_ffdu.p.net_max;
+        res.bfdu_net_util = ctx_bfdu.p.net_util;
+        res.wfdu_net_util = ctx_wfdu.p.net_util;
+        res.ffdu_net_util = ctx_ffdu.p.net_util;
 
         res.sigma = (float)((float)sigma/PERMILL);
         v_res.push_back(res);
@@ -136,6 +149,15 @@ static void _write_results(vector<struct results> &v_res, const char *filename)
                 v_float.push_back(v_res[i].ffdu_e2e_avg);
                 v_float.push_back(v_res[i].ffdu_e2e_max);
                 v_float.push_back(v_res[i].ffdu_et_comm);
+                v_float.push_back(v_res[i].bfdu_net_avg);
+                v_float.push_back(v_res[i].bfdu_net_max);
+                v_float.push_back(v_res[i].bfdu_net_util);
+                v_float.push_back(v_res[i].wfdu_net_avg);
+                v_float.push_back(v_res[i].wfdu_net_max);
+                v_float.push_back(v_res[i].wfdu_net_util);
+                v_float.push_back(v_res[i].ffdu_net_avg);
+                v_float.push_back(v_res[i].ffdu_net_max);
+                v_float.push_back(v_res[i].ffdu_net_util);
 
                 write_data(file, v_float);
                 v_float.clear();
