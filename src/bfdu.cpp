@@ -55,6 +55,7 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
         int cycl_count;
 
         cycl_count = 0;
+        assign_count = 0;
         m = v_tcs.size();
 
         /* STEP - 1, place all possible tcs in cores using BFDU */
@@ -87,23 +88,24 @@ void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores,
 
                                 /* no core was found */
                         } else {
-                                printf("No Core was found to accomodate TC %d idx: %d size: %d\n", 
+                                printf("No Core was found to accomodate TC %d idx: %d size: %d\n",
                                                 v_tcs[i].id, v_tcs[i].tc_idx, v_tcs[i].u);
 
-                                if (v_tcs[i].color == WHITE) {
-                                        add_core(v_cores, gen_rand(0, 5), 1, ctx);
-                                        cycl_count++;
-
-                                } else {
-                                        add_core(v_cores, v_tcs[i].color, 1, ctx);
-                                        cycl_count++;
-                                } 
-
-                                if (cycl_count > 2) {
+                                /* the tc did not even fit in a freshly added core */
+                                if (cycl_count > 0) {
                                         printf("ERR!: Impossible to assign all TC, System Unfeasible\n");
                                         STATE = FAILED;
                                         return;
                                 }
+
+                                if (v_tcs[i].color == WHITE)
+                                        add_core(v_cores, gen_rand(0, 5), 1, ctx);
+                                else
+                                        add_core(v_cores, v_tcs[i].color, 1, ctx);
+
+                                /* retry the same tc on the new core */
+                                cycl_count++;
+                                i--;
                         }
                 }
                 /* count remaining tc to be allocated */
