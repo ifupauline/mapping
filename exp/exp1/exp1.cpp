@@ -121,6 +121,9 @@ static void _synthetic(vector<struct results> &v_res)
 
 redo:   sigma = PHI;
 
+        /* drop results of a previously generated (unfeasible) application */
+        v_res.clear();
+
         ctx = {0};
         res = {0};
         prm = {0};

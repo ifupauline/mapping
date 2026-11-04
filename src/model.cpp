@@ -221,8 +221,8 @@ void add_core(vector<struct core> &v_cores, int color, int speed_factor,
         tmp_core.id = ctx.cores_count;
         tmp_core.flag = SCHED_OK;
         tmp_core.load = 0;
-        tmp_core.load_rem = PHI;
         tmp_core.phi = PHI / speed_factor;
+        tmp_core.load_rem = tmp_core.phi;
         tmp_core.color = color;
         tmp_core.is_empty = NO;
 
@@ -311,52 +311,36 @@ void verify_cores_load(vector<struct core> &v_cores)
         }
 }
 
+/*
+ * Constraint 3.8: on every core, tasks of the same original task-chain must
+ * keep their precedence order (priority increases with task_id).
+ */
 void verify_pa(vector<struct core> &v_cores)
 {
-        int ret;
-
-        vector<struct tc> v_tc;
-        vector<int> v_int;
-
-        ret = 0;
         for (unsigned int i = 0; i < v_cores.size(); i++) {
+                vector<struct task> v_tasks;
+
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         if (v_cores[i].v_tcs[j].is_let == YES)
                                 continue;
-                        v_int.push_back(v_cores[i].v_tcs[j].id);
-                        v_tc.push_back(v_cores[i].v_tcs[j]);
+                        add_tasks_to_v_tasks(v_tasks, v_cores[i].v_tcs[j].v_tasks);
                 }
-                ret = get_duplicata(v_int);
+                sort_inc_task_priority(v_tasks);
 
-                if (ret > -1) {
-                        vector<struct task> v_tasks;
-                        for (unsigned int j = 0; j < v_tc.size(); j++) {
-                                for (unsigned int k = 0; k < v_tc[j].v_tasks.size(); k++) {
-                                        if (v_tc[j].v_tasks[k].tc_id == ret)
-                                                v_tasks.push_back(v_tc[j].v_tasks[k]);
-                                }
-                        }
-                        sort_inc_task_priority(v_tasks);
-
-                        for (unsigned int j = 0; j < v_tasks.size(); j++) {
-                                if (j == 1) {
-                                        if (v_tasks[j].task_id < v_tasks[j - 1].task_id) {
-                                                printf("ERR! PA CORE %d\n", v_cores[i].id);
-                                                printf("TC %d tau: %d p: %d\n", 
-                                                                v_tasks[j].tc_id, 
-                                                                v_tasks[j].task_id, 
-                                                                v_tasks[j].p);
-                                                printf("TC %d tau: %d p: %d\n", 
-                                                                v_tasks[j - 1].tc_id, 
-                                                                v_tasks[j - 1].task_id, 
-                                                                v_tasks[j - 1].p);
-                                                exit(0);
-                                        }
-                                }
+                for (unsigned int j = 0; j < v_tasks.size(); j++) {
+                        for (unsigned int k = 0; k < j; k++) {
+                                if (v_tasks[k].tc_id != v_tasks[j].tc_id)
+                                        continue;
+                                if (v_tasks[j].task_id > v_tasks[k].task_id)
+                                        continue;
+                                printf("ERR! PA CORE %d\n", v_cores[i].id);
+                                printf("TC %d tau: %d p: %d\n", v_tasks[k].tc_id,
+                                                v_tasks[k].task_id, v_tasks[k].p);
+                                printf("TC %d tau: %d p: %d\n", v_tasks[j].tc_id,
+                                                v_tasks[j].task_id, v_tasks[j].p);
+                                exit(0);
                         }
                 }
-                v_tc.clear();
-                v_int.clear();
         }
 }
 
@@ -364,7 +348,6 @@ int core_load(struct core &core)
 {
         core.load = 0;
         core.load_rem = 0;
-        core.phi = PHI;
 
         for (unsigned int i = 0; i < core.v_tcs.size(); i++) {
                core.load  += core.v_tcs[i].u;
@@ -390,9 +373,17 @@ void reset_let_task(vector<struct core> &v_cores)
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
                         if (v_cores[i].v_tcs.size() == 1 && 
                                         v_cores[i].v_tcs[j].is_let == YES) {
+                                struct task &let = v_cores[i].v_tcs[j].v_tasks[0];
+
+                                /* clear timing only, keep the LET identity */
                                 v_cores[i].v_tcs[j].u = 0;
                                 v_cores[i].v_tcs[j].gcd = 0;
-                                v_cores[i].v_tcs[j].v_tasks[0] = {0};
+                                let.c = 0;
+                                let.t = 0;
+                                let.u = 0;
+                                let.r = 0;
+                                let.p = 1;
+                                let.is_let = YES;
                                 v_cores[i].load = 0;
                                 v_cores[i].load_rem = 0;
                                 v_cores[i].is_empty = YES;
@@ -434,19 +425,15 @@ void rmv_tc_by_id(struct core &b, int tc_id, int tc_idx)
                 exit(0);
         }
 
-        /* check if there is only LET tc */
-        if (b.v_tcs.size() == 1)
-                _gcd = b.v_tcs[0].v_tasks[0].t;
-
-        else {
-                for (unsigned int j = 0; j < b.v_tcs.size(); j++) {
-                        if (b.v_tcs[j].is_let == YES)
-                                continue;
-                        add_tasks_to_v_tasks(v_tasks, b.v_tcs[j].v_tasks);
-                }
-                _gcd = gcd(v_tasks);
+        /* only the LET tc is left: no communication, gcd 0 -> LET costs 0 */
+        for (unsigned int j = 0; j < b.v_tcs.size(); j++) {
+                if (b.v_tcs[j].is_let == YES)
+                        continue;
+                add_tasks_to_v_tasks(v_tasks, b.v_tcs[j].v_tasks);
         }
+        _gcd = gcd(v_tasks);
         update_let(b, _gcd);
+        core_load(b);
 }
 
 void assign_ids(vector<struct tc> &v_tcs)
@@ -458,6 +445,8 @@ void assign_ids(vector<struct tc> &v_tcs)
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
                 v_tcs[i].id = i;
                 for (unsigned int j = 0; j < v_tcs[i].v_tasks.size(); j++) {
+                        /* tasks must know their original task-chain */
+                        v_tcs[i].v_tasks[j].tc_id = i;
                         v_tcs[i].v_tasks[j].uniq_id = uniq_id;
                         uniq_id++;
                 }
@@ -469,6 +458,9 @@ int gcd(vector<struct task> &v_tasks)
         int gcd;
 
         gcd = 0;
+
+        if (v_tasks.empty())
+                return 0;
 
         /* if there is only one task (cut) gcd = t */
         if (v_tasks.size() == 1) {
