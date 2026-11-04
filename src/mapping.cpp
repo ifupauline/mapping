@@ -2,6 +2,7 @@
 #include "mapping.h"
 #include "generator.h"
 #include "placement.h"
+#include "communication.h"
 #include "sched_analysis.h"
 
 int STATE = OK;
@@ -98,4 +99,18 @@ void placement(vector<struct core> &v_cores, struct context &ctx)
 
         /*compute improvement */
         ctx.p.sched_imp_disp = ctx.p.sched_imp_disp + ctx.sched_ok_count;
+}
+
+void communication(vector<struct core> &v_cores, vector<struct tc_comm> &v_comm,
+                struct context &ctx)
+{
+        clock_t start, end;
+        printf("+=====================================+\n");
+        printf("| COMMUNICATION                       |\n");
+        printf("+=====================================+\n");
+        start = clock();
+        comm_paths(v_cores, v_comm, ctx);
+        e2e_latency(v_comm, v_cores, ctx);
+        end = clock();
+        ctx.p.comm_time = ((float) (end - start)) / CLOCKS_PER_SEC;
 }

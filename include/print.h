@@ -12,7 +12,11 @@ void print_cores(vector<struct core> &v_cores, struct context &ctx);
 void print_stats(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
 
-void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs, 
+void print_vectors(vector<struct core> &v_cores, vector<struct tc> &v_tcs,
                 struct context &ctx);
+
+void print_tc_comm(struct tc_comm &com);
+
+void print_comm(vector<struct tc_comm> &v_comm, struct context &ctx);
 
 #endif /* PRINT_H */
