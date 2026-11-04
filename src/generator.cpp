@@ -125,17 +125,18 @@ void gen_task(struct task &tau, int i, int color)
         real_t = 0;
 
         while (1) {
+                /* the period must be drawn before computing the utilization */
                 if (color == WHITE) {
                         y  = gen_rand(0, 14);
                         real_c = gen_rand(10, 10000); /* microsecs */
-                        real_u = (real_c/real_t) * PERMILL;
                         real_t = period_waters2015(0, y, DYNAMIC);
+                        real_u = (real_c/real_t) * PERMILL;
 
                 } else {
                         y  = gen_rand(0, 9);
                         real_c = gen_rand(10, 1000); /* microsecs */
-                        real_u = (real_c/real_t) * PERMILL;
                         real_t = period_waters2015(0, y, STATIC);
+                        real_u = (real_c/real_t) * PERMILL;
                 }
 
                 if (EXP == EXP1) {
@@ -228,13 +229,47 @@ void gen_tc(struct tc &tc, int color, int minu, int maxu)
         }
 }
 
+/* close the current fragment of task-chain src (if any) and start a new one */
+static void _flush_fragment(struct tc &src, vector<struct task> &v_tmp,
+                int &u_sum, int &idx, vector<struct tc> &v_new_tcs)
+{
+        struct tc tc;
+
+        if (v_tmp.empty())
+                return;
+
+        tc = {0};
+        tc.id = src.id;
+        tc.tc_idx = idx;
+        tc.u = u_sum;
+        tc.color = src.color;
+        tc.is_let = NO;
+        tc.is_frag = YES;
+        tc.is_assign = NO;
+        tc.v_tasks = v_tmp;
+        v_new_tcs.push_back(tc);
+
+        idx++;
+        u_sum = 0;
+        v_tmp.clear();
+}
+
+/*
+ * Partitioning step, Algorithm 1. Each topologically ordered task-chain is
+ * cut into contiguous fragments such that a fragment is schedulable on its
+ * own (Constraint 3.4) and, unless it is a single task, its size does not
+ * exceed sigma (Constraint 3.3, with a margin of 10 for the LET task).
+ * The number of cuts of a chain is its number of fragments minus one.
+ */
 void cut(vector<struct tc> &v_tcs, struct context &ctx)
 {
         int idx;
         int ret;
         int u_sum;
         int count_e;
-        struct tc tc;
+        int limit;
+        size_t frag_start;
+        struct task tau;
         vector<struct task> v_tmp;
         vector<struct tc> v_new_tcs;
         vector<struct tc> v_tmp_tcs;
@@ -245,6 +280,7 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         ctx.k = 0;
         count_e = 0;
         ctx.k_max = 0;
+        limit = ctx.prm.s - 10;
 
         /* compute k max */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
@@ -264,91 +300,46 @@ void cut(vector<struct tc> &v_tcs, struct context &ctx)
         /* partitioning */
         for (unsigned int i = 0; i < v_tmp_tcs.size(); i++) {
                 idx = 0;
+                u_sum = 0;
+                v_tmp.clear();
+                frag_start = v_new_tcs.size();
+
                 for (unsigned int j = 0; j < v_tmp_tcs[i].v_tasks.size(); j++) {
                         ret = -1;
+                        tau = v_tmp_tcs[i].v_tasks[j];
+                        tau.tc_id = v_tmp_tcs[i].id;
 
-                        /* if utilization rate of next task > sigma */
-                        if (v_tmp_tcs[i].v_tasks[j].u > ctx.prm.s - 10)  {
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = v_tmp_tcs[i].v_tasks[j].u;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks.push_back(v_tmp_tcs[i].v_tasks[j]);
-                                v_new_tcs.push_back(tc);
-                                idx++;
-                                u_sum = 0;
-                                ctx.k++;
+                        /* task alone bigger than sigma: it becomes a fragment */
+                        if (tau.u > limit) {
+                                _flush_fragment(v_tmp_tcs[i], v_tmp, u_sum, idx,
+                                                v_new_tcs);
+                                v_tmp.push_back(tau);
+                                u_sum = tau.u;
+                                _flush_fragment(v_tmp_tcs[i], v_tmp, u_sum, idx,
+                                                v_new_tcs);
                                 continue;
                         }
 
-                        u_sum += v_tmp_tcs[i].v_tasks[j].u;
-                        v_tmp_tcs[i].v_tasks[j].tc_id = v_tmp_tcs[i].id;
-                        v_tmp.push_back(v_tmp_tcs[i].v_tasks[j]);
+                        u_sum += tau.u;
+                        v_tmp.push_back(tau);
                         ret = wcrt(v_tmp);
 
-                        if (ret == SCHED_FAILED)  {
-                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
+                        /* constraint 3.4 (schedulable) and 3.3 (size <= sigma) */
+                        if (v_tmp.size() > 1 &&
+                                        (ret == SCHED_FAILED || u_sum > limit)) {
+                                u_sum -= tau.u;
                                 v_tmp.pop_back();
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
+                                _flush_fragment(v_tmp_tcs[i], v_tmp, u_sum, idx,
+                                                v_new_tcs);
                                 j--;
-                                idx++;
-                                u_sum = 0;
-                                v_tmp.clear();
-                                ctx.k++;
-                                continue;
-                        }
-                        
-                        /* -10 to account for increase of let size */
-                        if (i > 0 && u_sum > ctx.prm.s - 10) {
-                                u_sum -= v_tmp_tcs[i].v_tasks[j].u;
-                                v_tmp.pop_back();
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                j--;
-                                idx++;
-                                u_sum = 0;
-                                v_tmp.clear();
-                                ctx.k++;
-                                continue;
-                        }
-                        /* add last fragment */
-                        if (j == v_tmp_tcs[i].v_tasks.size() - 1) {
-                                tc = {0};
-                                tc.id = v_tmp_tcs[i].id;
-                                tc.tc_idx = idx;
-                                tc.u = u_sum;
-                                tc.color = v_tmp_tcs[i].color;
-                                tc.is_let = NO;
-                                tc.is_frag = YES;
-                                tc.is_assign = NO;
-                                tc.v_tasks = v_tmp;
-                                v_new_tcs.push_back(tc);
-                                u_sum = 0;
-                                v_tmp.clear();
                                 continue;
                         }
                 }
+                /* add last fragment */
+                _flush_fragment(v_tmp_tcs[i], v_tmp, u_sum, idx, v_new_tcs);
+
+                if (v_new_tcs.size() > frag_start)
+                        ctx.k += v_new_tcs.size() - frag_start - 1;
         }
         v_tcs.clear();
         v_tcs = v_new_tcs;
