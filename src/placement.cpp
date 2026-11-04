@@ -219,12 +219,15 @@ static void _disp(vector<struct core> &v_cores, pair<struct tc,
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 if (v_cores[i].id == tc.second) {
                         for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
-                                if (v_cores[i].v_tcs[j].id == tc.first.id && 
+                                if (v_cores[i].v_tcs[j].is_let == YES)
+                                        continue;
+                                if (v_cores[i].v_tcs[j].id == tc.first.id &&
                                                 v_cores[i].v_tcs[j].tc_idx == tc.first.tc_idx) {
                                         rmv_tc_by_id(v_cores[i], tc.first.id, tc.first.tc_idx);
                                         copy_v_tc_to_v_tasks_with_pos(v_cores);
                                         priority_assignment(v_cores[i]);
                                         src_core_idx = i;
+                                        break;
                                 }
                         }
                 }

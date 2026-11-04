@@ -165,6 +165,8 @@ struct tc get_tc_by_id(vector<struct core> &v_cores, int tc_id)
 {
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
+                        if (v_cores[i].v_tcs[j].is_let == YES)
+                                continue;
                         if (v_cores[i].v_tcs[j].id == tc_id) {
                                 return v_cores[i].v_tcs[j];
                         }
@@ -412,10 +414,14 @@ void rmv_tc_by_id(struct core &b, int tc_id, int tc_idx)
         flag = NO;
 
         for (unsigned int i = 0; i < b.v_tcs.size(); i++) {
+                /* never the LET tc, whose id may equal an application tc id */
+                if (b.v_tcs[i].is_let == YES)
+                        continue;
                 if (b.v_tcs[i].id == tc_id && b.v_tcs[i].tc_idx == tc_idx) {
                         b.v_tcs.erase(b.v_tcs.begin() + i);
                         b.v_tasks.clear();
                         flag = YES;
+                        break;
                 }
         }
 
