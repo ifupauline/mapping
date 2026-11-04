@@ -98,6 +98,7 @@ static struct stats _unsched(vector<struct core> &v_cores)
 {
         struct stats c;
         c.count_tc = 0;
+        c.count_task = 0;
 
         for (unsigned int i = 0; i < v_cores.size(); i++) {
                 for (unsigned int j = 0; j < v_cores[i].v_tcs.size(); j++) {
