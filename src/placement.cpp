@@ -94,7 +94,7 @@ static int _search_for_disp(vector<struct core> &v_dst_cores, int tc_id,
                                 exit(0);
                         }
 
-                        if (tmp_max > max)  {
+                        if (is_found == NO || tmp_max > max)  {
                                 max = tmp_max;
                                 dst_b = v_dst_cores[i];
                                 is_found = YES;
@@ -291,11 +291,21 @@ void displacement(vector<struct core> &v_cores)
         if (flag == NO)
                 return;
 
-        /* find a schedulable core that has enough space for the tc to fit */
+        /*
+         * find a schedulable core that has enough space for the tc to fit,
+         * first among non-empty cores, then (redisp) also among empty cores
+         */
         for (unsigned int i = 0; i < v_tcs.size(); i++) {
-                printf("Try to displace TC %-3d tc_idx %d from Core %-3d\n", 
-                                v_tcs[i].first.id, 
-                                v_tcs[i].first.tc_idx, 
+                /* source core already rendered schedulable: nothing to do */
+                if (get_core_by_id(v_cores, v_tcs[i].second).flag == SCHED_OK) {
+                        redisp = NO;
+                        check_empty = NO;
+                        continue;
+                }
+
+                printf("Try to displace TC %-3d tc_idx %d from Core %-3d\n",
+                                v_tcs[i].first.id,
+                                v_tcs[i].first.tc_idx,
                                 v_tcs[i].second);
                 v_dst_cores.clear();
                 for (unsigned int j = 0; j < v_cores.size(); j++) {
@@ -327,25 +337,25 @@ void displacement(vector<struct core> &v_cores)
                 /* test dst cores and save best core */
                 is_found = _search_for_disp(v_dst_cores, v_tcs[i].first.id, i, dst_b);
 
-                /* if core not found continue */
                 if (is_found == YES) {
                         /* displace */
-                        tc.first = {0};
-                        tc.second = dst_b.id;
                         tc = v_tcs[i];
                         v_tcs[i].second = dst_b.id;
                         _disp(v_cores, tc, dst_b);
                         is_found = NO;
-                } 
+                        redisp = NO;
+                        check_empty = NO;
+                        continue;
+                }
 
-                if (is_found == NO) {
-                        if (redisp == NO) {
-                                i--;
-                                redisp = YES;
-                        } else if (redisp == YES) {
-                                check_empty = YES;
-                                redisp = NO;
-                        }
+                /* not found: retry the same tc once, allowing empty cores */
+                if (redisp == NO) {
+                        redisp = YES;
+                        check_empty = YES;
+                        i--;
+                } else {
+                        redisp = NO;
+                        check_empty = NO;
                 }
         }
         reset_empty_cores(v_cores);
