@@ -152,6 +152,8 @@ struct perf {
         float swap_time;
         float plac_time;
         float comm_time;
+        float e2e_avg;  /* mean e2e latency of schedulable chains (us) */
+        float e2e_max;  /* max e2e latency of schedulable chains (us) */
         float exec_time;
         float sched_rate_tc;
         float sched_rate_allo;

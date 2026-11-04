@@ -32,6 +32,9 @@ static float prev_res_et_swap_line = 0;
 static float prev_res_et_disp_line = 0;
 static float prev_res_et_tool_line = 0;
 
+static float prev_res_et_comm_line = 0;
+static float prev_res_et_comm_quad = 0;
+
 static const char *table = "res_exp4.txt";
 static const char *hdr_table = 
 "m,"
@@ -53,7 +56,13 @@ static const char *hdr_table =
 "ET_DISP_QUAD,"
 "ET_TOOL,"
 "ET_TOOL_LINE,"
-"ET_TOOL_QUAD";
+"ET_TOOL_QUAD,"
+"ET_COMM,"
+"ET_COMM_LINE,"
+"ET_COMM_QUAD,"
+"IC,"
+"IE,"
+"SR_TC";
 
 static void _gen_app(vector<struct tc> &v_tcs, struct context &ctx)
 {
@@ -84,6 +93,10 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.et_swap = ctx.p.swap_time * MSEC;
         res.et_disp = ctx.p.disp_time * MSEC;
         res.et_tool = ctx.p.exec_time * MSEC;
+        res.et_comm = ctx.p.comm_time * MSEC;
+        res.ic = ctx.intra_comm_count;
+        res.ie = ctx.inter_comm_count;
+        res.sr_tc = ctx.p.sched_rate_tc;
 
         if (iter == 0) {
                 res.growth_rate = 1;
@@ -114,6 +127,11 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
                 prev_res_et_swap_line = res.et_swap_line;
                 prev_res_et_disp_line = res.et_disp_line;
                 prev_res_et_tool_line = res.et_tool_line;
+
+                res.et_comm_line = res.et_comm;
+                res.et_comm_quad = res.et_comm;
+                prev_res_et_comm_line = res.et_comm_line;
+                prev_res_et_comm_quad = res.et_comm_quad;
                 v_res.push_back(res);
                 return;
         }
@@ -131,6 +149,11 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.et_swap_quad = prev_res_et_swap_quad * growth_rate * 2;
         res.et_disp_quad = prev_res_et_disp_quad * growth_rate * 2;
         res.et_tool_quad = prev_res_et_tool_quad * growth_rate * 2;
+
+        res.et_comm_line = prev_res_et_comm_line * growth_rate;
+        res.et_comm_quad = prev_res_et_comm_quad * growth_rate * 2;
+        prev_res_et_comm_line = res.et_comm_line;
+        prev_res_et_comm_quad = res.et_comm_quad;
 
         /* save previous execution time */
         prev_res_et_part_line = res.et_part_line;
@@ -183,6 +206,12 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].et_tool);
                 v_float.push_back(v_res[i].et_tool_line);
                 v_float.push_back(v_res[i].et_tool_quad);
+                v_float.push_back(v_res[i].et_comm);
+                v_float.push_back(v_res[i].et_comm_line);
+                v_float.push_back(v_res[i].et_comm_quad);
+                v_float.push_back(v_res[i].ic);
+                v_float.push_back(v_res[i].ie);
+                v_float.push_back(v_res[i].sr_tc);
                 write_data(file, v_float);
                 v_float.clear();
         }
@@ -198,6 +227,7 @@ static void _synthetic(vector<struct results> &v_res)
         vector<struct core> v_cores;
         vector<struct core> v_cores_wfdu;
         vector<struct tc> v_tcs_wfdu;
+        vector<struct tc_comm> v_comm_wfdu;
 
         m = 0;
         prev = 0;
@@ -224,6 +254,7 @@ redo:           res = {0};
                 }
                 schedulability_analysis(v_cores_wfdu, ctx_wfdu);
                 placement(v_cores_wfdu, ctx_wfdu);
+                communication(v_cores_wfdu, v_comm_wfdu, ctx_wfdu);
                 stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
 
                 if (i == 0) {

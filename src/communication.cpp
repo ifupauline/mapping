@@ -156,4 +156,17 @@ void e2e_latency(vector<struct tc_comm> &v_comm, vector<struct core> &v_cores,
         if (!v_comm.empty())
                 ctx.p.sched_rate_tc = ((float)ctx.e2e_ok_count /
                                 (float)v_comm.size()) * PERCENT;
+
+        /* latency of an unschedulable chain is only a lower bound: skip it */
+        ctx.p.e2e_avg = 0;
+        ctx.p.e2e_max = 0;
+        for (unsigned int i = 0; i < v_comm.size(); i++) {
+                if (v_comm[i].is_sched == NO)
+                        continue;
+                ctx.p.e2e_avg += v_comm[i].e2e;
+                if (v_comm[i].e2e > ctx.p.e2e_max)
+                        ctx.p.e2e_max = v_comm[i].e2e;
+        }
+        if (ctx.e2e_ok_count > 0)
+                ctx.p.e2e_avg /= ctx.e2e_ok_count;
 }

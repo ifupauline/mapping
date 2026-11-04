@@ -11,7 +11,8 @@ int EXP = EXP3;
 static const char *synthetic  = "res_exp3.txt";
 static const char *hdr_table =
 "SIGMA, FR,"
-"TC_COUNT, TASK_COUNT, PA_COUNT, ET_PART, ET_ASSI, ET_SWAP, ET_DISP, ET_TOOL";
+"TC_COUNT, TASK_COUNT, PA_COUNT, ET_PART, ET_ASSI, ET_SWAP, ET_DISP, ET_TOOL,"
+"IC, IE, SR_TC, E2E_AVG, E2E_MAX, ET_COMM";
 
 static void _store_results(vector<struct results> &v_res, struct results &res, 
                 struct context &ctx)
@@ -26,6 +27,12 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.et_swap = ctx.p.swap_time * MSEC;
         res.et_disp = ctx.p.disp_time * MSEC;
         res.et_tool = ctx.p.exec_time * MSEC;
+        res.ic = ctx.intra_comm_count;
+        res.ie = ctx.inter_comm_count;
+        res.sr_tc = ctx.p.sched_rate_tc;
+        res.e2e_avg = ctx.p.e2e_avg;
+        res.e2e_max = ctx.p.e2e_max;
+        res.et_comm = ctx.p.comm_time * MSEC;
         v_res.push_back(res);
 }
 
@@ -51,6 +58,12 @@ static void _write_results(vector<struct results> &v_res)
                 v_float.push_back(v_res[i].et_swap);
                 v_float.push_back(v_res[i].et_disp);
                 v_float.push_back(v_res[i].et_tool);
+                v_float.push_back(v_res[i].ic);
+                v_float.push_back(v_res[i].ie);
+                v_float.push_back(v_res[i].sr_tc);
+                v_float.push_back(v_res[i].e2e_avg);
+                v_float.push_back(v_res[i].e2e_max);
+                v_float.push_back(v_res[i].et_comm);
                 write_data(file, v_float);
                 v_float.clear();
         }
@@ -82,6 +95,7 @@ static void _synthetic(vector<struct results> &v_res)
         struct context ctx_wfdu;
         vector<struct core> v_cores_wfdu;
         vector<struct tc> v_tcs_wfdu;
+        vector<struct tc_comm> v_comm_wfdu;
 
 redo:
         ctx = {0};
@@ -114,6 +128,7 @@ redo:
 
         schedulability_analysis(v_cores_wfdu, ctx_wfdu);
         placement(v_cores_wfdu, ctx_wfdu);
+        communication(v_cores_wfdu, v_comm_wfdu, ctx_wfdu);
         stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
         _store_results(v_res, res, ctx_wfdu);
         _write_results(v_res);

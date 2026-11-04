@@ -18,7 +18,22 @@ static const char *hdr_table =
 "SIGMA, FR,"
 "BFDU_M, BFDU_SR_ALLO, BFDU_SR_SWAP, BFDU_SR_DISP, BFDU_PLAC_GAIN, BFDU_LETU, BFDU_ET_TOOL,"
 "WFDU_M, WFDU_SR_ALLO, WFDU_SR_SWAP, WFDU_SR_DISP, WFDU_PLAC_GAIN, WFDU_LETU, WFDU_ET_TOOL,"
-"FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU, FFDU_ET_TOOL";
+"FFDU_M, FFDU_SR_ALLO, FFDU_SR_SWAP, FFDU_SR_DISP, FFDU_PLAC_GAIN, FFDU_LETU, FFDU_ET_TOOL,"
+"BFDU_IC, BFDU_IE, BFDU_SR_TC, BFDU_E2E_AVG, BFDU_E2E_MAX, BFDU_ET_COMM,"
+"WFDU_IC, WFDU_IE, WFDU_SR_TC, WFDU_E2E_AVG, WFDU_E2E_MAX, WFDU_ET_COMM,"
+"FFDU_IC, FFDU_IE, FFDU_SR_TC, FFDU_E2E_AVG, FFDU_E2E_MAX, FFDU_ET_COMM";
+
+/* communication metrics of one mapping (appended after the original columns) */
+static void _store_comm(float &ic, float &ie, float &sr_tc, float &e2e_avg,
+                float &e2e_max, float &et_comm, struct context &ctx)
+{
+        ic = ctx.intra_comm_count;
+        ie = ctx.inter_comm_count;
+        sr_tc = ctx.p.sched_rate_tc;
+        e2e_avg = ctx.p.e2e_avg;
+        e2e_max = ctx.p.e2e_max;
+        et_comm = ctx.p.comm_time * MSEC;
+}
 
 static void _store_results(vector<struct results> &v_res, struct results &res, 
                 struct context &ctx_bfdu, struct context &ctx_wfdu, 
@@ -55,6 +70,13 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.bfdu_et_tool = ctx_bfdu.p.exec_time * MSEC;
         res.wfdu_et_tool = ctx_wfdu.p.exec_time * MSEC;
         res.ffdu_et_tool = ctx_ffdu.p.exec_time * MSEC;
+
+        _store_comm(res.bfdu_ic, res.bfdu_ie, res.bfdu_sr_tc, res.bfdu_e2e_avg,
+                        res.bfdu_e2e_max, res.bfdu_et_comm, ctx_bfdu);
+        _store_comm(res.wfdu_ic, res.wfdu_ie, res.wfdu_sr_tc, res.wfdu_e2e_avg,
+                        res.wfdu_e2e_max, res.wfdu_et_comm, ctx_wfdu);
+        _store_comm(res.ffdu_ic, res.ffdu_ie, res.ffdu_sr_tc, res.ffdu_e2e_avg,
+                        res.ffdu_e2e_max, res.ffdu_et_comm, ctx_ffdu);
 
         res.sigma = (float)((float)sigma/PERMILL);
         v_res.push_back(res);
@@ -96,6 +118,25 @@ static void _write_results(vector<struct results> &v_res, const char *filename)
                 v_float.push_back(v_res[i].ffdu_letu);
                 v_float.push_back(v_res[i].ffdu_et_tool);
 
+                v_float.push_back(v_res[i].bfdu_ic);
+                v_float.push_back(v_res[i].bfdu_ie);
+                v_float.push_back(v_res[i].bfdu_sr_tc);
+                v_float.push_back(v_res[i].bfdu_e2e_avg);
+                v_float.push_back(v_res[i].bfdu_e2e_max);
+                v_float.push_back(v_res[i].bfdu_et_comm);
+                v_float.push_back(v_res[i].wfdu_ic);
+                v_float.push_back(v_res[i].wfdu_ie);
+                v_float.push_back(v_res[i].wfdu_sr_tc);
+                v_float.push_back(v_res[i].wfdu_e2e_avg);
+                v_float.push_back(v_res[i].wfdu_e2e_max);
+                v_float.push_back(v_res[i].wfdu_et_comm);
+                v_float.push_back(v_res[i].ffdu_ic);
+                v_float.push_back(v_res[i].ffdu_ie);
+                v_float.push_back(v_res[i].ffdu_sr_tc);
+                v_float.push_back(v_res[i].ffdu_e2e_avg);
+                v_float.push_back(v_res[i].ffdu_e2e_max);
+                v_float.push_back(v_res[i].ffdu_et_comm);
+
                 write_data(file, v_float);
                 v_float.clear();
         }
@@ -118,6 +159,9 @@ static void _synthetic(vector<struct results> &v_res)
         vector<struct tc> v_tcs_bfdu;
         vector<struct tc> v_tcs_wfdu;
         vector<struct tc> v_tcs_ffdu;
+        vector<struct tc_comm> v_comm_bfdu;
+        vector<struct tc_comm> v_comm_wfdu;
+        vector<struct tc_comm> v_comm_ffdu;
 
 redo:   sigma = PHI;
 
@@ -196,6 +240,10 @@ redo:   sigma = PHI;
                 placement(v_cores_bfdu, ctx_bfdu);
                 placement(v_cores_wfdu, ctx_wfdu);
                 placement(v_cores_ffdu, ctx_ffdu);
+
+                communication(v_cores_bfdu, v_comm_bfdu, ctx_bfdu);
+                communication(v_cores_wfdu, v_comm_wfdu, ctx_wfdu);
+                communication(v_cores_ffdu, v_comm_ffdu, ctx_ffdu);
 
                 stats(v_cores_bfdu, v_tcs_bfdu, ctx_bfdu);
                 stats(v_cores_wfdu, v_tcs_wfdu, ctx_wfdu);
