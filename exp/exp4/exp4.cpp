@@ -143,15 +143,15 @@ static void _store_results(vector<struct results> &v_res, struct results &res,
         res.et_disp_line = prev_res_et_disp_line * growth_rate;
         res.et_tool_line = prev_res_et_tool_line * growth_rate;
 
-        res.et_part_quad = prev_res_et_part_quad * growth_rate * 2;
-        res.et_assi_quad = prev_res_et_assi_quad * growth_rate * 2;
-        res.et_schd_quad = prev_res_et_schd_quad * growth_rate * 2;
-        res.et_swap_quad = prev_res_et_swap_quad * growth_rate * 2;
-        res.et_disp_quad = prev_res_et_disp_quad * growth_rate * 2;
-        res.et_tool_quad = prev_res_et_tool_quad * growth_rate * 2;
+        res.et_part_quad = prev_res_et_part_quad * growth_rate * growth_rate;
+        res.et_assi_quad = prev_res_et_assi_quad * growth_rate * growth_rate;
+        res.et_schd_quad = prev_res_et_schd_quad * growth_rate * growth_rate;
+        res.et_swap_quad = prev_res_et_swap_quad * growth_rate * growth_rate;
+        res.et_disp_quad = prev_res_et_disp_quad * growth_rate * growth_rate;
+        res.et_tool_quad = prev_res_et_tool_quad * growth_rate * growth_rate;
 
         res.et_comm_line = prev_res_et_comm_line * growth_rate;
-        res.et_comm_quad = prev_res_et_comm_quad * growth_rate * 2;
+        res.et_comm_quad = prev_res_et_comm_quad * growth_rate * growth_rate;
         prev_res_et_comm_line = res.et_comm_line;
         prev_res_et_comm_quad = res.et_comm_quad;
 
