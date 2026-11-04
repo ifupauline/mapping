@@ -98,6 +98,40 @@ struct core {
         vector<struct task> v_tasks;
 };
 
+/* COMMUNICATION MODEL (inter-core / inter-controller via LET) */
+#define INTRA_ECU 0 /* inter-core, same controller (Section 3.2.2.3) */
+#define INTER_ECU 1 /* inter-controller, over the network (Section 3.2.2.4) */
+
+/* one hop of a task-chain between two consecutive fragments */
+struct link {
+        int src;        /* source core id */
+        int dst;        /* destination core id */
+        int src_ecu;    /* controller (color) of the source core */
+        int dst_ecu;    /* controller (color) of the destination core */
+        int src_tc_idx; /* last fragment on the source core */
+        int dst_tc_idx; /* first fragment on the destination core */
+        int comm_type;  /* INTRA_ECU or INTER_ECU */
+};
+
+/* a maximal run of consecutive fragments of a task-chain on one core */
+struct segment {
+        int core;
+        int ecu;
+        int first_tc_idx;
+        int last_tc_idx;
+        int r;          /* WCRT of the last task of the segment */
+};
+
+/* communication and latency of one original task-chain */
+struct tc_comm {
+        int tc_id;
+        int frag_count;
+        int is_sched;   /* Rule 3.2: all tasks of the chain schedulable */
+        int e2e;        /* end-to-end latency (microsecs) */
+        vector<struct segment> v_segs; /* core-by-core path */
+        vector<struct link> path;      /* hops between cores */
+};
+
 struct params {
         int a;
         int m;
@@ -117,6 +151,7 @@ struct perf {
         float disp_time;
         float swap_time;
         float plac_time;
+        float comm_time;
         float exec_time;
         float sched_rate_tc;
         float sched_rate_allo;
@@ -142,6 +177,10 @@ struct context {
         int zcu_cores_count;
         int sched_ok_count;
         int sched_failed_count;
+        int intra_comm_count;
+        int inter_comm_count;
+        int e2e_ok_count;
+        int e2e_failed_count;
         struct perf p;
         struct params prm;
 };

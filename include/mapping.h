@@ -19,6 +19,9 @@ void schedulability_analysis(vector<struct core> &v_cores, struct context &ctx);
 
 void placement(vector<struct core> &v_cores, struct context &ctx);
 
+void communication(vector<struct core> &v_cores, vector<struct tc_comm> &v_comm,
+                struct context &ctx);
+
 /* algorithms */
 void bfdu(vector<struct tc> &v_tcs, vector<struct core> &v_cores, 
                 struct context &ctx);
