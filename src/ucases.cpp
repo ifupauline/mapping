@@ -160,10 +160,15 @@ void create_waters2019(struct tc &tc)
         waters2019.v_tasks.push_back(cam_grabber);
         waters2019.v_tasks.push_back(localization);
         waters2019.v_tasks.push_back(detection);
-        waters2019.v_tasks.push_back(fusion);
+        /* topological order = task_id order (Table 4.7: EKF xi_0,3, Fusion xi_0,4) */
         waters2019.v_tasks.push_back(ekf);
+        waters2019.v_tasks.push_back(fusion);
         waters2019.v_tasks.push_back(planner);
         waters2019.v_tasks.push_back(control);
+
+        /* precedence priorities, as gen_task does (cut relies on them) */
+        for (unsigned int i = 0; i < waters2019.v_tasks.size(); i++)
+                waters2019.v_tasks[i].p = waters2019.v_tasks[i].task_id + 1;
 
         tc = waters2019;
 }
