@@ -1,0 +1,112 @@
+
+  examples/uc1_central_sizing/application.json: 24 task-chains, 73 tasks
+  3 local to one ECU; of the others, 19 start at a bound sensor task, 19 end at a bound actuator task
+  platform: 6 ECUs
+    HPC          central  2 big at 100%, 65536 KB, at most 16 cores
+    ZC_FL        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_FR        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_RL        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_RR        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_C         zone     2 MCU at 50%, 4096 KB, at most 4 cores
+  execution: fixed-priority preemptive, implicit communication at LET instants, utilization cap 0.80, LET task 50 us, WCET margin 0%
+  network: star, 1000 Mbit/s (backbone 1000), 1 CBS class
+  method: sigma 0.40
+
+  ┌────────────────────────────────────┬─────────┐
+  │ metric                             │    FFDU │
+  ├────────────────────────────────────┼─────────┤
+  │ feasible                           │     yes │
+  │ sub-chains                         │      64 │
+  │ fragmentation rate FR (%)          │    81.6 │
+  │ cuts forced by the ECUs            │      40 │
+  ├────────────────────────────────────┼─────────┤
+  │ cores used M                       │       7 │
+  │   on central computers             │       2 │
+  │   on the other ECUs                │       5 │
+  │   lower bound on M                 │       5 │
+  │ cores added to the architecture    │       0 │
+  │ cores emptied by consolidation     │       0 │
+  ├────────────────────────────────────┼─────────┤
+  │ schedulable cores SR (%)           │   100.0 │
+  │   after scheduling                 │   100.0 │
+  │   after swap moves                 │   100.0 │
+  │   after relocation moves           │   100.0 │
+  │ critical scaling factor            │   1.302 │
+  ├────────────────────────────────────┼─────────┤
+  │ application load (cores)           │    2.70 │
+  │ LET load (cores)                   │    0.34 │
+  │ room left below the cap (cores)    │    2.56 │
+  ├────────────────────────────────────┼─────────┤
+  │ task-chains schedulable (%)        │   100.0 │
+  │ task-chains meeting deadline (%)   │   100.0 │
+  │   deadline misses                  │       0 │
+  │   local search moves               │       6 │
+  │ communications inside an ECU       │       0 │
+  │ inter-ECU communications           │      33 │
+  │   replicated with FRER             │       0 │
+  │ network delay bound, max (us)      │   786.8 │
+  │ busiest port load (%)              │    0.53 │
+  │ end-to-end response time, max (ms) │   61.38 │
+  │ max reaction time, max (ms)        │ 2007.44 │
+  ├────────────────────────────────────┼─────────┤
+  │ CPU time (ms)                      │     0.7 │
+  └────────────────────────────────────┴─────────┘
+
+  cores used per ECU, their load (in cores, LET included) and critical scaling factor
+  ┌───────┬───────┬──────┬─────────┐
+  │ ECU   │  FFDU │ FFDU │    FFDU │
+  │       │ cores │ load │ scaling │
+  ├───────┼───────┼──────┼─────────┤
+  │ HPC   │     2 │ 0.91 │   1.917 │
+  │ ZC_FL │     1 │ 0.78 │   1.302 │
+  │ ZC_FR │     1 │ 0.67 │   1.573 │
+  │ ZC_RL │     1 │ 0.43 │   2.768 │
+  │ ZC_RR │     1 │ 0.15 │   7.059 │
+  │ ZC_C  │     1 │ 0.10 │  12.438 │
+  └───────┴───────┴──────┴─────────┘
+
+  FFDU: cores in use
+  ┌──────┬───────┬─────────┬──────┬──────┬─────────┬───────┬───────┬────────────────────────────────────────────────────┐
+  │ core │ ECU   │    type │ load │  LET │ scaling │ sched │ tasks │ sub-chains                                         │
+  │      │       │ speed % │    % │    % │  factor │       │       │ chain.index                                        │
+  ├──────┼───────┼─────────┼──────┼──────┼─────────┼───────┼───────┼────────────────────────────────────────────────────┤
+  │ c0   │ HPC   │ big 100 │ 39.0 │  1.0 │   2.604 │ yes   │     7 │ 6.1 3.1 23.0 16.1 14.1                             │
+  │ c1   │ HPC   │ big 100 │ 52.4 │  0.5 │   1.917 │ yes   │    13 │ 5.1 7.1 8.1 21.1 5.2 9.1 10.1 22.0 11.1 12.1 13.1  │
+  │ c2   │ ZC_FL │  MCU 50 │ 78.2 │ 10.0 │   1.302 │ yes   │    14 │ 6.0 0.0 2.0 6.2 1.0 7.0 18.0 4.0 9.0 13.2 15.2 0.1 │
+  │ c3   │ ZC_FR │  MCU 50 │ 67.2 │ 10.0 │   1.573 │ yes   │    11 │ 2.2 0.2 5.0 19.0 9.2 6.3 15.0 2.1 15.1             │
+  │ c4   │ ZC_RL │  MCU 50 │ 42.5 │ 10.0 │   2.768 │ yes   │    11 │ 1.2 3.2 21.0 14.2 16.2 11.2 20.0 17.0 1.1 17.1     │
+  │ c5   │ ZC_RR │  MCU 50 │ 15.0 │  1.0 │   7.059 │ yes   │     6 │ 10.0 5.3 4.2 11.0 10.2 4.1                         │
+  │ c6   │ ZC_C  │  MCU 50 │  9.9 │  2.0 │  12.438 │ yes   │    11 │ 8.0 3.0 21.2 7.2 13.0 14.0 16.0 8.2 12.0 12.2 17.2 │
+  └──────┴───────┴─────────┴──────┴──────┴─────────┴───────┴───────┴────────────────────────────────────────────────────┘
+
+  FFDU: task-chains
+  ┌──────────────────────────┬───────┬───────┬─────────────────────────────────────────────────────┬─────────┬──────────┬──────────┬─────────┬──────────┐
+  │                    chain │ tasks │  load │ path: segments on cores                             │   comm. │ reaction │ deadline │ on time │ why late │
+  │                          │       │     % │ (sub-chains)                                        │ ECU/net │       ms │       ms │         │          │
+  ├──────────────────────────┼───────┼───────┼─────────────────────────────────────────────────────┼─────────┼──────────┼──────────┼─────────┼──────────┤
+  │      brake_by_wire_front │     3 │ 21.00 │ c2@ZC_FL(0-1) > c3@ZC_FR(2)                         │     0/1 │      4.5 │      5.0 │ yes     │          │
+  │       brake_by_wire_rear │     3 │ 17.00 │ c2@ZC_FL(0) > c4@ZC_RL(1-2)                         │     0/1 │      4.1 │      5.0 │ yes     │          │
+  │            steer_by_wire │     3 │ 25.00 │ c2@ZC_FL(0) > c3@ZC_FR(1-2)                         │     0/1 │      4.3 │      5.0 │ yes     │          │
+  │        stability_control │     4 │ 15.80 │ c6@ZC_C(0) > c0@HPC(1) > c4@ZC_RL(2)                │     0/2 │     27.2 │     30.0 │ yes     │          │
+  │        propulsion_torque │     3 │  4.70 │ c2@ZC_FL(0) > c5@ZC_RR(1-2)                         │     0/1 │     23.4 │     30.0 │ yes     │          │
+  │          adaptive_cruise │     4 │ 18.10 │ c3@ZC_FR(0) > c1@HPC(1-2) > c5@ZC_RR(3)             │     0/2 │    138.4 │    200.0 │ yes     │          │
+  │             lane_keeping │     4 │ 30.90 │ c2@ZC_FL(0) > c0@HPC(1) > c2@ZC_FL(2) > c3@ZC_FR(3) │     0/3 │    147.8 │    150.0 │ yes     │          │
+  │ traffic_sign_recognition │     3 │ 13.60 │ c2@ZC_FL(0) > c1@HPC(1) > c6@ZC_C(2)                │     0/2 │    365.1 │    400.0 │ yes     │          │
+  │        driver_monitoring │     3 │  9.53 │ c6@ZC_C(0) > c1@HPC(1) > c6@ZC_C(2)                 │     0/2 │    356.0 │    400.0 │ yes     │          │
+  │              park_assist │     4 │  3.98 │ c2@ZC_FL(0) > c1@HPC(1) > c3@ZC_FR(2)               │     0/2 │    282.5 │    300.0 │ yes     │          │
+  │       battery_management │     3 │  4.55 │ c5@ZC_RR(0) > c1@HPC(1) > c5@ZC_RR(2)               │     0/2 │    267.9 │    400.0 │ yes     │          │
+  │       thermal_management │     3 │  0.83 │ c5@ZC_RR(0) > c1@HPC(1) > c4@ZC_RL(2)               │     0/2 │    563.0 │   1000.0 │ yes     │          │
+  │          climate_control │     3 │  0.80 │ c6@ZC_C(0) > c1@HPC(1) > c6@ZC_C(2)                 │     0/2 │    667.0 │   1000.0 │ yes     │          │
+  │               headlights │     3 │  1.00 │ c6@ZC_C(0) > c1@HPC(1) > c2@ZC_FL(2)                │     0/2 │     80.1 │    100.0 │ yes     │          │
+  │          turn_indicators │     3 │  0.55 │ c6@ZC_C(0) > c0@HPC(1) > c4@ZC_RL(2)                │     0/2 │     72.5 │    100.0 │ yes     │          │
+  │                   wipers │     3 │  0.22 │ c3@ZC_FR(0-1) > c2@ZC_FL(2)                         │     0/1 │    232.6 │    300.0 │ yes     │          │
+  │          central_locking │     3 │  0.50 │ c6@ZC_C(0) > c0@HPC(1) > c4@ZC_RL(2)                │     0/2 │    327.0 │    500.0 │ yes     │          │
+  │            tire_pressure │     3 │  0.04 │ c4@ZC_RL(0-1) > c6@ZC_C(2)                          │     0/1 │   2007.4 │   3000.0 │ yes     │          │
+  │        window_front_left │     3 │  0.90 │ c2@ZC_FL(0)                                         │     0/0 │     23.9 │     60.0 │ yes     │          │
+  │       window_front_right │     3 │  0.90 │ c3@ZC_FR(0)                                         │     0/0 │     21.7 │     60.0 │ yes     │          │
+  │             seat_heating │     2 │  0.01 │ c4@ZC_RL(0)                                         │     0/0 │   1002.5 │        - │ yes     │          │
+  │       instrument_cluster │     3 │  7.20 │ c4@ZC_RL(0) > c1@HPC(1) > c6@ZC_C(2)                │     0/2 │     74.3 │    100.0 │ yes     │          │
+  │        energy_management │     2 │  1.90 │ c1@HPC(0)                                           │     0/0 │    135.4 │        - │ yes     │          │
+  │              diagnostics │     2 │  0.80 │ c0@HPC(0)                                           │     0/0 │   1021.3 │        - │ yes     │          │
+  └──────────────────────────┴───────┴───────┴─────────────────────────────────────────────────────┴─────────┴──────────┴──────────┴─────────┴──────────┘
+

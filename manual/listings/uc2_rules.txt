@@ -1,0 +1,7 @@
+  │ metric                             │    BFDU │    WFDU │    FFDU │    CADU │
+  │ cores used M                       │       6 │      17 │       6 │       8 │
+  │ critical scaling factor            │   1.540 │   1.548 │   1.548 │   1.492 │
+  │ task-chains meeting deadline (%)   │   100.0 │   100.0 │   100.0 │   100.0 │
+  │ inter-ECU communications           │      12 │      14 │      12 │       6 │
+  │   replicated with FRER             │       5 │       8 │       5 │       2 │
+  │ network delay bound, max (us)      │  1725.3 │  4733.7 │  1725.3 │   291.7 │

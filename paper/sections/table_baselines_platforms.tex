@@ -1,0 +1,35 @@
+\begin{table}[t]
+\centering\footnotesize
+\caption{The heuristic against the metaheuristics on the hard platforms
+of \cref{tab:exact} (10 instances per size; on the constrained platform,
+no instance of 300 task-chains is feasible). Gap: cores above the best
+allocation known (the exact solver or any method), \%, mean; on time:
+task-chains that meet their deadline, \%, with the deadline local search
+applied to every method; SA: $10^6$ moves, GA: 100 generations, with
+their CPU times; --: no admissible mapping found on some instances (SA on
+5 of the 10 constrained instances of 200 task-chains).}
+\label{tab:baselines-platforms}
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{@{}lrrrrrrrrr@{}}
+\toprule
+ & & \multicolumn{4}{c}{gap (\%)} & \multicolumn{2}{c}{on time (\%)} & \multicolumn{2}{c@{}}{time (s)} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-8}\cmidrule(l){9-10}
+chains & inst. & \BFDU & \FFDU & SA & GA & \FFDU & SA & SA & GA \\
+\midrule
+\rowcolor{white}\multicolumn{10}{@{}l}{\emph{slow zones}} \\
+\quad 50 & 10 & 0.0 & 0.0 & 3.7 & 0.0 & 96.6 & 97.0 & 2.9 & 4.4 \\
+\quad 100 & 10 & 1.4 & 1.4 & 3.9 & 0.0 & 94.4 & 92.9 & 5.0 & 12 \\
+\quad 200 & 10 & 1.7 & 1.7 & 3.7 & 0.8 & 93.5 & 87.8 & 7.9 & 28 \\
+\quad 300 & 10 & 1.0 & 1.5 & 1.0 & 0.9 & 92.4 & 86.3 & 9.0 & 44 \\
+\rowcolor{white}\multicolumn{10}{@{}l}{\emph{constraints}} \\
+\quad 50 & 10 & 4.0 & 4.0 & 0.0 & 0.0 & 96.6 & 96.4 & 2.9 & 4.8 \\
+\quad 100 & 10 & 6.7 & 7.0 & 7.3 & 5.7 & 97.8 & 94.6 & 5.9 & 14 \\
+\quad 200 & 10 & 14.4 & 13.3 & -- & 21.4 & 93.9 & -- & 3.8 & 21 \\
+\rowcolor{white}\multicolumn{10}{@{}l}{\emph{domain}} \\
+\quad 50 & 10 & 0.0 & 0.0 & 0.0 & 0.0 & 98.8 & 98.8 & 4.4 & 6.6 \\
+\quad 100 & 10 & 9.7 & 2.0 & 20.0 & 4.0 & 96.0 & 97.7 & 8.6 & 19 \\
+\quad 200 & 10 & 7.4 & 11.1 & 8.9 & 0.0 & 96.2 & 96.3 & 16 & 46 \\
+\quad 300 & 10 & 4.9 & 10.6 & 8.2 & 2.6 & 94.4 & 92.3 & 20 & 77 \\
+\bottomrule
+\end{tabular}
+\end{table}

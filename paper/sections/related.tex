@@ -1,0 +1,217 @@
+\section{State of the art}
+\label{sec:related}
+
+\begin{inbrief}
+The problem sits where six lines of work meet: zonal architectures,
+task allocation, task-chain analysis and LET, TSN analysis, shared-resource
+contention, and system-level analysis and the joint design of computation
+and communication.
+\Cref{tab:related} places the closest works against the features of the
+problem. None covers allocation, priorities, task-chains, LET and network
+bounds together on a zonal platform, and none sizes the cores.
+\end{inbrief}
+
+\subsection{Zonal and centralized E/E architectures}
+
+Bandur et al.\ \cite{bandur2021centralized} make the case for centralized
+automotive architectures: fewer, more powerful computers, a service-based
+software platform and a backbone network. Askaripoor et al.\
+\cite{askaripoor2022synthesis} survey E/E architecture synthesis, of which
+the allocation of software to computing units is one step. Mauser and
+Wagner \cite{mauser2025centralization} combine a literature review and
+industrial interviews to identify seven system properties that limit
+current E/E architectures (bus load, functional safety and computing
+power among them) and use them to assess the potential of
+centralization.
+
+Quantitative studies of zonal platforms have so far looked at the network
+and the harness. Park et al.\ \cite{park2024zonal} simulate the end-to-end delay of TSN
+streams for 2 to 10 zones and estimate the length and weight of the
+harness. Aghababaiyan et
+al.\ \cite{aghababaiyan2025deterministic} schedule tasks between zone ECUs
+and a central unit over several topologies, and report deadline
+satisfaction from simulation, without a worst-case analysis. Zaheri and
+Reuss \cite{zaheri2025asil} allocate tasks to ECUs with a mixed-integer
+program under ISO~26262 constraints \cite{iso26262} (ASIL decomposition,
+memory) on a case of six tasks. None of these works sizes the cores of the
+ECUs under a worst-case analysis of the task-chains and the network.
+
+\subsection{Task allocation and partitioned scheduling}
+
+Allocating periodic tasks to processors is a bin-packing problem, and the
+decision version of bin packing is NP-complete in the strong sense
+\cite{garey1979computers}. Partitioned scheduling therefore
+relies on bin-packing heuristics (first, best or worst fit by decreasing
+utilization) with a per-core schedulability test \cite{davis2011survey},
+and task splitting extends them \cite{lakshmanan2009partitioned}. First fit decreasing uses at most $11/9$ of
+the optimal number of bins plus $6/9$ \cite{dosa2007tight}. On
+heterogeneous processors the size of an item depends on the bin
+\cite{baruah2004heterogeneous}.
+
+For distributed systems, Tindell et al.\ \cite{tindell1992allocating}
+searched allocations by simulated annealing, with response-time analysis
+of tasks and messages. Zheng et al.\ \cite{zheng2007definition} and Zhu et
+al.\ \cite{zhu2012optimization} optimize the allocation and the priorities
+together with mixed-integer programming, under end-to-end deadlines on a
+CAN-based platform. Zhu et al.\ \cite{zhu2009optimizing} optimize the
+\emph{extensibility} of such a system, the room left for WCET increases.
+Cambazard et al.\ \cite{cambazard2004decomposition} solve a hard real-time
+allocation problem exactly by decomposition: a master problem allocates,
+and a schedulability subproblem returns explanations that cut the master;
+\cref{sec:exact} follows the same idea. Davare et al.\
+\cite{davare2007period} optimize periods for latency. Bhat et al.\
+\cite{bhat2017practical} allocate primary and backup tasks for software
+fault tolerance in automotive systems, so that replicas never share a
+processor.
+
+Within a processor, the WCRT of fixed-priority tasks is the least fixed
+point of a recurrence \cite{joseph1986finding,audsley1993applying}.
+Audsley's algorithm \cite{audsley2001priority} finds a feasible priority
+order whenever one exists, for any test that does not depend on the
+relative order of the higher-priority tasks \cite{davis2016review}. Davis and Burns
+\cite{davis2007robust} refine it to maximize the tolerance to
+interference, and Davis et al.\ \cite{davis2016review} review its
+extensions. The margin of a schedulable system is measured by the
+critical scaling factor \cite{lehoczky1989rate} and, more generally, by
+sensitivity analysis \cite{bini2008sensitivity}. The priority orders of
+tasks with precedence constraints are a restriction these methods do not
+handle directly; \cref{sec:audsley} adapts Audsley's argument to it.
+
+\subsection{Task-chains and logical execution time}
+
+Feiertag et al.\ \cite{feiertag2008compositional} defined the reaction
+time and the data age of task-chains whose tasks communicate through
+registers. Becker et al.\ \cite{becker2017end} bound the maximum data age
+of automotive task-chains for several levels of system knowledge,
+including implicit and LET communication. Dürr et al.\
+\cite{durr2019end} and Günzel et al.\ \cite{gunzel2021timing,
+gunzel2023compositional} extend the bounds to sporadic and asynchronous
+distributed task-chains, and Günzel et al.\ \cite{gunzel2023equivalence}
+show that maximum reaction time and maximum data age are equal.
+
+LET originates in Giotto \cite{henzinger2003giotto}; Kirsch and Sokolova
+\cite{kirsch2012let} describe the paradigm. Bosch reported its industrial
+use for multicore engine control \cite{hamann2017communication} and
+published the statistics of an engine-management software as a WATERS
+benchmark \cite{kramer2015waters}. Biondi and Di Natale
+\cite{biondi2018achieving} implement LET on multicores and measure its
+overhead. Martinez et al.\ \cite{martinez2018analytical,martinez2020end}
+characterize end-to-end delays under LET and other communication models.
+Pazzaglia et al.\ \cite{pazzaglia2019optimizing} optimize the deployment
+of functions onto the tasks and cores of one multicore under LET, and
+Paladino et al.\ \cite{paladino2024optimizing} assign per-core priorities
+to minimize the latency of task-chains that span cores. Gemlau et al.\
+\cite{gemlau2021system} extend LET to distributed systems by giving the
+network its own logical intervals. All these works analyse or optimize
+task-chains on a \emph{given} platform; the sizing of the platform is
+outside their scope.
+
+\subsection{Timing analysis of TSN}
+
+Network Calculus \cite{cruz1991calculus,leboudec2001network} bounds delays
+with arrival and service curves. For the credit-based shaper, Queck
+\cite{queck2012analysis} and De Azua and Boyer \cite{azua2014complete}
+derive service curves for the SR classes A and B; Mohammadpour et al.\
+\cite{mohammadpour2018latency} and Zhao et al.\ \cite{zhao2021latency}
+bound the credit of any number of classes and give the service curves
+from which \cref{sec:nc} takes its rate-latency form. For time-aware shaping, Zhao et al.\
+\cite{zhao2018worst} give Network Calculus bounds and Craciunas et al.\
+\cite{craciunas2016scheduling} synthesize gate schedules. Thiele and Ernst
+\cite{thiele2016formal} analyse frame preemption, and Zhao et al.\
+\cite{zhao2022quantitative} compare the shapers.
+
+Asynchronous traffic shaping comes from the urgency-based scheduler of
+Specht and Samii \cite{specht2016urgency}. Le Boudec
+\cite{leboudec2018theory} proved that interleaved regulators placed
+behind a FIFO system do not increase its worst-case delay (``shaping for
+free''), so that the bursts of a flow can be bounded at their source value
+at every hop. Thomas et al.\ \cite{thomas2022worst} analyse packet
+replication and elimination: the elimination increases the burstiness of
+a flow, and an interleaved regulator placed after it loses the
+shaping-for-free property. Most TSN analyses take the streams as given; in
+this paper the streams depend on the mapping.
+
+\subsection{Shared-resource contention}
+
+On a multicore, tasks of different cores delay each other on shared
+caches, buses and memory. Paolieri et al.\ \cite{paolieri2009hardware}
+bound the delay of a request under round-robin arbitration by one request
+of every other core, which makes WCETs composable. Davis et al.\
+\cite{davis2018extensible} integrate such interference into
+response-time analysis (multicore response time analysis). Allocation
+studies usually assume WCETs that already include the worst
+interference; \cref{sec:contention} makes the interference depend on the
+mapping instead. Zhu et al.\ \cite{zhu2026reducing} refine the shared-cache
+interference of cause-effect chains on a given mapping of chains to
+cores, which lowers their end-to-end latency bounds.
+
+\subsection{System-level analysis and joint design}
+
+Compositional system-level analysis, as in SymTA/S
+\cite{henia2005system}, propagates event models between the local
+analyses of processors and buses, and bounds end-to-end delays for a
+given mapping. Craciunas and Oliver \cite{craciunas2016combined}
+synthesize task and network schedules together for time-triggered
+systems. Pop et al.\ \cite{pop2016design} optimize the routing and
+scheduling of time-triggered and AVB traffic in TSN. Both assume the tasks
+are already allocated. Arestova et al.\ \cite{arestova2022itans} schedule
+multi-rate cause-effect chains of tasks and of their TSN flows together,
+by an incremental heuristic under end-to-end deadlines; they compute a
+schedule, where this paper allocates the tasks and bounds the delays of
+fixed-priority tasks and of shaped streams. Zhu et al.\ \cite{zhu2012optimization} do allocate tasks, to ECUs connected
+by a CAN bus with fixed-priority messages, with a mixed-integer program.
+
+\begin{table*}[t]
+\centering\footnotesize
+\caption{Positioning against the closest works. \ding{51}: covered;
+$\circ$: partly, or under strong assumptions; --: not addressed (as
+described in the publications). \emph{Alloc.}: allocation of tasks to cores
+or ECUs; \emph{Prio.}: fixed-priority assignment; \emph{Chains}: end-to-end
+bounds of multi-rate task-chains; \emph{LET}: LET communication;
+\emph{Net.}: worst-case network bounds; \emph{Zonal}: zonal bindings and
+spatial constraints (memory, replicas, co-location); \emph{Het.}:
+heterogeneous core speeds or types; \emph{Size}: minimizes the number of
+cores; \emph{Exact}: exact method or optimality gap measured;
+\emph{Life}: evolution of the software after the design; \emph{Scale}:
+largest reported case.}
+\label{tab:related}
+\setlength{\tabcolsep}{3.4pt}
+\renewcommand{\arraystretch}{1.08}
+\rowcolors{2}{brandlight}{white}
+\begin{tabular}{@{}l*{10}{c}l@{}}
+\toprule
+\rowcolor{white}
+work & Alloc. & Prio. & Chains & LET & Net. & Zonal & Het. & Size & Exact & Life & Scale \\
+\midrule
+Tindell et al.\ 1992 \cite{tindell1992allocating} & \ding{51} & \ding{51} & $\circ$ & -- & $\circ$ & -- & -- & -- & -- & -- & -- \\
+Cambazard et al.\ 2004 \cite{cambazard2004decomposition} & \ding{51} & \ding{51} & -- & -- & $\circ$ & $\circ$ & -- & -- & \ding{51} & -- & -- \\
+Zhu et al.\ 2009/12 \cite{zhu2009optimizing,zhu2012optimization} & \ding{51} & \ding{51} & \ding{51} & -- & \ding{51} (CAN) & -- & $\circ$ & -- & \ding{51} & $\circ$ & -- \\
+Bhat et al.\ 2017 \cite{bhat2017practical} & \ding{51} & -- & -- & -- & -- & $\circ$ (replicas) & -- & $\circ$ & -- & -- & -- \\
+Pazzaglia et al.\ 2019 \cite{pazzaglia2019optimizing} & \ding{51} & $\circ$ & \ding{51} & \ding{51} & -- & -- & -- & -- & $\circ$ & -- & one multicore \\
+Paladino et al.\ 2024 \cite{paladino2024optimizing} & -- & \ding{51} & \ding{51} & $\circ$ & -- & -- & -- & -- & -- & -- & one multicore \\
+Gemlau et al.\ 2021 \cite{gemlau2021system} & -- & -- & \ding{51} & \ding{51} & $\circ$ & -- & -- & -- & -- & -- & -- \\
+Günzel et al.\ 2021/23 \cite{gunzel2021timing,gunzel2023compositional} & -- & -- & \ding{51} & \ding{51} & $\circ$ & -- & -- & -- & -- & -- & -- \\
+Craciunas, Oliver 2016 \cite{craciunas2016combined} & -- & $\circ$ (TT) & \ding{51} & -- & \ding{51} (TT) & -- & -- & -- & \ding{51} & -- & -- \\
+Zaheri, Reuss 2025 \cite{zaheri2025asil} & \ding{51} & $\circ$ & $\circ$ & -- & -- & $\circ$ (ASIL, memory) & \ding{51} & -- & \ding{51} & -- & 6 tasks \\
+Aghababaiyan et al.\ 2025 \cite{aghababaiyan2025deterministic} & \ding{51} & -- & -- & -- & -- (simulated) & \ding{51} & \ding{51} & -- & -- & -- & -- \\
+\midrule
+\rowcolor{white}
+\textbf{This paper} & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} (4 TSN) & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \ding{51} & \textbf{13\,869 tasks} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Positioning}
+
+\Cref{tab:related} summarizes the gap. Works that allocate tasks either
+ignore the network or assume a bus with fixed-priority messages; works
+that bound task-chains, LET or TSN take the allocation as given;
+contention is analysed on a given mapping; and no work both sizes the
+cores of a zonal platform and bounds its task-chains with all these
+couplings in one system-level analysis. The aim of this paper is a sound, explainable
+and scalable method that a system architect can run on the software of a
+whole vehicle in early design. It compares platforms and design rules
+(core types, network rate, TSN mechanism, replication policy, provisioning
+for updates), and every number it reports has a worst-case analysis
+behind it. Its distance to the optimum is measured with an exact
+formulation on instances of up to 300 task-chains (\cref{sec:rq1}).

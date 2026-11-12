@@ -1,0 +1,132 @@
+\section{Exact formulation}
+\label{sec:exact}
+
+\begin{inbrief}
+To measure how far the heuristic is from the optimum of (O1), the
+allocation of the sub-chains is also solved exactly. A constraint program
+chooses the cores and the LET periods; schedulability is added lazily, as
+cuts derived from unschedulable cores. Every optimal allocation it returns
+is checked again by the implementation of the heuristic.
+\end{inbrief}
+
+\paragraph{Scope.} The exact model takes the sub-chains of step 1 as
+given, since partitioning does not depend on the allocation rule, and
+solves the rest of (O1): the allocation, the LET periods and the
+schedulability of every core, under (C1)--(C7). It uses the same WCETs,
+utilizations (in parts per million of a core, rounded up) and LET tasks
+as the heuristic, so the two are compared on exactly the same problem.
+Contention is left out, as it would make the WCETs depend on the number of
+cores per ECU. The candidate cores of an ECU are its initial cores, then
+cores of its added type up to two more than the larger of its initial
+count and the largest number any heuristic uses there (within
+$M^{\max}_k$). The optimum is the optimum over these candidates. A
+solution that uses every candidate of an ECU is reported as possibly
+restricted; this happened once (\cref{sec:rq1}). To check that two spare
+cores suffice, all 240 instances of \cref{sec:rq1} were solved again with
+four: no allocation with fewer cores was found on any of them, none was
+restricted, and every optimum proven in both runs was the same.
+
+\subsection{Variables and constraints}
+
+For every sub-chain $f$ and allowed candidate core $p$ (by (C1)), a Boolean
+$x_{f,p}$ says that $f$ runs on $p$, and $u_p$ that $p$ is used. Let
+$\mathcal{G}$ be the closure under GCD of the GCDs $g_f$ of the periods of
+the sub-chains; for every core, a Boolean $y_{p,g}$, $g\in\mathcal{G}$,
+chooses the period of its LET task. With $U_{f,p}$ the utilization of $f$
+on $p$ and $C^{\LET}_p$ the WCET of the LET task:
+\begin{align}
+&\textstyle\sum_{p}x_{f,p}=1, \qquad x_{f,p}\le u_p &&\forall f,p\label{x:assign}\\
+&\textstyle\sum_{g\in\mathcal{G}}y_{p,g}=u_p,\qquad
+	x_{f,p}\le\sum_{g\mid g_f}y_{p,g} &&\forall f,p\label{x:let}\\
+&\textstyle\sum_{f}U_{f,p}\,x_{f,p}+\sum_{g}\ceil{\frac{C^{\LET}_p}{g}}y_{p,g}
+	\le\varphi\,u_p &&\forall p\label{x:load}\\
+&\textstyle\sum_{f,\,p\in k}\mu_f\,x_{f,p}\le M_k &&\forall k\label{x:memory}\\
+&\textstyle\sum_{\xi\in\varrho}z_{\xi,k}\le1,\quad x_{f,p}\le z_{\xi(f),\kappa(p)}
+	&&\forall\varrho,k\label{x:replica}
+\end{align}
+\Cref{x:let} lets a sub-chain run on a core only if the LET period of the
+core divides the periods of its tasks. The chosen $g$ then divides every
+period on the core, so it is at most their GCD, and the load it reserves is
+at least the true LET load: every solution is admissible. Conversely, the
+GCD of the periods on a core is in $\mathcal{G}$, so an allocation that is
+admissible with the true LET periods stays feasible with $g$ equal to that
+GCD, and no allocation is lost. \Cref{x:load} is the cap (C3), \cref{x:memory} the
+memory (C4), and \cref{x:replica} keeps the task-chains $\xi$ of a replica
+group $\varrho$ on distinct ECUs (C5), with an auxiliary $z_{\xi,k}$ that is
+true if $\xi$ has a sub-chain on ECU $k$; the core policy replaces ECUs by
+cores. Co-location (C2) is already ensured by partitioning. The objective
+is $\min\sum_p u_p$.
+
+\paragraph{Symmetry breaking.} Cores of one ECU and one kind (type, speed,
+LET WCET) are interchangeable. Within such a group, $u_{p_{j+1}}\le u_{p_j}$:
+cores are used in order. Moreover, with the sub-chains numbered by
+decreasing utilization, sub-chain $i$ may only use the first $i+1$ cores of
+a group. Any solution can be relabelled to satisfy this, by sorting the
+used cores of each group by the smallest index of their sub-chains: the
+$j$-th core then holds no sub-chain of index below $j$.
+
+\subsection{Schedulability as lazy constraints}
+
+Constraints (C6) and (C7) are not linear. They are added lazily
+(\cref{alg:exact}), in the spirit of logic-based Benders decomposition
+\cite{cambazard2004decomposition}. After each solve, every used core is
+checked with the response-time analysis and the priority assignment of
+\cref{alg:audsley}, which is optimal (\cref{thm:audsley}). For an
+unschedulable core with sub-chains $S$, the check removes sub-chains from
+$S$ one at a time, as long as the rest stays unschedulable. The result $S'$
+is unschedulable, but it becomes schedulable if any of its sub-chains is
+removed. The cut
+\begin{equation}
+\textstyle\sum_{f\in S'}x_{f,q}\le|S'|-1
+\label{eq:cut}
+\end{equation}
+is then added for every candidate core $q$ of the same kind as the failing
+one, and the model is solved again, starting from the previous solution.
+
+\begin{algorithm2e}[t]
+\caption{\textsf{Exact}$(\Frags)$}
+\label{alg:exact}
+$\mathcal{K}\gets\varnothing$ \tcp*{cuts}
+\Repeat{every used core is schedulable}{
+	solve \cref{x:assign,x:let,x:load,x:memory,x:replica} with the cuts $\mathcal{K}$, minimizing $\sum u_p$\;
+	\lIf{infeasible}{\Return \emph{infeasible}}
+	\ForEach{used core $p$ with sub-chains $S$, unschedulable}{
+		$S'\gets S$\;
+		\ForEach{$f\in S'$}{\lIf{$S'\setminus\{f\}$ unschedulable}{$S'\gets S'\setminus\{f\}$}}
+		add \cref{eq:cut} for $S'$ on every core of the kind of $p$ to $\mathcal{K}$\;
+	}
+}
+\Return the allocation and $\sum u_p$\;
+\end{algorithm2e}
+
+\begin{proposition}[Validity of the cuts]
+\label{prop:cuts}
+No cut removes an allocation in which every core is schedulable.
+\Cref{alg:exact} therefore returns an optimal allocation, and the
+objective bound of any of its solves is a lower bound of the optimum.
+\end{proposition}
+\begin{proof}
+Schedulability under the optimal assignment is monotone with respect to
+removing sub-chains: removing tasks shrinks every higher-priority set and
+can only make the LET period longer, so the order that was schedulable
+stays schedulable for the remaining tasks. Hence every superset of the
+unschedulable set $S'$ is unschedulable on a core of that kind, and the WCETs,
+utilizations and LET task depend only on the kind. An allocation that puts
+all of $S'$ on such a core is not admissible, which is what \cref{eq:cut}
+forbids. The cuts only remove inadmissible allocations, so every solve is
+a relaxation of the problem and its bound is a lower bound. The loop ends:
+a new cut is never satisfied by the solution that produced it, so no cut
+is added twice, and there are finitely many. When the last solve is proved
+optimal, its solution is admissible and optimal for a relaxation of the
+problem, hence optimal for the problem. When the time limit stops a solve,
+the best admissible solution and the bound are reported instead.
+\end{proof}
+
+\paragraph{Implementation and checking.} The model is solved with the
+CP-SAT solver of OR-Tools \cite{ortools}, with a time limit; if the limit is
+reached, the best admissible solution and the bound are reported. The
+schedulability checker is a separate implementation of \cref{eq:rta} and
+\cref{alg:audsley}. It is first compared with the heuristic on the
+heuristic's own mappings. Every exact allocation is then placed again by
+the implementation of the heuristic, with all its admissibility checks and
+its priority assignment; the experiments stop if it is rejected. None was.

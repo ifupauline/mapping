@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software or its method, please cite it as below."
+title: "System-level mapping of automotive applications onto zonal E/E architectures: allocation, contention, LET, TSN and the life of the platform"
+type: software
+authors:
+  - name: "ifupauline"
+repository-code: "https://github.com/ifupauline/mapping"
+license: Apache-2.0
+date-released: "2026-11-11"
+keywords:
+  - automotive embedded systems
+  - software-defined vehicle
+  - zonal E/E architecture
+  - real-time systems
+  - task allocation
+  - task-chains
+  - logical execution time
+  - fixed-priority scheduling
+  - time-sensitive networking
+  - network calculus
+  - design-space exploration

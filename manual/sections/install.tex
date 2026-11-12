@@ -1,0 +1,40 @@
+\section{Installation}
+\label{sec:install}
+
+\paragraph{Requirements.} A C11 compiler (GCC or Clang), CMake 3.10 or
+later, and OpenMP (optional: experiments in parallel). For the scripts:
+Python 3 with \cmd{numpy}, \cmd{matplotlib} and \cmd{ortools} (the exact
+solver only). For the paper and this manual: a LaTeX distribution (on
+Debian: \cmd{texlive-latex-extra texlive-science texlive-pictures
+texlive-fonts-extra}).
+
+\paragraph{Build and test.}
+\begin{shell}
+cmake -S . -B build\\
+cmake -{}-build build -j\\
+cd build \&\& ctest -{}-output-on-failure\\
+pip install -r requirements.txt \quad\# numpy, matplotlib, ortools
+\end{shell}
+The programs are in \cmd{build/bin}. All tests must pass
+(\cref{sec:validation}); the exact-solver test runs only if OR-Tools is
+installed. A build with the address and undefined-behaviour sanitizers
+checks the memory accesses of the C code:
+\begin{shell}
+cmake -S . -B build-san -DMP\_SANITIZE=ON -DCMAKE\_BUILD\_TYPE=Debug
+\end{shell}
+
+\needspace{10\baselineskip}
+\paragraph{First runs.} Each command below takes well under a second.
+\begin{shell}
+build/bin/mapping \quad\# a generated application, built-in zonal platform\\
+build/bin/mapping examples/uc1\_central\_sizing/application.json \textbackslash\\
+\quad examples/uc1\_central\_sizing/configuration.json -{}-cores\\
+build/bin/mapping -{}-example-config domain > domain.json \quad\# a template\\
+build/bin/mapping -{}-config domain.json -{}-chains 120 -{}-out results-domain
+\end{shell}
+The first run generates 300 task-chains and compares the four allocation
+rules on the built-in zonal platform. The second maps the 24 functions of
+use case~1 (\cref{sec:uc1}) and prints every core and every task-chain.
+The last two write a template configuration file and map a generated
+application on it, the results going to the files of
+\cref{sec:outfiles}.

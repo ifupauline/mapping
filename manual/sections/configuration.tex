@@ -1,0 +1,297 @@
+\section{The configuration file}
+\label{sec:configuration}
+
+The configuration file describes the hardware and the way to map onto it.
+It has an optional \key{description} and five sections, each optional:
+what a section leaves out keeps the default value of
+\cref{tab:platform-keys,tab:exec-keys,tab:interference-keys,tab:network-keys,tab:method-keys}.
+Without a \key{platform} section the platform is the built-in zonal one.
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5mm,
+	sec/.style={box,minimum width=27mm,minimum height=13mm,
+		font=\sffamily\scriptsize,text width=25mm}]
+\node[sec] (p) {\textbf{platform}\\ECUs, roles, cores, memory};
+\node[sec,right=of p] (e) {\textbf{execution\_model}\\scheduling, LET, cap};
+\node[sec,right=of e] (i) {\textbf{interference\_model}\\shared memory};
+\node[sec,right=of i] (n) {\textbf{network\_model}\\topology, TSN};
+\node[sec,right=of n,fill=accentlight,draw=accent] (m) {\textbf{method}\\allocation, moves, sizing};
+\node[above=2mm of $(p.north west)!0.5!(n.north east)$,font=\sffamily\scriptsize\bfseries,text=brand]
+	{the system: what the hardware is and how it behaves};
+\node[above=2mm of m.north,font=\sffamily\scriptsize\bfseries,text=accent!80!black]
+	{how to map};
+\end{tikzpicture}
+\end{center}
+
+\begin{tip}[Start from a template]
+\cmd{mapping -{}-example-config T} prints a complete configuration file,
+every key with its value, for the template \cmd{T}: \cmd{zonal} (the
+built-in platform), \cmd{domain}, \cmd{hybrid} or \cmd{distributed}
+(\cref{fig:templates}). \cmd{mapping -{}-config FILE -{}-print-config} prints
+the configuration in effect, options included: the way to check what the
+tool understood.
+\end{tip}
+
+\subsection{\texttt{platform}: the ECUs}
+\label{sec:conf-platform}
+
+\key{"platform": \{"ecus": [...]\}} lists 1 to 32 ECUs. The ECU order sets
+the numbering of the cores (central computers first, then one core of each
+ECU of a role at a time) and the order in which ECUs receive new cores.
+
+\begin{shell}
+\{"name": "HPC", "role": "central",\\
+\ "cores": [\{"type": "big", "count": 4, "speed\_percent": 100\},\\
+\ \ \ \ \ \ \ \ \ \ \{"type": "little", "count": 4, "speed\_percent": 40\}],\\
+\ "added\_core\_type": "big", "memory\_kb": 524288, "max\_cores": 12\}
+\end{shell}
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of an ECU (\key{platform.ecus}).}
+\label{tab:platform-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{30mm}>{\raggedright\arraybackslash}p{26mm}X@{}}
+\toprule\rowcolor{white}
+key & default & meaning \\
+\midrule
+\key{name} & (mandatory) & at most 31 characters, distinct \\
+\key{role} & (mandatory) & \key{central}, \key{domain}, \key{zone} or \key{ecu} (\cref{sec:concepts}) \\
+\key{cores} & (mandatory) & one group per core type: \key{type} (\key{big}, \key{little}, \key{mcu}, \key{lockstep}), \key{count} (initial cores, may be 0) and \key{speed\_percent} (of the reference core). A type without a group does not exist on this ECU \\
+\key{added\_core\_type} & the first type & type of the cores the tool adds to this ECU (it adds a core of another type of the ECU when a sub-chain may only run there) \\
+\key{memory\_kb} & 0 (unlimited) & memory for the code and data of the tasks \\
+\key{max\_cores} & 0 (unlimited) & largest number of cores: a fixed hardware variant \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\begin{tikzpicture}[node distance=3mm]
+% ---- zonal
+\node[font=\sffamily\small\bfseries,text=brand,anchor=west] (tz) at (0,0.55) {zonal};
+\node[font=\sffamily\scriptsize,text=cmuted,anchor=west] at ([xshift=1mm]tz.east) {(built-in): a central computer, five zone controllers};
+\node[switch] (zsw) at (6.4,-1.6) {SW};
+\node[ecucentral,minimum width=21mm] (zpcu) at (6.4,-0.45) {PCU\cores{8 big 100\,\%}};
+\foreach \i/\x in {1/0.9,2/3.65,3/6.4,4/9.15,5/11.9} {
+	\node[ecuzone,minimum width=21mm] (zz\i) at (\x,-2.9) {ZCU\i\cores{4 MCU 50\,\%}};
+	\draw[link] (zz\i.north) -- (zsw);
+}
+\draw[link] (zpcu) -- (zsw);
+% ---- domain
+\node[font=\sffamily\small\bfseries,text=teal,anchor=west] (td) at (0,-4.5) {domain};
+\node[font=\sffamily\scriptsize,text=cmuted,anchor=west] at ([xshift=1mm]td.east) {five domain controllers, no central computer};
+\node[switch] (dsw) at (6.4,-6.1) {SW};
+\foreach \n/\c/\x/\y [count=\k] in {ADAS/4 big 100\,\%/0.9/-5.2,Infotainment/2 big + 4 little/3.65/-5.2,
+	Powertrain/3 MCU + 1 lock-step/9.15/-5.2,Chassis/2 MCU + 2 lock-step/11.9/-5.2} {
+	\node[ecudomain,minimum width=24mm] (dd\k) at (\x,\y) {\n\cores{\c}};
+	\draw[link] (dd\k.south) -- (dsw);
+}
+\node[ecudomain,minimum width=24mm] (dBody) at (6.4,-7.25) {Body\cores{2 MCU 50\,\%}};
+\draw[link] (dBody) -- (dsw);
+% ---- hybrid
+\node[font=\sffamily\small\bfseries,text=brand,anchor=west] (th) at (0,-8.15) {hybrid};
+\node[font=\sffamily\scriptsize,text=cmuted,anchor=west] at ([xshift=1mm]th.east) {a central computer, an ADAS domain controller, four zones};
+\node[switch] (hsw) at (6.4,-10.3) {SW};
+\node[ecucentral,minimum width=21mm] (hpcu) at (5.0,-9.15) {PCU\cores{8 big 100\,\%}};
+\node[ecudomain,minimum width=21mm] (hadas) at (7.8,-9.15) {ADAS\cores{4 big 100\,\%}};
+\draw[link] (hpcu.south) -- (hsw); \draw[link] (hadas.south) -- (hsw);
+\foreach \n/\x [count=\k] in {ZCU\_FL/2.25,ZCU\_FR/5.0,ZCU\_RL/7.8,ZCU\_RR/10.55} {
+	\node[ecuzone,minimum width=21mm] (hz\k) at (\x,-11.45) {\n\cores{4 MCU 50\,\%}};
+	\draw[link] (hz\k.north) -- (hsw);
+}
+% ---- distributed
+\node[font=\sffamily\small\bfseries,text=cmuted,anchor=west] (tdi) at (0,-13.1) {distributed};
+\node[font=\sffamily\scriptsize,text=cmuted,anchor=west] at ([xshift=1mm]tdi.east) {twelve ECUs, one function each, at most two cores (four for ADAS), 100 Mbit/s};
+\node[switch] (disw) at (6.4,-15.2) {SW};
+\foreach \n/\x/\y in {ADAS/0.9/-14.0,ESC/2.75/-14.0,EPS/4.6/-14.0,ECM/8.2/-14.0,TCM/10.05/-14.0,BCM/11.9/-14.0,
+	HVAC/0.9/-16.4,IPC/2.75/-16.4,DOOR\_FL/4.6/-16.4,DOOR\_FR/8.2/-16.4,DOOR\_RL/10.05/-16.4,DOOR\_RR/11.9/-16.4} {
+	\node[ecuplain,minimum width=16mm,minimum height=7mm] (di) at (\x,\y) {\n};
+	\draw[link] (di) -- (disw);
+}
+\end{tikzpicture}
+\caption{The four templates of \opt{example-config}, star topology. The
+zone, domain and distributed ECUs are wired to the sensors and actuators of
+generated applications; ESC and EPS have one lock-step core each, ADAS two
+big cores, the others one microcontroller core at 50\,\%.}
+\label{fig:templates}
+\end{figure}
+
+\subsection{\texttt{execution\_model}: scheduling and communication}
+\label{sec:conf-exec}
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of \key{execution\_model}.}
+\label{tab:exec-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{36mm}>{\raggedright\arraybackslash}p{30mm}X@{}}
+\toprule\rowcolor{white}
+key & default & meaning \\
+\midrule
+\key{scheduling} & \key{fixed-priority preemptive} & the only one supported; written for the reader of the file \\
+\key{communication} & \key{implicit} & between cores: \key{implicit} (an output is copied at the first LET instant after its producer ends) or \key{LET} (strict LET: published at the end of its producer's period) (\cref{sec:concepts-let}) \\
+\key{utilization\_cap} & 0.8 & $\varphi$: largest load of a core, LET task included \\
+\key{let\_task\_wcet\_us} & 50 & WCET of the LET task of a core that communicates, on the reference core \\
+\key{wcet\_margin\_percent} & 0 & every WCET is raised by this percentage before the mapping \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{\texttt{interference\_model}: shared-memory contention}
+\label{sec:conf-interference}
+
+The cores of one ECU share its memory; a request waits for the requests of
+the other cores, served in round robin. A task then runs for its WCET plus
+its requests times $(n-1)$ times the latency, $n$ the cores of the ECU that
+run tasks; the tool iterates until the number of competing cores is the
+one of the mapping.
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of \key{interference\_model}.}
+\label{tab:interference-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{46mm}>{\raggedright\arraybackslash}p{24mm}X@{}}
+\toprule\rowcolor{white}
+key & default & meaning \\
+\midrule
+\key{shared\_memory\_arbitration} & \key{round-robin} & the only one supported \\
+\key{memory\_latency\_ns} & 0 & time to serve one request; 0: no contention \\
+\key{memory\_accesses\_per\_ms} & 1000 & requests per ms of reference WCET, for the tasks without \key{memory\_accesses} and for the LET tasks \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{\texttt{network\_model}: the TSN backbone}
+\label{sec:conf-network}
+
+Every ECU has one full-duplex link to a switch. The \key{topology} gives
+the switches: \key{star} (one switch), \key{tree} (one switch per ECU, all
+linked to the switch of the root ECU), \key{ring} (one switch per ECU, in
+ECU order) or \key{custom} (\cref{fig:topologies}). Routes are shortest
+paths; the links of the central computers run at the backbone rate.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[sw/.style={switch,minimum width=5mm,minimum height=4mm,font=\sffamily\tiny\bfseries},
+	e/.style={draw=cmuted,fill=white,circle,inner sep=1.2pt,minimum size=3.2mm,font=\sffamily\tiny}]
+% star
+\begin{scope}
+\node[font=\sffamily\scriptsize\bfseries,text=brand] at (0,1.7) {star};
+\node[sw] (s) at (0,0) {};
+\foreach \a/\n in {90/C,18/1,-54/2,-126/3,162/4} {
+	\node[e] (e\n) at (\a:1.15) {\n}; \draw[link] (s) -- (e\n);}
+\end{scope}
+% tree
+\begin{scope}[xshift=3.6cm]
+\node[font=\sffamily\scriptsize\bfseries,text=brand] at (0,1.7) {tree};
+\node[sw] (r) at (0,0.35) {};
+\node[e] (rc) at (0,1.15) {C}; \draw[link] (r) -- (rc);
+\foreach \x/\n in {-1.2/1,-0.4/2,0.4/3,1.2/4} {
+	\node[sw] (t\n) at (\x,-0.55) {}; \draw[fast] (r) -- (t\n);
+	\node[e] (te\n) at (\x,-1.3) {\n}; \draw[link] (t\n) -- (te\n);}
+\end{scope}
+% ring
+\begin{scope}[xshift=7.2cm]
+\node[font=\sffamily\scriptsize\bfseries,text=brand] at (0,1.7) {ring};
+\foreach \a/\n in {90/C,18/1,-54/2,-126/3,162/4} {
+	\node[sw] (q\n) at (\a:0.75) {};
+	\node[e] (qe\n) at (\a:1.3) {\n}; \draw[link] (q\n) -- (qe\n);}
+\draw[fast] (qC) -- (q1) -- (q2) -- (q3) -- (q4) -- (qC);
+\end{scope}
+% custom
+\begin{scope}[xshift=10.9cm]
+\node[font=\sffamily\scriptsize\bfseries,text=brand] at (0,1.7) {custom};
+\node[sw] (u1) at (-0.7,0.5) {}; \node[sw] (u2) at (0.7,0.5) {};
+\node[sw] (u3) at (0,-0.55) {};
+\draw[fast] (u1) -- (u2) -- (u3) -- (u1);
+\node[e] (ue1) at (-1.35,1.1) {C}; \draw[link] (u1) -- (ue1);
+\node[e] (ue2) at (1.35,1.1) {1}; \draw[link] (u2) -- (ue2);
+\node[e] (ue3) at (1.35,0.0) {2}; \draw[link] (u2) -- (ue3);
+\node[e] (ue4) at (-0.5,-1.3) {3}; \draw[link] (u3) -- (ue4);
+\node[e] (ue5) at (0.5,-1.3) {4}; \draw[link] (u3) -- (ue5);
+\end{scope}
+\end{tikzpicture}
+\caption{The topologies, for a central computer C and four other ECUs:
+the switches are dark, the backbone links thick. A custom topology may
+have switches without ECUs and links of their own rates.}
+\label{fig:topologies}
+\end{figure}
+
+A custom topology names its switches with the ECUs on each one, and the
+links between switches (full duplex, at the backbone rate unless they
+give theirs):
+\begin{shell}
+"topology": "custom",\\
+"switches": [\{"name": "SW\_CENTRAL", "ecus": ["HPC"]\},\\
+\ \ \ \ \ \ \ \ \ \ \ \ \{"name": "SW\_FRONT", "ecus": ["ADAS\_DC", "ZC\_FL", "ZC\_FR"]\},\\
+\ \ \ \ \ \ \ \ \ \ \ \ \{"name": "SW\_REAR", "ecus": ["ZC\_RL", "ZC\_RR"]\}],\\
+"switch\_links": [\{"from": "SW\_CENTRAL", "to": "SW\_FRONT", "mbps": 10000\},\\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{"from": "SW\_CENTRAL", "to": "SW\_REAR", "mbps": 2500\},\\
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{"from": "SW\_FRONT", "to": "SW\_REAR"\}]
+\end{shell}
+The tool checks that every ECU is on one switch, that every switch can
+reach every other one, and that no route is longer than 16 ports. With
+FRER (ring or custom), the second route of a replicated message is the
+shortest one that shares no link and no switch with the first between the
+switch of the source and the switch of the destination.
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of \key{network\_model}.}
+\label{tab:network-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{44mm}>{\raggedright\arraybackslash}p{24mm}X@{}}
+\toprule\rowcolor{white}
+key & default & meaning \\
+\midrule
+\key{standard} & \key{TSN} & the only one supported \\
+\key{topology} & \key{star} & \key{star}, \key{tree}, \key{ring} or \key{custom} \\
+\key{tree\_root} & first central & tree: the ECU whose switch is the root \\
+\key{switches}, \key{switch\_links} & & custom topology only (above) \\
+\key{link\_mbps} & 1000 & rate of the ECU links, Mbit/s \\
+\key{backbone\_mbps} & link rate & rate of the links between switches and of the links of the central computers \\
+\key{ecu\_link\_mbps} & & rates of single ECU links, e.g.\ \key{\{"HPC": 10000\}} \\
+\key{switch\_latency\_us} & 2 & fabric and propagation delay per switch crossed \\
+\key{link\_limit\_percent} & 100 & design limit of the LET load of a port; a port above it is overloaded \\
+\key{traffic\_shaping} & \key{CBS} & \key{CBS}, \key{TAS} or \key{ATS} \\
+\key{traffic\_classes} & 1 & 1 to 3 LET classes, by the period of their producer \\
+\key{class\_max\_periods\_us} & 5000, 20000 & largest producer period of each class but the last (classes $-1$ values) \\
+\key{idle\_slopes\_percent} & 75 (one class) & CBS: share of the port rate of each class \\
+\key{proportional\_idle\_slopes} & true & CBS, several classes: the total of the shares divided at each port in proportion to the traffic of each class \\
+\key{tas\_cycle\_us} & 500 & TAS: gate cycle \\
+\key{tas\_windows\_percent} & 70 (one class) & TAS: window of each class, \% of the cycle \\
+\key{frame\_preemption} & false & preemption of the best-effort frames \\
+\key{frer} & false & ring or custom: messages of replicated chains over two disjoint routes \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{\texttt{method}: how to map}
+\label{sec:conf-method}
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of \key{method}.}
+\label{tab:method-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{34mm}>{\raggedright\arraybackslash}p{18mm}X@{}}
+\toprule\rowcolor{white}
+key & default & meaning \\
+\midrule
+\key{allocation} & \key{FFDU} & BFDU (best fit: fullest core), WFDU (worst fit: emptiest core), FFDU (first fit), CADU (fewest network hops, then a central computer, then best fit); all by decreasing utilization \\
+\key{sigma} & 0.4 & $\sigma$: largest utilization of a sub-chain, fraction of a reference core (at most the cap) \\
+\key{affinity} & true & a sub-chain first tries the cores of the other sub-chains of its chain \\
+\key{consolidation} & true & after the allocation, empty the cores whose sub-chains fit elsewhere (not with WFDU) \\
+\key{swap\_moves} & false & also exchange sub-chains of two unschedulable cores, before the relocation moves (in the experiments it never repaired a core) \\
+\key{relocation\_moves} & true & move sub-chains of unschedulable cores to schedulable ones \\
+\key{local\_search} & true & move sub-chains to bring late task-chains on time \\
+\key{replica\_separation} & \key{ecu} & replicas on different \key{ecu}s, or only on different \key{core}s \\
+\key{fixed\_hardware} & false & add no core: a sub-chain that fits nowhere makes the mapping infeasible (software updates of a frozen platform) \\
+\key{target\_scaling} & 0 (none) & sizing: lower the cap until the critical scaling factor reaches this value (e.g.\ 1.3) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{warn}[Which rule?]
+FFDU and BFDU give the fewest cores; CADU the fewest network messages, at
+the price of more cores; WFDU spreads the load on every core, which is
+wasteful at design time but good on hardware that is already paid for
+(use case~4, \cref{sec:uc4}). \cmd{-{}-algorithm all} compares the four.
+\end{warn}

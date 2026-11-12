@@ -1,0 +1,316 @@
+design point sigma 30000 algorithm BFDU
+fragments 9 cuts 8 forced 0 max 8
+  core 0 controller 0 speed 100 load 795000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 3 r 26650]
+  core 4 controller 0 speed 100 load 745000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 3 r 27150]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.259 u_app 3.6800 u_let 0.0190
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 157200 delay 577550 reaction 627550 on_time 1 [0 0-0] [4 1-1] [1 2-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 30000 algorithm WFDU
+fragments 9 cuts 8 forced 0 max 8
+  core 5 controller 0 speed 100 load 695000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 3 r 25650]
+  core 0 controller 0 speed 100 load 655000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+  core 3 controller 0 speed 100 load 641000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 3 r 32050]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 2 r 7050]
+  core 4 controller 0 speed 100 load 590000 sched 1
+    chain 5.0 u 10000 let 1 tasks [0 c 50 t 5000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 3 r 7100]
+  core 1 controller 0 speed 100 load 561000 sched 1
+    chain 2.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 2 r 28050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.441 u_app 3.6800 u_let 0.0230
+comm intra 8 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 144150 delay 629550 reaction 679550 on_time 1 [3 0-0] [5 1-1] [4 2-2] [1 3-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 30000 algorithm FFDU
+fragments 9 cuts 8 forced 0 max 8
+  core 0 controller 0 speed 100 load 795000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 3 r 26650]
+  core 3 controller 0 speed 100 load 741000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 3 r 37050]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 2 r 12050]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 4 controller 0 speed 100 load 505000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.259 u_app 3.6800 u_let 0.0190
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 154100 delay 614450 reaction 664450 on_time 1 [0 0-0] [3 1-1] [1 2-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 30000 algorithm CADU
+fragments 9 cuts 8 forced 0 max 8
+  core 0 controller 0 speed 100 load 795000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 3 r 26650]
+  core 4 controller 0 speed 100 load 745000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 3 r 27150]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.259 u_app 3.6800 u_let 0.0190
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 157200 delay 577550 reaction 627550 on_time 1 [0 0-0] [4 1-1] [1 2-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 100000 algorithm BFDU
+fragments 9 cuts 8 forced 0 max 8
+  core 0 controller 0 speed 100 load 795000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 3 r 26650]
+  core 4 controller 0 speed 100 load 745000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 3 r 27150]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.259 u_app 3.6800 u_let 0.0190
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 157200 delay 577550 reaction 627550 on_time 1 [0 0-0] [4 1-1] [1 2-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 100000 algorithm WFDU
+fragments 9 cuts 8 forced 0 max 8
+  core 5 controller 0 speed 100 load 695000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 3 r 25650]
+  core 0 controller 0 speed 100 load 655000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+  core 3 controller 0 speed 100 load 641000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 3 r 32050]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 2 r 7050]
+  core 4 controller 0 speed 100 load 590000 sched 1
+    chain 5.0 u 10000 let 1 tasks [0 c 50 t 5000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 3 r 7100]
+  core 1 controller 0 speed 100 load 561000 sched 1
+    chain 2.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 2 r 28050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.441 u_app 3.6800 u_let 0.0230
+comm intra 8 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 144150 delay 629550 reaction 679550 on_time 1 [3 0-0] [5 1-1] [4 2-2] [1 3-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 100000 algorithm FFDU
+fragments 9 cuts 8 forced 0 max 8
+  core 0 controller 0 speed 100 load 795000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 3 r 26650]
+  core 3 controller 0 speed 100 load 741000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 3 r 37050]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 2 r 12050]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 4 controller 0 speed 100 load 505000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.259 u_app 3.6800 u_let 0.0190
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 154100 delay 614450 reaction 664450 on_time 1 [0 0-0] [3 1-1] [1 2-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 100000 algorithm CADU
+fragments 9 cuts 8 forced 0 max 8
+  core 0 controller 0 speed 100 load 795000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.5 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+    chain 0.0 u 140000 let 0 tasks [0 c 7000 t 50000 p 3 r 26650]
+  core 4 controller 0 speed 100 load 745000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+    chain 0.1 u 240000 let 0 tasks [1 c 12000 t 50000 p 3 r 27150]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.2 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.4 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.8 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 6 pcu 6 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.259 u_app 3.6800 u_let 0.0190
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 157200 delay 577550 reaction 627550 on_time 1 [0 0-0] [4 1-1] [1 2-3] [2 4-4] [0 5-5] [3 6-6] [4 7-7] [5 8-8] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 400000 algorithm BFDU
+fragments 8 cuts 7 forced 0 max 8
+  core 0 controller 0 speed 100 load 740000 sched 1
+    chain 1.0 u 10000 let 1 tasks [0 c 50 t 5000 p 1 r 50]
+    chain 0.4 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6600]
+    chain 0.1 u 80000 let 0 tasks [2 c 2000 t 25000 p 3 r 8600]
+  core 1 controller 0 speed 100 load 561000 sched 1
+    chain 2.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.2 u 560000 let 0 tasks [3 c 28000 t 50000 p 2 r 28050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 4 controller 0 speed 100 load 505000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.5 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+  core 6 controller 0 speed 100 load 381000 sched 1
+    chain 7.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.0 u 380000 let 0 tasks [0 c 7000 t 50000 p 2 r 7050] [1 c 12000 t 50000 p 3 r 19050]
+stats cores 7 pcu 7 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.319 u_app 3.6800 u_let 0.0240
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 125000 delay 550350 reaction 600350 on_time 1 [6 0-0] [0 1-1] [1 2-2] [2 3-3] [0 4-4] [3 5-5] [4 6-6] [5 7-7] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 400000 algorithm WFDU
+fragments 8 cuts 7 forced 0 max 8
+  core 0 controller 0 speed 100 load 655000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.4 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+  core 1 controller 0 speed 100 load 561000 sched 1
+    chain 2.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.2 u 560000 let 0 tasks [3 c 28000 t 50000 p 2 r 28050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 4 controller 0 speed 100 load 505000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.5 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 6 controller 0 speed 100 load 462000 sched 1
+    chain 7.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.0 u 380000 let 0 tasks [0 c 7000 t 50000 p 3 r 9050] [1 c 12000 t 50000 p 4 r 21050]
+    chain 0.1 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+stats cores 7 pcu 7 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.530 u_app 3.6800 u_let 0.0200
+comm intra 6 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 120400 delay 520700 reaction 570700 on_time 1 [6 0-1] [1 2-2] [2 3-3] [0 4-4] [3 5-5] [4 6-6] [5 7-7] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 400000 algorithm FFDU
+fragments 8 cuts 7 forced 0 max 8
+  core 0 controller 0 speed 100 load 740000 sched 1
+    chain 1.0 u 10000 let 1 tasks [0 c 50 t 5000 p 1 r 50]
+    chain 0.4 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6600]
+    chain 0.1 u 80000 let 0 tasks [2 c 2000 t 25000 p 3 r 8600]
+  core 1 controller 0 speed 100 load 561000 sched 1
+    chain 2.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.2 u 560000 let 0 tasks [3 c 28000 t 50000 p 2 r 28050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 4 controller 0 speed 100 load 505000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.5 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+  core 6 controller 0 speed 100 load 381000 sched 1
+    chain 7.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.0 u 380000 let 0 tasks [0 c 7000 t 50000 p 2 r 7050] [1 c 12000 t 50000 p 3 r 19050]
+stats cores 7 pcu 7 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.319 u_app 3.6800 u_let 0.0240
+comm intra 7 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 125000 delay 550350 reaction 600350 on_time 1 [6 0-0] [0 1-1] [1 2-2] [2 3-3] [0 4-4] [3 5-5] [4 6-6] [5 7-7] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)
+design point sigma 400000 algorithm CADU
+fragments 8 cuts 7 forced 0 max 8
+  core 0 controller 0 speed 100 load 655000 sched 1
+    chain 1.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.4 u 650000 let 0 tasks [5 c 6500 t 10000 p 2 r 6550]
+  core 1 controller 0 speed 100 load 642000 sched 1
+    chain 2.0 u 2000 let 1 tasks [0 c 50 t 25000 p 1 r 50]
+    chain 0.2 u 560000 let 0 tasks [3 c 28000 t 50000 p 3 r 32100]
+    chain 0.1 u 80000 let 0 tasks [2 c 2000 t 25000 p 2 r 2050]
+  core 2 controller 0 speed 100 load 561000 sched 1
+    chain 3.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.3 u 560000 let 0 tasks [4 c 28000 t 50000 p 2 r 28050]
+  core 4 controller 0 speed 100 load 505000 sched 1
+    chain 5.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.6 u 500000 let 0 tasks [7 c 5000 t 10000 p 2 r 5050]
+  core 3 controller 0 speed 100 load 501000 sched 1
+    chain 4.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.5 u 500000 let 0 tasks [6 c 25000 t 50000 p 2 r 25050]
+  core 5 controller 0 speed 100 load 455000 sched 1
+    chain 6.0 u 5000 let 1 tasks [0 c 50 t 10000 p 1 r 50]
+    chain 0.7 u 450000 let 0 tasks [8 c 4500 t 10000 p 2 r 4550]
+  core 6 controller 0 speed 100 load 381000 sched 1
+    chain 7.0 u 1000 let 1 tasks [0 c 50 t 50000 p 1 r 50]
+    chain 0.0 u 380000 let 0 tasks [0 c 7000 t 50000 p 2 r 7050] [1 c 12000 t 50000 p 3 r 19050]
+stats cores 7 pcu 7 zcu 0 sr 100.000 100.000 100.000 100.000 repairs 0 scaling 1.530 u_app 3.6800 u_let 0.0200
+comm intra 6 inter 0 on_time 1 misses 0 net_max 0.000 port_max 0.000
+  path 0 latency 122450 delay 522750 reaction 572750 on_time 1 [6 0-0] [1 1-2] [2 3-3] [0 4-4] [3 5-5] [4 6-6] [5 7-7] (0.000) (0.000) (0.000) (0.000) (0.000) (0.000)

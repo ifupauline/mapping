@@ -1,0 +1,547 @@
+\section{System model}
+\label{sec:model}
+
+\begin{inbrief}
+The platform is a central computer and zone controllers with typed
+cores, a shared memory per ECU, and a TSN network (\cref{sec:platform,sec:network-model}); \cref{sec:other-architectures} extends it to
+domain, hybrid and distributed architectures and to any network topology. The application is a set of multi-rate task-chains
+with bindings to ECUs and safety constraints (\cref{sec:application}). Cores
+communicate at LET instants, with implicit communication or strict LET (\cref{sec:execution}). \Cref{sec:metrics}
+defines how a mapped task-chain is cut into segments and inter-ECU
+communications, and which timing metrics are computed.
+\Cref{tab:notation} collects the notation.
+\end{inbrief}
+
+Times are integers in microseconds and utilizations are fractions of a
+core. The implementation stores utilizations as integers in parts per
+million and rounds them up, so every rounding is conservative.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Main notation.}
+\label{tab:notation}
+\setlength{\tabcolsep}{3pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabularx}{\columnwidth}{@{}lX@{}}
+\toprule
+\rowcolor{white}
+symbol & meaning \\
+\midrule
+$\Ctrl=\{k_0,\dots,k_Z\}$ & ECUs; on the zonal platform, $k_0$ the central computer, $k_1..k_Z$ the zone controllers \\
+$\Types$, $\Types(k)$ & core types; types available on ECU $k$ \\
+$s_\theta$, $s_{k,\theta}$ & speed of type $\theta$ (on ECU $k$), \% of the reference core \\
+$\Cores$, $\kappa(p)$, $\theta(p)$ & cores; ECU and type of core $p$ \\
+$\varphi$ & utilization cap of a core ($0<\varphi\le1$) \\
+$\Chains$, $\xi$ & application: set of task-chains; one task-chain \\
+$\tau$, $T_\tau$, $C^{\mathrm{ref}}_\tau$ & task, its period, its WCET on the reference core \\
+$U^{\mathrm{ref}}_\tau$ & utilization on the reference core, $C^{\mathrm{ref}}_\tau/T_\tau$ \\
+$f_{\tau,\theta}$ & WCET factor of $\tau$ on type $\theta$ (\%) \\
+$C^{\mathrm{iso}}_\tau(p)$, $C_\tau(p)$, $U_\tau(p)$ & WCET of $\tau$ on core $p$ alone, with contention; utilization \\
+$a_\tau$, $\ell$, $n_k$ & memory requests per job; time per request; competing cores of ECU $k$ \\
+$A_\tau$, $\Theta_\tau$ & ECUs and core types $\tau$ may run on \\
+$\mu_\tau$, $M_k$ & memory of $\tau$; memory of ECU $k$ \\
+$D_\xi$ & end-to-end deadline of $\xi$ (on its maximum reaction time) \\
+$\rho(\xi)$ & replica group of $\xi$ \\
+$\Frags$, $\pi$ & sub-chains; mapping of sub-chains to cores \\
+$T^{\LET}_p$, $C^{\LET}_p$ & period and WCET of the LET task of core $p$ \\
+$R_\tau$ & worst-case response time (WCRT) of $\tau$ \\
+$\sigma$ & utilization limit of a sub-chain (fraction of a core) \\
+$G=(V,E)$, $r_e$ & network graph; rate of link $e$ (bit/\si{\micro s}) \\
+$\delta$ & latency of a switch \\
+$X$, $\vartheta_x$, $l_x$ & traffic classes; period threshold of class $x$; its largest frame at a port \\
+$b_h$, $J_h$, $T_h$ & bits, release jitter and period of flow $h$ \\
+$\sigma_h$, $\rho_h$ & burst and rate of flow $h$ (unrelated to $\sigma$ and $\rho(\xi)$) \\
+$d_{e,x}$, $d_h$ & delay bound of class $x$ at port $e$; of flow $h$ \\
+$w_h$ & copy-out delay of communication $h$ (\cref{eq:copy-out}) \\
+$\Lambda_\xi$, $\Gamma_\xi$, $\Delta_\xi$ & end-to-end response time (holistic sum), end-to-end delay, maximum reaction time of $\xi$ \\
+$M(\pi)$, $N(\pi)$ & cores used; task-chains on time \\
+$\lambda(\pi)$, $\lambda^\star$ & critical scaling factor of a mapping; its target \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Platform}
+\label{sec:platform}
+
+\paragraph{ECUs and cores.} The platform has a set of ECUs $\Ctrl=\{k_0,
+k_1,\dots,k_Z\}$ (\cref{fig:architecture}). $k_0$ is the central computer
+and $k_1,\dots,k_Z$ are the zone controllers; the default is $Z=5$. An ECU
+holds cores of the types $\Types(k)$ it supports. The central computer
+offers \emph{big} application cores and, optionally, slower \emph{little}
+cores. A zone controller offers microcontroller cores (\emph{MCU}) and,
+optionally, \emph{lock-step} cores (LS), a common safety mechanism for
+the functions of high integrity levels under ISO~26262 \cite{iso26262}. A type $\theta$ has a speed $s_\theta$, in percent of
+a reference core. By default $s_{\mathrm{big}}=100$, $s_{\mathrm{little}}
+=40$ and $s_{\mathrm{MCU}}=s_{\mathrm{LS}}=50$.
+
+The initial architecture $\Cores_0$ has a number of cores of each type on
+each ECU: by default 8 big cores on the central computer and 4 MCU cores on
+each zone controller, 28 cores in all. When the application needs more,
+cores are added. The number of cores \emph{used}, that is, running at least
+one application task, is the main sizing result, $M$.
+
+\paragraph{Utilization cap and memory.} The total utilization of the
+tasks of a core, its LET task included, may not exceed the utilization cap
+$\varphi$ (default 0.8). The remaining $1-\varphi$ is the design reserve
+for estimation errors and future functions. ECU $k$ has a memory $M_k$ for
+the code and data of its tasks (unlimited by default).
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[x=1cm,y=1cm,
+	core/.style={draw=cmuted, fill=white, minimum size=3.2mm,
+		inner sep=0pt},
+	ctrl/.style={draw=cink, rounded corners=2pt, inner sep=2pt},
+	dev/.style={draw=cmuted, circle, inner sep=0.6pt, font=\tiny\sffamily,
+		fill=cyellow!25}]
+\foreach \i in {0,...,3} \node[core] (p\i) at (\i*0.4,0) {};
+\foreach \i in {4,...,7} \node[core] (p\i) at ({(\i-4)*0.4},-0.4) {};
+\node[ctrl, fill=cpcu, fit=(p0)(p7),
+	label={[font=\scriptsize\sffamily]above:central computer: big cores (+ little)}] (pcu) {};
+\foreach \i in {0,...,7} \node[core] at (p\i) {};
+\node[draw=cink, fill=cnet, minimum width=1.3cm, minimum height=0.45cm,
+	font=\scriptsize\sffamily] (sw) at (0.6,-1.55) {TSN switch};
+\draw[very thick, color=corange] (pcu) -- (sw);
+\foreach \z/\x/\y in {1/-2.9/-1.9, 2/-1.75/-3.0, 3/0.6/-3.35, 4/2.95/-3.0, 5/4.1/-1.9} {
+	\node[core] (z\z a) at (\x-0.2,\y+0.1) {};
+	\node[core] (z\z b) at (\x+0.2,\y+0.1) {};
+	\node[core] (z\z c) at (\x-0.2,\y-0.3) {};
+	\node[core] (z\z d) at (\x+0.2,\y-0.3) {};
+	\node[ctrl, fill=czcu, fit=(z\z a)(z\z d),
+		label={[font=\scriptsize\sffamily]below:ZCU\z}] (zcu\z) {};
+	\foreach \c in {a,b,c,d} \node[core] at (z\z\c) {};
+	\draw[thick, color=corange] (zcu\z) -- (sw);
+}
+\node[dev] at ($(zcu1)+(-0.75,0.35)$) (s1) {S};
+\node[dev] at ($(zcu1)+(-0.75,-0.3)$) (a1) {A};
+\draw[cmuted] (s1) -- (zcu1); \draw[cmuted] (a1) -- (zcu1);
+\node[dev] at ($(zcu5)+(0.75,0.35)$) (s5) {S};
+\node[dev] at ($(zcu5)+(0.75,-0.3)$) (a5) {A};
+\draw[cmuted] (s5) -- (zcu5); \draw[cmuted] (a5) -- (zcu5);
+\node[dev] at ($(zcu3)+(-0.75,-0.25)$) (s3) {S};
+\draw[cmuted] (s3) -- (zcu3);
+\node[note, anchor=west, text width=2.3cm, align=left] at (2.35,-0.2)
+	{thick: backbone rate\\ S/A: sensors and actuators wired to a zone};
+\end{tikzpicture}}
+\caption{The zonal platform (star topology, default sizes): a central
+computer, five zone controllers (ZCU) of four cores, one TSN switch. Cores
+are added where the application needs them.}
+\label{fig:architecture}
+\end{figure}
+
+\paragraph{Execution times.} Every task has a reference WCET
+$C^{\mathrm{ref}}_\tau$, measured on the reference core, and a factor
+$f_{\tau,\theta}$ (in percent, default 100) for each core type. The factor
+models tasks that gain or lose more than the speed ratio on a type, for
+instance through caches or vector units. On a core $p$ of type $\theta=
+\theta(p)$, the WCET in isolation is
+\begin{equation}
+C^{\mathrm{iso}}_\tau(p)=\max\!\left(1,\ceil{\frac{C^{\mathrm{ref}}_\tau\,
+f_{\tau,\theta}}{s_\theta}}\right).
+\label{eq:wcet-iso}
+\end{equation}
+
+\paragraph{Shared-memory contention.}
+\label{sec:contention}
+The cores of one ECU share its memory. A job of task $\tau$ issues at most
+$a_\tau$ requests to it. The memory serves one request in $\ell$
+nanoseconds, and serves the cores in round robin. Each core has at most one
+request pending at a time (in-order cores, blocking memory accesses). A
+request therefore waits at most for one request of every other core that
+competes for the memory \cite{paolieri2009hardware}. If $n_k$ cores of ECU $k$ compete, the
+WCET of $\tau$ on a core $p$ of $k$ is
+\begin{equation}
+C_\tau(p)=C^{\mathrm{iso}}_\tau(p)+\ceil{\frac{a_\tau\,\ell\,(n_k-1)}{1000}},
+\qquad U_\tau(p)=\frac{C_\tau(p)}{T_\tau}.
+\label{eq:wcet}
+\end{equation}
+The waiting time does not depend on the speed of the core, which is why it
+is added after the scaling of \cref{eq:wcet-iso}. The number of competing
+cores depends on the mapping: \cref{sec:contention-method} explains how
+the method fixes it. When no request count is given, a task gets $a_\tau=
+\lceil\eta\,C^{\mathrm{ref}}_\tau/1000\rceil$ requests, a density of
+$\eta$ requests per millisecond of reference WCET (default 1000). With
+$\ell=0$, the default, there is no contention and $C_\tau(p)=
+C^{\mathrm{iso}}_\tau(p)$.
+
+\subsection{Application}
+\label{sec:application}
+
+\begin{definition}[Task]
+A task $\tau$ is periodic with period $T_\tau$ and an implicit deadline
+equal to it. Its attributes are the reference WCET $C^{\mathrm{ref}}_\tau$
+and the type factors $f_{\tau,\theta}$; the number of memory requests
+$a_\tau$; the size $m_\tau$ (bytes) of the output it produces at every
+job; its memory $\mu_\tau$; the set $A_\tau\subseteq\Ctrl$ of ECUs and the
+set $\Theta_\tau\subseteq\Types$ of core types it may run on; and a
+co-location flag $g_\tau$. With $g_\tau$ set, the task must run on the
+same core as its successor in the chain.
+\end{definition}
+
+A task with $|A_\tau|=1$ is \emph{pinned} to its ECU: sensor and actuator
+drivers run on the zone controller their device is wired to. The other
+tasks are \emph{free}. A free task may still be restricted, for instance
+to the zone controllers only ($A_\tau=\{k_1,\dots,k_Z\}$), or kept out of
+the zones of its replica (below).
+
+\begin{definition}[Task-chain]
+A task-chain $\xi=(\tau_1,\dots,\tau_n)$ is a sequence of tasks in which
+the output of $\tau_i$ is the input of $\tau_{i+1}$. A maximal run of
+consecutive tasks with the same period is an \emph{activation pattern}
+\cite{kramer2015waters}. If two patterns of a task-chain have the same
+period, their tasks on a common core are also kept in chain order, which
+only restricts the priorities. The task-chain has an end-to-end deadline $D_\xi$
+on its maximum reaction time (\cref{sec:metrics}) and, possibly, a replica
+group $\rho(\xi)$.
+\end{definition}
+
+The links of a task-chain come in two kinds (\cref{fig:chain}).
+\begin{itemize}
+\item \emph{Inside a pattern}, tasks are released together. On one core
+they execute in chain order: there is a \emph{precedence} constraint, so
+a job uses the data of the job of its predecessor released with it. When
+the partitioning cuts a pattern, for instance at a sensor driver bound to
+a zone, the two parts run on different cores, and the link becomes a
+communication: the consumer then reads the data of an earlier job, with up
+to one consumer period of sampling, which \cref{sec:e2e} bounds.
+\item \emph{Between two patterns}, data goes through a \emph{register}:
+the consumer reads the latest value at its own release. There is no
+precedence, but there is a sampling delay of up to one consumer period.
+\end{itemize}
+
+The task-chains of one replica group are redundant implementations of one
+safety function, with redundant sensors and actuators. No two of them may
+run on the same ECU or, under a weaker policy, on the same core
+\cite{bhat2017practical}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=1.6mm]
+\node[task, fill=czcu] (t1) {$\tau_1$};
+\node[task, right=of t1] (t2) {$\tau_2$};
+\node[task, right=of t2] (t3) {$\tau_3$};
+\node[task, right=5mm of t3] (t4) {$\tau_4$};
+\node[task, right=of t4] (t5) {$\tau_5$};
+\node[task, right=5mm of t5] (t6) {$\tau_6$};
+\node[task, right=of t6, fill=czcu] (t7) {$\tau_7$};
+\foreach \a/\b in {t1/t2,t2/t3,t4/t5,t6/t7}
+	\draw[arrow, color=cink] (\a) -- (\b);
+\draw[arrow, dashed, color=corange] (t3) -- (t4);
+\draw[arrow, dashed, color=corange] (t5) -- (t6);
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}]
+	([yshift=-1.5mm]t1.south west) -- node[note, below=2pt] {$T=10$\,ms} ([yshift=-1.5mm]t3.south east);
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}]
+	([yshift=-1.5mm]t4.south west) -- node[note, below=2pt] {$T=20$\,ms} ([yshift=-1.5mm]t5.south east);
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}]
+	([yshift=-1.5mm]t6.south west) -- node[note, below=2pt] {$T=5$\,ms} ([yshift=-1.5mm]t7.south east);
+\node[note, above=1.5mm of t1] {sensor, ZCU2};
+\node[note, above=1.5mm of t7] {actuator, ZCU4};
+\node[note, above=1.5mm of t4, xshift=3mm] {free tasks};
+\end{tikzpicture}
+\caption{A task-chain of three activation patterns. Solid arrows:
+precedence inside a pattern; dashed arrows: registers between patterns.
+Shaded tasks are pinned to a zone controller.}
+\label{fig:chain}
+\end{figure}
+
+\subsection{Scheduling and communication on the cores}
+\label{sec:execution}
+
+\paragraph{Scheduling.} Every core schedules its tasks with preemptive
+fixed priorities. Inside a pattern, the tasks mapped to the same core get
+priorities that decrease along the chain, which enforces the precedence on
+that core.
+
+\paragraph{Communication between cores.} Tasks on different cores never
+share data directly. Every core $p$ that runs at least one application
+task runs one \emph{LET task}, a copy task with the highest priority on
+$p$, released at the \emph{LET instants} of $p$. It copies data between
+the local memory of $p$ and the global memory, or the network interface,
+and
+\begin{gather}
+T^{\LET}_p=\gcd\{T_\tau:\tau\text{ on }p\},\nonumber\\
+C^{\LET}_p=\ceil{\frac{100\,c_{\LET}}{s_{\theta(p)}}}
+	+\ceil{\frac{a_{\LET}\,\ell\,(n_k-1)}{1000}},
+\label{eq:let}
+\end{gather}
+so that every release of every task of $p$ is a LET instant. A consumer
+on another core reads, at its release, the last value copied in by then.
+Two schemes decide when an output is copied out.
+\begin{itemize}
+\item \emph{Implicit communication} (the default): an output is copied at
+the first LET instant after its producer finishes. It is the implicit
+communication of AUTOSAR \cite{hamann2017communication}, with the copies
+grouped at the LET instants. The delays are short, but the data flow
+depends on response times.
+\item \emph{Strict LET} \cite{kirsch2012let,biondi2018achieving}: an output
+is published at the end of the period of its producer, which is a LET
+instant of its core, whatever the response time. The data flow no longer
+depends on response times, at the price of longer delays.
+\end{itemize}
+\Cref{sec:e2e} bounds both, and \cref{sec:rq3} compares them. Here
+$c_{\LET}$ is the copy time on the reference core (default
+\SI{50}{\micro s}, of the order of the LET communication overheads that
+Biondi and Di Natale measured on a multicore \cite{biondi2018achieving}),
+and $a_{\LET}=\lceil\eta\,c_{\LET}/1000\rceil$ are its memory requests.
+The copy time is a constant per LET instant, whatever the amount of data
+copied (\cref{sec:discussion}).
+The LET load $C^{\LET}_p/T^{\LET}_p$ belongs to the core. On a reference
+core, a 1\,ms task anywhere on it costs 5\,\% of LET load, while periods that
+are all multiples of 10\,ms cost 0.5\,\%. The period mix of a core
+therefore matters, which is one reason why mapping is more than packing
+utilizations.
+
+The \emph{load} of core $p$ under a mapping is
+\begin{equation}
+\mathcal{L}(p)=\sum_{\tau\text{ on }p} U_\tau(p) + \frac{C^{\LET}_p}{T^{\LET}_p}
+\;\le\;\varphi .
+\label{eq:load}
+\end{equation}
+
+\subsection{Network}
+\label{sec:network-model}
+
+\paragraph{Topology and routing.} The network is a directed graph $G=(V,E)$
+whose nodes are the ECUs and the switches. Every full-duplex cable gives
+two directed links, and each link $e$ has an output port at its origin and
+a rate $r_e$. Three topologies are considered (\cref{fig:topologies}):
+\begin{itemize}
+\item \emph{star}: one switch, one link per ECU;
+\item \emph{tree}: one switch per ECU, and the zone switches linked to the
+switch of the central computer;
+\item \emph{ring}: one switch per ECU, the switches in a ring.
+\end{itemize}
+ECU links run at the link rate $r$ (default 1\,Gbit/s). Links between
+switches, and the link of the central computer, which carries most of the
+traffic, run at the backbone rate $r_b\ge r$ (by default $r_b=r$). A
+message follows a shortest path. ECUs do not forward, and ties are broken
+by a fixed link order (clockwise on the ring). Every switch adds a
+constant latency $\delta$ (default \SI{2}{\micro s}) after
+store-and-forward.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+	c/.style={draw=cink, rounded corners=1pt, minimum size=3.3mm,
+		inner sep=0pt, font=\tiny\sffamily, fill=czcu},
+	p/.style={c, fill=cpcu},
+	s/.style={draw=cink, circle, minimum size=2.6mm, inner sep=0pt,
+		fill=cnet},
+	l/.style={color=corange, semithick},
+	b/.style={color=corange, very thick}]
+\begin{scope}
+\node[s] (S) at (0,0) {};
+\node[p] (P) at (0,0.7) {C};
+\foreach \i/\a in {1/200,2/245,3/295,4/340,5/20}
+	\node[c] (Z\i) at (\a:0.75) {\i};
+\draw[b] (P) -- (S);
+\foreach \i in {1,...,5} \draw[l] (Z\i) -- (S);
+\node[note] at (0,-1.22) {star};
+\end{scope}
+\begin{scope}[xshift=2.65cm]
+\node[s] (S0) at (0,0.25) {};
+\node[p] (P) at (0,0.8) {C};
+\draw[b] (P) -- (S0);
+\foreach \i/\x in {1/-1.0,2/-0.5,3/0,4/0.5,5/1.0} {
+	\node[s] (S\i) at (\x,-0.25) {};
+	\node[c] (Z\i) at (\x,-0.68) {\i};
+	\draw[l] (Z\i) -- (S\i);
+	\draw[b] (S\i) -- (S0);
+}
+\node[note] at (0,-1.22) {tree};
+\end{scope}
+\begin{scope}[xshift=5.4cm]
+\foreach \i/\a in {0/90,1/150,2/210,3/270,4/330,5/30}
+	\node[s] (S\i) at (\a:0.45) {};
+\foreach \i/\j in {0/1,1/2,2/3,3/4,4/5,5/0} \draw[b] (S\i) -- (S\j);
+\node[p] (C0) at (90:0.88) {C};
+\draw[b] (C0) -- (S0);
+\foreach \i/\a in {1/150,2/210,3/270,4/330,5/30} {
+	\node[c] (C\i) at (\a:0.88) {\i};
+	\draw[l] (C\i) -- (S\i);
+}
+\node[note] at (0,-1.22) {ring};
+\end{scope}
+\end{tikzpicture}
+\caption{Topologies. C: central computer; 1--5: zone controllers; circles:
+switches. Thick links run at the backbone rate $r_b$, thin ones at $r$.}
+\label{fig:topologies}
+\end{figure}
+
+\paragraph{Frames.} A message of $m$ bytes is cut into frames of at most
+1500 bytes of payload. Each frame carries 42 bytes of overhead: header 14,
+VLAN tag 4, checksum 4, preamble 8 and inter-frame gap 12. A payload is
+padded to at least 42 bytes, the 64-byte minimum frame with a VLAN tag.
+The bits on the wire are
+\begin{equation}
+b(m)=\sum_{i}8\,\bigl(\max(m_i,42)+42\bigr),
+\label{eq:bits}
+\end{equation}
+over the payload chunks $m_i$ of the message.
+
+\paragraph{Traffic classes.} LET traffic uses $X\in\{1,2,3\}$ classes of
+IEEE 802.1Q \cite{ieee8021q2022}. A stream whose producer has period $T$
+belongs to the first class $x$ with $T\le\vartheta_x$; class 0 has the
+highest priority. The default thresholds are 20\,ms for $X=2$, and
+5\,ms and 20\,ms for $X=3$. Other traffic is best effort. It is assumed to
+be always present, with maximum-size frames of $L_{BE}=1542$ bytes (12\,336 bits) on the
+wire.
+
+\paragraph{Shaping.} Every port shapes the LET classes with one of three
+mechanisms (\cref{sec:background}).
+\begin{itemize}
+\item \emph{CBS}: one credit-based shaper per class, with idle slopes
+$I_{e,x}$ taken from a budget of shares of $r_e$ (default 75\,\% for one
+class; 50 and 25\,\% for two; 50, 15 and 10\,\% for three).
+\item \emph{TAS}: one exclusive window per class in a gate cycle $T_c$
+(default \SI{500}{\micro s}), with guard bands (default windows 70\,\%;
+40 and 30\,\%; 30, 20 and 20\,\%).
+\item \emph{ATS}: strict priority between the classes, and at every switch
+one interleaved regulator per input port and class. Each stream is
+regulated to its token bucket at its source (\cref{sec:nc}).
+\end{itemize}
+With frame preemption (802.1Qbu), a best-effort frame blocks for at most
+143 bytes \cite{thiele2016formal}. A link may also carry a design limit on
+its LET load (default 100\,\%).
+
+\paragraph{Frame replication.} On the ring, frame replication (FRER) may
+be enabled for the task-chains of the replica groups, whose redundancy
+would otherwise end at the network. Each of their inter-ECU messages is
+then sent as two member streams (\cref{fig:frer}). The switch of the source
+ECU replicates every frame onto both directions of the ring. The switch of
+the destination ECU keeps the first copy of each sequence number and
+discards the other. The two routes share only the links between the ECUs
+and their switches, so a single failure of a link between switches, or of
+a switch other than these two, leaves one member stream.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+	s/.style={draw=cink, circle, minimum size=3.2mm, inner sep=0pt,
+		fill=cnet, font=\tiny\sffamily},
+	c/.style={draw=cink, rounded corners=1pt, minimum size=3.6mm,
+		inner sep=0pt, font=\tiny\sffamily, fill=czcu}]
+\foreach \i/\a in {0/90,1/150,2/210,3/270,4/330,5/30}
+	\node[s] (S\i) at (\a:0.95) {};
+\foreach \i/\j in {0/1,1/2,2/3,3/4,4/5,5/0} \draw[cmuted] (S\i) -- (S\j);
+\node[c] (Z1) at (150:1.55) {1};
+\node[c] (Z2) at (210:1.55) {2};
+\draw[very thick, color=cink] (Z1) -- (S1);
+\draw[very thick, color=cink] (S2) -- (Z2);
+\draw[-{Stealth[length=1.6mm]}, very thick, color=cblue] (S1) -- (S2);
+\draw[-{Stealth[length=1.6mm]}, very thick, color=corange, dashed]
+	(S1) -- (S0) -- (S5) -- (S4) -- (S3) -- (S2);
+\node[note, anchor=west, align=left] at (1.35,0.55)
+	{\textcolor{cblue}{member stream 1: short route}\\
+	 \textcolor{corange}{member stream 2: other way}};
+\node[note, anchor=west, align=left] at (1.35,-0.35)
+	{replicated in the switch of ZCU1,\\ eliminated in the switch of ZCU2};
+\end{tikzpicture}
+\caption{Frame replication on the ring for a message from ZCU1 to ZCU2.
+The two member streams share only the two links between the ECUs and their
+switches.}
+\label{fig:frer}
+\end{figure}
+
+\subsection{Other E/E architectures}
+\label{sec:other-architectures}
+
+The zonal platform above is the running example, but nothing in the
+model needs it. In general, a platform is a list of ECUs, and each ECU
+$k$ has a \emph{role}: central computer, zone controller, domain
+controller, or ECU of a distributed architecture. It also has initial
+cores of given types, a speed $s_{k,\theta}$ for each of its types
+(the speed of a type may differ from one ECU to another), a memory $M_k$,
+the type of the cores added to it (another of its types is added for a
+sub-chain that may not run on that one), and a largest number of
+cores $M^{\max}_k$ (unbounded by default). The role only matters for the
+sub-chains that are bound to no ECU (\emph{free} sub-chains): they go to
+their \emph{hosts} first, and the cores added for them are added to a
+host first. The hosts are the central computers. On a platform without a
+central computer, they are the ECUs whose fastest initial cores are the
+fastest of the platform, where a sub-chain costs the least utilization
+(\cref{sec:rq1} measures what this choice is worth). A free sub-chain
+tries the cores of the hosts first, then the initial cores of the other
+ECUs it is allowed on; it uses a core added to a non-host ECU only if no
+host admits it (the communication-aware rule \CADU\ of \cref{sec:method}
+weighs the hosts against the hops instead). A new
+core for it goes to the first ECU that admits it, the hosts first and then
+the others, each in the order of the platform, provided the ECU has fewer
+than $M^{\max}_k$ cores, enough memory and no replica of its task-chain.
+Everything else (allowed ECUs, core types,
+memory, replica separation, schedulability, LET, the network analysis)
+is defined per ECU and per core, and does not depend on the role.
+
+The network may also be any set of switches and full-duplex links
+(\emph{custom} topology), each ECU attached to one switch, with a rate per
+link. Routes are shortest paths. With FRER, the second member stream of a
+replicated flow takes the shortest route that shares no link and no
+intermediate switch with the first; a flow without such a route is not
+replicated. On the ring this is the other way around the ring, as above.
+
+\Cref{tab:templates} lists the four platforms of the evaluation
+(\cref{sec:rq7}): the zonal platform, a domain architecture of five
+domain controllers, a hybrid one (a central computer, an ADAS domain
+controller and four zone controllers), and a distributed one of twelve
+small ECUs.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{The four platforms of the evaluation: initial cores per ECU
+(B: big, L: little at 40\,\%, M: MCU at 50\,\%, LS: lock-step at
+50\,\%), star topology. Cores are added of the first type of each ECU.}
+\label{tab:templates}
+\setlength{\tabcolsep}{3pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabularx}{\columnwidth}{@{}lX@{}}
+\toprule
+\rowcolor{white}
+platform & ECUs and initial cores \\
+\midrule
+zonal & central computer 8\,B; five zone controllers of 4\,M; 1\,Gbit/s \\
+domain & ADAS 4\,B; infotainment 2\,B + 4\,L; powertrain 3\,M + 1\,LS;
+chassis 2\,M + 2\,LS; body 2\,M; 1\,Gbit/s \\
+hybrid & central computer 8\,B; ADAS domain controller 4\,B; four zone
+controllers of 4\,M; 1\,Gbit/s \\
+distributed & ADAS 2\,B (at most 4); ESC and EPS 1\,LS each; nine ECUs
+of 1\,M (engine, transmission, body, climate, cluster, four doors); at
+most 2 cores per ECU except ADAS; 100\,Mbit/s \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Mapping, segments and timing metrics}
+\label{sec:metrics}
+
+A task-chain is mapped as a sequence of \emph{sub-chains}: runs of
+consecutive tasks placed together on one core. Following the chain,
+consecutive sub-chains on the same core form a \emph{segment}. Between two
+segments, data is sent either inside an ECU (shared memory) or between two
+ECUs, over the network. Every \emph{inter-ECU communication} $h$ is a
+network \emph{flow}. It carries one message of $b_h=b(m)$ bits per period
+$T_h$ of its producer (the last task of the source segment), released at a
+LET instant of the source core: after the producer has finished
+(implicit communication) or at the end of its period (strict LET).
+
+Three end-to-end quantities are used for a task-chain $\xi$
+\cite{feiertag2008compositional,becker2017end,durr2019end}.
+\begin{itemize}
+\item The \emph{maximum reaction time} $\Delta_\xi$ is the longest time
+from an external event to the end of the first job of $\tau_n$ that
+accounts for it, every sampling delay included. It equals the maximum
+data age \cite{gunzel2023equivalence}, and it is the metric compared with
+the deadline.
+\item The \emph{end-to-end delay} $\Gamma_\xi$ is the longest time from the
+release of a job of $\tau_1$ to the end of the first job of $\tau_n$ that
+uses its data, every copy and sampling delay included. It is the reaction
+time without the wait for the first sample.
+\item The \emph{end-to-end response time} $\Lambda_\xi$ is the holistic
+sum \cite{tindell1994holistic}: the response times of the runs of the
+chain (below) plus the network delays, without any copy or sampling
+delay. It is not a time of the system but a figure of merit, which shows
+how much of $\Delta_\xi$ is computation and network.
+\end{itemize}
+A task-chain \emph{meets its deadline} when all its tasks meet theirs,
+every port its flows cross has a delay bound, and $\Delta_\xi\le D_\xi$.
+\Cref{sec:e2e} bounds $\Gamma_\xi$ and $\Delta_\xi$.

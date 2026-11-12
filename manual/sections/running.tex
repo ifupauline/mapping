@@ -1,0 +1,85 @@
+\section{Running \texttt{mapping}}
+\label{sec:running}
+
+\begin{shell}
+mapping [APPLICATION.json [CONFIGURATION.json]] [options]
+\end{shell}
+
+\begin{itemize}
+\item \textbf{The application}: the file given first, or else an
+application generated from \opt{seed} and \opt{chains} (or the small
+detection chain with \opt{detection-chain}).
+\item \textbf{The configuration}: the file given second (or with
+\opt{config}), or else the built-in zonal platform and the default method.
+\item \textbf{The rules}: without a configuration file the four allocation
+rules are compared side by side; with one, the tool uses the rule of its
+\key{method} section. \opt{algorithm A} chooses one rule, \opt{algorithm
+all} the four.
+\item \textbf{Options override the configuration file.} The options of the
+built-in zonal platform (\opt{pcu-*}, \opt{zcu-*}, \opt{little-speed})
+are refused when the file has its own \key{platform}: change the file
+instead.
+\end{itemize}
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The options of \cmd{mapping} (\cmd{mapping -{}-help}). The
+configuration key each one overrides is in brackets.}
+\label{tab:options}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{39mm}X@{}}
+\toprule\rowcolor{white}
+option & meaning \\
+\midrule
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}files}}}\\
+\opt{config FILE} & the configuration file (instead of the second argument) \\
+\opt{example-config [T]} & print the template \cmd{zonal}, \cmd{domain}, \cmd{hybrid} or \cmd{distributed}, then exit \\
+\opt{example-application} & print a small application file for the zonal platform, then exit \\
+\opt{generate} & print the generated application as a file, then exit \\
+\opt{print-config} & print the configuration in effect, options included, then exit \\
+\opt{out DIR} & write the result files of \cref{sec:outfiles} into \cmd{DIR} \\
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}generated application}}}\\
+\opt{seed N}, \opt{chains N} & seed (default \cmd{\$MP\_SEED} or 1) and number of task-chains (300) \\
+\opt{detection-chain} & the detection chain: an illustrative chain of nine tasks \\
+\opt{replicas P} & \% of the chains that are replicas of others (0) \\
+\opt{colocate P} & \% of consecutive free tasks that must share a core (0) \\
+\opt{zone-only P} & \% of chains whose free tasks avoid the central computers (0) \\
+\opt{lockstep P} & \% of chains (safety) on lock-step cores only (0) \\
+\opt{type-variation P} & WCET on each core type within $\pm P$\,\% of its speed ratio (0) \\
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}method}}}\\
+\opt{algorithm A} & \cmd{BFDU}, \cmd{WFDU}, \cmd{FFDU}, \cmd{CADU} or \cmd{all} [\key{allocation}] \\
+\opt{sigma S} & sub-chain limit, fraction of a core [\key{sigma}] \\
+\opt{target-scaling F} & sizing for a critical scaling factor $F$ [\key{target\_scaling}] \\
+\opt{no-affinity}, \opt{no-consolidation} & [\key{affinity}], [\key{consolidation}] off \\
+\opt{no-relocation} & [\key{relocation\_moves}] off \\
+\opt{swap} & [\key{swap\_moves}] on \\
+\opt{no-repair} & no deadline-driven local search [\key{local\_search}] \\
+\opt{fixed-hardware} & add no core [\key{fixed\_hardware}] \\
+\opt{separate-cores} & replicas on different cores only [\key{replica\_separation}] \\
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}execution and interference models}}}\\
+\opt{phi F} & utilization cap [\key{utilization\_cap}] \\
+\opt{let C} & WCET of the LET tasks, \us{} [\key{let\_task\_wcet\_us}] \\
+\opt{strict-let} & strict LET between cores instead of implicit communication [\key{communication}] \\
+\opt{margin P} & WCET margin, \% [\key{wcet\_margin\_percent}] \\
+\opt{memory-latency L} & ns per memory request [\key{memory\_latency\_ns}] \\
+\opt{access-density N} & requests per ms of WCET [\key{memory\_accesses\_per\_ms}] \\
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}network model}}}\\
+\opt{topology T} & \cmd{star}, \cmd{tree} or \cmd{ring} [\key{topology}] \\
+\opt{link M}, \opt{backbone M} & rates, Mbit/s [\key{link\_mbps}, \key{backbone\_mbps}] \\
+\opt{classes N} & 1 to 3 traffic classes, with their default boundaries and shares [\key{traffic\_classes}] \\
+\opt{tas}, \opt{ats} & time-aware or asynchronous shaping [\key{traffic\_shaping}] \\
+\opt{preemption}, \opt{frer} & [\key{frame\_preemption}], [\key{frer}] \\
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}built-in zonal platform only}}}\\
+\opt{pcu-cores N}, \opt{pcu-speed P} & big cores of the central computer (8) and their speed (100\,\%) \\
+\opt{pcu-little N}, \opt{little-speed P} & little cores of the central computer (0) and their speed (40\,\%) \\
+\opt{zcu-cores N}, \opt{zcu-speed P} & cores of each zone controller (4) and their speed (50\,\%) \\
+\opt{zcu-lockstep N} & lock-step cores of each zone controller (0) \\
+\opt{pcu-memory K}, \opt{zcu-memory K} & memory for the tasks, KB (unlimited) \\
+\multicolumn{2}{@{}l}{\textsf{\textbf{\color{brand}output}}}\\
+\opt{cores} & also print every core and every task-chain \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Exit status.} 0 when the tool ran (whether the mapping is
+feasible or not), 1 on an internal error, 2 on an invalid option or file;
+the error message gives the file, the line and the key.

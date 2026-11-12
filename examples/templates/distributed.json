@@ -1,0 +1,83 @@
+{
+  "platform": {
+    "ecus": [
+      {"name": "ADAS", "role": "ecu",
+       "cores": [{"type": "big", "count": 2, "speed_percent": 100}],
+       "added_core_type": "big", "memory_kb": 0, "max_cores": 4},
+      {"name": "ESC", "role": "ecu",
+       "cores": [{"type": "lockstep", "count": 1, "speed_percent": 50}],
+       "added_core_type": "lockstep", "memory_kb": 0, "max_cores": 2},
+      {"name": "EPS", "role": "ecu",
+       "cores": [{"type": "lockstep", "count": 1, "speed_percent": 50}],
+       "added_core_type": "lockstep", "memory_kb": 0, "max_cores": 2},
+      {"name": "ECM", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "TCM", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "BCM", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "HVAC", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "IPC", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "DOOR_FL", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "DOOR_FR", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "DOOR_RL", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2},
+      {"name": "DOOR_RR", "role": "ecu",
+       "cores": [{"type": "mcu", "count": 1, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 2}
+    ]
+  },
+  "execution_model": {
+    "scheduling": "fixed-priority preemptive",
+    "communication": "implicit",
+    "utilization_cap": 0.8,
+    "let_task_wcet_us": 50,
+    "wcet_margin_percent": 0
+  },
+  "interference_model": {
+    "shared_memory_arbitration": "round-robin",
+    "memory_latency_ns": 0,
+    "memory_accesses_per_ms": 1000
+  },
+  "network_model": {
+    "standard": "TSN",
+    "topology": "star",
+    "link_mbps": 100,
+    "backbone_mbps": 100,
+    "switch_latency_us": 2,
+    "link_limit_percent": 100,
+    "traffic_shaping": "CBS",
+    "traffic_classes": 1,
+    "class_max_periods_us": [],
+    "idle_slopes_percent": [75],
+    "proportional_idle_slopes": true,
+    "tas_cycle_us": 500,
+    "tas_windows_percent": [70],
+    "frame_preemption": false,
+    "frer": false
+  },
+  "method": {
+    "allocation": "FFDU",
+    "sigma": 0.4,
+    "affinity": true,
+    "consolidation": true,
+    "swap_moves": false,
+    "relocation_moves": true,
+    "local_search": true,
+    "replica_separation": "ecu",
+    "fixed_hardware": false,
+    "target_scaling": 0
+  }
+}

@@ -1,0 +1,32 @@
+\begin{table*}[t]
+\centering\footnotesize
+\caption{Ablation: the method with one part removed (300 task-chains, 20
+instances). Default: the default platform. Stressed: utilization cap
+$\varphi=1$ and deadlines at 200\,\% of the sum of the pattern periods.
+$M$: cores used; on time: task-chains that meet their deadline (\%);
+sched.: cores schedulable at the end (\%, \FFDU).}
+\label{tab:ablation}
+\setlength{\tabcolsep}{4pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabular}{@{}lrrrrrrrrrr@{}}
+\toprule
+\rowcolor{white}
+ & \multicolumn{5}{c}{default} & \multicolumn{5}{c@{}}{stressed} \\
+\cmidrule(lr){2-6}\cmidrule(l){7-11}
+\rowcolor{white}
+ & \multicolumn{2}{c}{\FFDU} & \multicolumn{2}{c}{\CADU} & &
+ \multicolumn{2}{c}{\FFDU} & \multicolumn{2}{c}{\CADU} & \\
+\rowcolor{white}
+variant & $M$ & on time & $M$ & on time & sched. & $M$ & on time & $M$ &
+on time & sched. \\
+\midrule
+full method & 14.40 & 92.6 & 19.45 & 96.2 & 100.0 & 11.45 & 61.3 & 16.15 & 80.9 & 100.0 \\
+no affinity & 14.40 & 92.6 & 19.40 & 96.2 & 100.0 & 11.45 & 61.2 & 16.20 & 80.7 & 100.0 \\
+no consolidation & 15.80 & 96.2 & 21.30 & 97.9 & 100.0 & 12.35 & 57.1 & 17.65 & 87.0 & 100.0 \\
+with swap moves & 14.40 & 92.6 & 19.45 & 96.2 & 100.0 & 11.45 & 61.3 & 16.15 & 80.9 & 100.0 \\
+no relocation moves & 14.40 & 92.6 & 19.45 & 96.2 & 100.0 & 11.25 & 60.7 & 15.95 & 80.8 & 99.3 \\
+no local search & 14.40 & 88.4 & 19.45 & 90.7 & 100.0 & 11.45 & 56.7 & 16.15 & 68.1 & 100.0 \\
+none of them & 15.80 & 86.0 & 21.30 & 90.7 & 100.0 & 12.30 & 45.6 & 17.55 & 68.6 & 99.3 \\
+\bottomrule
+\end{tabular}
+\end{table*}

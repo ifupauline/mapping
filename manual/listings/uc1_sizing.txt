@@ -1,0 +1,4 @@
+target                         cores     cap found       scaling   on time (%)
+none                                7             -         1.302         100.0
+1.5                                7         0.709         1.681          95.8
+2                                  7         0.525         2.008          87.5
