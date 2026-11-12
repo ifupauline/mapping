@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering\footnotesize
+\caption{Time to map one application. Exact: wall time of the constraint
+program (two threads, 60\,s limit), mean and worst over the three
+zonal platforms of \cref{tab:exact}, and the instances proven optimal. The
+others: mean CPU time on the default platform (10 instances), the
+heuristic with consolidation, the simulated annealing with $10^6$ moves and
+the genetic algorithm with 100 generations.}
+\label{tab:speed}
+\setlength{\tabcolsep}{3pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabular}{@{}rrrrrrrr@{}}
+\toprule
+\rowcolor{white}
+ & \multicolumn{3}{c}{exact (s)} & \multicolumn{2}{c}{heuristic (ms)} &
+ \multicolumn{2}{c@{}}{baselines (s)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}\cmidrule(l){7-8}
+\rowcolor{white}
+chains & mean & worst & proven & \FFDU & \CADU & SA & GA \\
+\midrule
+50 & 0.37 & 1.8 & 30/30 & 2 & 2 & 3.7 & 5.0 \\
+100 & 7.83 & 60.2 & 27/30 & 6 & 4 & 7.1 & 14.2 \\
+200 & 4.45 & 13.1 & 30/30 & 15 & 14 & 11.2 & 37.9 \\
+300 & 17.93 & 60.9 & 17/20 & 32 & 27 & 13.0 & 61.4 \\
+\bottomrule
+\end{tabular}
+\end{table}

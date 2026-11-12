@@ -1,0 +1,4 @@
+memory latency                 cores  load (cores)       scaling   on time (%)
+0 ns                               6          2.28         1.381         100.0
+40 ns                              7          2.27         1.815         100.0
+100 ns                             8          2.52         1.692         100.0

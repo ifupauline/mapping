@@ -1,0 +1,158 @@
+% mapping: user manual
+% Build: cd manual && make (make listings first, from the use cases)
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{stix2}
+\usepackage[semibold,scale=0.95]{sourcesanspro}
+\usepackage[scaled=0.86]{beramono}
+\usepackage{microtype}
+\usepackage[a4paper,top=24mm,bottom=24mm,left=25mm,right=25mm,
+	headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[dvipsnames,table]{xcolor}
+\definecolor{brand}{HTML}{17406D}
+\definecolor{brandmid}{HTML}{3D6A9A}
+\definecolor{brandlight}{HTML}{E8EFF7}
+\definecolor{accent}{HTML}{EB6834}
+\definecolor{accentlight}{HTML}{FCE9E1}
+\definecolor{teal}{HTML}{1F8A70}
+\definecolor{teallight}{HTML}{DFF2EC}
+\definecolor{cmuted}{HTML}{5C5B57}
+\definecolor{cgrid}{HTML}{D9D8D3}
+\definecolor{cpaper}{HTML}{F7F6F2}
+\linespread{1.08}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{4em}
+
+\usepackage{titlesec}
+\titleformat{\section}[block]{\sffamily\bfseries\Large\color{brand}}
+	{\colorbox{brand}{\makebox[1.5em]{\color{white}\thesection}}}{0.6em}{}
+	[{\color{brand}\titlerule[0.6pt]}]
+\titleformat{\subsection}{\sffamily\bfseries\large\color{brand}}
+	{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\sffamily\bfseries\normalsize\color{brandmid}}
+	{}{0em}{}
+% no heading alone at the bottom of a page
+\usepackage{needspace}
+\newcommand{\sectionbreak}{\needspace{10\baselineskip}}
+\newcommand{\subsectionbreak}{\needspace{6\baselineskip}}
+\newcommand{\subsubsectionbreak}{\needspace{5\baselineskip}}
+\titlespacing*{\section}{0pt}{3ex plus 1ex}{2ex}
+\titlespacing*{\subsection}{0pt}{2.5ex plus .5ex}{1ex}
+\titlespacing*{\subsubsection}{0pt}{2ex plus .5ex}{0.6ex}
+
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{cgrid}\hrule height\headrulewidth}}
+\renewcommand{\sectionmark}[1]{\markboth{\thesection.\ #1}{}}
+\fancyhead[L]{\sffamily\footnotesize\color{cmuted}mapping\enspace$\cdot$\enspace user manual}
+\fancyhead[R]{\sffamily\footnotesize\color{cmuted}\leftmark}
+\fancyfoot[C]{\sffamily\footnotesize\color{cmuted}\thepage\,/\,\pageref{LastPage}}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+	\fancyfoot[C]{\sffamily\footnotesize\color{cmuted}\thepage\,/\,\pageref{LastPage}}}
+
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=3pt}
+\usepackage{booktabs,tabularx,array,multirow}
+\usepackage{fancyvrb,pmboxdraw}
+\usepackage{caption}
+\usepackage[section]{placeins}
+\captionsetup{font={small,sf},labelfont={bf,color=brand},labelsep=period,
+	skip=6pt}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{tip}[1][Tip]{enhanced,breakable,colback=brandlight,
+	colframe=brandlight,boxrule=0pt,arc=1.5pt,left=7pt,right=7pt,top=5pt,
+	bottom=5pt,before upper={\textsf{\textbf{\color{brand}#1.}}\hspace{0.4em}}}
+\newtcolorbox{warn}[1][Note]{enhanced,breakable,colback=accentlight,
+	colframe=accentlight,boxrule=0pt,arc=1.5pt,left=7pt,right=7pt,top=5pt,
+	bottom=5pt,before upper={\textsf{\textbf{\color{accent!80!black}#1.}}\hspace{0.4em}}}
+\newtcolorbox{shell}{enhanced,breakable,colback=cpaper,colframe=brand,
+	boxrule=0pt,leftrule=2.5pt,arc=0pt,left=7pt,right=4pt,top=3pt,bottom=3pt,
+	fontupper=\footnotesize\ttfamily}
+% an experiment: question, what varies, what is fixed, measures, reading
+\newtcolorbox{experimentbox}[2]{enhanced,breakable,colback=white,
+	colframe=brand!35,boxrule=0.6pt,arc=2pt,left=8pt,right=8pt,top=6pt,
+	bottom=6pt,attach boxed title to top left={xshift=6pt,yshift=-2mm},
+	boxed title style={colback=brand,arc=1pt,boxrule=0pt},
+	coltitle=white,fonttitle=\sffamily\bfseries\small,
+	title={\texttt{#1}\enspace\textmd{#2}}}
+\newcommand{\exitem}[1]{\par\smallskip\noindent\textsf{\textbf{\color{brand}#1}}\enspace}
+% a listing of the tool output (UTF-8 box drawing), framed
+\newcommand{\listing}[2][\scriptsize]{%
+	\begin{tcolorbox}[enhanced,colback=white,colframe=cgrid,boxrule=0.5pt,
+		arc=1pt,left=3pt,right=3pt,top=3pt,bottom=3pt,breakable]
+	\VerbatimInput[fontsize=#1]{#2}
+	\end{tcolorbox}}
+% the same, unbreakable (inside a minipage)
+\newcommand{\listingbox}[2][\scriptsize]{%
+	\begin{tcolorbox}[enhanced,colback=white,colframe=cgrid,boxrule=0.5pt,
+		arc=1pt,left=3pt,right=3pt,top=3pt,bottom=3pt]
+	\VerbatimInput[fontsize=#1]{#2}
+	\end{tcolorbox}}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc,fit,backgrounds,shapes.geometric,
+	decorations.pathreplacing}
+\tikzset{
+	every picture/.style={font=\sffamily\footnotesize},
+	ecu/.style={draw=#1,fill=#1!12,rounded corners=2pt,line width=0.8pt,
+		minimum width=17mm,minimum height=9mm,align=center,
+		inner sep=2pt},
+	ecu/.default=brand,
+	ecucentral/.style={ecu=brand},
+	ecuzone/.style={ecu=accent},
+	ecudomain/.style={ecu=teal},
+	ecuplain/.style={ecu=cmuted},
+	switch/.style={draw=cmuted,fill=cmuted!85,text=white,rounded corners=1pt,
+		minimum width=7mm,minimum height=5mm,inner sep=1pt,
+		font=\sffamily\scriptsize\bfseries},
+	link/.style={line width=0.9pt,draw=cmuted},
+	fast/.style={line width=2pt,draw=cmuted},
+	flow/.style={-{Stealth[length=2.2mm]},line width=0.9pt,draw=accent},
+	box/.style={draw=brand,fill=brandlight,rounded corners=2pt,
+		line width=0.7pt,minimum height=8mm,align=center,inner sep=4pt},
+	file/.style={draw=cmuted,fill=cpaper,line width=0.7pt,rounded corners=1pt,
+		minimum height=9mm,align=center,inner sep=4pt},
+	arrow/.style={-{Stealth[length=2.4mm]},line width=0.8pt,draw=brand},
+	task/.style={draw=#1,fill=#1!15,rounded corners=1.5pt,minimum height=5mm,
+		inner sep=2pt,font=\sffamily\scriptsize},
+	task/.default=brand,
+}
+\newcommand{\cores}[1]{\\[-1pt]{\scriptsize\color{cmuted}#1}}
+
+\usepackage[colorlinks,linkcolor=brand,urlcolor=brand,citecolor=brand]{hyperref}
+\usepackage[capitalise,nameinlink,noabbrev]{cleveref}
+
+\newcommand{\cmd}[1]{\texttt{#1}}
+\newcommand{\opt}[1]{\texttt{-{}-#1}}
+\newcommand{\key}[1]{\texttt{\color{brand}#1}}
+\newcommand{\row}{\rowcolors{2}{brandlight!60}{white}}
+\newcommand{\us}{\,\textmu s}
+
+\let\mpparagraph\paragraph
+\renewcommand{\paragraph}{\needspace{5\baselineskip}\mpparagraph}
+
+\begin{document}
+
+\input{sections/title}
+\input{sections/overview}
+\input{sections/install}
+\input{sections/concepts}
+\input{sections/application}
+\input{sections/configuration}
+\input{sections/running}
+\input{sections/output}
+\input{sections/usecases}
+\input{sections/experiments}
+\input{sections/validation}
+\input{sections/reproduce}
+\input{sections/code}
+\input{sections/faq}
+
+\end{document}

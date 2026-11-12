@@ -1,0 +1,32 @@
+\section{Reproducing the paper}
+\label{sec:reproduce}
+
+\begin{shell}
+build/bin/experiment all\\
+build/bin/baselines results/baselines.csv results/baselines\_trace.csv\\
+for p in slow constraints domain; do build/bin/baselines b\_\$p.csv t\_\$p.csv -{}-platform \$p; done\\
+(cat b\_slow.csv; tail -n +2 b\_constraints.csv; tail -n +2 b\_domain.csv) > results/baselines\_platforms.csv\\
+python3 exact/gap.py build/bin/export\_instance -{}-sizes 20,50,100,200,300 -{}-seeds 10\\
+python3 exact/gap.py build/bin/export\_instance -{}-sizes 20,50,100,200,300 -{}-seeds 10 \textbackslash\\
+\quad -{}-configs domain,hybrid -{}-out results/exact\_architectures.csv\\
+sh tests/netsim/run\_netsim.sh build/bin/net\_export tests/netsim/netsim.py 20000 2\\
+sh tests/syssim/experiment.sh build/bin/mapping results/syssim.csv 5 4\\
+cd paper \&\& make figures \&\& make
+\end{shell}
+The first command writes the CSV files of the 24 experiments; the next
+three the metaheuristic comparison on the default platform and on the
+three harder ones (about twenty minutes each on two cores); the
+following two the exact results on the zonal platforms (about fifteen
+minutes) and on the domain and hybrid ones (about three minutes); the
+next two print the simulation checks and write \cmd{results/syssim.csv}; the last
+draws the figures, writes the generated tables
+(\cmd{paper/make\_tables.py}) and builds \cmd{paper/ifupauline2026-system-level-mapping-automotive.pdf}. The results
+are deterministic: the same commands give the same files on any machine
+and with any number of threads, CPU times aside.
+
+\paragraph{The use cases and this manual.}
+\begin{shell}
+cd manual \&\& make listings \&\& make
+\end{shell}
+regenerates every output shown in \cref{sec:output,sec:usecases} from the
+files of \cmd{examples/}, then the manual.

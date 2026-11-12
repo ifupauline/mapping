@@ -1,0 +1,12 @@
+  cores used per ECU, their load (in cores, LET included) and critical scaling factor
+  ┌───────┬───────┬──────┬─────────┐
+  │ ECU   │  FFDU │ FFDU │    FFDU │
+  │       │ cores │ load │ scaling │
+  ├───────┼───────┼──────┼─────────┤
+  │ HPC   │     2 │ 0.91 │   1.917 │
+  │ ZC_FL │     1 │ 0.78 │   1.302 │
+  │ ZC_FR │     1 │ 0.67 │   1.573 │
+  │ ZC_RL │     1 │ 0.43 │   2.768 │
+  │ ZC_RR │     1 │ 0.15 │   7.059 │
+  │ ZC_C  │     1 │ 0.10 │  12.438 │
+  └───────┴───────┴──────┴─────────┘

@@ -1,0 +1,512 @@
+\section{The experiments}
+\label{sec:experiments}
+
+The experiments of the paper are programs, not hand-made runs: anyone can
+run them again and get the same files. This section explains, for each
+one, the question it answers, what varies, what stays fixed, what it
+measures and how to read its output.
+
+\subsection{How an experiment runs}
+\label{sec:ex-how}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[node distance=4mm]
+\node[box,minimum width=32mm,text width=30mm] (pts) {\textbf{design points}\\\scriptsize one parameter setting each (a label, a rule)};
+\node[box,minimum width=32mm,text width=30mm,below=6mm of pts] (inst) {\textbf{instances}\\\scriptsize applications generated from (seed, $i$)};
+\node[box,right=14mm of $(pts)!0.5!(inst)$,minimum width=34mm,minimum height=22mm,
+	fill=brand,text=white,text width=32mm] (run) {\textbf{every point $\times$ every instance}\\\scriptsize in parallel, one design point per thread};
+\node[file,right=12mm of run,yshift=7mm,minimum width=34mm] (csv) {\textbf{results/NAME.csv}\\\scriptsize one row per design point};
+\node[file,right=12mm of run,yshift=-7mm,minimum width=34mm] (tab) {\textbf{summary table}\\\scriptsize means per point};
+\draw[arrow] (pts.east) -- (run.west |- pts.east);
+\draw[arrow] (inst.east) -- (run.west |- inst.east);
+\draw[arrow] (run.east |- csv.west) -- (csv.west);
+\draw[arrow] (run.east |- tab.west) -- (tab.west);
+\end{tikzpicture}
+\caption{An experiment: every design point is run on the same generated
+applications, so that two points differ only by their parameters.}
+\label{fig:experiment}
+\end{figure}
+
+\begin{shell}
+build/bin/experiment NAME [-{}-instances N] [-{}-jobs N] [-{}-seed N] [-{}-out FILE] [-{}-quiet]\\
+build/bin/experiment all \quad\# every experiment, about three minutes on two cores
+\end{shell}
+
+An experiment is a list of \emph{design points}; each is run on several
+generated applications (the \emph{instances}, 20 by default). Instance
+$i$ always uses the application generated from (experiment seed, $i$):
+every point sees the same applications, and the results do not depend on
+the number of threads. Unless an experiment says otherwise, a point uses
+the defaults: 300 task-chains of the default generator, the built-in
+zonal platform (8 big cores on the PCU, 4 microcontroller cores at 50\,\%
+on each of the five zone controllers), $\varphi = 0.8$, $\sigma = 0.4$,
+LET tasks of 50\us, a star at 1\,Gbit/s with one CBS class, and every
+step of the method.
+
+The program prints a progress line, then a table with the means of the
+metrics of the experiment over the instances of each point (over the
+feasible ones for the mapping metrics), and writes every design point to
+\cmd{results/NAME.csv} (\cref{sec:ex-csv}). The columns of the tables:
+
+\begin{center}\small\row
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{36mm}X@{}}
+\toprule\rowcolor{white}
+column & meaning (mean over the instances) \\
+\midrule
+feasible \% & instances where every sub-chain found a core \\
+cores $M$, lower bound & cores used, and the lower bound on them \\
+PCU, ZCU cores & cores used on the central computers, on the other ECUs \\
+FR \% & fragmentation rate: cuts in \% of the possible cuts \\
+SR sched, SR \% & schedulable cores after the priority assignment, and at the end \\
+net hops, port max \% & inter-ECU communications; LET load of the busiest port \\
+on time, misses & task-chains meeting their deadline (\%), late ones \\
+reaction max & the largest maximum reaction time (ms) \\
+scaling & critical scaling factor \\
+CPU s & CPU time of a design point \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Experiments of the method}
+
+\begin{experimentbox}{sweep}{the sub-chain limit against the rule}
+\exitem{Question.} How does the limit $\sigma$ trade cores against
+communications, and which rule packs best?
+\exitem{Varies.} $\sigma \in \{0.02, 0.03, 0.05, 0.1, 0.2, 0.4, 0.8\}$
+$\times$ the four rules: 28 points.
+\exitem{Measures.} Cores and lower bound, cores per ECU kind, fragmentation
+rate, schedulable cores, chains on time, maximum reaction time, CPU time.
+\exitem{Reading.} A small $\sigma$ cuts chains into many small sub-chains:
+fewer cores (they pack like sand), but more communications and longer
+reaction times. Most chains use less than 8\,\% of a core, so the cuts
+happen below $\sigma \approx 0.1$. WFDU uses every core of the platform
+(28): it spreads on purpose.
+\end{experimentbox}
+
+\begin{experimentbox}{scaling}{CPU time against the size}
+\exitem{Question.} Is the method fast enough for a whole vehicle?
+\exitem{Varies.} 50 to 3200 task-chains (doubling) $\times$ the four rules;
+2 instances per point.
+\exitem{Measures.} Chains, tasks, feasibility, cores, schedulable cores,
+CPU time of the placement phases and of the whole design point.
+\exitem{Reading.} The CPU time grows a little faster than linearly: about
+2\,s for 2000 chains on one core. The exact solver needs seconds to a
+minute for 300 chains (\cref{sec:ex-exact}).
+\end{experimentbox}
+
+\begin{experimentbox}{architecture}{speed of the zone controllers}
+\exitem{Question.} How fast must the zone controllers be?
+\exitem{Varies.} Zone core speed 25, 50, 75, 100\,\% (PCU at 100\,\%)
+$\times$ the four rules.
+\exitem{Measures.} Cores (total, PCU, zones), lower bound, schedulable
+cores, chains on time, LET load.
+\exitem{Reading.} Slow zone cores take more cores for the tasks bound to
+the zones; the free sub-chains go to the PCU anyway.
+\end{experimentbox}
+
+\begin{experimentbox}{affinity}{allocation with and without affinity}
+\exitem{Question.} Does trying the cores of the other sub-chains of the
+same chain first save communications?
+\exitem{Varies.} $\sigma \in \{0.2, 0.4, 0.6\}$ $\times$ affinity on/off
+$\times$ the four rules.
+\exitem{Measures.} Cores, communications inside an ECU and over the
+network, schedulable cores, chains on time, reaction time.
+\exitem{Reading.} Compare each point with its twin without affinity: the
+same cores, fewer hops.
+\end{experimentbox}
+
+\begin{experimentbox}{ablation}{each step of the method removed}
+\exitem{Question.} What does each step of \cref{fig:method} bring?
+\exitem{Varies.} Seven variants: the full method; without affinity;
+without consolidation; with the optional swap moves; without relocation moves;
+without the local search; without any of them (bin packing and the
+priority assignment only), on two settings, \emph{default} and
+\emph{stressed} (cores filled up to $\varphi = 1$, deadlines at 200\,\% of
+the pattern periods instead of 300\,\%), $\times$ FFDU and CADU: 28
+points.
+\exitem{Measures.} Cores, schedulable cores after the priorities and at
+the end, network hops, chains on time and late, CPU time.
+\exitem{Reading.} Compare each variant with \emph{full}. With the default
+setting, the consolidation saves cores (14.4 instead of 15.8 for FFDU) and
+the local search brings chains on time (92.6 instead of 88.4\,\%). The
+relocation moves only matter when cores are unschedulable, which happens
+in the stressed setting (without them, 0.7\,\% of the cores stay
+unschedulable). The swap moves change nothing, which is why they are off
+by default.
+\end{experimentbox}
+
+\begin{experimentbox}{practice}{the method against practitioner rules}
+\exitem{Question.} Does the method beat what an engineer would do by
+hand?
+\exitem{Varies.} The method with FFDU and with CADU; \emph{whole chains}
+(cut only where the ECUs force it: $\sigma = \varphi$); \emph{central
+only} (the free software on the central computer, the zones only for the
+tasks bound there); both together; \emph{load balancing} (WFDU).
+\exitem{Measures.} Cores (total, PCU, zones), lower bound, hops, busiest
+port, chains on time, reaction time.
+\exitem{Reading.} Keeping chains whole costs little here (the chains are
+small), but see \cmd{limit}; putting all free software on the central
+computer costs cores, network traffic and deadlines; load balancing uses
+every core.
+\end{experimentbox}
+
+\begin{experimentbox}{limit}{the sub-chain limit where it matters}
+\exitem{Question.} Why cut task-chains at all, and is the default
+$\sigma = 0.4$ right?
+\exitem{Varies.} $\sigma \in \{0.4, 0.6, 0.8\}$ (0.8 is the cap: whole
+chains) on three settings: the default point, shared-memory contention at
+50\,ns, and 600 task-chains; $\times$ FFDU and CADU: 18 points.
+\exitem{Measures.} Feasibility, cores and lower bound, hops, chains on
+time, CPU time.
+\exitem{Reading.} At the default point a larger $\sigma$ changes little
+(CADU saves about a core). With contention, the WCETs grow once the
+sub-chains are placed, and a large sub-chain no longer fits any core:
+only 45\,\% of the instances are feasible at $\sigma = 0.8$, 95\,\% at
+0.6, all at 0.4. That is why the default is 0.4.
+\end{experimentbox}
+
+\begin{experimentbox}{deadlines}{deadlines and the local search}
+\exitem{Question.} How tight can the deadlines be, and how much does the
+local search recover?
+\exitem{Varies.} Deadlines at 200, 300, 400, 600\,\% of the sum of the
+pattern periods of each chain $\times$ local search on/off $\times$ the
+four rules.
+\exitem{Measures.} Cores, chains on time, late chains, moves kept, reaction
+time, CPU time.
+\end{experimentbox}
+
+\begin{experimentbox}{fill}{the utilization cap}
+\exitem{Question.} How high may the cores be filled?
+\exitem{Varies.} $\varphi \in \{0.6, 0.7, 0.8, 0.9, 1.0\}$ $\times$ the four
+rules.
+\exitem{Measures.} Cores, schedulable cores after the priorities and at the
+end, scaling factor, chains on time, CPU time of the placement.
+\exitem{Reading.} Up to 0.9 the optimal priority assignment makes every
+core schedulable; at 1.0 about 1\,\% of the cores are not (the periods are
+not harmonic), and the relocation moves repair all of them.
+\end{experimentbox}
+
+\begin{experimentbox}{let}{the cost of the LET tasks}
+\exitem{Varies.} WCET of the LET task: 10, 50, 100, 200\us{} $\times$ the
+four rules.
+\exitem{Measures.} Cores, LET load, communications on a core, schedulable
+cores, chains on time.
+\end{experimentbox}
+
+\begin{experimentbox}{communication}{implicit communication or strict LET}
+\exitem{Question.} What does the determinism of strict LET cost, against
+implicit communication?
+\exitem{Varies.} The two schemes on three settings: the default point,
+deadlines at 500\,\%, and a ring with three classes; $\times$ FFDU and
+CADU: 12 points.
+\exitem{Measures.} Cores, hops, largest network bound, reaction times,
+chains on time.
+\exitem{Reading.} The cores do not change. Strict LET removes the response
+time from the jitter of the flows, so the largest network bound falls by
+15 to 19\,\%, but every crossing between cores waits for the end of the
+producer's period: 30 points fewer chains on time with FFDU, 16 with CADU,
+and only 4 and 1.5 with deadlines at 500\,\%.
+\end{experimentbox}
+
+\begin{experimentbox}{margins}{WCET margin or sizing}
+\exitem{Question.} Two ways to keep a margin: raise every WCET at design
+time, or size for a scaling factor. Which one costs fewer cores for the
+same margin?
+\exitem{Varies.} WCET margin 0, 10, 20, 40\,\%; then targets 1.10, 1.25,
+1.50 for the sizing; $\times$ the four rules.
+\exitem{Measures.} Cores, application load, schedulable cores, scaling
+factor, cap found, target reached, chains on time.
+\end{experimentbox}
+
+\subsection{Experiments of the platform}
+
+\begin{experimentbox}{cores}{types of cores}
+\exitem{Question.} What do little cores and lock-step cores change?
+\exitem{Varies.} Four platforms: PCU with 8 big cores or 4 big + 8 little;
+zones with 4 microcontroller cores or 2 + 2 lock-step, the safety chains
+(10\,\%) on lock-step cores only; every WCET up to 30\,\% off its speed
+ratio on each type; $\times$ the four rules.
+\exitem{Measures.} Cores (total, PCU, zones), application load, scaling
+factor, chains on time.
+\end{experimentbox}
+
+\begin{experimentbox}{constraints}{spatial constraints}
+\exitem{Varies.} None; 10, 20, 30\,\% of replicated chains (on other
+ECUs); 20\,\% replicated on other cores only; 20\,\% of zone-only chains;
+30\,\% of co-located tasks; 8\,MB of memory per zone controller; $\times$
+the four rules.
+\exitem{Measures.} Cores (total, PCU, zones), hops, chains on time,
+reaction time.
+\exitem{Reading.} Each constraint takes freedom from the allocation: its
+price is read in cores and hops against the point \emph{none}.
+\end{experimentbox}
+
+\begin{experimentbox}{contention}{shared-memory contention}
+\exitem{Varies.} Memory latency 0, 20, 50, 100\,ns per request (1000
+requests per ms of WCET), $\times$ the four rules.
+\exitem{Measures.} Cores (total, PCU, zones), application load, schedulable
+cores, scaling factor, chains on time.
+\exitem{Reading.} Contention grows with the cores used on an ECU, and more
+load needs more cores: a packed mapping pays the most.
+\end{experimentbox}
+
+\begin{experimentbox}{dse}{four E/E architectures}
+\exitem{Question.} For the same vehicle functions, which architecture
+needs the fewest cores and the least network traffic, and up to what size
+of software does each one work?
+\exitem{Varies.} The four templates of \cref{fig:templates}
+(distributed, domain, hybrid, zonal) $\times$ 100, 200, 300 task-chains
+$\times$ FFDU and CADU: 24 points. The generator draws the same functions
+for every template (the same seeds); their sensors and actuators are
+wired to the ECUs that are not central computers.
+\exitem{Measures.} Feasibility, cores and lower bound, hops, busiest port,
+chains on time, reaction time, CPU time.
+\exitem{Reading.} The distributed architecture runs out of cores as the
+software grows (each small ECU has at most two cores, the ADAS controller
+four): every instance is feasible at 100 chains, half of them with FFDU
+at 300. The domain, hybrid and zonal ones all absorb 300 chains; the
+hybrid and domain ones need about a core less than the zonal one, because
+part of the bound work runs on big cores.
+\end{experimentbox}
+
+\begin{experimentbox}{lifecycle}{the SOP, then software updates}
+\exitem{Question.} How many updates does a core bought at the SOP buy?
+\exitem{Varies.} The cap at the SOP: 0.5, 0.6, 0.7, 0.8 $\times$ the four
+rules. The platform is then fixed (the cores the SOP mapping uses), and
+ten updates of 15 new task-chains each are mapped on it at $\varphi =
+0.8$, without moving what is already there.
+\exitem{Measures.} Cores of the platform, scaling factor, updates absorbed,
+and after each update its chains, scaling factor and chains on time.
+\end{experimentbox}
+
+\subsection{Experiments of the network}
+
+\begin{experimentbox}{network}{link rate, preemption, message sizes}
+\exitem{Varies.} 100 or 1000\,Mbit/s $\times$ frame preemption on/off
+$\times$ the default messages or sensor data (a third of large messages, up
+to 64\,KB) $\times$ the four rules.
+\exitem{Measures.} Cores, hops, largest network bound, busiest port, chains
+on time, reaction time.
+\end{experimentbox}
+
+\begin{experimentbox}{topology}{star, tree and ring}
+\exitem{Varies.} Star; tree and ring with a backbone at 1 or 10\,Gbit/s;
+tree and ring with ATS; $\times$ the four rules.
+\exitem{Measures.} As for \cmd{network}.
+\exitem{Reading.} On a ring the bursts of the flows grow at every hop and
+the dependencies between ports are cyclic; ATS reshapes every flow at every
+switch and removes that growth.
+\end{experimentbox}
+
+\begin{experimentbox}{classes}{traffic classes on a whole vehicle}
+\exitem{Varies.} 2000 task-chains, 16 PCU cores; one CBS class at
+1\,Gbit/s; then with a 10\,Gbit/s backbone: 1, 2 or 3 CBS classes, 1 or 3
+TAS classes, 1 or 3 ATS classes; $\times$ the four rules; 2 instances.
+\exitem{Measures.} Cores, largest bound, busiest port, chains on time and
+late, CPU time.
+\end{experimentbox}
+
+\begin{experimentbox}{frer}{frame replication on the ring}
+\exitem{Varies.} CBS or ATS $\times$ 0, 10, 20, 30\,\% of replicated chains
+$\times$ FRER on/off $\times$ the four rules, on a ring.
+\exitem{Measures.} Cores, hops, replicated flows, largest bound, busiest
+backbone link, chains on time.
+\end{experimentbox}
+
+\subsection{Case studies and assumptions}
+
+\begin{experimentbox}{detection}{a small detection chain}
+\exitem{Varies.} An illustrative ADAS chain of nine tasks (not taken from
+a benchmark; identical cores), $\varphi = 1$ and $0.8$, $\sigma$ from 0.2 to
+$\varphi$ by 0.1, $\times$ the four rules; one instance.
+\exitem{Measures.} Cores, schedulable cores, communications on a core,
+fragmentation rate, scaling factor.
+\end{experimentbox}
+
+\begin{experimentbox}{vehicle}{the software of a whole vehicle}
+\exitem{Varies.} 2000 task-chains (about 8700 tasks), 16 PCU cores, at the
+reference speeds or with PCU cores four times faster (zones at 100\,\%);
+$\times$ the four rules; 2 instances.
+\exitem{Measures.} Tasks, cores and lower bound, cores per ECU kind,
+schedulable cores, chains on time, busiest port, CPU time.
+\end{experimentbox}
+
+\begin{experimentbox}{robustness}{the assumptions of the generator}
+\exitem{Question.} Do the conclusions depend on how the applications are
+generated?
+\exitem{Varies.} One assumption at a time, below and above its default:
+chains local to one zone (0 or 50\,\% instead of 25), chains with a
+sensor and an actuator in a zone (30/25 or 90/80\,\% instead of 60/50),
+chain utilizations (halved or doubled), heavy chains (0 or 5\,\% instead of
+2), message sizes (mostly small, or 40\,\% large); $\times$ FFDU and
+CADU: 22 points.
+\exitem{Measures.} Cores and lower bound, hops, busiest port, chains on
+time, reaction time.
+\exitem{Reading.} The values move, the ranking does not: at every point
+FFDU uses the fewest cores, and CADU the fewest network hops and the
+largest share of chains on time.
+\end{experimentbox}
+
+\subsection{The CSV files}
+\label{sec:ex-csv}
+
+{\raggedright Every row starts with the design point and its parameters:
+\cmd{experiment, point, label, application, instance, seed, sigma,
+algorithm, phi, pcu\_speed, zcu\_speed, let\_wcet, wcet\_margin, affinity,
+repair, link\_mbps, preemption, deadline\_pct, error, topology,
+backbone\_mbps, classes, shaping, frer, pcu\_memory, zcu\_memory,
+separation, replica\_pct, colocate\_pct, zone\_only\_pct, pcu\_little,
+zcu\_lockstep, type\_variation, lockstep\_pct, target\_scaling,
+memory\_latency, access\_density}. The \cmd{label} tells the points
+apart when a parameter has no column of its own (the template of
+\cmd{dse}, the variant of \cmd{ablation}). The results follow.\par}
+
+\begin{center}\small\row
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.43\textwidth}X@{}}
+\toprule\rowcolor{white}
+columns & meaning \\
+\midrule
+\cmd{chains, tasks, feasible} & size of the application; 1 if every sub-chain was placed \\
+\cmd{fragments, cuts, forced\_cuts, max\_cuts, fr} & partitioning; fragmentation rate (\%) \\
+\cmd{cores\_total, cores\_arch, cores\_used, cores\_lb} & cores at the end, initial cores, cores used $M$, lower bound \\
+\cmd{cores\_pcu, cores\_zcu, cores\_big \dots\ cores\_lockstep} & $M$ on the central computers and the other ECUs, and by core type \\
+\cmd{sr\_sched, sr\_swap, sr\_disp, sr\_final} & schedulable cores after priorities, swaps, relocations, at the end (\%) \\
+\cmd{sr\_chains, sr\_on\_time, deadline\_misses} & task-chains schedulable and meeting their deadline (\%); late ones \\
+\cmd{repairs, emptied} & moves kept by the local search; cores emptied by consolidation \\
+\cmd{u\_app, u\_let, u\_unused} & application load, LET load, room below the cap (cores) \\
+\cmd{hops\_intra, hops\_inter} & communications inside an ECU, between ECUs \\
+\cmd{net\_overloaded, net\_avg, net\_max} & flows without a bound; mean and largest flow bound (\us) \\
+\cmd{port\_max, backbone\_max, ports\_overloaded, frer\_flows} & busiest port and backbone link (\%); overloaded ports; replicated flows \\
+\cmd{latency\_avg/max, delay\_avg/max, react\_avg/max} & end-to-end response time, end-to-end delay, maximum reaction time (\us) \\
+\cmd{scaling, sized\_phi, target\_met, sizing\_runs, t\_sizing} & critical scaling factor; result of the sizing \\
+\cmd{cores\_c$k$, u\_app\_c$k$, scaling\_c$k$, memory\_c$k$} & per ECU $k = 0..5$ (the first six ECUs of the platform) \\
+\cmd{port\_out\_c$k$, port\_in\_c$k$} & load of the port of ECU $k$ and of the switch port towards it (\%) \\
+\cmd{updates, update\_chains, update\_phi, absorbed, platform\_cores} & lifecycle: updates tried, chains per update, cap, updates absorbed, cores of the platform \\
+\cmd{life\_scaling\_$u$, life\_on\_time\_$u$, life\_load\_$u$} & after the SOP ($u=0$) and each absorbed update \\
+\cmd{t\_partition \dots\ t\_total} & CPU time of each phase and of the design point (s) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Against other methods: simulated annealing and a genetic algorithm}
+\label{sec:ex-baselines}
+
+\begin{experimentbox}{baselines}{the heuristic against metaheuristics}
+\exitem{Question.} Would a general-purpose search do better, given time?
+\exitem{How.} \cmd{baselines results.csv trace.csv [-{}-sizes L] [-{}-seeds N]
+[-{}-sa L] [-{}-ga L] [-{}-platform P] [-{}-no-local-search]} maps the
+same applications (50, 100, 200, 300 chains, seeds 1 to 10, the default
+generator) on the platform \cmd{default}, \cmd{slow} (zone cores at
+25\,\%), \cmd{constraints} (replicas, zone-only chains, 8\,MB per zone
+controller) or \cmd{domain}, with the four rules and with two
+metaheuristics that solve the same allocation problem: the same
+sub-chains, the same constraints, the same schedulability test, the same
+first objective (the fewest cores).
+\begin{itemize}
+\item \textbf{Simulated annealing} (SA): from a first-fit mapping, moves
+of one sub-chain or exchanges of two, accepted with the Metropolis rule;
+budgets of $2\cdot10^4$, $2\cdot10^5$ and $10^6$ moves.
+\item \textbf{Genetic algorithm} (GA): an individual is an order of the
+sub-chains, decoded by first fit; tournament selection, order crossover,
+swap mutation, elitism; 40 individuals; 5, 25 and 100 generations.
+\end{itemize}
+Both get the deadline local search of the heuristic on their best
+mapping (unless \opt{no-local-search}), so that the chains on time compare
+the searches. \cmd{include/mapping/search.h} gives every detail.
+\exitem{Measures.} Per application and method: cores, lower bound,
+schedulable cores, chains on time, CPU time; the trace file has every
+improvement of the best mapping over time (the quality-against-time
+figure of the paper).
+\exitem{Reading.} Compare with the optimum of the exact solver for the
+same applications (\cref{sec:ex-exact}). On the default platform the
+rules take milliseconds, SA needs about $10^6$ moves (seconds) to match
+them, and GA stays above them at 200 and 300 chains. On the domain
+platform and with slow zones, GA (tens of seconds) finds fewer cores than
+the rules; on the constrained platform no method comes close to the
+exact solver at 200 chains.
+\end{experimentbox}
+
+\subsection{The exact solver}
+\label{sec:ex-exact}
+
+\begin{experimentbox}{exact}{the optimality gap}
+\exitem{Question.} How far from the fewest possible cores is the heuristic?
+\exitem{How.} The exact formulation (paper, section ``Exact formulation'')
+finds the fewest cores for the sub-chains of the partitioning, with the
+same constraints and schedulability test, as a constraint program
+(OR-Tools CP-SAT) with lazy schedulability cuts.
+\begin{shell}
+build/bin/export\_instance 1 100 inst.json \quad\# seed, task-chains, file\\
+python3 exact/exact.py inst.json -{}-time-limit 60 -{}-json result.json\\
+python3 exact/gap.py build/bin/export\_instance -{}-sizes 20,50,100,200,300 -{}-seeds 10\\
+python3 exact/gap.py build/bin/export\_instance -{}-sizes 20,50,100,200,300 -{}-seeds 10 \textbackslash\\
+\quad -{}-configs domain,hybrid -{}-out results/exact\_architectures.csv
+\end{shell}
+\cmd{export\_instance} generates the application, partitions it once,
+runs the four rules (with and without consolidation) and writes the
+sub-chains, the candidate cores and the heuristic results.
+\cmd{exact.py} prints the status (\cmd{OPTIMAL}, \cmd{FEASIBLE} at the
+time limit, \cmd{INFEASIBLE}), the optimum and the time. \cmd{gap.py}
+solves 150 instances on the zonal platform (default, slow zones,
+constraints), checks every exact solution with the tool
+(\cmd{export\_instance -{}-verify}) and writes \cmd{results/exact.csv};
+the second run adds 100 instances on the domain and hybrid templates
+(\cmd{export\_instance -{}-template T}). \opt{spare N} gives each ECU
+$N$ candidate cores beyond the most any rule uses (2 by default); with 4,
+no instance gets a smaller optimum.
+\exitem{Reading.} The gap of a rule is its cores minus the optimum, in \%
+of the optimum.
+\end{experimentbox}
+
+\subsection{Checking the bounds by simulation}
+
+The analysis gives upper bounds. Two simulators check that no simulated
+delay ever exceeds them.
+
+\begin{experimentbox}{netsim}{the network, frame by frame}
+\label{sec:ex-netsim}
+\exitem{How.} \cmd{tests/netsim/netsim.py} simulates the frames of a flow
+set at every output port: store-and-forward switches, CBS with the idle
+slopes of the analysis, TAS gates, ATS regulators, FRER replication and
+elimination, a saturated best-effort class, release jitter. It compares
+every delay with its Network Calculus bound.
+\begin{shell}
+build/bin/net\_export map 0.3 1 flows.csv -{}-topology ring -{}-classes 3 -{}-frer\\
+python3 tests/netsim/netsim.py flows.csv 20000 2 \quad\# horizon (\us), runs\\
+sh tests/netsim/run\_netsim.sh build/bin/net\_export tests/netsim/netsim.py 20000 2
+\end{shell}
+\cmd{net\_export map <sigma> <seed>} exports the flows of a mapping,
+\cmd{heavy <load> <seed>} random flows up to a load of every port;
+\opt{config FILE} takes the platform and network of a configuration file.
+The script runs 23 flow sets (star, tree, ring, custom; CBS, TAS, ATS;
+FRER; the templates).
+\exitem{Reading.} \cmd{max observed/bound} below 1 and
+\cmd{violations = 0} on every line.
+\end{experimentbox}
+
+\begin{experimentbox}{syssim}{the whole system: cores, LET and network}
+\label{sec:ex-syssim}
+\exitem{How.} \cmd{tests/syssim/syssim.py} simulates a mapping written by
+\opt{out} (\cmd{system.json}): every core under preemptive fixed
+priorities with its LET task, every LET copy (implicit or strict LET, as
+in the mapping), every message with a delay
+up to its network bound, the cores on unsynchronized phases. It follows
+each sensor sample through its chain to the first actuator job that uses
+it, and compares the end-to-end delay and the maximum reaction time of
+every chain with their bounds; half of the scenarios run every job at its
+WCET and every message at its bound, the others draw them lower.
+\begin{shell}
+build/bin/mapping -{}-chains 200 -{}-out run \&\& \textbackslash\\
+\quad python3 tests/syssim/syssim.py run/system.json 4\\
+sh tests/syssim/experiment.sh build/bin/mapping results/syssim.csv 5 4
+\end{shell}
+The experiment script maps five applications of 200 chains on nine
+settings (zonal star with FFDU and CADU, ring with FRER and three classes,
+memory contention, tree with TAS, strict LET on the star and on the ring,
+the domain and hybrid templates) and
+writes every chain's bounds and observed values to \cmd{results/syssim.csv}.
+\exitem{Reading.} \cmd{violations = 0} on every line; the ratio
+observed/bound of each chain shows how tight the bounds are (1.000 for a
+chain on one core at its WCETs: the bound is reached).
+\end{experimentbox}

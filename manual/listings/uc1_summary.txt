@@ -1,0 +1,38 @@
+  │ metric                             │    FFDU │
+  ├────────────────────────────────────┼─────────┤
+  │ feasible                           │     yes │
+  │ sub-chains                         │      64 │
+  │ fragmentation rate FR (%)          │    81.6 │
+  │ cuts forced by the ECUs            │      40 │
+  ├────────────────────────────────────┼─────────┤
+  │ cores used M                       │       7 │
+  │   on central computers             │       2 │
+  │   on the other ECUs                │       5 │
+  │   lower bound on M                 │       5 │
+  │ cores added to the architecture    │       0 │
+  │ cores emptied by consolidation     │       0 │
+  ├────────────────────────────────────┼─────────┤
+  │ schedulable cores SR (%)           │   100.0 │
+  │   after scheduling                 │   100.0 │
+  │   after swap moves                 │   100.0 │
+  │   after relocation moves           │   100.0 │
+  │ critical scaling factor            │   1.302 │
+  ├────────────────────────────────────┼─────────┤
+  │ application load (cores)           │    2.70 │
+  │ LET load (cores)                   │    0.34 │
+  │ room left below the cap (cores)    │    2.56 │
+  ├────────────────────────────────────┼─────────┤
+  │ task-chains schedulable (%)        │   100.0 │
+  │ task-chains meeting deadline (%)   │   100.0 │
+  │   deadline misses                  │       0 │
+  │   local search moves               │       6 │
+  │ communications inside an ECU       │       0 │
+  │ inter-ECU communications           │      33 │
+  │   replicated with FRER             │       0 │
+  │ network delay bound, max (us)      │   786.8 │
+  │ busiest port load (%)              │    0.53 │
+  │ end-to-end response time, max (ms) │   61.38 │
+  │ max reaction time, max (ms)        │ 2007.44 │
+  ├────────────────────────────────────┼─────────┤
+  │ CPU time (ms)                      │     0.7 │
+  └────────────────────────────────────┴─────────┘

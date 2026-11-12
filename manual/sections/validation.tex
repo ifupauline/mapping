@@ -1,0 +1,28 @@
+\section{Verification}
+\label{sec:validation}
+
+\cmd{ctest} runs 18 tests; all must pass before any change is published.
+
+\begin{center}\small\row
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{38mm}X@{}}
+\toprule\rowcolor{white}
+test & what it checks \\
+\midrule
+\cmd{unit\_*} (12 programs) & each module alone: response times, the optimality of the priority assignment against brute force, CBS/TAS/ATS/FRER bounds computed by hand, the ring fixed point, routes on custom topologies, consolidation, contention, the lifecycle, the JSON reader, the files and their error messages, the templates, the metaheuristics \\
+\cmd{golden} & the whole pipeline on seven applications, byte for byte against \cmd{tests/golden} \\
+\cmd{roundtrip} & an application written with \opt{generate} and a configuration written with \opt{print-config} give exactly the results of the generator and the options \\
+\cmd{invariants} & 20 random configurations: response times, WCETs, loads, constraints and end-to-end bounds recomputed independently, and the incremental analysis after random moves \\
+\cmd{network\_bounds} & the network simulator on 23 flow sets: no delay above its bound \\
+\cmd{system\_bounds} & the full-system simulator on eight mappings (zonal, domain, distributed, custom; CBS, TAS, ATS; FRER; contention): no end-to-end delay or reaction time above its bound \\
+\cmd{experiment\_threads} & the same CSV file with one or several threads \\
+\cmd{exact} & a small optimality-gap study, every exact solution checked by the tool (needs OR-Tools) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{tip}[Changing the method]
+A change that alters any result makes the \cmd{golden} test fail. If the
+change is intended, regenerate the reference results with
+\cmd{build/bin/golden tests/golden} and say why in the commit message.
+The sanitizer build (\cref{sec:install}) must also pass the tests.
+\end{tip}

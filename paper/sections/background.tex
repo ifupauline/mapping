@@ -1,0 +1,141 @@
+\section{Background and terminology}
+\label{sec:background}
+
+\begin{inbrief}
+This section recalls the standard notions the paper uses: task-chains
+and their end-to-end metrics, fixed-priority scheduling, LET, TSN and
+Network Calculus. \Cref{tab:glossary} lists the terms.
+\end{inbrief}
+
+\subsection{Task-chains and their end-to-end metrics}
+
+A \emph{task} is released periodically and runs for at most its
+worst-case execution time (WCET). A \emph{task-chain} is a sequence of
+tasks in which each task reads the output of the previous one. Automotive
+task-chains are multi-rate: the tasks of a chain may have different
+periods. Consecutive tasks with the same period form an \emph{activation
+pattern}. They are released together and run in order. Between two
+patterns, the tasks communicate through a shared variable (a register):
+the consumer reads the latest value at its own release
+\cite{kramer2015waters,hamann2017communication}.
+
+Two end-to-end metrics are standard \cite{feiertag2008compositional,
+becker2017end,durr2019end}. The \emph{maximum reaction time} is the
+longest time from an external event (a change seen by the sensor) to the
+end of the first job of the last task whose output accounts for it. The
+\emph{maximum data age} is the longest time a sensor value is used, from
+its sampling to the end of the last job of the last task that uses it.
+Günzel et al.~\cite{gunzel2023equivalence} proved that the two are equal
+for cause-effect chains of periodic tasks. In this paper, the end-to-end deadline of a
+task-chain bounds its maximum reaction time, and the bound therefore also
+holds for the data age. The \emph{end-to-end response time} of holistic
+analysis \cite{tindell1994holistic} is a third quantity: the sum of the
+response times and network delays along the chain, without the sampling
+and copy delays. It is one part of the reaction time, not a time of the
+system.
+
+\subsection{Fixed-priority scheduling on partitioned multicores}
+
+Each core runs its tasks with preemptive fixed priorities, and a task
+never migrates (partitioned scheduling \cite{davis2011survey}). The
+worst-case response time (WCRT) of a task is the longest time from its
+release to its completion; it is found by the classical response-time
+analysis \cite{joseph1986finding,audsley1993applying}. A core is
+\emph{schedulable} if every task meets its implicit deadline, its period.
+Audsley's algorithm \cite{audsley2001priority} assigns the priorities
+from the lowest level up; for schedulability tests that depend only on
+the set of higher-priority tasks, such as response-time analysis, it finds
+a schedulable order whenever one exists \cite{davis2016review}. The \emph{critical scaling factor} of a core is the largest
+factor by which all WCETs can be multiplied with the core still
+schedulable \cite{lehoczky1989rate}; it measures the timing margin.
+Allocating tasks to cores under a utilization cap is a bin-packing
+problem; the classical heuristics take the tasks by decreasing
+utilization and put each one on the first (first fit), fullest (best fit)
+or emptiest (worst fit) core that can take it \cite{johnson1974fast,
+davis2011survey}.
+
+\subsection{Logical execution time}
+
+With the LET paradigm \cite{henzinger2003giotto,kirsch2012let}, a task
+reads its inputs at its release and publishes its outputs at its next
+release (or deadline), whatever its actual execution. Between cores, the
+copies are made by a communication task at fixed instants
+\cite{hamann2017communication,biondi2018achieving}. The timing of the data
+flow then no longer depends on execution times, at the price of sampling
+delays and of the copy task. With \emph{implicit communication}, the
+AUTOSAR alternative, a task works on local copies of its data, which are
+written back when it finishes \cite{hamann2017communication}: the delays
+are shorter, but they depend on response times. System-level LET extends
+LET across ECUs, with synchronized clocks \cite{gemlau2021system}.
+
+\subsection{Time-Sensitive Networking}
+
+TSN is a set of IEEE~802.1 standards for bounded-latency Ethernet
+\cite{ieee8021q2022}. A switch has one output queue per traffic class at
+each port. The paper uses four mechanisms.
+\begin{itemize}
+\item \emph{Credit-based shaper} (CBS, 802.1Qav): a class may send only
+while its credit is non-negative; the credit grows at the \emph{idle
+slope} while frames wait and drains while the class sends. It reserves a
+share of the link for the class and spreads its frames out.
+\item \emph{Time-aware shaper} (TAS, 802.1Qbv): a cyclic gate schedule
+opens the queue of each class in its own time window.
+\item \emph{Asynchronous traffic shaping} (ATS, 802.1Qcr
+\cite{ieee8021qcr2020,specht2016urgency}): at every switch, a
+\emph{regulator} holds each frame until the stream again conforms to its
+token-bucket description, and the classes are then served in strict
+priority. Bursts therefore do not grow from hop to hop.
+\item \emph{Frame replication and elimination for reliability} (FRER,
+802.1CB \cite{ieee8021cb2017}): a stream is sent as two \emph{member
+streams} over disjoint paths; the receiving side keeps the first copy of
+each frame and discards the other, so a single link or switch failure
+loses no frame.
+\end{itemize}
+Frame preemption (802.1Qbu) lets a time-critical frame interrupt a
+best-effort frame \cite{thiele2016formal}.
+
+\subsection{Network Calculus}
+
+Network Calculus bounds worst-case delays with curves
+\cite{cruz1991calculus,leboudec2001network}. An \emph{arrival curve}
+$\alpha$ bounds the traffic of a flow: in any window of length $t$, the
+flow sends at most $\alpha(t)$ bits. The token bucket $\alpha(t)=b+rt$
+(burst $b$, rate $r$) is the usual one. A \emph{service curve} $\beta$
+guarantees the service a port gives to a class; the rate-latency curve
+$\beta(t)=R\,[t-L]^+$ (rate $R$ after a latency $L$) is the usual one.
+The delay of a flow at the port is then at most the horizontal distance
+between $\alpha$ and $\beta$, here $L+b/R$; and the flow leaves the port
+with a larger burst, $b+rd$ for a delay bound $d$. Along a route, bursts
+therefore grow from port to port, unless regulators reshape them.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Terms used in the paper.}
+\label{tab:glossary}
+\setlength{\tabcolsep}{3pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabularx}{\columnwidth}{@{}lX@{}}
+\toprule
+\rowcolor{white}
+term & meaning \\
+\midrule
+task-chain & sequence of tasks, sensor to actuator (cause-effect chain) \\
+activation pattern & maximal run of consecutive tasks of a chain with one period \\
+sub-chain & run of consecutive tasks of a chain, the unit of allocation \\
+segment & maximal run of consecutive sub-chains of a chain on one core \\
+pinned & bound to one ECU (sensor and actuator drivers) \\
+central computer & the ECU that runs most functions \\
+zone controller (ZCU) & ECU of one zone of the car, wired to its devices \\
+host & ECU that free sub-chains go to first: the central computers, else the ECUs with the fastest cores \\
+inter-ECU communication & data sent between two segments on two ECUs \\
+LET task & copy task of a core, run at its LET instants \\
+implicit / strict LET & output copied after its producer ends / at the end of its period \\
+utilization cap $\varphi$ & largest load allowed on a core \\
+maximum reaction time & event to the first actuation that accounts for it \\
+end-to-end response time & sum of the response times and network delays of a chain (holistic) \\
+critical scaling factor & largest WCET factor that keeps the cores schedulable \\
+design point & one run of the method for one application and one set of parameters \\
+SOP & start of production: the hardware is frozen \\
+\bottomrule
+\end{tabularx}
+\end{table}

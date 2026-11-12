@@ -1,0 +1,70 @@
+% title page and contents
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+\fill[brand] (current page.north west) rectangle
+	([yshift=-92mm]current page.north east);
+\fill[accent] ([yshift=-92mm]current page.north west) rectangle
+	([yshift=-94mm]current page.north east);
+\node[anchor=north west,text width=150mm,align=left,text=white]
+	at ([xshift=25mm,yshift=-26mm]current page.north west)
+	{\fontsize{34}{38}\selectfont\sffamily\bfseries mapping\\[6pt]
+	 \fontsize{17}{21}\selectfont\sffamily User manual\\[10pt]
+	 \fontsize{11}{15}\selectfont\sffamily\color{white!82!brand}
+	 Sizing the processor cores of an automotive E/E architecture for
+	 its task-chains, with logical execution time, a TSN backbone and a
+	 worst-case timing analysis};
+\node[anchor=south west,text=white!82!brand,font=\sffamily\small]
+	at ([xshift=25mm,yshift=-86mm]current page.north west)
+	{ifupauline\quad$\cdot$\quad version 3.0, November 2026\quad$\cdot$\quad
+	 code: Apache-2.0\quad$\cdot$\quad text: CC BY 4.0};
+\end{tikzpicture}
+\vspace*{78mm}
+
+{\sffamily\bfseries\large\color{brand} The tool at a glance\par}
+\smallskip
+You describe the \textbf{software} (an application file: task-chains of
+periodic tasks) and the \textbf{hardware} (a configuration file: ECUs,
+cores, network, and the models and method to use). \cmd{mapping} places
+every task on a core, sets the priorities, analyses the timing of every
+core, every network port and every task-chain, and tells you how many
+cores each ECU needs and whether every function meets its deadline.
+
+\begin{center}
+\begin{tikzpicture}[node distance=5mm]
+\node[file,minimum width=34mm] (app) {\textbf{application.json}\\
+	{\scriptsize task-chains, periods, WCETs}};
+\node[file,minimum width=34mm,below=4mm of app] (cfg)
+	{\textbf{configuration.json}\\{\scriptsize platform, models, method}};
+\node[box,right=12mm of $(app.east)!0.5!(cfg.east)$,minimum width=50mm,
+	minimum height=27mm,fill=brand,text=white,draw=brand] (tool)
+	{\large\textbf{mapping}\\[3pt]
+	 \scriptsize cut into sub-chains $\cdot$ allocate\\
+	 \scriptsize priorities $\cdot$ repair $\cdot$ local search\\
+	 \scriptsize response times $\cdot$ Network Calculus};
+\node[file,right=12mm of tool,minimum width=36mm,yshift=8mm] (term)
+	{\textbf{terminal tables}\\{\scriptsize cores, chains, margins}};
+\node[file,below=4mm of term,minimum width=36mm] (csv)
+	{\textbf{results files}\\{\scriptsize CSV and JSON (\opt{out})}};
+\draw[arrow] (app.east) -- (tool.west |- app.east);
+\draw[arrow] (cfg.east) -- (tool.west |- cfg.east);
+\draw[arrow] (tool.east |- term.west) -- (term.west);
+\draw[arrow] (tool.east |- csv.west) -- (csv.west);
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}XXX@{}}
+\textsf{\textbf{\color{brand}How many cores?}}\newline
+per ECU, with a lower bound and the margin left (critical scaling factor)
+&
+\textsf{\textbf{\color{brand}On time?}}\newline
+every task-chain: maximum reaction time against its deadline, why late
+&
+\textsf{\textbf{\color{brand}Which architecture?}}\newline
+zonal, domain, hybrid or distributed; star, tree, ring or any backbone
+\end{tabularx}
+\end{center}
+
+\newpage
+{\small\tableofcontents}
+\newpage

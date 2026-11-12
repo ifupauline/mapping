@@ -1,0 +1,4 @@
+on time (%)                     BFDU          WFDU          FFDU          CADU
+sop                            100.0          95.8         100.0          95.8
+update1                         92.9         100.0          92.9          85.7
+update2                         87.5          96.9          87.5             -

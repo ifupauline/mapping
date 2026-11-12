@@ -1,0 +1,22 @@
+{
+  "description": "the zonal platform on a custom backbone: three switches with ECUs and a transit switch, in a ring with one chord, and a faster link for the central computer",
+  "network_model": {
+    "topology": "custom",
+    "switches": [
+      {"name": "SW_CENTRAL", "ecus": ["PCU"]},
+      {"name": "SW_FRONT", "ecus": ["ZCU1", "ZCU2"]},
+      {"name": "SW_REAR", "ecus": ["ZCU3", "ZCU4", "ZCU5"]},
+      {"name": "SW_TRANSIT", "ecus": []}
+    ],
+    "switch_links": [
+      {"from": "SW_CENTRAL", "to": "SW_FRONT", "mbps": 2500},
+      {"from": "SW_FRONT", "to": "SW_REAR"},
+      {"from": "SW_REAR", "to": "SW_TRANSIT"},
+      {"from": "SW_TRANSIT", "to": "SW_CENTRAL"},
+      {"from": "SW_FRONT", "to": "SW_TRANSIT", "mbps": 100}
+    ],
+    "link_mbps": 1000,
+    "ecu_link_mbps": {"PCU": 2500},
+    "frer": true
+  }
+}

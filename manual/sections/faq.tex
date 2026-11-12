@@ -1,0 +1,40 @@
+\section{Questions}
+\label{sec:faq}
+
+\paragraph{Why does WFDU use so many cores?} Worst fit puts every
+sub-chain on the emptiest core, so it uses every core of the platform. Its
+core count measures spreading, not need: use it on hardware that is
+already fixed (use case~4), not to size a platform.
+
+\paragraph{A task-chain is late although all its tasks are schedulable.}
+Look at its path (\opt{cores}): every communication between cores costs
+LET delays, and every inter-ECU one also a network transfer. A chain
+whose sensor and actuator are in different zones crosses the network at
+least once, whatever the mapping. Try CADU, a larger \opt{sigma}, or check
+that the deadline is not below the sum of the periods the LET semantics
+imposes.
+
+\paragraph{The mapping is infeasible.} Read the line below the summary
+table (\cref{sec:infeasible}): it names the sub-chain and the reason
+(memory, core types, largest number of cores, fixed hardware, or a
+sub-chain larger than a core).
+
+\paragraph{\opt{frer} is refused.} Frame replication needs two disjoint
+routes: use a ring or a custom topology with a second path.
+
+\paragraph{Can I use my own sensor-to-ECU wiring with generated
+applications?} Generate the file (\opt{generate}), then edit the
+\key{ecu} of the tasks; or write the application yourself.
+
+\paragraph{Are the results exact?} The bounds are worst cases: a
+schedulable core never misses a deadline, a network bound is never
+exceeded, a chain on time is always on time, under the models of
+\cref{sec:concepts} (fixed priorities, LET, the TSN shapers, round-robin
+memory). The simulators check this (\cref{sec:validation}). The number of
+cores is the result of a heuristic: within a few percent of the optimum
+on the applications of the paper (\cref{sec:ex-exact}).
+
+\paragraph{Where do the generated applications come from?} From the
+statistics of the WATERS 2015 engine-management benchmark (periods, shares
+of the runnables, activation patterns); the appendix of the paper gives
+every rule. \opt{seed} selects one.

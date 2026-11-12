@@ -1,0 +1,57 @@
+{
+  "description": "UC5: a hybrid platform: a big.LITTLE central computer with a shared memory, an ADAS domain controller and four zone controllers, on a custom backbone of three switches (a 10 Gbit/s link between the switch of the central computer and the one of the ADAS controller).",
+  "platform": {
+    "ecus": [
+      {"name": "HPC", "role": "central",
+       "cores": [{"type": "big", "count": 4, "speed_percent": 100},
+                 {"type": "little", "count": 4, "speed_percent": 40}],
+       "added_core_type": "big", "memory_kb": 524288, "max_cores": 12},
+      {"name": "ADAS_DC", "role": "domain",
+       "cores": [{"type": "big", "count": 4, "speed_percent": 120}],
+       "memory_kb": 262144, "max_cores": 6},
+      {"name": "ZC_FL", "role": "zone",
+       "cores": [{"type": "mcu", "count": 2, "speed_percent": 50}],
+       "memory_kb": 4096, "max_cores": 4},
+      {"name": "ZC_FR", "role": "zone",
+       "cores": [{"type": "mcu", "count": 2, "speed_percent": 50}],
+       "memory_kb": 4096, "max_cores": 4},
+      {"name": "ZC_RL", "role": "zone",
+       "cores": [{"type": "mcu", "count": 2, "speed_percent": 50}],
+       "memory_kb": 4096, "max_cores": 4},
+      {"name": "ZC_RR", "role": "zone",
+       "cores": [{"type": "mcu", "count": 2, "speed_percent": 50}],
+       "memory_kb": 4096, "max_cores": 4}
+    ]
+  },
+  "execution_model": {
+    "utilization_cap": 0.8,
+    "let_task_wcet_us": 50
+  },
+  "interference_model": {
+    "shared_memory_arbitration": "round-robin",
+    "memory_latency_ns": 40,
+    "memory_accesses_per_ms": 1000
+  },
+  "network_model": {
+    "topology": "custom",
+    "switches": [
+      {"name": "SW_CENTRAL", "ecus": ["HPC"]},
+      {"name": "SW_FRONT", "ecus": ["ADAS_DC", "ZC_FL", "ZC_FR"]},
+      {"name": "SW_REAR", "ecus": ["ZC_RL", "ZC_RR"]}
+    ],
+    "switch_links": [
+      {"from": "SW_CENTRAL", "to": "SW_FRONT", "mbps": 10000},
+      {"from": "SW_CENTRAL", "to": "SW_REAR", "mbps": 2500},
+      {"from": "SW_FRONT", "to": "SW_REAR", "mbps": 1000}
+    ],
+    "link_mbps": 1000,
+    "ecu_link_mbps": {"HPC": 10000, "ADAS_DC": 10000},
+    "traffic_shaping": "ATS",
+    "traffic_classes": 2,
+    "class_max_periods_us": [10000]
+  },
+  "method": {
+    "allocation": "CADU",
+    "sigma": 0.4
+  }
+}

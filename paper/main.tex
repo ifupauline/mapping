@@ -1,0 +1,241 @@
+% System-level mapping of automotive applications onto zonal E/E architectures
+% Build: cd paper && make   (pdflatex + bibtex; figures: make figures)
+\documentclass[10pt,a4paper,twocolumn]{article}
+\raggedbottom
+
+% ---- fonts and text --------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{stix2}
+\usepackage[semibold,scale=0.95]{sourcesanspro}
+\usepackage[scaled=0.86]{beramono}
+\usepackage{microtype}
+\linespread{1.06}
+\usepackage[a4paper,top=21mm,bottom=22mm,left=16mm,right=16mm,
+	columnsep=6.5mm,headsep=5mm,footskip=9mm]{geometry}
+\usepackage{amsmath,amsthm,mathtools}
+\usepackage{siunitx}
+\sisetup{group-minimum-digits=4,detect-all}
+
+% ---- colours ----------------------------------------------------------------
+\usepackage[dvipsnames,table]{xcolor}
+\definecolor{brand}{HTML}{17406D}	% headings, rules
+\definecolor{brandlight}{HTML}{E8EFF7}	% boxes
+\definecolor{accent}{HTML}{EB6834}	% highlights
+\definecolor{cblue}{HTML}{2A78D6}
+\definecolor{corange}{HTML}{EB6834}
+\definecolor{cgreen}{HTML}{1BAF7A}
+\definecolor{cyellow}{HTML}{EDA100}
+\definecolor{cink}{HTML}{1B1B1B}
+\definecolor{cmuted}{HTML}{5C5B57}
+\definecolor{cgrid}{HTML}{E4E3DF}
+\definecolor{cpcu}{HTML}{DCE9F8}
+\definecolor{czcu}{HTML}{DDF3EA}
+\definecolor{cnet}{HTML}{FBE3D8}
+
+% ---- layout -------------------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}{\sffamily\bfseries\large\color{brand}}
+	{\colorbox{brand}{\makebox[1.4em]{\color{white}\thesection}}}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus .6ex minus .2ex}{1.0ex plus .2ex}
+\titleformat{\subsection}{\sffamily\bfseries\normalsize\color{brand}}
+	{\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{1.6ex plus .4ex minus .2ex}{0.6ex plus .1ex}
+\titleformat{\subsubsection}[runin]{\sffamily\bfseries\small\color{brand}}
+	{}{0pt}{}[.]
+\titlespacing*{\subsubsection}{0pt}{1.0ex plus .3ex minus .1ex}{0.5em}
+\renewcommand{\paragraph}[1]{\par\smallskip\noindent{\sffamily\bfseries
+	\small\color{brand}#1}\hspace{0.5em}}
+
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{brand}\hrule height\headrulewidth}}
+\fancyhead[L]{\sffamily\footnotesize\color{cmuted}System-level mapping of automotive applications onto zonal E/E architectures}
+\fancyhead[R]{\sffamily\footnotesize\color{cmuted}ifupauline}
+\fancyfoot[C]{\sffamily\footnotesize\color{cmuted}\thepage\,/\,\pageref{LastPage}}
+\fancypagestyle{first}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+	\fancyfoot[L]{\sffamily\scriptsize\color{cmuted}Preprint, November
+	2026. Software, data and user manual: see the availability statement.}
+	\fancyfoot[R]{\sffamily\footnotesize\color{cmuted}\thepage\,/\,\pageref{LastPage}}}
+
+\usepackage{enumitem}
+\setlist{itemsep=1pt,topsep=3pt,parsep=0pt,leftmargin=*}
+\usepackage{booktabs,tabularx,multirow,array}
+\usepackage{graphicx}
+\usepackage[font={small},labelfont={sf,bf,color=brand},
+	labelsep=period,skip=4pt]{caption}
+\usepackage{subcaption}
+\usepackage{stfloats}
+\usepackage{fancyvrb}
+\usepackage{pmboxdraw}
+\usepackage{cuted}
+\usepackage{pifont}
+
+% ---- figures drawn in TikZ ----------------------------------------------------
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric,
+	decorations.pathreplacing,backgrounds,patterns}
+\tikzset{
+	box/.style={draw=cmuted, rounded corners=2pt, fill=white,
+		inner sep=3pt, align=center, font=\footnotesize\sffamily},
+	stage/.style={box, minimum width=2.45cm, minimum height=0.66cm},
+	task/.style={draw=cink, rounded corners=1pt, minimum width=0.62cm,
+		minimum height=0.48cm, font=\scriptsize, fill=white, inner sep=1pt},
+	arrow/.style={-{Stealth[length=1.6mm]}, semithick, color=cmuted},
+	note/.style={font=\scriptsize\sffamily, color=cmuted, align=center},
+}
+
+% ---- theorems, algorithms, boxes ----------------------------------------------
+\usepackage[most]{tcolorbox}
+\newtheoremstyle{paper}{3pt}{3pt}{\itshape}{}{\sffamily\bfseries\color{brand}}{.}{0.5em}{}
+\theoremstyle{paper}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheoremstyle{paperremark}{3pt}{3pt}{}{}{\sffamily\bfseries\color{brand}}{.}{0.5em}{}
+\theoremstyle{paperremark}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+\renewcommand{\qedsymbol}{\textcolor{brand}{$\blacksquare$}}
+\tcolorboxenvironment{theorem}{enhanced,breakable,colback=brandlight,
+	colframe=brandlight,boxrule=0pt,arc=1pt,left=4pt,right=4pt,top=2pt,
+	bottom=2pt,before skip=6pt,after skip=6pt}
+\tcolorboxenvironment{proposition}{enhanced,breakable,colback=brandlight,
+	colframe=brandlight,boxrule=0pt,arc=1pt,left=4pt,right=4pt,top=2pt,
+	bottom=2pt,before skip=6pt,after skip=6pt}
+\tcolorboxenvironment{lemma}{enhanced,breakable,colback=brandlight,
+	colframe=brandlight,boxrule=0pt,arc=1pt,left=4pt,right=4pt,top=2pt,
+	bottom=2pt,before skip=6pt,after skip=6pt}
+\tcolorboxenvironment{definition}{enhanced,breakable,colback=white,
+	colframe=brand,boxrule=0pt,leftrule=1.5pt,arc=0pt,left=4pt,right=2pt,
+	top=1pt,bottom=1pt,before skip=6pt,after skip=6pt}
+
+% the summary at the start of a section
+\newtcolorbox{inbrief}{enhanced,breakable,colback=brandlight,colframe=brandlight,
+	boxrule=0pt,arc=1.5pt,left=5pt,right=5pt,top=3pt,bottom=3pt,
+	before skip=4pt,after skip=8pt,fontupper=\small,
+	before upper={\textsf{\textbf{\color{brand}In brief.}}\hspace{0.4em}}}
+
+% a highlighted statement (the problem, the findings)
+\newtcolorbox{keybox}[2][]{enhanced,breakable,colback=white,colframe=accent,
+	boxrule=0.6pt,arc=1.5pt,left=5pt,right=5pt,top=3pt,bottom=3pt,
+	title={\sffamily\bfseries\small #2},coltitle=white,colbacktitle=accent,
+	fonttitle=\sffamily,before skip=6pt,after skip=6pt,#1}
+
+\usepackage[ruled,linesnumbered,vlined,algo2e]{algorithm2e}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small\sffamily\bfseries\color{brand}}
+\SetAlCapNameFnt{\small}
+\SetKwSty{textsf}
+\SetCommentSty{emph}
+\SetKwComment{tcp}{\textcolor{cmuted}{$\triangleright$\ }}{}
+\SetNlSty{textsf}{\color{cmuted}}{}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\DontPrintSemicolon
+
+% ---- references ----------------------------------------------------------------
+\usepackage[numbers,sort&compress]{natbib}
+\setlength{\bibsep}{1.5pt}
+\renewcommand{\bibfont}{\footnotesize}
+\usepackage[colorlinks,linkcolor=brand,citecolor=cblue,urlcolor=cblue,
+	pdftitle={System-level mapping of automotive applications onto
+	zonal E/E architectures},pdfauthor={ifupauline}]{hyperref}
+\usepackage{xurl}
+\usepackage[capitalise,nameinlink,noabbrev]{cleveref}
+\crefname{algocf}{Algorithm}{Algorithms}
+\Crefname{algocf}{Algorithm}{Algorithms}
+\crefname{equation}{Eq.}{Eqs.}
+\Crefname{equation}{Eq.}{Eqs.}
+
+% ---- notation -----------------------------------------------------------------
+\newcommand{\cmd}[1]{\texttt{#1}}
+\newcommand{\opt}[1]{\texttt{-{}-#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\pos}[1]{\left[ #1 \right]^{+}}
+\newcommand{\Ctrl}{\mathcal{K}}		% controllers
+\newcommand{\Cores}{\mathcal{P}}	% cores
+\newcommand{\Chains}{\Xi}		% chains
+\newcommand{\Frags}{\mathcal{F}}	% fragments
+\newcommand{\Types}{\Theta}		% core types
+\newcommand{\hp}{\mathrm{hp}}
+\newcommand{\LET}{\mathrm{LET}}
+\newcommand{\cmax}{c^{\max}}
+\newcommand{\alg}[1]{\textsf{#1}}
+\newcommand{\BFDU}{\alg{BFDU}}
+\newcommand{\WFDU}{\alg{WFDU}}
+\newcommand{\FFDU}{\alg{FFDU}}
+\newcommand{\CADU}{\alg{CADU}}
+\newcommand{\PCU}{\textsf{PCU}}
+\newcommand{\ZCU}{\textsf{ZCU}}
+
+\setlength{\emergencystretch}{1.5em}
+\hyphenation{time-stamp multi-core pre-emptive}
+
+% ---- title ----------------------------------------------------------------------
+\makeatletter
+\def\@maketitle{%
+	\begin{tcolorbox}[enhanced,colback=brand,colframe=brand,arc=0pt,
+		boxrule=0pt,left=9pt,right=9pt,top=8pt,bottom=8pt]
+	{\sffamily\color{white}\fontsize{18}{21.5}\selectfont\bfseries\@title\par}
+	\vspace{6pt}
+	{\sffamily\color{white!85!brand}\normalsize\@author\par}
+	\end{tcolorbox}\vspace{2pt}}
+\makeatother
+
+\title{System-level mapping of automotive applications onto zonal\\
+	E/E architectures: allocation, contention, LET, TSN\\
+	and the life of the platform}
+\author{\textbf{ifupauline}}
+\date{}
+
+\begin{document}
+
+\twocolumn[{%
+\maketitle
+\thispagestyle{first}
+\begin{tcolorbox}[enhanced,colback=brandlight,colframe=brandlight,arc=1pt,
+	boxrule=0pt,left=9pt,right=9pt,top=6pt,bottom=6pt]
+\small
+\input{sections/abstract}
+\end{tcolorbox}
+\vspace{10pt}
+}]
+
+\input{sections/introduction}
+\input{sections/background}
+\input{sections/related}
+\input{sections/model}
+\input{sections/problem}
+\input{sections/analysis}
+\input{sections/method}
+\input{sections/exact}
+\input{sections/lifecycle}
+\input{sections/example}
+\input{sections/evaluation}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\paragraph{Availability.} The method, the exact formulation, the
+metaheuristic baselines, the two simulators and the experiments are
+implemented in the open-source tool \texttt{mapping} (C11 and Python,
+Apache-2.0), available at \url{https://github.com/ifupauline/mapping};
+this paper and the manual are under CC BY 4.0. Its user manual,
+distributed with it, describes the installation, every option, the output,
+the data files, and the commands that reproduce every table and figure of
+this paper.
+
+\appendix
+\input{sections/appendix}
+
+\bibliographystyle{IEEEtranN}
+\bibliography{refs}
+
+\end{document}

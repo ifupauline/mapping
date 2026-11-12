@@ -1,0 +1,238 @@
+\section{Concepts in ten minutes}
+\label{sec:concepts}
+
+\subsection{Task-chains, tasks and their timing}
+
+A \textbf{task} is periodic: it is released every period $T$ (in
+microseconds), runs for at most its worst-case execution time (WCET) $C$,
+and must end before its next release (implicit deadline). The WCETs of the
+application file are measured on a \emph{reference core} of speed
+100\,\%; on a core of speed $s$\,\% a task takes $C \cdot 100/s$, times an
+optional factor for the type of the core (a neural network may gain more
+than the speed ratio on a big core). Its \textbf{utilization} is
+$C/T$: the share of a core it uses.
+
+A \textbf{task-chain} is a sequence of tasks, each one using the output of
+the previous one. Its first task usually reads a sensor and its last one
+commands an actuator: those tasks are \emph{bound} to the ECU the sensor or
+the actuator is wired to. The other tasks are \emph{free}: the tool decides
+where they run. Consecutive tasks with the same period form an
+\emph{activation pattern}; when the period changes along the chain, the
+next task reads the last value written, up to one of its periods later.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[node distance=4mm]
+% ECUs
+\node[ecuzone,minimum width=30mm,minimum height=26mm] (fl) {};
+\node[anchor=north,font=\sffamily\footnotesize\bfseries,text=accent!80!black]
+	at (fl.north) {ZC\_FL\enspace\textmd{zone controller}};
+\node[ecucentral,minimum width=44mm,minimum height=27mm,right=20mm of fl] (hpc) {};
+\node[anchor=north,font=\sffamily\footnotesize\bfseries,text=brand]
+	at (hpc.north) {HPC\enspace\textmd{central computer}};
+\node[ecuzone,minimum width=30mm,minimum height=26mm,right=20mm of hpc] (fr) {};
+\node[anchor=north,font=\sffamily\footnotesize\bfseries,text=accent!80!black]
+	at (fr.north) {ZC\_FR\enspace\textmd{zone controller}};
+% cores
+\node[draw=accent,fill=white,rounded corners=1pt,minimum width=24mm,
+	minimum height=12mm,anchor=south] (c1) at ([yshift=2.5mm]fl.south) {};
+\node[anchor=north east,font=\sffamily\tiny,text=cmuted] at (c1.north east) {core, MCU 50\,\%};
+\node[task=accent] (t0) at ([yshift=-1.2mm]c1.center) {pedal sensor};
+\node[draw=brand,fill=white,rounded corners=1pt,minimum width=38mm,
+	minimum height=14mm,anchor=south] (c2) at ([yshift=2.5mm]hpc.south) {};
+\node[anchor=north east,font=\sffamily\tiny,text=cmuted] at (c2.north east) {core, big 100\,\%};
+\node[task=brand] (t1) at ([xshift=-8mm,yshift=1.0mm]c2.center) {control};
+\node[task=brand] (t2) at ([xshift=9mm,yshift=1.0mm]c2.center) {monitor};
+\node[draw=accent,fill=white,rounded corners=1pt,minimum width=24mm,
+	minimum height=12mm,anchor=south] (c3) at ([yshift=2.5mm]fr.south) {};
+\node[anchor=north east,font=\sffamily\tiny,text=cmuted] at (c3.north east) {core, MCU 50\,\%};
+\node[task=accent] (t3) at ([yshift=-1.2mm]c3.center) {caliper};
+% switch and links
+\node[switch,below=9mm of hpc] (sw) {SW};
+\draw[link] (fl.south) |- (sw.west);
+\draw[link] (hpc.south) -- (sw.north);
+\draw[link] (fr.south) |- (sw.east);
+% data flow
+\draw[flow] (t0.east) to[out=0,in=180] node[above,font=\sffamily\tiny,text=accent!80!black]{message} (t1.west);
+\draw[flow] (t1) -- (t2);
+\draw[flow] (t2.east) to[out=0,in=180] node[above,font=\sffamily\tiny,text=accent!80!black]{message} (t3.west);
+% sub-chain braces
+\draw[decorate,decoration={brace,amplitude=3pt,mirror},cmuted]
+	([yshift=-0.8mm]t1.south west) -- ([yshift=-0.8mm]t2.south east)
+	node[midway,below=1.5pt,font=\sffamily\tiny,text=cmuted]{one sub-chain};
+\end{tikzpicture}
+\caption{A task-chain of four tasks on a zonal platform: the sensor task
+is bound to the zone controller of the pedal, the actuator task to the one
+of the caliper, the two free tasks form one sub-chain on a core of the
+central computer. Two messages cross the network.}
+\label{fig:chain}
+\end{figure}
+
+\subsection{Sub-chains, cores and the utilization cap}
+
+The tool first cuts every task-chain into \textbf{sub-chains}: runs of
+consecutive tasks that will share a core. It cuts where two tasks are bound
+to different ECUs (\emph{forced cuts}), where they allow different ECUs or
+core types, and wherever a sub-chain would exceed the \textbf{limit
+$\sigma$} (a fraction of a core). Small sub-chains pack better; large ones
+communicate less.
+
+Every core runs its sub-chains and one \textbf{LET task}, at the highest
+priority, that copies the data between cores. The load of a core is the
+sum of the utilizations of its tasks and of its LET task; it may not exceed
+the \textbf{utilization cap $\varphi$} (0.8 by default). A core is
+\textbf{schedulable} when every task meets its deadline under fixed
+priorities; the tool assigns the priorities with an optimal method
+(Audsley's) restricted to the orders that respect the chain order.
+
+\subsection{ECUs and their roles}
+
+A platform is a list of ECUs, each with a \textbf{role}, its initial
+cores (by type and speed), the type of core the tool may add, its memory
+for the tasks and its largest number of cores.
+\begin{itemize}
+\item \key{central}: a central (vehicle) computer. Free sub-chains go to
+the central computers first; the cores the tool adds for free sub-chains
+are added there first. On a platform without a central computer, the ECUs
+with the fastest cores play this part (the ADAS and infotainment
+controllers of the domain template).
+\item \key{zone}: a zone controller, wired to the sensors and actuators of
+its area of the car.
+\item \key{domain}: a domain controller (powertrain, chassis, ADAS\dots).
+\item \key{ecu}: one ECU of a distributed architecture.
+\end{itemize}
+The generator of applications wires the sensors and actuators to every ECU
+that is not a central computer; in an application file you bind each task
+yourself.
+
+\subsection{Communication: LET and the network}
+\label{sec:concepts-let}
+
+Two consecutive tasks on one core communicate through a register. Between
+two cores, data cross only at the \textbf{LET instants} of the cores: the
+LET task of the producer core copies the output out, and the LET task of
+the consumer core reads it at the release of the consumer job
+(\cref{fig:let}). Between two ECUs the copy also crosses the network. The
+key \key{communication} of the \key{execution\_model} chooses when an
+output is copied out:
+\begin{itemize}
+\item \key{implicit} (the default): at the first LET instant after the
+producer ends, as in \cref{fig:let}. The delays are short, but they depend
+on the response time of the producer.
+\item \key{LET}: \textbf{strict LET}, at the end
+of the period of the producer, whatever its response time. The data flow
+is deterministic and the messages leave with almost no jitter, but every
+crossing waits a full producer period. Option \texttt{-{}-strict-let}.
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[x=0.95mm,y=1mm]
+% producer core
+\node[anchor=east,font=\sffamily\scriptsize,text=brand] at (-2,20) {producer core};
+\draw[cgrid] (0,17) -- (120,17);
+\foreach \x in {0,20,...,120} \draw[cmuted] (\x,15.5) -- (\x,18.5);
+\node[font=\sffamily\tiny,text=cmuted,anchor=west,align=left] at (121,17) {LET instants,\\one LET period apart};
+\filldraw[draw=brand,fill=brand!20] (3,17) rectangle (27,22);
+\node[font=\sffamily\tiny] at (15,19.5) {producer job};
+\filldraw[draw=accent,fill=accent!40] (40,17) rectangle (44,22);
+\node[font=\sffamily\tiny,anchor=west,text=accent!80!black] at (44.5,20.5) {LET copy};
+% network
+\node[anchor=east,font=\sffamily\scriptsize,text=cmuted] at (-2,8) {network};
+\draw[cgrid] (0,8) -- (120,8);
+\draw[flow] (44,16.5) -- (52,9);
+\filldraw[draw=cmuted,fill=cmuted!25] (52,6) rectangle (68,10);
+\node[font=\sffamily\tiny] at (60,8) {frames};
+% consumer core
+\node[anchor=east,font=\sffamily\scriptsize,text=accent!80!black] at (-2,-4) {consumer core};
+\draw[cgrid] (0,-7) -- (120,-7);
+\foreach \x in {0,25,...,100} \draw[accent] (\x,-8.5) -- (\x,-5.5);
+\node[font=\sffamily\tiny,text=accent!80!black,anchor=west,align=left] at (121,-7) {releases of the\\consumer task};
+\draw[flow] (68,6) -- (75,-5);
+\filldraw[draw=accent,fill=accent!40] (75,-7) rectangle (79,-2);
+\filldraw[draw=brand,fill=brand!20] (79,-7) rectangle (100,-2);
+\node[font=\sffamily\tiny] at (89.5,-4.5) {consumer job};
+\node[font=\sffamily\tiny,text=accent!80!black,anchor=north] at (75,-9) {its release: LET read};
+% delays
+\draw[|-|,brand] (27,26.5) -- (44,26.5) node[midway,above,font=\sffamily\tiny]{write $\le$ LET period + LET WCET};
+\draw[|-|,cmuted] (44,-14) -- (68,-14) node[midway,below,font=\sffamily\tiny]{network $\le$ bound};
+\draw[|-|,accent] (68,-20) -- (75,-20) node[midway,below,font=\sffamily\tiny,text=accent!80!black]{read $\le$ consumer period};
+\end{tikzpicture}
+\caption{One message between two cores, with implicit communication: the
+output waits for the next LET instant of the producer core and for the
+copy (with strict LET, for the end of the producer's period); it crosses
+the network (between two ECUs); it is read at the next release of the
+consumer. The analysis bounds each delay.}
+\label{fig:let}
+\end{figure}
+
+The network is a switched Ethernet with the TSN mechanisms of IEEE 802.1:
+credit-based shaping (\textbf{CBS}, 802.1Qav), time-aware shaping
+(\textbf{TAS}, 802.1Qbv), asynchronous traffic shaping (\textbf{ATS},
+802.1Qcr), frame preemption (802.1Qbu/802.3br) and frame replication and
+elimination for reliability (\textbf{FRER}, 802.1CB). The messages are
+grouped in one to three \emph{traffic classes} by the period of their
+producer. Network Calculus bounds the delay of every message at every
+output port of its route.
+
+\subsection{What the analysis gives}
+\label{sec:concepts-metrics}
+
+\begin{itemize}
+\item \textbf{Response time} of a task: the longest time from its release
+to its end, with the interference of the higher-priority tasks of its core
+(and of the shared memory, with the interference model).
+\item \textbf{End-to-end response time} of a chain: the holistic sum of the
+response times of its pattern runs and of the network bounds, without any
+copy or sampling delay. It is a figure of merit, not a time of the system.
+\item \textbf{End-to-end delay}: from the release of the job that samples
+the sensor to the end of the first actuator job that uses the sample,
+with every sampling and LET delay.
+\item \textbf{Maximum reaction time}: the end-to-end delay plus one period
+of the first task (an event waits at most that long to be sampled). It is
+compared with the \textbf{deadline} of the chain. It also bounds the
+maximum data age.
+\item \textbf{Critical scaling factor}: the largest factor by which every
+WCET of a core may be multiplied with its tasks still on time; the
+smallest over the cores is the margin of the platform. It is below 1 when
+a core misses a deadline.
+\end{itemize}
+
+\subsection{The method}
+\label{sec:concepts-method}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[node distance=3.5mm,
+	mstep/.style={box,minimum width=25mm,minimum height=11mm,font=\sffamily\scriptsize}]
+\node[mstep] (p) {\textbf{1. cut}\\into sub-chains\\(limit $\sigma$)};
+\node[mstep,right=of p] (a) {\textbf{2. allocate}\\rule, affinity,\\memory};
+\node[mstep,right=of a] (c) {\textbf{3. consolidate}\\empty the cores\\that can be};
+\node[mstep,right=of c] (s) {\textbf{4. priorities}\\optimal, chain\\order kept};
+\node[mstep,right=of s] (r) {\textbf{5. repair}\\relocation\\moves};
+\node[mstep,below=7mm of r] (l) {\textbf{6. local search}\\for the late\\task-chains};
+\node[mstep,left=of l] (m) {\textbf{7. contention}\\only the cores\\in use compete};
+\node[mstep,left=of m,fill=brand,text=white] (n) {\textbf{8. analysis}\\cores, network,\\task-chains};
+\node[mstep,left=of n,draw=accent,fill=accentlight] (z) {\textbf{sizing}\\(optional)\\lower $\varphi$, again};
+\draw[arrow] (p) -- (a); \draw[arrow] (a) -- (c); \draw[arrow] (c) -- (s);
+\draw[arrow] (s) -- (r); \draw[arrow] (r) -- (l); \draw[arrow] (l) -- (m);
+\draw[arrow] (m) -- (n);
+\draw[arrow,accent,dashed] (n) -- (z);
+\draw[arrow,accent,dashed] (z.west) -| ([xshift=-5mm]p.west) -- (p.west);
+\end{tikzpicture}
+\caption{The steps of one design point. With a target margin, the sizing
+runs the steps again with a lower cap until the critical scaling factor
+reaches the target.}
+\label{fig:method}
+\end{figure}
+
+\Cref{fig:method} shows the steps of one \emph{design point} (one mapping
+of one application with one set of parameters). Step~2 places the
+sub-chains by decreasing utilization with one of four rules: best fit
+(BFDU), worst fit (WFDU), first fit (FFDU) or communication aware (CADU,
+fewest network hops created first); it tries first the cores that already
+run part of the same chain (\emph{affinity}), and adds a core when no core
+can take a sub-chain. Step~3 empties the cores whose sub-chains fit
+elsewhere. Steps~5 and~6 move sub-chains to make every core schedulable
+and to bring the late chains on time. The paper gives every step in
+pseudo-code.

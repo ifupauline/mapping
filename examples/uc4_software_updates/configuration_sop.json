@@ -1,0 +1,106 @@
+{
+  "description": "UC4: the platform of UC1, sized at the SOP with a margin. A high-performance computer (HPC) and five zone controllers (front left and right, rear left and right, centre), one Gigabit Ethernet switch.",
+  "platform": {
+    "ecus": [
+      {
+        "name": "HPC",
+        "role": "central",
+        "cores": [
+          {
+            "type": "big",
+            "count": 2,
+            "speed_percent": 100
+          }
+        ],
+        "added_core_type": "big",
+        "memory_kb": 524288,
+        "max_cores": 16
+      },
+      {
+        "name": "ZC_FL",
+        "role": "zone",
+        "cores": [
+          {
+            "type": "mcu",
+            "count": 2,
+            "speed_percent": 50
+          }
+        ],
+        "memory_kb": 4096,
+        "max_cores": 4
+      },
+      {
+        "name": "ZC_FR",
+        "role": "zone",
+        "cores": [
+          {
+            "type": "mcu",
+            "count": 2,
+            "speed_percent": 50
+          }
+        ],
+        "memory_kb": 4096,
+        "max_cores": 4
+      },
+      {
+        "name": "ZC_RL",
+        "role": "zone",
+        "cores": [
+          {
+            "type": "mcu",
+            "count": 2,
+            "speed_percent": 50
+          }
+        ],
+        "memory_kb": 4096,
+        "max_cores": 4
+      },
+      {
+        "name": "ZC_RR",
+        "role": "zone",
+        "cores": [
+          {
+            "type": "mcu",
+            "count": 2,
+            "speed_percent": 50
+          }
+        ],
+        "memory_kb": 4096,
+        "max_cores": 4
+      },
+      {
+        "name": "ZC_C",
+        "role": "zone",
+        "cores": [
+          {
+            "type": "mcu",
+            "count": 2,
+            "speed_percent": 50
+          }
+        ],
+        "memory_kb": 4096,
+        "max_cores": 4
+      }
+    ]
+  },
+  "execution_model": {
+    "scheduling": "fixed-priority preemptive",
+    "communication": "implicit",
+    "utilization_cap": 0.8,
+    "let_task_wcet_us": 50
+  },
+  "network_model": {
+    "standard": "TSN",
+    "topology": "star",
+    "link_mbps": 1000,
+    "traffic_shaping": "CBS",
+    "traffic_classes": 1
+  },
+  "method": {
+    "allocation": "FFDU",
+    "sigma": 0.4,
+    "consolidation": true,
+    "local_search": true,
+    "target_scaling": 1.5
+  }
+}

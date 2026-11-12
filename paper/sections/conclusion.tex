@@ -1,0 +1,48 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+Sizing a zonal E/E platform means deciding, together, where the tasks run,
+how they are prioritized, how they communicate between cores at LET instants, and how their
+messages cross a TSN backbone, under the wiring, memory and safety
+constraints of a vehicle and for the whole life of the platform. This
+paper stated that problem formally and gave a complete method to solve it.
+The timing analyses come with proofs: an optimal priority assignment that
+respects precedence, response times with shared-memory contention, bounds
+on the maximum reaction time of multi-rate task-chains, and Network
+Calculus bounds for credit-based, time-aware and asynchronous shaping and
+for frame replication. The heuristic combines bin packing or a new
+communication-aware rule with core consolidation, relocation moves, and a
+deadline-driven local search with an exact incremental re-analysis. An exact formulation with lazy schedulability cuts shows that
+the heuristic is close to optimal, and a lifecycle analysis turns the
+provisioning of the hardware into a measurable trade-off with the number
+of software updates the platform absorbs.
+
+On applications built from industrial statistics, no bound was exceeded
+in a frame-level simulation of the network or in a simulation of the
+whole system, and the end-to-end bounds were reached, or nearly; the
+packing rules with consolidation came within a few percent of the
+optimal allocation in milliseconds on the default platform, where
+simulated annealing needs seconds and a genetic algorithm falls behind,
+while on harder platforms a genetic algorithm run for tens of seconds,
+and the exact formulation, recover most of the gap; communication awareness removed
+about two thirds of the inter-ECU communications at the price of a third
+more cores; asynchronous traffic shaping removed the burst growth of rings;
+strict LET shrank the network bounds but cost deadlines, one producer
+period per crossing;
+memory contention could add half the cores of a packed mapping; and each
+core bought at the start of production bought about half a software
+update. Consolidation and the deadline-driven local search account for
+most of the benefit of the method, the conclusions hold
+when the assumptions of the generator change, and the same method maps
+domain, hybrid and distributed architectures, within 5\,\% of the
+optimum on the domain and hybrid ones. Measuring that gap also improved
+the method: it showed where free software should go on a platform
+without a central computer. A whole vehicle of 2000
+task-chains is mapped in about a second, so a system architect can compare
+architectures, network options and provisioning policies with a
+worst-case analysis behind every timing result it reports.
+
+The natural next steps are richer contention models (caches,
+interconnects), mixed-criticality scheduling, re-allocation of deployed
+software during updates, and an exact treatment of the end-to-end
+objective, which this paper improves but does not yet optimize.

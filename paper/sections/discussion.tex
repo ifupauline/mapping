@@ -1,0 +1,123 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\begin{inbrief}
+The experiments suggest ten design rules for an early platform.
+This section states them, then the limits of the model and the threats to
+the validity of the results.
+\end{inbrief}
+
+\subsection{Design rules}
+
+\begin{enumerate}[label=\textbf{R\arabic*.}, leftmargin=2em]
+\item \emph{Size the zones by their pinned work.} The zone controllers need
+cores for the drivers and local task-chains wired to them. A slow
+microcontroller costs cores in proportion to that work
+(\cref{fig:architecture-results}); on a whole vehicle, the zones are
+saturated by it.
+\item \emph{Consolidate after bin packing.} Decreasing-utilization packing
+is one to three cores above the optimum on small and constrained
+platforms; emptying the lightest cores closes most of this gap at little
+cost (\cref{fig:exact}).
+\item \emph{Keep computation in the zones when they have room and timing
+matters.} Communication-aware allocation trades about a third more cores
+for three times fewer inter-ECU communications and fewer late
+task-chains. The gain disappears when the zones are full, and the cost
+shrinks when memory contention penalizes a crowded central computer.
+\item \emph{Budget the backbone for the whole vehicle, not for one domain.}
+At the default load the network hardly matters. At vehicle scale the link
+of the central computer is the bottleneck, and a 10\,Gbit/s backbone is
+worth seven points of deadline satisfaction.
+\item \emph{Prefer ATS on rings and with several classes.} Asynchronous
+traffic shaping removes the burst growth of cyclic topologies and keeps
+the bounds of low-priority classes small; with CBS, keep LET traffic in
+one class or allocate the idle slopes per port. Frame replication for the
+replicated task-chains is affordable.
+\item \emph{Count the contention.} When the cores of an ECU share a memory,
+the cores needed grow with the cores used; a WCET measured in isolation
+underestimates the platform by up to half here.
+\item \emph{Provision for updates in cores, size for margin in WCETs.}
+Each core bought at the SOP buys about half a software update, while the
+timing margin of the platform after its first update is set by the design
+cap. Sizing for a target scaling factor costs the same as an equivalent
+WCET margin, but guarantees and reports it.
+\item \emph{Put fast cores where the work is bound.} The same software
+needs about a core less on a hybrid or a domain platform, whose ADAS (and
+infotainment) controllers run part of the pinned work on big cores, than
+on the zonal one; small ECUs with a fixed number of cores cannot absorb
+its growth (\cref{fig:dse}).
+\item \emph{Cut task-chains before they reach a core.} Most task-chains
+are far below any sensible limit, but a task-chain cut only by its
+bindings may no longer fit a core once the contention is counted; a limit
+of half the cap kept every application feasible (\cref{tab:limit}).
+\item \emph{Pay for strict LET with fewer crossings.} Strict LET makes the
+data flow independent of response times and shrinks the network bounds,
+but each crossing between cores waits a full producer period. Combine it
+with communication-aware allocation, and set the deadlines with that wait
+in mind (\cref{tab:communication}).
+\end{enumerate}
+
+\subsection{Limits of the model}
+
+\paragraph{Platform.} The contention model is a single shared memory per
+ECU with round-robin arbitration and a known number of requests per job.
+Caches, interconnects with other arbitration policies, or request counts
+that depend on co-runners would need a richer model, such as the
+multicore response-time analysis of Davis et al.\
+\cite{davis2018extensible}. Legacy buses (CAN, LIN) behind the zone
+controllers are outside the network model. Each core has one LET task at
+the GCD of its periods; one LET group per period would lower the overhead
+on cores with fine-grained periods. Its WCET is a constant per instant,
+whatever the amount of data copied, which suits short signals but not
+large sensor data: a copy time that grows with the bytes copied would
+make the LET load depend on the allocation.
+
+\paragraph{Timing.} The analysis assumes synchronous releases and no
+offsets, which is safe but pessimistic. The response time of
+\cref{eq:rta} is valid only up to the period; a mapping with a task above
+its period has no bound for that task, its task-chain or the flows it
+produces, and the method treats it as unschedulable instead of analysing
+the backlog \cite{lehoczky1990fixed}. LET across ECUs assumes clocks
+that run at the same rate, as a synchronized time base provides
+\cite{gemlau2021system}; their phases need not be aligned, since a message
+waits at most one consumer period whatever the phase. Clock drift is not
+modelled. The
+network bounds assume a best-effort class that is always present, which is
+safe again. Frame replication needs two routes without a common link or
+intermediate switch: the ring and custom topologies offer them, a star or
+a tree does not, and a flow without them is not replicated.
+Mixed-criticality scheduling is not modelled.
+
+\paragraph{Optimization.} The heuristic optimizes (O1) by decomposition and
+(O2) by a local search that accepts only strictly improving moves and stops
+at a local optimum. The exact formulation measures the gap of (O1) for
+the sub-chains of the partitioning, without contention, on up to 300
+task-chains on the zonal, domain and hybrid platforms, but not on the
+distributed one; the optimum of (O2), and of the whole problem with
+partitioning and network, remains unknown. The lifecycle analysis does not
+move deployed software; allowing an update to re-allocate it would absorb
+more updates, at the price of re-validating more functions.
+
+\subsection{Threats to validity}
+
+\emph{Construct validity.} The applications are synthetic. Their structure
+(patterns, periods, tasks per pattern) is that of an industrial
+engine-management software \cite{kramer2015waters}. The zone bindings,
+message sizes, memory footprints, request densities and replication rates
+are assumptions, and every experiment that depends on them varies them;
+RQ9 varies the others, one at a time. The four platforms of RQ7 are
+examples, not products.
+Utilizations are relative to a reference core and scale with its speed
+(the \emph{fast} case). The whole-vehicle size is an order-of-magnitude
+estimate, and the updates of the lifecycle are drawn from the same
+statistics as the initial software.
+\emph{Internal validity.} Errors in the implementation are mitigated by
+golden-result regression tests, by a randomized checker that recomputes
+response times, loads, constraints and end-to-end bounds independently of
+the library, by the frame-level network simulator and the full-system simulator, by
+round-trip tests of the input files, and by the independent
+schedulability checker of the exact formulation, whose solutions are
+re-checked by the library.
+\emph{External validity.} The conclusions hold for the parameter ranges
+explored. The tool and the data are provided so that they can be re-run
+for another platform or application.

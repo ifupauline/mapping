@@ -1,0 +1,12 @@
+
+  examples/uc1_central_sizing/application.json: 24 task-chains, 73 tasks
+  3 local to one ECU; of the others, 19 start at a bound sensor task, 19 end at a bound actuator task
+  platform: 6 ECUs
+    HPC          central  2 big at 100%, 65536 KB, at most 16 cores
+    ZC_FL        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_FR        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_RL        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_RR        zone     2 MCU at 50%, 4096 KB, at most 4 cores
+    ZC_C         zone     2 MCU at 50%, 4096 KB, at most 4 cores
+  execution: fixed-priority preemptive, implicit communication at LET instants, utilization cap 0.80, LET task 50 us, WCET margin 0%
+  network: star, 1000 Mbit/s (backbone 1000), 1 CBS class

@@ -1,0 +1,79 @@
+\section{A worked example}
+\label{sec:example}
+
+\begin{inbrief}
+This section follows one core and one task-chain through the analyses,
+with the default parameters: $c_{\LET}=\SI{50}{\micro s}$, $\varphi=0.8$, a
+1\,Gbit/s star with one CBS class, no contention.
+\end{inbrief}
+
+\paragraph{One core.} A big core $p$ of the central computer holds two
+sub-chains: $a_1\to a_2$ (one pattern of task-chain $A$, $C=1000$ and
+$2000$\,\si{\micro s}, $T=10$\,ms) and $b_1$ ($C=2400$\,\si{\micro s},
+$T=6$\,ms). Then $T^{\LET}_p=\gcd(10,10,6)\,\mathrm{ms}=2$\,ms, and the LET
+load is $50/2000=2.5\,\%$. The load is $0.1+0.2+0.4+0.025=0.725\le\varphi$.
+
+\paragraph{Priorities (\cref{alg:audsley}).} At the lowest level, the
+candidates are $a_2$ (the last task of its pattern) and $b_1$; $a_1$ is not
+a candidate while $a_2$ is unassigned. With $W=50+5400=5450$, $a_2$ has
+the slack bound $(10000-5450)/10000=0.455$. Its WCRT below $\{a_1,b_1,\LET\}$ starts at
+$\max(2000+1000+2400+50,\ 2000/0.475)=5450$ and iterates to
+$2000+1000+2400+\lceil5450/2000\rceil\cdot50=5550$, a fixed point: slack
+0.445. The bound of $b_1$, $(6000-5450)/6000=0.09<0.445$, stops the scan, and
+$a_2$ takes the lowest level. At the next level, $a_1$ (now a candidate)
+has $R=1000+2400+2\cdot50=3500$ (slack 0.65), which beats the bound
+$(6000-3450)/6000=0.425$ of $b_1$. Last, $b_1$ has $R=2400+2\cdot50=2500\le
+6000$. The final order is LET, $b_1$, $a_1$, $a_2$, with response times
+2500, 3500 and 5550\,\si{\micro s}, and precedence holds ($a_1$ above
+$a_2$). The critical scaling factor is 1.25: at $\lambda=1.25$, $R_{a_2}=
+1.25(2000+1000+2\cdot2400)+5\cdot50=10\,000=T$.
+
+\paragraph{One task-chain.} Task-chain $A$ is $s\to a_1\to a_2\to u$, all at
+10\,ms, with a 64-byte message per task. Its sensor driver $s$
+($C^{\mathrm{ref}}=200$) is pinned to ZCU2 and its actuator driver $u$
+($C^{\mathrm{ref}}=150$) to ZCU4. Partitioning cuts at both changes of
+binding: $\{s\}$, $\{a_1,a_2\}$, $\{u\}$. With \BFDU, $\{a_1,a_2\}$ goes to
+the core $p$ above. On the zone cores (speed 50), $C_s=400$ and
+$C^{\LET}=100$, so $R_s=500$ and $R_u=300+100=400$, with $T^{\LET}=10$\,ms on
+both.
+
+\paragraph{Network (\cref{sec:nc}).} A 64-byte message is one frame of
+$b=(64+42)\cdot8=848$ bits, and $\rho=848/10000=0.0848$\,bit/\si{\micro s}.
+Assume these are the only flows. With one class, $\cmax=I\bar
+l/r=750\cdot12336/1000=9252$\,bits and $L=9252/750+250\cdot848/(1000\cdot
+750)=12.619$\,\si{\micro s}. The communication $h_1$ (ZCU2 to the central
+computer) has $J=500+10000$, so $\sigma=848+0.0848\cdot10500=1738.4$ and
+$d=12.619+1738.4/750=14.937$ at the output port of ZCU2. At the switch port
+the burst grows by $\rho d$ to 1739.7, which gives $d=14.938$. With the
+switch latency, $d_{h_1}=31.9$, rounded up to \SI{32}{\micro s}. In the same
+way, $h_2$ (central computer to ZCU4, $J=5550+2000$) gives
+\SI{32}{\micro s}.
+
+\paragraph{End-to-end bounds (\cref{prop:e2e}).} The holistic sum is
+$\Lambda=500+5550+400+32+32=6514$\,\si{\micro s}. The bound of the maximum
+reaction time adds the sampling of the sensor (\SI{10000}{\micro s}) and,
+for each communication, the copy-out delay $w_h$ and the wait of the
+consumer. With implicit communication,
+\begin{multline*}
+\Delta^{\mathrm b}=10000+6514+(10000+100+10000)\\+(2000+50+10000)
+=48\,664\,\si{\micro s}.
+\end{multline*}
+The deadline (300\,\% of the single pattern period) is 30\,ms, so the
+task-chain is \emph{late}: the two communications alone cost 32\,ms of
+copy and sampling delays. With strict LET, $w_{h_1}=10000-500+100=9600$
+and $w_{h_2}=10000-5550+50=4500$. The flows now have a jitter of only
+$C^{\LET}$ (100 and \SI{50}{\micro s}), so $d_{h_1}=d_{h_2}=30$,
+$\Lambda=6510$ and $\Delta^{\mathrm b}=50\,610$\,\si{\micro s}:
+\SI{1946}{\micro s} more than with implicit communication.
+
+\paragraph{Local search (\cref{alg:repair}).} Pulling $\{a_1,a_2\}$ back
+onto the core of $s$ (load $(400+2000+4000)/10000+0.01=0.65$) removes $h_1$.
+The run $s,a_1,a_2$ now ends with $R_{a_2}=4000+2000+400+100=6500$, and
+$\Delta^{\mathrm b}=10000+6500+400+34+(10000+100+10000)=37\,034$\,\si{\micro s}. The
+task-chain is still late: the communication from ZCU2 to ZCU4 links two
+pinned sub-chains and cannot be removed. The move is kept only if another
+task-chain meets its deadline thanks to it, since this one does not. This
+is the limit of the local search discussed in \cref{sec:rq5}. \CADU\ would
+have put $\{a_1,a_2\}$ on a core of ZCU2 from the start, with one
+inter-ECU communication instead of two, and affinity then puts $s$ on the
+same core.

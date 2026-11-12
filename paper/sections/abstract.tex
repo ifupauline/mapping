@@ -1,0 +1,51 @@
+\noindent{\sffamily\bfseries\color{brand}Abstract.}\hspace{0.4em}%
+Vehicles are moving from a hundred function-specific electronic control
+units (ECUs) to zonal electrical/electronic (E/E) architectures: a central
+computer and a few zone controllers, linked by a Time-Sensitive Networking
+(TSN) backbone, run most of the software. Before such a platform is built,
+its designers must know how many cores each ECU needs, whether every
+task-chain still meets its end-to-end deadline once its tasks are spread
+over cores and over the network, and how much room is left for the
+software updates of the coming years. Task allocation, fixed priorities,
+shared-memory contention, Logical Execution Time (LET) communication
+between cores and network delays are coupled, and, to our knowledge, no
+existing method treats them together. This paper states the problem
+formally and gives a system-level method that does. Task-chains are cut into sub-chains that
+respect the bindings of sensors and actuators to ECUs, allocated to
+heterogeneous cores by bin packing or by a new communication-aware rule,
+consolidated onto fewer cores, and prioritized by an optimal assignment
+that respects precedence. Response times include shared-memory
+contention. The maximum reaction time of every task-chain is bounded,
+under implicit communication or strict LET, with Network Calculus bounds for credit-based, time-aware and asynchronous
+traffic shaping and for frame replication. Relocation and
+deadline-driven moves, with an exact incremental re-analysis, repair
+unschedulable cores and late task-chains. An exact constraint-programming
+formulation with lazy schedulability cuts measures the optimality gap of the allocation,
+and a lifecycle analysis adds software updates to the hardware fixed at
+the start of production. On synthetic applications that follow published automotive
+statistics, no simulated delay exceeds its bound, for 3377 network flows
+and for 9000 task-chains simulated as a whole system. The heuristic is
+2.3 to 2.9\,\% above the optimal allocation on average and proven optimal
+in 81\,\% of 140 instances of up to 300 task-chains; on the default
+platform it is as close as simulated annealing run for seconds, in
+milliseconds, and closer than a genetic algorithm, which in turn
+recovers most of the gap of the heuristic on harder platforms.
+Communication awareness removes 64\,\% of the inter-ECU communications
+for 5 more cores, strict LET shrinks the network bounds by 15--19\,\% but
+costs 30 points of deadlines, and each core bought at the start of
+production buys about half a software update. The same method maps domain, hybrid and
+distributed architectures, within 1.1--1.2 and 4.4--4.7\,\% of the optimum on
+the hybrid and domain platforms, and a whole-vehicle application of 2000
+task-chains in about a second. \textbf{This project} originated from an idea conceived during the author's PhD
+that could not be pursued at the time. It is an independent continuation
+built with the help of AI tools, which assisted in developing the method,
+code, and paper. The code and the scripts that reproduce every
+experiment are at \url{https://github.com/ifupauline/mapping}.
+
+\medskip\noindent{\sffamily\bfseries\color{brand}Keywords.}\hspace{0.4em}%
+automotive embedded systems; software-defined vehicle; zonal E/E
+architecture; real-time systems; task allocation; task-chains; cause-effect
+chains;
+logical execution time; fixed-priority scheduling; time-sensitive
+networking; network calculus; asynchronous traffic shaping; frame
+replication; memory contention; design-space exploration

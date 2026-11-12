@@ -1,0 +1,47 @@
+{
+  "description": "UC5: perception on the ADAS domain controller, vehicle functions on the central computer (some fit its little cores), control loops between zones. WCETs on the reference core, with a factor per core type where a task gains or loses more than the speed ratio (a neural network on big cores, a control law on little ones); memory accesses per job for the contention model.",
+  "chains": [
+    {"name": "camera_perception", "deadline_us": 160000, "tasks": [
+      {"name": "front_camera", "period_us": 40000, "wcet_us": 1500, "ecu": "ZC_FL", "message_bytes": 60000},
+      {"name": "neural_detector", "period_us": 40000, "wcet_us": 18000, "ecus": ["ADAS_DC"], "core_types": ["big"], "wcet_factor_percent": {"big": 70}, "memory_kb": 65536, "memory_accesses": 60000, "message_bytes": 4096},
+      {"name": "tracker", "period_us": 40000, "wcet_us": 3000, "ecus": ["ADAS_DC"], "memory_kb": 8192, "message_bytes": 1024}]},
+    {"name": "radar_fusion", "deadline_us": 160000, "tasks": [
+      {"name": "front_radar", "period_us": 50000, "wcet_us": 800, "ecu": "ZC_FR", "message_bytes": 4000},
+      {"name": "radar_object_fusion", "period_us": 50000, "wcet_us": 5000, "ecus": ["ADAS_DC"], "memory_kb": 16384, "memory_accesses": 8000, "message_bytes": 1024}]},
+    {"name": "path_planning", "deadline_us": 250000, "tasks": [
+      {"name": "environment_model", "period_us": 50000, "wcet_us": 6000, "ecus": ["ADAS_DC", "HPC"], "core_types": ["big"], "memory_kb": 32768, "memory_accesses": 15000, "message_bytes": 512},
+      {"name": "planner", "period_us": 50000, "wcet_us": 8000, "core_types": ["big"], "memory_kb": 16384, "memory_accesses": 10000, "message_bytes": 64},
+      {"name": "motion_request", "period_us": 10000, "wcet_us": 50, "ecu": "ZC_RR"}]},
+    {"name": "steering_loop", "deadline_us": 6000, "tasks": [
+      {"name": "handwheel_angle", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_FL", "message_bytes": 8},
+      {"name": "steering_law", "period_us": 1000, "wcet_us": 150, "wcet_factor_percent": {"little": 80}, "memory_accesses": 50, "colocate_with_next": true, "message_bytes": 16},
+      {"name": "steering_limiter", "period_us": 1000, "wcet_us": 40, "memory_accesses": 20, "message_bytes": 16},
+      {"name": "rack_motor", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_FR"}]},
+    {"name": "braking_loop", "deadline_us": 6000, "tasks": [
+      {"name": "wheel_speeds", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_RL", "message_bytes": 16},
+      {"name": "abs_law", "period_us": 1000, "wcet_us": 160, "wcet_factor_percent": {"little": 80}, "memory_accesses": 60, "message_bytes": 16},
+      {"name": "brake_valves", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_FL"}]},
+    {"name": "propulsion", "deadline_us": 30000, "tasks": [
+      {"name": "accelerator_pedal", "period_us": 5000, "wcet_us": 30, "ecu": "ZC_FL", "message_bytes": 8},
+      {"name": "torque_manager", "period_us": 5000, "wcet_us": 400, "memory_accesses": 200, "message_bytes": 16},
+      {"name": "inverter", "period_us": 5000, "wcet_us": 50, "ecu": "ZC_RR"}]},
+    {"name": "battery_management", "deadline_us": 400000, "tasks": [
+      {"name": "cell_voltages", "period_us": 10000, "wcet_us": 200, "ecu": "ZC_RR", "message_bytes": 512},
+      {"name": "state_of_charge", "period_us": 100000, "wcet_us": 2500, "ecus": ["HPC"], "core_types": ["little"], "memory_kb": 1024, "memory_accesses": 1500, "message_bytes": 32},
+      {"name": "charge_limit", "period_us": 100000, "wcet_us": 50, "ecu": "ZC_RR"}]},
+    {"name": "climate_control", "deadline_us": 1000000, "tasks": [
+      {"name": "cabin_temperature", "period_us": 200000, "wcet_us": 50, "ecu": "ZC_RL", "message_bytes": 16},
+      {"name": "climate_strategy", "period_us": 200000, "wcet_us": 1500, "core_types": ["little"], "message_bytes": 16},
+      {"name": "blower", "period_us": 200000, "wcet_us": 40, "ecu": "ZC_RL"}]},
+    {"name": "body_control", "deadline_us": 200000, "tasks": [
+      {"name": "door_switches", "period_us": 20000, "wcet_us": 30, "ecu": "ZC_FR", "message_bytes": 8},
+      {"name": "body_logic", "period_us": 20000, "wcet_us": 400, "core_types": ["little"], "message_bytes": 32},
+      {"name": "locks_and_lamps", "period_us": 20000, "wcet_us": 40, "ecu": "ZC_RL"}]},
+    {"name": "infotainment_bridge", "deadline_us": 500000, "tasks": [
+      {"name": "media_metadata", "period_us": 100000, "wcet_us": 3000, "ecus": ["HPC"], "memory_kb": 32768, "memory_accesses": 5000, "message_bytes": 2048},
+      {"name": "cluster_widgets", "period_us": 100000, "wcet_us": 2000, "ecus": ["HPC"], "memory_kb": 8192, "message_bytes": 512}]},
+    {"name": "diagnostics", "ecus": ["HPC"], "tasks": [
+      {"name": "fault_memory", "period_us": 1000000, "wcet_us": 5000, "core_types": ["little"], "memory_kb": 4096},
+      {"name": "event_logger", "period_us": 1000000, "wcet_us": 3000, "core_types": ["little"], "memory_kb": 2048}]}
+  ]
+}

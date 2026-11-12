@@ -1,0 +1,46 @@
+\section{The code}
+\label{sec:code}
+
+The library is in \cmd{src/} (C11, Linux kernel coding style, no global
+state: one design point per thread), its headers in
+\cmd{include/mapping/}, the programs in \cmd{tools/}.
+
+\begin{center}\small\row
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{30mm}X@{}}
+\toprule\rowcolor{white}
+file & role (paper section) \\
+\midrule
+\cmd{model.c} & tasks, chains, cores; WCET on a core, with contention (System model) \\
+\cmd{context.c} & the parameters of a design point, the platform and its ECUs \\
+\cmd{json.c}, \cmd{io.c} & the JSON reader; the application and configuration files; the templates \\
+\cmd{generator.c} & synthetic applications, replicas, the detection chain \\
+\cmd{partition.c} & cutting into sub-chains (Step 1) \\
+\cmd{let.c} & the LET task of a core and the core loads \\
+\cmd{assign.c} & initial cores, allocation rules, memory reservation, contention update (Step 2) \\
+\cmd{placement.c} & consolidation, relocation moves and the optional swap moves (Steps 3 and 5) \\
+\cmd{sched.c} & response times, priority assignment, scaling factor (Timing analysis) \\
+\cmd{repair.c} & deadline-driven local search (Step 6) \\
+\cmd{communication.c} & segments, communications, end-to-end bounds, incremental analysis \\
+\cmd{network.c} & topologies, routes, CBS/TAS/ATS service, FRER, fixed point \\
+\cmd{stats.c} & metrics, verification, lower bound \\
+\cmd{pipeline.c} & one design point, contention fixed point, sizing \\
+\cmd{lifecycle.c} & the SOP and the software updates (Life of a platform) \\
+\cmd{search.c} & simulated annealing and genetic algorithm (baselines) \\
+\cmd{experiment.c} & parallel experiments and CSV output \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{Adding an experiment.} In \cmd{tools/experiment.c}, write a
+function that fills a list of points with \cmd{add\_point()} (one call per
+point and rule, setting the parameters to vary; \cmd{mp\_params\_template()}
+gives a template platform), and add a line to the \cmd{experiments[]}
+table with its name, description, default number of instances and the
+columns of its summary.
+
+\paragraph{Adding a key to the files.} Add the field to \cmd{struct
+mp\_params} (\cmd{context.h}) with its default in \cmd{mp\_params\_default()},
+read it in the right section of \cmd{io.c} (with its key in the list of
+known keys and its range), write it in \cmd{mp\_write\_configuration()},
+and document it in this manual. The \cmd{roundtrip} and \cmd{unit\_io}
+tests then check that what is written is read back.

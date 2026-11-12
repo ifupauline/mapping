@@ -1,0 +1,6 @@
+  │ metric                             │    BFDU │    WFDU │    FFDU │    CADU │
+  │ cores used M                       │       7 │      12 │       7 │       6 │
+  │ critical scaling factor            │   1.302 │   1.254 │   1.302 │   1.465 │
+  │ task-chains meeting deadline (%)   │   100.0 │    95.8 │   100.0 │    95.8 │
+  │ inter-ECU communications           │      33 │      33 │      33 │      22 │
+  │ max reaction time, max (ms)        │ 2007.44 │ 2007.28 │ 2007.44 │ 2019.49 │
