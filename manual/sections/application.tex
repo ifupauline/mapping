@@ -1,0 +1,83 @@
+\section{The application file}
+\label{sec:application}
+
+The application file is a JSON object with an optional
+\key{description} and a list of \key{chains}. Every chain has a list of
+\key{tasks}, in chain order. Times are integers in microseconds; ECUs are
+named as in the configuration file. The smallest file:
+
+\begin{shell}
+\{"chains": [\{"tasks": [\{"period\_us": 10000, "wcet\_us": 500\}]\}]\}
+\end{shell}
+
+A realistic chain, from the example of \opt{example-application}:
+\begin{shell}
+\{"name": "brake\_by\_wire", "deadline\_us": 10000, "tasks": [\\
+\quad \{"name": "pedal\_sensor", "period\_us": 1000, "wcet\_us": 40,\\
+\quad\ \ "ecu": "ZCU1", "message\_bytes": 16\},\\
+\quad \{"name": "brake\_control", "period\_us": 1000, "wcet\_us": 120,\\
+\quad\ \ "message\_bytes": 32\},\\
+\quad \{"name": "caliper\_front\_left", "period\_us": 1000, "wcet\_us": 30,\\
+\quad\ \ "ecu": "ZCU2"\}]\}
+\end{shell}
+The sensor task is bound to \cmd{ZCU1}, the actuator task to \cmd{ZCU2};
+the control task is free. The chain must react within 10\,ms.
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of a task-chain.}
+\label{tab:chain-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{30mm}>{\raggedright\arraybackslash}p{23mm}X@{}}
+\toprule\rowcolor{white}
+key & value & meaning \\
+\midrule
+\key{name} & text & shown in the outputs; at most 31 characters; distinct names (default: the chain number) \\
+\key{deadline\_us} & integer & end-to-end deadline on the maximum reaction time; absent or 0: none \\
+\key{ecu} & ECU name & the whole chain on that ECU (a local chain: every task bound there) \\
+\key{ecus} & ECU names & the ECUs every task of the chain may run on \\
+\key{replica\_group} & integer $>0$ & chains of one group are redundant copies: never on the same ECU (or core, \cref{sec:conf-method}); a group has at least two chains \\
+\key{tasks} & list & the tasks, in chain order (mandatory) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The keys of a task. Only the period and the WCET are mandatory.}
+\label{tab:task-keys}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{35mm}>{\raggedright\arraybackslash}p{23mm}X@{}}
+\toprule\rowcolor{white}
+key & value & meaning \\
+\midrule
+\key{name} & text & shown in \cmd{mapping.csv}; at most 31 characters \\
+\key{period\_us} & integer $\ge 1$ & period, also the deadline of the task \\
+\key{wcet\_us} & integer $\ge 1$ & WCET on the reference core (speed 100\,\%), at most the period \\
+\key{ecu} & ECU name & the task is bound there (its sensor or actuator) \\
+\key{ecus} & ECU names & the ECUs it may run on (not with \key{ecu}) \\
+\key{core\_types} & list & the core types it may run on: \key{big}, \key{little}, \key{mcu}, \key{lockstep} (a safety task: \key{["lockstep"]}) \\
+\key{wcet\_factor\_percent} & \{type: \%\} & WCET on a core of that type, in \% of the WCET at the same speed (e.g.\ \key{\{"big": 70\}}: 30\,\% faster than its speed ratio on big cores) \\
+\key{memory\_kb} & integer & code and data, counted against the memory of its ECU \\
+\key{message\_bytes} & integer & size of its output message (absent: one minimum-size frame) \\
+\key{memory\_accesses} & integer & requests to the shared memory per job (interference model; absent: from the access density) \\
+\key{colocate\_with\_next} & true/false & must share a core with the next task \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Checks.} The file is checked strictly: an unknown key, a value
+of the wrong type or out of range, an unknown ECU, a WCET above its
+period, a task bound to another ECU than its chain, a replica group of one
+chain or two chains with the same name are errors, reported with the file,
+the line and the key:
+\begin{shell}
+app.json:14: chain brake, task pedal: no ECU called "ZCU9"
+\end{shell}
+
+\begin{tip}[Generated applications]
+\cmd{mapping -{}-generate -{}-chains 200 -{}-seed 4 > app.json} writes a
+generated application (the statistics of an industrial engine-management
+software, see the appendix of the paper) for the platform of the
+configuration given with \opt{config}; you can then edit it. The options
+\opt{replicas}, \opt{zone-only}, \opt{colocate}, \opt{lockstep} and
+\opt{type-variation} add constraints to the generated chains.
+\end{tip}

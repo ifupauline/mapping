@@ -1,0 +1,44 @@
+{
+  "description": "UC3: an ADAS-heavy zonal platform whose backbone carries camera, radar and lidar streams next to control loops. A tree: the zone switches linked to the switch of the central computer, whose link is faster; three traffic classes by period, time-aware shaping with frame preemption.",
+  "platform": {
+    "ecus": [
+      {"name": "HPC", "role": "central",
+       "cores": [{"type": "big", "count": 8, "speed_percent": 100}],
+       "memory_kb": 262144, "max_cores": 16},
+      {"name": "ZC_F", "role": "zone",
+       "cores": [{"type": "mcu", "count": 3, "speed_percent": 50}],
+       "memory_kb": 8192, "max_cores": 6},
+      {"name": "ZC_L", "role": "zone",
+       "cores": [{"type": "mcu", "count": 3, "speed_percent": 50}],
+       "memory_kb": 8192, "max_cores": 6},
+      {"name": "ZC_R", "role": "zone",
+       "cores": [{"type": "mcu", "count": 3, "speed_percent": 50}],
+       "memory_kb": 8192, "max_cores": 6},
+      {"name": "ZC_B", "role": "zone",
+       "cores": [{"type": "mcu", "count": 3, "speed_percent": 50}],
+       "memory_kb": 8192, "max_cores": 6}
+    ]
+  },
+  "execution_model": {
+    "utilization_cap": 0.8
+  },
+  "network_model": {
+    "topology": "tree",
+    "tree_root": "HPC",
+    "link_mbps": 1000,
+    "backbone_mbps": 2500,
+    "ecu_link_mbps": {"HPC": 10000},
+    "switch_latency_us": 3,
+    "link_limit_percent": 80,
+    "traffic_shaping": "TAS",
+    "traffic_classes": 3,
+    "class_max_periods_us": [5000, 40000],
+    "tas_cycle_us": 500,
+    "tas_windows_percent": [20, 40, 20],
+    "frame_preemption": true
+  },
+  "method": {
+    "allocation": "FFDU",
+    "sigma": 0.4
+  }
+}

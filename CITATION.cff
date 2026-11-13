@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software or its method, please cite the paper below; the software itself is archived on Zenodo."
+title: "System-level mapping of automotive applications onto zonal E/E architectures: allocation, contention, LET, TSN and the life of the platform"
+type: software
+authors:
+  - given-names: "Morgan"
+    family-names: "Gauthier"
+doi: "10.5281/zenodo.24157732"
+repository-code: "https://github.com/ifupauline/mapping"
+license: Apache-2.0
+date-released: "2026-11-11"
+keywords:
+  - automotive embedded systems
+  - software-defined vehicle
+  - zonal E/E architecture
+  - real-time systems
+  - task allocation
+  - task-chains
+  - logical execution time
+  - fixed-priority scheduling
+  - time-sensitive networking
+  - network calculus
+  - design-space exploration
+preferred-citation:
+  type: unpublished
+  title: "System-level mapping of automotive applications onto zonal E/E architectures: allocation, contention, LET, TSN and the life of the platform"
+  authors:
+    - given-names: "Morgan"
+      family-names: "Gauthier"
+  year: 2026
+  notes: "Preprint, HAL hal-05861664"
+  url: "https://hal.science/hal-05861664"
+  identifiers:
+    - type: url
+      value: "https://hal.science/hal-05861664"
+      description: "HAL open archive, hal-05861664"

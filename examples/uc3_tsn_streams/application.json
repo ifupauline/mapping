@@ -1,0 +1,48 @@
+{
+  "description": "UC3: perception streams (front camera, surround cameras, radars, lidar) towards the central computer, and fast control loops between zones; messages from 8 bytes to 120 KB.",
+  "chains": [
+    {"name": "front_camera_perception", "deadline_us": 160000, "tasks": [
+      {"name": "front_camera", "period_us": 40000, "wcet_us": 1500, "ecu": "ZC_F", "message_bytes": 60000},
+      {"name": "object_detection", "period_us": 40000, "wcet_us": 14000, "core_types": ["big"], "memory_kb": 32768, "message_bytes": 2048},
+      {"name": "object_tracking", "period_us": 40000, "wcet_us": 3000, "message_bytes": 1024}]},
+    {"name": "surround_view_left", "deadline_us": 200000, "tasks": [
+      {"name": "camera_left", "period_us": 66000, "wcet_us": 1200, "ecu": "ZC_L", "message_bytes": 120000},
+      {"name": "stitching_left", "period_us": 66000, "wcet_us": 9000, "core_types": ["big"], "memory_kb": 16384, "message_bytes": 512}]},
+    {"name": "surround_view_right", "deadline_us": 200000, "tasks": [
+      {"name": "camera_right", "period_us": 66000, "wcet_us": 1200, "ecu": "ZC_R", "message_bytes": 120000},
+      {"name": "stitching_right", "period_us": 66000, "wcet_us": 9000, "core_types": ["big"], "memory_kb": 16384, "message_bytes": 512}]},
+    {"name": "rear_camera", "deadline_us": 200000, "tasks": [
+      {"name": "camera_rear", "period_us": 66000, "wcet_us": 1200, "ecu": "ZC_B", "message_bytes": 120000},
+      {"name": "rear_view", "period_us": 66000, "wcet_us": 6000, "core_types": ["big"], "memory_kb": 8192, "message_bytes": 256}]},
+    {"name": "front_radar_tracking", "deadline_us": 150000, "tasks": [
+      {"name": "front_radar", "period_us": 50000, "wcet_us": 800, "ecu": "ZC_F", "message_bytes": 4000},
+      {"name": "radar_tracker", "period_us": 50000, "wcet_us": 4000, "message_bytes": 1024}]},
+    {"name": "corner_radars", "deadline_us": 150000, "tasks": [
+      {"name": "corner_radar_left", "period_us": 50000, "wcet_us": 600, "ecu": "ZC_L", "message_bytes": 3000},
+      {"name": "corner_radar_fusion", "period_us": 50000, "wcet_us": 3000, "message_bytes": 512}]},
+    {"name": "lidar_mapping", "deadline_us": 400000, "tasks": [
+      {"name": "lidar", "period_us": 100000, "wcet_us": 2000, "ecu": "ZC_F", "message_bytes": 100000},
+      {"name": "point_cloud_segmentation", "period_us": 100000, "wcet_us": 20000, "core_types": ["big"], "memory_kb": 32768, "message_bytes": 4096},
+      {"name": "occupancy_grid", "period_us": 100000, "wcet_us": 8000, "core_types": ["big"], "memory_kb": 16384, "message_bytes": 2048}]},
+    {"name": "trajectory_planning", "deadline_us": 300000, "tasks": [
+      {"name": "fusion_input", "period_us": 50000, "wcet_us": 2000, "message_bytes": 4096},
+      {"name": "trajectory_planner", "period_us": 50000, "wcet_us": 10000, "core_types": ["big"], "memory_kb": 16384, "message_bytes": 256},
+      {"name": "motion_request", "period_us": 10000, "wcet_us": 80, "ecu": "ZC_B", "message_bytes": 32}]},
+    {"name": "steering_loop", "deadline_us": 6000, "tasks": [
+      {"name": "steering_angle", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_L", "message_bytes": 8},
+      {"name": "steering_controller", "period_us": 1000, "wcet_us": 150, "message_bytes": 16},
+      {"name": "steering_actuator", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_R"}]},
+    {"name": "braking_loop", "deadline_us": 6000, "tasks": [
+      {"name": "wheel_speeds", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_B", "message_bytes": 16},
+      {"name": "abs_controller", "period_us": 1000, "wcet_us": 160, "message_bytes": 16},
+      {"name": "brake_valves", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_F"}]},
+    {"name": "powertrain_loop", "deadline_us": 30000, "tasks": [
+      {"name": "pedal", "period_us": 5000, "wcet_us": 30, "ecu": "ZC_F", "message_bytes": 8},
+      {"name": "torque_control", "period_us": 5000, "wcet_us": 300, "message_bytes": 16},
+      {"name": "inverter", "period_us": 5000, "wcet_us": 50, "ecu": "ZC_B"}]},
+    {"name": "body_comfort", "deadline_us": 200000, "tasks": [
+      {"name": "door_switches", "period_us": 20000, "wcet_us": 30, "ecu": "ZC_L", "message_bytes": 8},
+      {"name": "body_logic", "period_us": 20000, "wcet_us": 400, "message_bytes": 32},
+      {"name": "lamps_and_locks", "period_us": 20000, "wcet_us": 40, "ecu": "ZC_R"}]}
+  ]
+}

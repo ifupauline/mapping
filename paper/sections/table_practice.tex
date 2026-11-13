@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering\footnotesize
+\caption{The method against the rules of practice (300 task-chains, 20
+instances). $M$: cores used, on the central computer / the zone
+controllers; hops: inter-ECU communications; port: load of the busiest
+port (\%); on time: task-chains that meet their deadline (\%).}
+\label{tab:practice}
+\setlength{\tabcolsep}{2.6pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\rowcolor{white}
+rule & $M$ & central/zones & hops & port & on time \\
+\midrule
+method, \FFDU & 14.40 & 6.65/7.75 & 180.3 & 5.6 & 92.6 \\
+method, \CADU & 19.45 & 1.85/17.60 & 62.9 & 2.6 & 96.2 \\
+whole task-chains & 14.55 & 6.70/7.85 & 173.2 & 5.2 & 94.0 \\
+central computer only & 15.15 & 8.30/6.85 & 235.6 & 9.2 & 85.7 \\
+whole and central only & 15.15 & 8.30/6.85 & 235.6 & 9.2 & 86.0 \\
+load balancing (\WFDU) & 28.00 & 8.00/20.00 & 171.6 & 5.7 & 96.9 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,504 @@
+\section{The mapping heuristic}
+\label{sec:method}
+
+\begin{inbrief}
+A design point runs seven steps (\cref{fig:pipeline}): partitioning into
+sub-chains, allocation by bin packing or by a communication-aware rule,
+core consolidation, priority assignment, relocation moves for
+unschedulable cores, a deadline-driven local search, and the final
+analysis. Contention is handled by a fixed point on the number of cores
+of each ECU, and an outer loop can size the platform for a target
+margin. Every step is deterministic.
+\end{inbrief}
+
+A \emph{design point} is one run of the method for one application and
+one set of parameters (\cref{tab:params}). The decomposition follows the
+objectives. Partitioning, allocation and consolidation decide the cores
+(O1). Priority assignment and the moves of step 5 make every core
+schedulable (C7); step 5 adds no core to the platform, but may put an
+unused core back into use, so it can raise $M$. The local search of step 6
+improves (O2) without changing $M$.
+
+\begin{figure*}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=3.0mm and 3.0mm,
+	st/.style={stage, minimum width=2.05cm, minimum height=0.95cm}]
+\node[st, fill=cpcu!60] (app) {application\\[-1pt]{\scriptsize task-chains $\Chains$}};
+\node[st, right=of app] (part) {\textbf{1} partitioning\\[-1pt]{\scriptsize sub-chains, \cref{alg:partition}}};
+\node[st, right=of part] (assign) {\textbf{2} allocation\\[-1pt]{\scriptsize bin packing / \CADU}};
+\node[st, right=of assign] (cons) {\textbf{3} consolidation\\[-1pt]{\scriptsize \cref{alg:consolidate}}};
+\node[st, right=of cons] (sched) {\textbf{4} priorities\\[-1pt]{\scriptsize \cref{alg:audsley}}};
+\node[st, right=of sched] (place) {\textbf{5} relocation\\[-1pt]moves};
+\node[st, right=of place] (repair) {\textbf{6} deadline\\[-1pt]local search};
+\node[st, right=of repair, fill=czcu!70] (out) {\textbf{7} analysis\\[-1pt]{\scriptsize metrics, $M_{\mathrm{LB}}$}};
+\foreach \a/\b in {app/part,part/assign,assign/cons,cons/sched,sched/place,place/repair,repair/out}
+	\draw[arrow] (\a) -- (\b);
+\node[note, below=1.2mm of cons] {decide $M$ (O1)};
+\node[note, below=1.2mm of place] {schedulable (C7)};
+\node[note, below=1.2mm of repair] {improves $N$ (O2)};
+\draw[arrow, dashed, color=accent, rounded corners=3pt]
+	(out.north) -- ++(0,0.42) -| node[note, pos=0.25, above, color=accent]
+	{sizing for $\lambda^\star$: bisection on $\varphi$ (\cref{sec:sizing})}
+	(part.north);
+\draw[arrow, dashed, color=cblue, rounded corners=3pt]
+	(assign.south) -- ++(0,-0.62) -| node[note, pos=0.25, below, color=cblue]
+	{contention: more cores on an ECU than assumed, run again (\cref{sec:contention-method})}
+	(part.south);
+\end{tikzpicture}}
+\caption{The steps of a design point. The network analysis
+(\cref{alg:network}) runs inside steps 6 and 7. The two loops are
+optional: sizing for a margin, and the fixed point of the contention.}
+\label{fig:pipeline}
+\end{figure*}
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Parameters of a design point and their defaults.}
+\label{tab:params}
+\setlength{\tabcolsep}{3pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabularx}{\columnwidth}{@{}llX@{}}
+\toprule
+\rowcolor{white}
+parameter & default & meaning \\
+\midrule
+rule & \FFDU & allocation rule: \BFDU, \WFDU, \FFDU, \CADU \\
+$\sigma$ & 0.4 & utilization limit of a sub-chain, on the core type it will get \\
+$\varphi$ & 0.8 & utilization cap of a core \\
+central cores & 8 big (100\,\%) & + little cores (40\,\%), none by default \\
+zone cores & 4 MCU (50\,\%) & per zone; + lock-step cores, none \\
+$c_{\LET}$ & \SI{50}{\micro s} & LET copy on the reference core \\
+$M_k$ & unlimited & memory of each ECU \\
+replicas & ECUs & separation policy (or cores) \\
+affinity & on & try the cores of the task-chain first \\
+consolidation & on & step 3 (not with \WFDU) \\
+relocation & on & step 5 \\
+swap moves & off & step 5, before relocation (\cref{sec:placement}) \\
+local search & on & step 6 \\
+$\ell$, $\eta$ & 0, 1000 & memory latency (ns); requests per ms of WCET \\
+network & star, 1\,Gbit/s & topology, $R$; $R_b=R$ \\
+shaping & CBS, 1 class & idle slope 75\,\%, no preemption; or TAS, ATS \\
+FRER & off & ring or custom topology: replicated task-chains \\
+margin & 0\,\% & WCETs increased before the mapping \\
+$\lambda^\star$ & none & sizing target (\cref{sec:sizing}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Preparation.} With a WCET margin of $m$\,\%, every reference
+WCET first becomes $\min(\lceil C^{\mathrm{ref}}(100+m)/100\rceil,\,T-1)$,
+and the platform is sized for the larger WCETs. \Cref{sec:sizing} offers
+an alternative that sizes for the margin directly. With contention, the
+tasks without a request count get $a_\tau=\lceil\eta
+C^{\mathrm{ref}}_\tau/1000\rceil$ before the margin, which inflates
+execution, not memory traffic.
+
+\subsection{Step 1: partitioning}
+\label{sec:partitioning}
+
+Partitioning cuts each task-chain into sub-chains, the units of
+allocation. Fewer sub-chains mean fewer communications; smaller sub-chains
+pack better. A sub-chain must not be larger than what a core can take next
+to others, so its utilization on the core type it will run on is limited
+to $\sigma$ (minus 1\,\% kept for the LET task): on a core of speed $s$,
+that is a utilization of $(\sigma-0.01)\,s/100$ of the reference core, as
+\cref{alg:partition} computes. Its tasks must share their binding and
+their allowed sets: a sensor driver never drags the computation into its
+zone. Tasks that must be co-located (C2) are never separated, since they
+have the same constraints (\cref{sec:problem}). \Cref{alg:partition} gives the procedure. A sub-chain of free
+tasks is sized for the core it is most likely to get: the first host
+(\cref{sec:other-architectures}) it may run on, else the first other ECU
+it may run on, with the first type of that ECU it allows, in the order
+big, little, MCU, lock-step. The \emph{fragmentation rate} is the
+number of cuts over the number of possible cuts (one per pair of
+consecutive tasks).
+
+\begin{algorithm2e}[t]
+\caption{\textsf{Partition}$(\xi,\sigma)$}
+\label{alg:partition}
+\Input{task-chain $\xi=(\tau_1..\tau_n)$, limit $\sigma$}
+\Output{sub-chains of $\xi$, in chain order}
+$F\gets\langle\rangle$ \tcp*{the open sub-chain}
+\For{$i\gets1$ \KwTo $n$}{
+	\If{$F\ne\langle\rangle$ \textbf{and} $(A_{\tau_i},\Theta_{\tau_i},\text{binding})\ne$ those of $F$}{
+		close $F$ \tcp*{forced cut}}
+	$g\gets F\ne\langle\rangle\wedge g_{\mathrm{last}(F)}$ \tcp*{glued to $F$}
+	$\bar u\gets(\sigma-0.01)\,s_{\hat\theta}/100$, $\hat\theta$ the type $F$ will get\;
+	\If{$U^{\mathrm{ref}}_{\tau_i}>\bar u$ \textbf{and not} $g$}{
+		close $F$; $F\gets\langle\tau_i\rangle$\;
+		\lIf{\textbf{not} $g_{\tau_i}$}{close $F$}
+		\textbf{continue}\;}
+	append $\tau_i$ to $F$\;
+	\lIf{$g$}{\textbf{continue}}
+	\If{$|F|>1$ \textbf{and} ($U^{\mathrm{ref}}(F)>\bar u$ \textbf{or} $F$ alone on a core is unschedulable)}{
+		remove $\tau_i$; close $F$; $i\gets i-1$\;}
+}
+close $F$\;
+\end{algorithm2e}
+
+The schedulability test ``alone on a core'' in \cref{alg:partition} uses
+chain order inside a pattern and rate-monotonic order between patterns,
+with \cref{eq:rta}. The sub-chains of all task-chains are finally sorted by
+decreasing reference utilization (stable sort), the order in which they are
+allocated.
+
+\subsection{Step 2: allocation}
+\label{sec:assignment}
+
+Sub-chains are placed one by one in that order (\cref{alg:assign}). The
+load a sub-chain adds to a core is its utilization at the speed and type of
+the core (\cref{eq:wcet}), plus the change of the LET load: $T^{\LET}$
+becomes the GCD of the old and new periods (\cref{eq:let}). A core
+\emph{can take} $f$ if (C1), (C4) and (C5) hold and the new load is within
+$\varphi$ (C3).
+
+\begin{algorithm2e}[t]
+\caption{\textsf{Allocate}$(\Frags)$}
+\label{alg:assign}
+\Input{sub-chains by decreasing utilization; initial cores $\Cores_0$}
+\Output{$\pi$, possibly with added cores, or \emph{infeasible}}
+$\Cores\gets\Cores_0$; $\mathcal{R}_k\gets\sum_{f\in\Frags_k}\mu_f$ for all $k$ \tcp*{reserved memory}
+\ForEach{$f\in\Frags$}{
+	\For{$\textit{attempt}\gets1$ \KwTo $2$}{
+		$p\gets\bot$\;
+		\lIf{affinity}{$p\gets$ \textsf{Choose}$(f,\textsc{siblings})$}
+		\lIf{$p=\bot$}{$p\gets$ \textsf{Choose}$(f,\textsc{preferred})$}
+		\lIf{$p=\bot$}{$p\gets$ \textsf{Choose}$(f,\textsc{any})$}
+		\lIf{$p\ne\bot$}{$\pi(f)\gets p$; \textbf{break}}
+		\lIf{$\textit{attempt}=2$ \textbf{or} fixed hardware}{\Return \emph{infeasible}}
+		$k\gets$ first ECU (hosts first) in $A_f$ whose memory, replicas and $M^{\max}_k$ admit $f$\;
+		\lIf{none}{\Return \emph{infeasible}}
+		add a core to $k$ of the added type of $k$, or, if $f$ may not use it, of the type in $\Types(k)\cap\Theta_f$ on which $f$ is lightest\;
+	}
+	\lIf{$f$ pinned to $k$}{$\mathcal{R}_k\gets\mathcal{R}_k-\mu_f$}
+}
+\end{algorithm2e}
+
+\paragraph{Tiers.} \textsf{Choose}$(f,\textit{tier})$ considers the cores
+that can take $f$, restricted by the tier:
+\begin{itemize}
+\item \textsc{siblings}: cores that already run another sub-chain of the
+same task-chain (affinity; it saves a communication);
+\item \textsc{preferred}: for a free sub-chain that may run on the central
+computer, its cores only (except with \CADU); otherwise all allowed cores;
+\item \textsc{any}: all allowed cores.
+\end{itemize}
+In every tier, for a free sub-chain that may run on the central computer,
+the zone cores \emph{added} during the allocation are excluded: they were
+added for the pinned sub-chains of their zone, and filling them with free
+work would force yet more zone cores. Here and below, ``the central
+computer'' stands for the hosts of \cref{sec:other-architectures} (the
+central computers, or, on a platform without one, the ECUs with the
+fastest cores), and ``zone cores'' for the cores of the other ECUs.
+
+\paragraph{Rules.} Among the candidates, the rule picks:
+\begin{itemize}
+\item \BFDU\ (best fit decreasing utilization): the core left with the
+least room;
+\item \WFDU\ (worst fit): the core left with the most room;
+\item \FFDU\ (first fit): the first core in creation order;
+\item \CADU\ (communication-aware, new): the core that is lexicographically
+best for (i) the number of inter-ECU communications the placement creates
+with the neighbouring sub-chains of the task-chain, (ii) the number of
+communications between cores of one ECU it creates, (iii) being a core of
+the central computer, and (iv) the least room left.
+\end{itemize}
+For \CADU, the neighbours of $f$ are the previous and next sub-chains of
+its task-chain. A neighbour already placed on core $q$ creates no
+communication if $q=p$, a communication inside the ECU if $\kappa(q)=
+\kappa(p)$, and an inter-ECU one otherwise. A neighbour not yet placed but
+pinned to ECU $k'\ne\kappa(p)$ creates an inter-ECU communication. Bin
+packing alone sends a free sub-chain to the central computer whenever a
+core there can take it, unless affinity first finds a core that runs its
+own task-chain. \CADU\ instead keeps a computation next to the sensor or actuator it
+serves, when the zone controller has room for it.
+
+\paragraph{Memory reservation.} A zone controller with a memory limit could
+see its memory taken by free sub-chains placed early, and then fail to host
+its own sensor and actuator drivers, which can run nowhere else. The
+allocation therefore reserves, on every ECU $k$, the memory
+$\mathcal{R}_k$ of the pinned sub-chains not yet placed. A free sub-chain
+may use only $M_k-\mathcal{R}_k$, minus what is already used.
+
+\begin{proposition}[Memory]
+\label{prop:memory}
+If $\sum_{f\in\Frags_k}\mu_f\le M_k$ for every ECU $k$, no pinned
+sub-chain is ever refused by (C4) during \cref{alg:assign}.
+\end{proposition}
+\begin{proof}
+Let $u_k$ be the memory used on $k$. The invariant $u_k+\mathcal{R}_k\le
+M_k$ holds initially. Placing a pinned sub-chain on $k$ moves $\mu_f$ from
+$\mathcal{R}_k$ to $u_k$; a free sub-chain is admitted only if $u_k+\mu_f+
+\mathcal{R}_k\le M_k$. Both keep the invariant. When a pinned sub-chain $f$
+of $k$ is placed, $\mu_f\le\mathcal{R}_k$, so $u_k+\mu_f\le M_k$.
+\end{proof}
+
+\subsection{Step 3: core consolidation}
+\label{sec:consolidation}
+
+Decreasing-utilization bin packing places each sub-chain once and never
+revisits it. A core opened early for a large sub-chain can stay lightly
+loaded, while the smaller sub-chains allocated after it fill the gaps that
+the pinned work leaves on other cores. The exact formulation of
+\cref{sec:exact} showed that this costs one to three cores on small and
+constrained instances. Consolidation (\cref{alg:consolidate}) removes this
+loss. It takes the cores in use from the lightest, and tries to move all
+their sub-chains to other cores in use. A move must respect (C1)--(C5) and
+the cap $\varphi$ (and, as in the allocation, a free sub-chain does not go
+to a zone core added during the allocation), and the target core must
+stay schedulable with the
+first-fit pass of \cref{alg:audsley}. Among the targets, the sub-chain goes
+to the one that leaves the fewest inter-ECU communications with its
+neighbours in the task-chain, then to the fullest, so that consolidation
+does not undo the work of affinity and of \CADU. The moves are kept only if
+the whole core is emptied; otherwise the core is left as it was.
+Consolidation is not applied to \WFDU, which spreads the load on purpose.
+
+\begin{algorithm2e}[t]
+\caption{\textsf{Consolidate}$(\pi)$}
+\label{alg:consolidate}
+\Repeat{no core was emptied}{
+	\ForEach{core $p$ in use, by increasing load}{
+		$\pi'\gets\pi$\;
+		\ForEach{sub-chain $f$ of $p$, by decreasing utilization}{
+			$Q\gets$ cores $q\ne p$ in use that can take $f$ in $\pi'$\;
+			sort $Q$ by (inter-ECU communications of $f$ on $q$, room left)\;
+			$q\gets$ first $q\in Q$ schedulable with $f$ (first-fit priorities)\;
+			\lIf{none}{\textbf{next} $p$ \tcp*[f]{keep $\pi$}}
+			move $f$ from $p$ to $q$ in $\pi'$\;
+		}
+		$\pi\gets\pi'$ \tcp*{$p$ is empty}
+		\textbf{restart}\;
+	}
+}
+\end{algorithm2e}
+
+Each kept round empties one core, so there are at most $M$ rounds, and
+every move keeps (C1)--(C5) and (C3). Schedulability is checked on every
+target with the optimal test of \cref{thm:audsley}, so consolidation never
+makes a schedulable core unschedulable.
+
+\subsection{Contention: the number of competing cores}
+\label{sec:contention-method}
+
+With contention, the WCETs depend on the number $n_k$ of cores of ECU $k$
+that compete for its memory, and $n_k$ depends on the allocation. The
+method resolves this circularity as follows.
+\begin{enumerate}
+\item The allocation starts with $n_k$ equal to the number of cores of $k$
+in the architecture. A core added to $k$ during the allocation gets the
+current count.
+\item If the allocation took more cores on some ECU than assumed, the
+design point is run again from step 1 with that many. More cores mean more
+contention, longer WCETs and possibly more cores, so this is a fixed
+point. It stops when the counts no longer grow, after at most eight runs;
+otherwise the design point is declared infeasible.
+\item After step 6, only the cores that run tasks compete: $n_k$ becomes
+the number of cores of $k$ in use. The WCETs can only decrease, and the
+response times are computed again with the same priorities.
+\end{enumerate}
+
+\begin{proposition}[Contention]
+\label{prop:contention}
+In the final mapping, every WCET is at least the one of \cref{eq:wcet}
+with $n_k$ the number of cores of $k$ that run tasks, and every core
+declared schedulable is schedulable with those WCETs.
+\end{proposition}
+\begin{proof}
+At the end of the fixed point, the count assumed for every ECU is at
+least the number of its cores, so every WCET used by steps 2 to 6 is at
+least the final one. Item 3 of the list above recomputes the WCETs with the
+number of cores in use, which no later step changes, and recomputes the
+response times with the final priorities. The response time of
+\cref{eq:rta} is monotone in the WCETs.
+\end{proof}
+
+\subsection{Step 4: priorities}
+
+Every core with tasks gets its priorities from \cref{alg:audsley} with the
+robust choice. Bin packing only checks loads, so a core within $\varphi$
+can still be unschedulable: the automotive periods are not harmonic
+(2\,ms and 5\,ms do not divide each other). Such cores are repaired in
+step 5.
+
+\subsection{Step 5: relocation moves}
+\label{sec:placement}
+
+This step moves sub-chains away from unschedulable cores, without adding
+cores to the platform. The sub-chains of the unschedulable cores are
+visited one at a time, the cores in their order and the sub-chains in the
+order of their core. A sub-chain $f$ whose core has become schedulable is
+skipped. Otherwise $f$ moves to the core that (i) satisfies (C1), (C4),
+(C5) and the cap $\varphi$ with it, (ii) is schedulable, (iii) remains
+schedulable with $f$ after \cref{alg:audsley}, and (iv) keeps the most
+room. Cores without tasks (initial cores not used yet, or cores emptied
+by step 3) are tried only when no loaded core qualifies, which is how
+this step can raise $M$. The source core then gets new priorities.
+
+\begin{remark}[Swap moves]
+An earlier version of this step first exchanged pairs of sub-chains
+between two unschedulable cores, and kept an exchange that made one of
+them schedulable. The tool still offers these swap moves as an option, off
+by default. Of the 9600 design points of \cref{sec:evaluation}, 9516
+have an admissible mapping, and 84 of these have unschedulable cores
+after step 4. The relocation moves, where enabled, made all of them
+schedulable. In the variant of the ablation study with swap moves
+(\cref{sec:rq8}), the swap moves made none of these cores schedulable.
+\end{remark}
+
+\subsection{Step 6: deadline-driven local search}
+\label{sec:repair}
+
+A task-chain whose tasks are all schedulable can still miss its
+end-to-end deadline, because every communication costs LET sampling delays
+and, between ECUs, a network transfer. A task-chain can also cross an
+overloaded port. The local search removes communications of such
+task-chains (\cref{alg:repair}). Around each communication it tries two
+moves (\cref{fig:repair}): \emph{pull back} moves the first sub-chain after
+the communication onto the core before it, and \emph{push on} moves the
+last sub-chain before the communication onto the core after it. A move
+must respect (C1)--(C5), leave the target core schedulable, and leave the
+source core schedulable (or no worse). The source keeps its priorities,
+because removing tasks cannot increase a response time. A move is
+\emph{kept} only if the number of task-chains that meet their deadline,
+over the whole application, strictly increases. The count must be global:
+a move changes the response times of two cores and the loads of the ports,
+and hence other task-chains. Trials are screened with first-fit priorities
+on the target; a promising move gets the robust priorities and is counted
+again.
+
+\begin{algorithm2e}[t]
+\caption{\textsf{LocalSearch}$(\pi)$}
+\label{alg:repair}
+$\mathcal{S}\gets$ \textsf{AnalysisInit}$(\pi)$; $N\gets N(\mathcal{S})$\;
+\For{$\textit{pass}\gets1$ \KwTo $8$}{
+	$\textit{kept}\gets$ false\;
+	\ForEach{task-chain $\xi$ schedulable but late in $\mathcal{S}$}{
+		\ForEach{communication $h$ of $\xi$, move $\mu\in\{$pull back, push on$\}$}{
+			\lIf{$\mu$ violates (C1)--(C5), or the target is unschedulable with first-fit priorities}{\textbf{continue}}
+			apply $\mu$ (cores $p,q$ changed); $n\gets$ \textsf{Update}$(\mathcal{S},p,q)$\;
+			\lIf{$n>N$}{robust priorities on the target; $n\gets$ \textsf{Update}$(\mathcal{S},q)$}
+			\eIf{$n>N$}{$N\gets n$; $\textit{kept}\gets$ true; restart with the same $\xi$\;}
+			{undo $\mu$; \textsf{Update}$(\mathcal{S},p,q)$\;}
+		}
+	}
+	\lIf{\textbf{not} \textit{kept}}{\textbf{break}}
+}
+\end{algorithm2e}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[node distance=1.4mm]
+\node[task, fill=czcu] (a) {$f_0$};
+\node[draw=cmuted, dashed, rounded corners=2pt, fit=(a), label={[note]above:ZCU2}] (c1) {};
+\node[task, right=14mm of a] (b) {$f_1$};
+\node[draw=cmuted, dashed, rounded corners=2pt, fit=(b), label={[note]above:central, core 0}] (c2) {};
+\node[task, right=20mm of b] (c) {$f_2$};
+\node[draw=cmuted, dashed, rounded corners=2pt, fit=(c), label={[note]above:central, core 3}] (c3) {};
+\draw[arrow, color=corange] (c1) -- (c2);
+\draw[arrow, color=corange] (c2) -- node[note, below] {communication} (c3);
+\draw[arrow, color=cblue, out=125, in=55, looseness=1.1] ([yshift=5mm]c.north) to node[note, above] {pull back $f_2$} ([yshift=5mm]b.north);
+\draw[arrow, color=cgreen, out=-55, in=-125, looseness=1.1] ([yshift=-1mm]b.south) to node[note, below] {push on $f_1$} ([yshift=-1mm]c.south);
+\end{tikzpicture}
+\caption{The two moves tried around a communication. Around the
+communication from ZCU2, only the pull back of $f_1$ exists: $f_0$ is
+pinned to its zone.}
+\label{fig:repair}
+\end{figure}
+
+\paragraph{Incremental analysis.} Counting the task-chains that meet their
+deadline from scratch after every trial costs the whole communication
+analysis: collecting and sorting all sub-chains, rebuilding all segments
+and analysing the network. The local search instead keeps a state
+$\mathcal{S}$: the descriptor of every sub-chain (its core, ECU, the
+response times that \cref{eq:delay,eq:reaction} need, and the LET
+parameters of its core), the segments of every task-chain, and the
+summary. \textsf{Update}$(\mathcal{S},p,q)$ recomputes the descriptors of
+the sub-chains now on $p$ and $q$, and rebuilds only the segments of their
+task-chains. It then reruns \cref{alg:network} on all flows, whose cost is
+linear in the number of flows, and sums the bounds again.
+
+\begin{proposition}[Exactness]
+\label{prop:incremental}
+After any sequence of moves, each followed by \textsf{Update} on the cores
+it changed, $\mathcal{S}$ equals the result of a full analysis of the
+current mapping.
+\end{proposition}
+\begin{proof}
+A sub-chain descriptor depends only on the core that holds the sub-chain
+(the response times of its tasks and the LET task of the core). A move
+changes only the two cores it touches, so the descriptors of the
+sub-chains on all other cores are unchanged, and the sub-chains that
+changed core are now on $p$ or $q$. The segments of a task-chain depend only
+on the descriptors of its sub-chains; the network analysis and the sums are
+recomputed from all segments. The full analysis is a deterministic function
+of the same data, in the same order.
+\end{proof}
+Undoing a rejected move is a move too, and is followed by \textsf{Update}.
+The regression tests check \cref{prop:incremental} after random moves.
+
+\subsection{Step 7: analysis and metrics}
+
+Finally, the segments of all task-chains are built, the flows are analysed
+together (\cref{alg:network}), and the bounds of \cref{prop:e2e} are
+computed. The mapping is verified: no core above $\varphi$, and priorities
+in precedence order within every pattern. The method also computes the
+critical scaling factor of every core
+(\cref{sec:sensitivity}) and the lower bound $M_{\mathrm{LB}}$
+(\cref{prop:lb}).
+
+\begin{keybox}{What a design point guarantees}
+\textbf{Guaranteed}, under the model of \cref{sec:model}: every mapping
+returned meets (C1)--(C6); every core either meets (C7) or is reported as
+unschedulable; every response time (\cref{eq:rta}) reported within its
+period, every port delay (\cref{sec:nc}), and every end-to-end delay and
+maximum reaction time (\cref{prop:e2e}) reported is an upper bound; a
+task above its period is reported without a response time, and a port
+loaded above its reserved rate, or crossed by a flow of such a task, is
+reported as giving no bound, and so is every task-chain that depends on
+them; $M_{\mathrm{LB}}$ is a lower
+bound on the cores of any mapping of the same sub-chains
+(\cref{prop:lb}).
+\textbf{Not guaranteed}: that $M$ is optimal (\cref{sec:exact} measures
+the gap); that every deadline is met, since deadlines are an objective
+(O2) and the late task-chains are reported; and anything outside the
+model: WCETs, request counts and message sizes are inputs, and the
+bounds across ECUs assume clocks that run at the same rate, though not
+with aligned phases (\cref{sec:discussion}).
+\end{keybox}
+
+\subsection{Sizing for a margin}
+\label{sec:sizing}
+
+A WCET margin at design time inflates every WCET and hopes that the
+resulting mapping keeps enough slack. The sizing variant of the problem
+asks for $\lambda(\pi)\ge\lambda^\star$ directly. A lower utilization cap
+leaves more room on every core and, in general, a larger scaling factor.
+The method therefore searches for the largest $\varphi$ that reaches the
+target. It runs the design point at the given $\varphi_0$ and stops if
+$\lambda\ge\lambda^\star$. Otherwise it runs at $\varphi=\sigma$, the
+smallest value at which sub-chains still fit; if that run misses the target
+too, it is returned with the flag \emph{target missed}. Otherwise, seven
+bisection steps on $[\sigma,\varphi_0)$ keep the largest $\varphi$ that
+reached the target, so at most nine design points are run. The scaling
+factor is not exactly monotone in $\varphi$, because the mapping changes
+with it, so the result is the best $\varphi$ found, not a guaranteed
+maximum. A run reaches the target when its scaling factor is at least
+$\lambda^\star(1-10^{-3})$ (a tolerance for floating point) and every core
+is schedulable.
+
+\subsection{Complexity}
+
+Let $n$ be the number of tasks, $N$ of sub-chains and $P$ of cores.
+Partitioning is linear in $n$ times the cost of a response-time analysis
+of one sub-chain. Allocation evaluates at most $P$ cores per sub-chain and
+tier, $O(NP)$. A round of consolidation tries at most $P$ cores, each
+costing a copy of the cores and one priority assignment per moved
+sub-chain and target. Relocation tries at most $P$ targets for each
+sub-chain of an unschedulable core, a set that is empty in most runs at
+$\varphi\le0.8$. The
+local search tries $O(H)$ moves per pass for $H$ communications of late
+task-chains, each costing two priority assignments and one incremental
+update, linear in the flows. \Cref{sec:scalability} reports the measured
+growth.

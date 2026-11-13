@@ -1,0 +1,352 @@
+\section{Five use cases}
+\label{sec:usecases}
+
+Each use case is a realistic question, with its application and
+configuration files in \cmd{examples/}. Together they use every key of the
+two files. Run them from the root of the repository; the outputs below
+come from these exact commands.
+
+\begin{center}\small\row
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{45mm}X@{}}
+\toprule\rowcolor{white}
+use case & what it shows \\
+\midrule
+1.\ sizing the central computer & a zonal platform, 24 vehicle functions; read every output; compare the rules; size for a margin \\
+2.\ a fail-operational chassis & redundant task-chains, lock-step cores, a ring with frame replication (FRER), CADU \\
+3.\ camera streams and control loops & a tree backbone, three traffic classes, TAS, ATS, frame preemption, link rates \\
+4.\ software updates & sizing at the SOP, then updates on frozen hardware; why spreading the load helps then \\
+5.\ a hybrid platform & big.LITTLE central computer, a domain controller, shared-memory contention, a custom backbone \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% ---------------------------------------------------------------------------
+\subsection{Use case 1: how many cores does the central computer need?}
+\label{sec:uc1}
+
+\paragraph{The question.} A carmaker moves 24 functions of chassis,
+powertrain, ADAS, body and comfort onto a zonal platform: a
+high-performance computer (HPC) and five zone controllers. The zone
+controllers are chosen (two microcontroller cores at half the speed of the
+reference core, 4\,MB for the tasks); the HPC variant is open. How many
+cores must it have, and is every function on time?
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\draw[cgrid,line width=1.2pt,rounded corners=18pt,fill=cpaper] (0,0) rectangle (13,5.2);
+\node[font=\sffamily\scriptsize,text=cmuted,rotate=90] at (12.6,2.6) {front};
+\node[font=\sffamily\scriptsize,text=cmuted,rotate=90] at (0.4,2.6) {rear};
+\node[ecuzone] (fl) at (10.8,4.15) {ZC\_FL\cores{2 MCU 50\,\%}};
+\node[ecuzone] (fr) at (10.8,1.05) {ZC\_FR\cores{2 MCU 50\,\%}};
+\node[ecuzone] (rl) at (2.2,4.15) {ZC\_RL\cores{2 MCU 50\,\%}};
+\node[ecuzone] (rr) at (2.2,1.05) {ZC\_RR\cores{2 MCU 50\,\%}};
+\node[ecuzone] (c) at (4.9,2.6) {ZC\_C\cores{2 MCU 50\,\%}};
+\node[ecucentral,minimum width=24mm] (hpc) at (8.5,2.6) {HPC\cores{2 big, up to 16}};
+\node[switch] (sw) at (6.45,2.6) {SW};
+\draw[link] (fl) -| (sw); \draw[link] (fr) -| (sw);
+\draw[link] (rl) -| (sw); \draw[link] (rr) -| (sw);
+\draw[link] (c) -- (sw); \draw[link] (hpc) -- (sw);
+\node[font=\sffamily\tiny,text=cmuted,anchor=north] at (6.45,2.25) {1 Gbit/s star};
+\end{tikzpicture}
+\caption{Use case 1: the platform, seen from above (front on the right).
+Each zone controller has 4\,MB and at most 4 cores; the HPC 64\,MB and at
+most 16 cores.}
+\label{fig:uc1}
+\end{figure}
+
+\paragraph{The files.} \cmd{examples/uc1\_central\_sizing/}: the
+configuration lists the six ECUs; the HPC starts with only 2 big cores,
+so that the tool adds the cores it needs (\key{max\_cores} 16). The
+application has 24 task-chains and 73 tasks: brake-by-wire and
+steer-by-wire at 1\,ms with 5\,ms deadlines, stability and propulsion
+control at 5 and 10\,ms, ADAS perception at 40 to 100\,ms (big cores only,
+up to 16\,MB), body and comfort functions at 20\,ms to 1\,s, and three
+local chains (two window lifters, the seat heating) bound to one zone
+controller each.
+
+\paragraph{Run.}
+\begin{shell}
+mapping examples/uc1\_central\_sizing/application.json \textbackslash\\
+\quad examples/uc1\_central\_sizing/configuration.json -{}-cores
+\end{shell}
+\Cref{sec:output} reads this output line by line. The answer: \textbf{two
+HPC cores suffice} (7 cores in all, the lower bound being 5), every core
+is schedulable with a margin of 30\,\% on every WCET, and all 24 functions
+meet their deadlines.
+
+\paragraph{Compare the rules.} \cmd{-{}-algorithm all} maps with the four
+rules:
+\listing{listings/uc1_rules.txt}
+CADU saves a core and a third of the network messages here, but one chain
+misses its deadline; WFDU spreads the load over 12 cores and also leaves
+one chain late. The largest maximum reaction time is about the same for
+all rules: it is the chain of the tire pressure monitor, whose tasks run
+once a second and whose deadline is 3\,s.
+
+\paragraph{Size for a margin.} A margin of 30\,\% on every WCET is
+little at the start of a project. \opt{target-scaling} lowers the
+utilization cap until the critical scaling factor reaches the target:
+\listing{listings/uc1_sizing.txt}
+The cores are the same, but the load is spread so that every WCET may
+grow by 68\,\% (target 1.5) or 100\,\% (target 2). The price is paid in
+deadlines: with a lower cap, the control tasks of the 1\,ms by-wire chains
+no longer fit the zone controller of their sensor and move to the HPC,
+which adds two network hops. With the target 1.5 the steer-by-wire chain
+is late, with the target 2 the two brake-by-wire chains too; the
+\opt{cores} output names them.
+
+% ---------------------------------------------------------------------------
+\subsection{Use case 2: a fail-operational chassis}
+\label{sec:uc2}
+
+\paragraph{The question.} Steer-by-wire and brake-by-wire must survive
+the failure of one ECU or one network link. Each is built as two
+redundant task-chains (two \emph{lanes}) with their own sensors and
+actuators; their safety monitors must run on lock-step cores; the
+messages of the redundant chains are sent twice, over both directions of
+an Ethernet ring (IEEE 802.1CB FRER). Is the platform of \cref{fig:uc2}
+enough, and what does the redundancy cost on the network?
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\draw[cgrid,line width=1.2pt,rounded corners=18pt,fill=cpaper] (0,0) rectangle (13,5.6);
+\node[font=\sffamily\scriptsize,text=cmuted,rotate=90] at (12.6,2.8) {front};
+\node[ecuzone] (fl) at (10.6,4.55) {ZC\_FL\cores{2 MCU + 1 lock-step}};
+\node[ecuzone] (fr) at (10.6,1.05) {ZC\_FR\cores{2 MCU + 1 lock-step}};
+\node[ecuzone] (rl) at (2.4,4.55) {ZC\_RL\cores{2 MCU + 1 lock-step}};
+\node[ecuzone] (rr) at (2.4,1.05) {ZC\_RR\cores{2 MCU + 1 lock-step}};
+\node[ecucentral] (a) at (5.2,2.8) {HPC\_A\cores{4 big}};
+\node[ecucentral] (b) at (7.8,2.8) {HPC\_B\cores{4 big}};
+\node[switch] (sa) at (5.2,4.0) {}; \node[switch] (sb) at (7.8,4.0) {};
+\node[switch] (sfl) at (8.9,4.55) {}; \node[switch] (sfr) at (8.9,1.05) {};
+\node[switch] (srl) at (4.1,4.55) {}; \node[switch] (srr) at (4.1,1.05) {};
+\draw[link] (a) -- (sa); \draw[link] (b) -- (sb);
+\draw[link] (fl) -- (sfl); \draw[link] (fr) -- (sfr);
+\draw[link] (rl) -- (srl); \draw[link] (rr) -- (srr);
+% ring in ECU order: A, B, FL, FR, RR, RL, A
+\draw[fast,accent] (sa) -- (sb) -- (sfl);
+\draw[fast,accent] (sfl) -- (sfr);
+\draw[fast,accent] (sfr) -- (srr);
+\draw[fast,accent] (srr) -- (srl);
+\draw[fast,accent] (srl) -- (sa);
+\node[font=\sffamily\tiny,text=accent!80!black] at (6.5,0.55) {ring of six switches, 1 Gbit/s, FRER};
+\end{tikzpicture}
+\caption{Use case 2: two central computers and four zone controllers with
+lock-step cores, one switch per ECU, the switches in a ring in the order
+of the configuration file.}
+\label{fig:uc2}
+\end{figure}
+
+\paragraph{The files.} \cmd{examples/uc2\_redundant\_chassis/}. The
+configuration sets a cap of 0.7 and a WCET margin of 10\,\% (safety
+functions), a ring with FRER, two CBS classes (messages of tasks up to
+5\,ms in the first one, with 50\,\% of the port, the others with 25\,\%),
+and the CADU rule with replicas on different ECUs. In the application,
+\key{replica\_group} 1 joins the two steering lanes and group 2 the two
+braking lanes; the monitors have \key{"core\_types": ["lockstep"]} and the
+ECUs they may use (\key{ecus}); the airbag is a local chain of the front
+right zone on lock-step cores; the state estimator and the torque
+vectoring of the vehicle dynamics share a core (\key{colocate\_with\_next});
+the diagnostics may only run on the two HPCs (a chain-level \key{ecus}).
+
+\paragraph{Run.}
+\begin{shell}
+mapping examples/uc2\_redundant\_chassis/application.json \textbackslash\\
+\quad examples/uc2\_redundant\_chassis/configuration.json -{}-cores
+\end{shell}
+\listing[\fontsize{4.8pt}{5.8pt}\selectfont]{listings/uc2_chains.txt}
+CADU keeps each lane in its own zones: the steering lanes never leave
+\cmd{ZC\_FL} and \cmd{ZC\_FR} (one hop between two cores of the zone
+controller, through its shared memory), so the replicas are on different
+ECUs by construction, and only the braking lanes cross the ring: two
+replicated flows. Every chain is on time with 8 cores.
+
+\paragraph{The price of fewer messages.}
+\listing{listings/uc2_rules.txt}
+BFDU and FFDU need only 6 cores, but they send the control tasks of both
+lanes to a central computer: twice as many messages, more than twice as
+many replicated flows, and network bounds six times larger. With
+\opt{separate-cores} the replicas may share an ECU (not a core): try it
+to see which constraint costs what. A tree topology is refused with
+\opt{frer}: a tree has no second route.
+
+% ---------------------------------------------------------------------------
+\subsection{Use case 3: camera streams and control loops on one backbone}
+\label{sec:uc3}
+
+\paragraph{The question.} Cameras (up to 120\,KB per frame), radars and a
+lidar send their data from the zone controllers to the central computer,
+while 1\,ms control loops cross the same switches between zones. Which
+traffic shaping keeps the control loops on time, and what happens with a
+slower link?
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\node[switch,minimum width=10mm] (root) at (6.5,2.4) {SW};
+\node[ecucentral,minimum width=26mm] (hpc) at (6.5,3.75) {HPC\cores{8 big 100\,\%, 256\,MB}};
+\draw[fast,brand] (hpc) -- node[right,font=\sffamily\tiny,text=brand]{10 Gbit/s} (root);
+\foreach \n/\x/\s [count=\k] in {ZC\_F/1.5/front camera\, radar\, lidar,ZC\_L/4.8/left camera\, corner radar,ZC\_R/8.2/right camera,ZC\_B/11.5/rear camera} {
+	\node[switch] (s\k) at (\x,1.0) {};
+	\draw[fast] (root) -- node[pos=0.55,font=\sffamily\tiny,text=cmuted,fill=white,inner sep=1pt]{2.5 Gbit/s} (s\k);
+	\node[ecuzone,minimum width=24mm] (z\k) at (\x,-0.3) {\n\cores{3 MCU 50\,\%}};
+	\draw[link] (s\k) -- (z\k);
+	\node[font=\sffamily\tiny,text=accent!80!black,anchor=north,text width=26mm,align=center] at (\x,-1.0) {\s};
+}
+\end{tikzpicture}
+\caption{Use case 3: a tree rooted at the switch of the HPC; the zone
+links run at 1\,Gbit/s, the switches are linked at 2.5\,Gbit/s and the
+HPC at 10\,Gbit/s.}
+\label{fig:uc3}
+\end{figure}
+
+\paragraph{The files.} \cmd{examples/uc3\_tsn\_streams/}. The network
+model is a \key{tree} with \key{tree\_root} \cmd{HPC},
+\key{backbone\_mbps} 2500 and \key{ecu\_link\_mbps} 10000 for the HPC;
+three traffic classes (producers up to 5\,ms, up to 40\,ms, the rest), TAS
+with a cycle of 500\us{} and windows of 20, 40 and 20\,\%, frame
+preemption, and a design limit of 80\,\% per port. The application has 12
+chains: perception streams (40 to 100\,ms, messages of 3 to 120\,KB) and
+control loops (1 to 20\,ms, messages of 8 to 32 bytes).
+
+\paragraph{Run, then change the network.}
+\begin{shell}
+mapping examples/uc3\_tsn\_streams/application.json \textbackslash\\
+\quad examples/uc3\_tsn\_streams/configuration.json [option]
+\end{shell}
+\listing{listings/uc3_network.txt}
+With the file as it is, every chain is on time; the largest delay bound
+(14\,ms) is the one of a camera frame of 120\,KB, sent through the TAS
+window of its class. ATS (\opt{ats}) removes the waiting for the gates:
+the largest bound falls to 2.9\,ms. With one class only
+(\opt{classes 1}) the messages of the 1\,ms loops wait behind the camera
+frames: the steering and braking loops miss their deadline, and so does
+the front camera chain. With 100\,Mbit/s links
+(\opt{link 100}) the ports carry 21\,\% of LET traffic and five chains are
+late; ATS saves four of them.
+
+% ---------------------------------------------------------------------------
+\subsection{Use case 4: software updates on frozen hardware}
+\label{sec:uc4}
+
+\paragraph{The question.} The hardware of a car is fixed at the start of
+production (SOP); its software keeps growing with updates for years. The
+platform of use case~1 is sized at the SOP with a margin; then the HPC
+variant is frozen. Do two later updates still fit, and how should they be
+mapped?
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[node distance=6mm]
+\node[box,minimum width=36mm,text width=34mm] (sop) {\textbf{SOP}\\24 functions\\\scriptsize sized with target 1.5};
+\node[box,right=14mm of sop,minimum width=36mm,text width=34mm,fill=white] (u1) {\textbf{update 1}\\+4 functions\\\scriptsize energy, lane centering\dots};
+\node[box,right=14mm of u1,minimum width=36mm,text width=34mm,fill=white] (u2) {\textbf{update 2}\\+4 functions\\\scriptsize highway pilot};
+\draw[arrow] (sop) -- (u1); \draw[arrow] (u1) -- (u2);
+\node[draw=accent,fill=accentlight,rounded corners=2pt,below=5mm of u1,
+	minimum width=104mm,font=\sffamily\scriptsize,align=center] (hw)
+	{frozen hardware (\key{fixed\_hardware}): HPC with 3 big cores, each zone controller with its 2 cores};
+\end{tikzpicture}
+\caption{Use case 4: one platform, three versions of the software.}
+\label{fig:uc4}
+\end{figure}
+
+\paragraph{The files.} \cmd{examples/uc4\_software\_updates/}:
+\cmd{application\_sop.json} (the functions of use case~1),
+\cmd{application\_update1.json} and \cmd{application\_update2.json} (four
+more functions each, among them a highway pilot with 32\,MB of
+perception); \cmd{configuration\_sop.json} (use case~1 with
+\key{"target\_scaling": 1.5} and 512\,MB on the HPC) and
+\cmd{configuration\_frozen.json} (the hardware chosen: 3 big cores on the
+HPC, at most the initial cores everywhere, \key{"fixed\_hardware": true}).
+
+\paragraph{Size at the SOP.}
+\begin{shell}
+mapping examples/uc4\_software\_updates/application\_sop.json \textbackslash\\
+\quad examples/uc4\_software\_updates/configuration\_sop.json
+\end{shell}
+\listing{listings/uc4_sop.txt}
+The SOP needs 2 HPC cores for a scaling factor of 1.68; the carmaker buys
+a third one for the updates.
+
+\paragraph{Map the updates on the frozen platform.} Each version is
+mapped with the four rules on \cmd{configuration\_frozen.json}
+(\cmd{-{}-algorithm all}); the table gives the task-chains on time:
+\listing{listings/uc4_updates.txt}
+Both updates fit the frozen hardware with every rule but CADU, which
+cannot place a sensor task bound to \cmd{ZC\_FL} in update~2: no core of
+that zone controller has room left, and the hardware is fixed. But the
+rules that minimize the cores (BFDU, FFDU) now leave chains late:
+packing the new functions moves the steering control off its zone
+controller. \textbf{On frozen hardware the cores are already paid for}:
+WFDU, which spreads the load over every core, keeps all chains of update~1
+on time and 31 of 32 of update~2. The allocation objective changes after
+the SOP.
+
+% ---------------------------------------------------------------------------
+\subsection{Use case 5: a hybrid platform with a big.LITTLE central computer}
+\label{sec:uc5}
+
+\paragraph{The question.} A hybrid platform keeps an ADAS domain
+controller next to a central computer whose cores are of two types: 4
+big and 4 little (at 40\,\% of the speed). The cores of each ECU share its
+memory. Where does each function go, and how much does memory contention
+cost?
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\node[switch,minimum width=16mm] (sc) at (6.5,2.6) {SW\_CENTRAL};
+\node[switch,minimum width=14mm] (sf) at (10.2,1.0) {SW\_FRONT};
+\node[switch,minimum width=14mm] (sr) at (2.8,1.0) {SW\_REAR};
+\node[ecucentral,minimum width=30mm] (hpc) at (6.5,3.9) {HPC\cores{4 big 100\,\% + 4 little 40\,\%}};
+\draw[fast,brand] (hpc) -- node[right,font=\sffamily\tiny,text=brand]{10G} (sc);
+\draw[fast] (sc) -- node[above right,font=\sffamily\tiny,text=cmuted]{10G} (sf);
+\draw[fast] (sc) -- node[above left,font=\sffamily\tiny,text=cmuted]{2.5G} (sr);
+\draw[link] (sf) -- node[below,font=\sffamily\tiny,text=cmuted]{1G} (sr);
+\node[ecudomain,minimum width=24mm] (adas) at (12.0,2.6) {ADAS\_DC\cores{4 big 120\,\%}};
+\draw[fast,teal] (adas) -- node[right,font=\sffamily\tiny,text=teal]{10G} (sf);
+\node[ecuzone] (fl) at (8.9,-0.4) {ZC\_FL\cores{2 MCU 50\,\%}};
+\node[ecuzone] (fr) at (11.6,-0.4) {ZC\_FR\cores{2 MCU 50\,\%}};
+\node[ecuzone] (rl) at (1.4,-0.4) {ZC\_RL\cores{2 MCU 50\,\%}};
+\node[ecuzone] (rr) at (4.2,-0.4) {ZC\_RR\cores{2 MCU 50\,\%}};
+\draw[link] (fl) -- (sf); \draw[link] (fr) -- (sf);
+\draw[link] (rl) -- (sr); \draw[link] (rr) -- (sr);
+\end{tikzpicture}
+\caption{Use case 5: a custom backbone of three switches; the links of
+the HPC and of the ADAS controller run at 10\,Gbit/s.}
+\label{fig:uc5}
+\end{figure}
+
+\paragraph{The files.} \cmd{examples/uc5\_hybrid\_platform/}. The
+configuration has every section: the platform (a \key{central}, a
+\key{domain} and four \key{zone} ECUs, a 120\,\% ADAS controller), the
+interference model (40\,ns per memory request), a \key{custom} topology
+(\cref{sec:conf-network}), ATS with two classes, and CADU. In the
+application the neural detector gains 30\,\% on big cores
+(\key{"wcet\_factor\_percent": \{"big": 70\}}) and may only run on the ADAS
+controller; the control laws lose less than the speed ratio on little
+cores (\key{\{"little": 80\}}); the battery and comfort strategies may
+only use little cores; every task gives its memory requests per job
+(\key{memory\_accesses}).
+
+\paragraph{Run.}
+\begin{shell}
+mapping examples/uc5\_hybrid\_platform/application.json \textbackslash\\
+\quad examples/uc5\_hybrid\_platform/configuration.json -{}-cores
+\end{shell}
+\listing{listings/uc5_cores.txt}
+The perception runs on the ADAS controller (core c8), the planning on a
+big HPC core (c0), the strategies of battery, climate and body and the
+diagnostics on one little HPC core (c4); the control loops stay in the
+zone controllers. All chains are on time.
+
+\paragraph{The cost of contention.} \opt{memory-latency} overrides the
+interference model:
+\listing{listings/uc5_contention.txt}
+Without contention 6 cores suffice. At 40\,ns per request, the WCETs grow
+with the number of cores competing for the memory of each ECU, and a
+seventh core is needed; at 100\,ns an eighth one, and the application
+load grows by 10\,\%. The tool finds the number of competing cores of
+each ECU as a fixed point (more cores, more contention, longer WCETs).

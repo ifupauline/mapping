@@ -1,0 +1,82 @@
+\section{What the tool does}
+\label{sec:what}
+
+A vehicle function is a \emph{task-chain}: a sensor is sampled, data flows
+through a sequence of periodic tasks, and an actuator is commanded. A
+modern electrical/electronic (E/E) platform runs hundreds of them on a few
+powerful ECUs linked by a Time-Sensitive Networking (TSN) Ethernet
+backbone. \cmd{mapping} takes such an application and such a platform,
+and answers three questions with a worst-case analysis behind every
+number:
+\begin{enumerate}
+\item \textbf{How many cores} does each ECU need? The tool reports the
+cores used, a lower bound that no mapping can beat, and the cores it had
+to add to the platform.
+\item \textbf{Does every task-chain meet its deadline}, once its tasks are
+spread over cores and ECUs? The tool bounds the response time of every
+task (fixed-priority scheduling), the delay of every message (Network
+Calculus for the TSN shapers) and the maximum reaction time of every
+task-chain under logical execution time (LET) communication.
+\item \textbf{How much margin is left?} The critical scaling factor says
+how much every WCET may grow before a core misses a deadline; the sizing
+option lowers the utilization cap until a target margin is reached; and
+the fixed-hardware option checks whether a software update still fits the
+platform frozen at the start of production.
+\end{enumerate}
+The method is the one of the paper \emph{System-level mapping of automotive applications onto zonal E/E architectures} (\cmd{paper/gauthier2026-system-level-mapping-automotive.pdf}).
+The paper explains \emph{why} it works; this manual explains \emph{how} to
+use it. You need no knowledge of the code before \cref{sec:code}.
+
+\paragraph{The programs.} The build produces six programs; the repository
+also has five Python scripts.
+
+\begin{center}\small\row
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{40mm}X@{}}
+\toprule\rowcolor{white}
+program & what it is for \\
+\midrule
+\cmd{mapping} & map one application on one platform, from files or generated; print or write the results (\cref{sec:running,sec:output,sec:usecases}) \\
+\cmd{experiment} & run an experiment of the paper: many design points on many applications, in parallel, to a CSV file (\cref{sec:experiments}) \\
+\cmd{baselines} & the heuristic against simulated annealing and a genetic algorithm (\cref{sec:ex-baselines}) \\
+\cmd{export\_instance} & write an instance for the exact solver, or check an allocation (\cref{sec:ex-exact}) \\
+\cmd{net\_export} & write the flows of a mapping for the network simulator (\cref{sec:ex-netsim}) \\
+\cmd{golden} & regenerate the reference results of the regression test (\cref{sec:validation}) \\
+\cmd{exact/exact.py}, \cmd{gap.py} & exact allocation with OR-Tools, and the optimality-gap study \\
+\cmd{tests/netsim/netsim.py} & frame-level simulation of the TSN network \\
+\cmd{tests/syssim/syssim.py} & simulation of the whole system: cores, LET and network \\
+\cmd{paper/make\_figures.py} & the figures of the paper from the CSV files \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{Words.} The tool, the files and the paper use the words of the
+field (\cref{tab:words}). A few names in the code are older or shorter:
+an ECU is a \emph{controller} in the C sources, a sub-chain a
+\emph{fragment}, and the central computer of the built-in zonal platform
+is called \cmd{PCU}.
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The words of the tool.}
+\label{tab:words}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{37mm}>{\raggedright\arraybackslash}p{38mm}X@{}}
+\toprule\rowcolor{white}
+word & in the files and output & meaning \\
+\midrule
+ECU & \key{ecus}, \key{ecu} & electronic control unit: a computer of the platform \\
+central computer & \key{"role": "central"} & ECU that runs most functions; free software goes there first \\
+zone controller & \key{"role": "zone"} & ECU of a physical zone, wired to its sensors and actuators \\
+domain controller & \key{"role": "domain"} & ECU of one vehicle domain (chassis, body, ADAS\dots) \\
+core type & \key{big}, \key{little}, \key{mcu}, \key{lockstep} & application cores, energy-efficient cores, microcontroller cores, lock-step safety cores \\
+reference core & \key{wcet\_us} & the WCETs of the application file are on a core of speed 100\,\% \\
+task-chain & \key{chains} & sequence of tasks from a sensor to an actuator \\
+sub-chain & \emph{chain.index}, ``fragment'' & run of consecutive tasks of one chain placed together on one core \\
+utilization cap $\varphi$ & \key{utilization\_cap}, \opt{phi} & largest load of a core, its LET task included \\
+sub-chain limit $\sigma$ & \key{sigma}, \opt{sigma} & largest utilization of a sub-chain when chains are cut \\
+allocation rule & \key{allocation}, \opt{algorithm} & BFDU, WFDU, FFDU or CADU (\cref{sec:conf-method}) \\
+LET & \key{"communication": "implicit"} & logical execution time: data cross cores only at fixed instants \\
+maximum reaction time & ``reaction'' & longest time from an event to the actuation that accounts for it: compared with the deadline \\
+critical scaling factor & ``scaling'' & largest factor on every WCET that keeps the cores schedulable \\
+\bottomrule
+\end{tabularx}
+\end{table}

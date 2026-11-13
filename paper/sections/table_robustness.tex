@@ -1,0 +1,35 @@
+\begin{table}[t]
+\centering\footnotesize
+\caption{Robustness to the assumptions of the generator, one at a time
+(default value in parentheses; 300 task-chains, 20 instances). LB: lower
+bound on the cores; hops: inter-ECU communications; on time: task-chains
+that meet their deadline (\%). Messages above one frame: 1.5 to 16\,kB;
+without them, 90\,\% of the messages have 4 to 64\,B and 10\,\% one
+frame.}
+\label{tab:robustness}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+ & & \multicolumn{3}{c}{\FFDU} & \multicolumn{3}{c@{}}{\CADU} \\
+\cmidrule(lr){3-5}\cmidrule(l){6-8}
+assumption & LB & $M$ & hops & on time & $M$ & hops & on time \\
+\midrule
+default & 11.95 & 14.40 & 180.3 & 92.6 & 19.45 & 62.9 & 96.2 \\
+\rowcolor{white}\multicolumn{8}{@{}l}{\emph{task-chains local to one zone (25\,\%)}} \\
+\quad 0\,\% & 10.10 & 13.50 & 220.2 & 90.6 & 18.75 & 79.2 & 94.4 \\
+\quad 50\,\% & 13.70 & 15.95 & 99.0 & 96.2 & 20.10 & 41.5 & 97.4 \\
+\rowcolor{white}\multicolumn{8}{@{}l}{\emph{start at a sensor / end at an actuator (60 / 50\,\%)}} \\
+\quad 30 / 25\,\% & 11.75 & 14.10 & 95.6 & 97.5 & 16.60 & 12.3 & 98.2 \\
+\quad 90 / 80\,\% & 12.05 & 14.30 & 259.7 & 83.6 & 20.75 & 139.0 & 92.9 \\
+\rowcolor{white}\multicolumn{8}{@{}l}{\emph{largest utilization of a task-chain (8\,\%)}} \\
+\quad 4\,\% & 8.35 & 10.15 & 149.6 & 95.9 & 14.15 & 51.3 & 97.6 \\
+\quad 16\,\% & 18.20 & 24.25 & 181.7 & 90.6 & 27.70 & 124.0 & 93.5 \\
+\rowcolor{white}\multicolumn{8}{@{}l}{\emph{heavy task-chains (2\,\%)}} \\
+\quad 0\,\% & 9.10 & 10.95 & 168.4 & 94.0 & 14.60 & 45.9 & 96.8 \\
+\quad 5\,\% & 16.35 & 22.80 & 183.8 & 91.0 & 26.30 & 101.2 & 94.6 \\
+\rowcolor{white}\multicolumn{8}{@{}l}{\emph{messages above one frame (5\,\%)}} \\
+\quad 0\,\% & 11.95 & 14.40 & 180.6 & 93.0 & 19.45 & 63.0 & 96.2 \\
+\quad 20\,\% & 11.95 & 14.40 & 180.6 & 91.7 & 19.45 & 62.8 & 96.2 \\
+\bottomrule
+\end{tabular}
+\end{table}

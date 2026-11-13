@@ -1,0 +1,78 @@
+\section{Life of a platform: software updates}
+\label{sec:lifecycle}
+
+\begin{inbrief}
+A vehicle platform is built for years, while its software keeps growing.
+The lifecycle analysis sizes the hardware for the software at the start of
+production, then adds the task-chains of successive software updates to
+that fixed hardware. It measures how many updates the platform absorbs, and
+how its timing margin and deadline satisfaction evolve, against the cost of
+the hardware.
+\end{inbrief}
+
+\paragraph{The question.} The hardware of a vehicle platform is chosen
+before the SOP and is then fixed for the life of the vehicle line. Software
+updates, over the air or at service, add functions to it for years. A
+platform sized tightly for the SOP software is cheap, but the first update
+may not fit. A platform with room to spare costs more cores from the first
+car on. The lifecycle variant of the problem (\cref{sec:problem}) makes
+this trade-off measurable. It is related to the extensibility of a
+distributed system \cite{zhu2009optimizing}, but here the room is consumed
+by whole new task-chains, with their own pinned drivers and network
+streams, not by growing WCETs.
+
+\paragraph{Procedure.} The SOP mapping is the design point of
+\cref{sec:method} for the initial application $\Chains_0$, at a
+\emph{provisioning} cap $\varphi_{\mathrm{SOP}}$. A lower cap buys more
+cores. The platform is then fixed: the cores this mapping uses, nothing
+more. Update $u=1,2,\dots$ brings a set $\Chains_u$ of new task-chains. It
+is processed as follows (\cref{alg:lifecycle}).
+\begin{enumerate}
+\item The new task-chains are partitioned like the initial ones
+(\cref{alg:partition}).
+\item Their sub-chains are allocated with the rule of the SOP mapping, onto
+the cores of the platform only (\cref{alg:assign} with fixed hardware: no
+core may be added). The sub-chains already deployed stay where they are,
+because an update re-flashes software and should not move what has been
+validated. The cores may now be filled up to the cap of the updates,
+$\varphi_{\mathrm{upd}}\ge\varphi_{\mathrm{SOP}}$.
+\item The priorities of every core are assigned again
+(\cref{alg:audsley}). The tasks keep their cores, but their priorities may
+change, which a real update would have to re-validate.
+\item The update is \emph{absorbed} if every new sub-chain found a core and
+every core is schedulable. The end-to-end timing of all task-chains, old
+and new, is then analysed again: a new stream can delay old ones on a
+shared port.
+\end{enumerate}
+The first update that is not absorbed ends the life of the platform: its
+software would need new hardware. The results are the number of updates
+absorbed, and the critical scaling factor, the load and the share of
+task-chains that meet their deadline after each update.
+
+\begin{algorithm2e}[t]
+\caption{\textsf{Lifecycle}$(\Chains_0,\Chains_1,\dots,\Chains_K)$}
+\label{alg:lifecycle}
+$\pi\gets$ design point of $\Chains_0$ at $\varphi_{\mathrm{SOP}}$\;
+$\Cores\gets$ the cores $\pi$ uses \tcp*{the platform, fixed}
+\For{$u\gets1$ \KwTo $K$}{
+	$\Frags_u\gets$ \textsf{Partition} of $\Chains_u$\;
+	$\pi'\gets\pi$ extended by \textsf{Allocate}$(\Frags_u)$ on $\Cores$, cap $\varphi_{\mathrm{upd}}$, no new core\;
+	\lIf{infeasible}{\Return $u-1$ updates absorbed}
+	\textsf{Priorities} on every core of $\pi'$\;
+	\lIf{a core is unschedulable}{\Return $u-1$ updates absorbed}
+	$\pi\gets\pi'$; record $\lambda(\pi)$, load, task-chains on time\;
+}
+\Return $K$ updates absorbed\;
+\end{algorithm2e}
+
+\paragraph{Choices.} The analysis evaluates one update policy, not the
+best possible one: a policy that re-allocated deployed software would
+absorb more updates (\cref{sec:discussion}). The update does not use consolidation,
+relocation moves or the local search, since these would move deployed
+software; the deadline satisfaction after an update is therefore that of
+the new allocation as it is. The cap of the updates is the design cap of
+the platform ($\varphi_{\mathrm{upd}}=0.8$ in the experiments), while the
+SOP cap is the provisioning decision. The new task-chains are generated
+with the same statistics as the initial ones and numbered after them, so
+that their pinned drivers land in random zones, as new functions with new
+sensors would.

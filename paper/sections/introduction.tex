@@ -1,0 +1,161 @@
+\section{Introduction}
+\label{sec:introduction}
+
+For three decades, a new vehicle function usually meant a new electronic
+control unit (ECU). Premium cars already carried 70 to 100 ECUs in 2009
+\cite{charette2009car}, with a wiring harness, a supply chain and an
+integration effort to match \cite{bandur2021centralized,
+askaripoor2022synthesis}. The industry is now consolidating this software
+onto a few powerful computers. A \emph{central computer} runs most
+functions, and a handful of \emph{zone controllers} connect the sensors and
+actuators of their physical area of the car. An Ethernet backbone with
+Time-Sensitive Networking (TSN) links them \cite{lobello2019perspective,
+ieee8021q2022}. This \emph{zonal} electrical/electronic (E/E) architecture
+shortens the harness and decouples software from hardware
+\cite{bandur2021centralized,mauser2025centralization}.
+
+It also turns a question that each ECU supplier used to answer alone into
+a system-wide one: the design question in the box.
+\begin{figure}[t]
+\begin{keybox}[unbreakable,before skip=0pt,after skip=0pt]{Design question}
+How many processor cores does the software need, and on which ECU? Does
+every function still meet its timing requirement once its tasks are spread
+over cores and over the network? And how much room is left for the
+functions that software updates will add during the life of the vehicle?
+\end{keybox}
+\end{figure}
+
+\paragraph{Why the question is hard.} Vehicle functions are
+\emph{task-chains} (also called cause-effect chains): a sensor is sampled,
+data flows through a sequence of tasks, and an actuator is commanded
+\cite{feiertag2008compositional,kramer2015waters}. Their timing
+requirement is end to end, typically a bound on the \emph{maximum reaction
+time}: the longest time from an external event to the actuation that
+accounts for it \cite{feiertag2008compositional,durr2019end,
+gunzel2023equivalence}.
+On a zonal platform this reaction time depends on four decisions, and they
+interact.
+\begin{enumerate}[label=(\roman*)]
+\item The \emph{allocation} of tasks to cores. It is constrained by the
+wiring (a sensor driver runs in the zone of its sensor), by memory, by
+safety (redundant functions on different ECUs, safety tasks on lock-step
+cores) and by cores of different types and speeds.
+\item The \emph{priorities} on each core, which set the response times of
+the tasks.
+\item The \emph{communication between cores}. With the Logical Execution
+Time (LET) paradigm \cite{kirsch2012let,hamann2017communication,
+biondi2018achieving}, data crosses a core boundary only at fixed instants.
+This makes timing predictable, but every crossing adds sampling delays and
+every core pays for the copy task.
+\item The \emph{network}. Every task-chain that crosses ECUs adds a stream
+of frames, which shares output ports with the other streams. Its delay
+depends on the traffic shaping of the switches \cite{ieee8021q2022,
+zhao2022quantitative}.
+\end{enumerate}
+Packing tasks onto fewer cores saves hardware but lengthens response
+times. Spreading a task-chain over ECUs frees cores but adds LET sampling
+delays and network streams, and these streams delay other task-chains on
+the same ports. The platform also has to survive its own life: the
+hardware is frozen at the start of production (SOP), while software
+updates keep adding functions for years.
+
+\paragraph{What exists.} Each piece is well studied on its own.
+Allocation and priority assignment for distributed real-time systems goes
+back to Tindell et al.~\cite{tindell1992allocating} (see
+\cite{zhu2012optimization,davis2011survey,davis2016review}). The
+end-to-end analysis of task-chains has matured \cite{becker2017end,
+durr2019end,gunzel2021timing,martinez2018analytical}. LET deployment on
+multicores has been optimized \cite{biondi2018achieving,
+pazzaglia2019optimizing,paladino2024optimizing}. TSN has well-established
+Network Calculus bounds \cite{azua2014complete,mohammadpour2018latency,
+zhao2021latency,zhao2018worst,leboudec2018theory}, multicore
+response-time analysis accounts for shared-memory interference
+\cite{davis2018extensible}, and compositional system-level analysis
+chains the analyses of processors and buses for a given mapping
+\cite{henia2005system}. Studies of zonal
+architectures, however, focus on the harness and the network
+\cite{park2024zonal} or schedule tasks without a schedulability analysis
+\cite{aghababaiyan2025deterministic}, and syntheses of E/E architectures
+survey the mapping of software without a system-level timing analysis
+\cite{askaripoor2022synthesis}.
+What is missing is the system level. To our knowledge, and as
+\cref{sec:related} details, no published method decides the allocation of
+an automotive application while it analyses, together and with the same
+granularity, the fixed-priority scheduling of every core, the
+shared-memory contention between its cores, LET-based communication and the
+delays of shaped TSN streams, under the spatial constraints of a vehicle,
+and sizes the cores from that analysis.
+
+\paragraph{Contributions.} This paper gives such a system-level method,
+in enough detail to re-implement it from the text, with the code as a
+reference.
+\begin{enumerate}[label=\textbf{C\arabic*.}, leftmargin=2.2em]
+\item \textbf{A formal model and problem statement}
+(\cref{sec:model,sec:problem}). The model covers zonal, domain, hybrid
+and distributed E/E architectures (\cref{sec:other-architectures}),
+heterogeneous cores,
+a utilization cap, communication between cores at LET instants (implicit
+or strict LET), multi-rate task-chains,
+shared-memory contention, and a TSN backbone with
+four TSN mechanisms: credit-based shaping, time-aware shaping,
+asynchronous traffic shaping and frame replication, on a star, a tree, a
+ring or any switched topology. It also covers the
+spatial constraints of a vehicle: allowed ECUs, memory, separation of
+redundant task-chains, co-location and allowed core types. The objective
+is to use the fewest cores, then to meet as many end-to-end deadlines as
+possible, optionally for a target timing margin.
+\item \textbf{Timing analyses with proofs} (\cref{sec:analysis}). They are
+an optimal priority assignment that respects precedence, response times
+with shared-memory contention, a bound on the maximum reaction time of a
+task-chain under implicit communication and under strict LET, Network
+Calculus bounds for the four TSN mechanisms,
+and a lower bound on the number of cores of any mapping of the
+sub-chains.
+\item \textbf{A mapping heuristic} (\cref{sec:method}), given as
+pseudo-code. Its new parts are a communication-aware allocation rule, a
+core consolidation that preserves schedulability, a reservation of zone
+memory for pinned tasks, a deadline-driven local search with an exact
+incremental re-analysis, and the sizing of the platform for a target
+margin.
+\item \textbf{An exact formulation} (\cref{sec:exact}): a constraint
+program that finds the fewest cores, with schedulability added as lazy
+constraints. It measures the optimality gap of the heuristic for the
+sub-chains of the partitioning, without contention.
+\item \textbf{A lifecycle analysis} (\cref{sec:lifecycle}). The platform
+is sized at the SOP, and then software updates add task-chains to the
+fixed hardware. This trades the hardware cost against the number of
+updates the platform absorbs.
+\item \textbf{An evaluation} (\cref{sec:evaluation}). The synthetic
+applications follow the statistics of an industrial engine-management
+software \cite{kramer2015waters}. The evaluation adds a small detection
+chain and a whole-vehicle application of 2000 task-chains. A frame-level network simulation and a full-system simulation
+check the bounds. The method is compared with the optimum, with simulated
+annealing and a genetic algorithm, and with the rules of practice; each of
+its parts is removed in turn; strict LET is compared with implicit
+communication; the same software is mapped onto four architectures; and
+each assumption of the generator is varied.
+\end{enumerate}
+\begin{keybox}{Central claim}
+A system-level method that couples allocation, fixed-priority scheduling,
+shared-memory contention, LET and TSN bounds sizes the cores of a vehicle
+platform close to the optimal allocation of its sub-chains (2.3 to
+2.9\,\% above it on average, proven optimal in 81\,\% of 140 instances)
+in milliseconds, and no end-to-end bound it reported was exceeded when
+the network and the whole system were simulated.
+\end{keybox}
+The method is implemented as an open, deterministic C library and
+command-line tool, which reads the application and the platform from JSON
+files. A separate user manual describes the tool, five use cases, and how
+to reproduce every number of this paper.
+
+\paragraph{How to read this paper.} \Cref{sec:background} recalls the
+terms and mechanisms the paper builds on. A reader who knows LET, TSN and
+Network Calculus can skip it. \Cref{sec:related} reviews the state of the
+art. \Cref{sec:model,sec:problem} define the model and the problem.
+\Cref{sec:analysis} gives the timing analyses, \cref{sec:method} the
+heuristic, \cref{sec:exact} the exact formulation and
+\cref{sec:lifecycle} the lifecycle analysis. \Cref{sec:example} follows
+one task-chain through all the steps. \Cref{sec:evaluation} reports the
+experiments, \cref{sec:discussion} discusses design rules and limits, and
+\cref{sec:conclusion} concludes. Every section starts with a short summary
+of what it contains.
