@@ -1,0 +1,46 @@
+{
+  "description": "UC2: steer-by-wire and brake-by-wire, each as two redundant task-chains (replica groups 1 and 2) with their own sensors and actuators; safety monitors on lock-step cores; an airbag function local to one zone; comfort functions besides.",
+  "chains": [
+    {"name": "steering_lane_A", "replica_group": 1, "deadline_us": 8000, "tasks": [
+      {"name": "handwheel_angle_A", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_FL", "message_bytes": 8},
+      {"name": "steering_control_A", "period_us": 1000, "wcet_us": 200, "message_bytes": 16},
+      {"name": "steering_monitor_A", "period_us": 1000, "wcet_us": 60, "core_types": ["lockstep"], "ecus": ["ZC_FL", "ZC_RL"], "message_bytes": 16},
+      {"name": "rack_motor_A", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_FL"}]},
+    {"name": "steering_lane_B", "replica_group": 1, "deadline_us": 8000, "tasks": [
+      {"name": "handwheel_angle_B", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_FR", "message_bytes": 8},
+      {"name": "steering_control_B", "period_us": 1000, "wcet_us": 200, "message_bytes": 16},
+      {"name": "steering_monitor_B", "period_us": 1000, "wcet_us": 60, "core_types": ["lockstep"], "ecus": ["ZC_FR", "ZC_RR"], "message_bytes": 16},
+      {"name": "rack_motor_B", "period_us": 1000, "wcet_us": 40, "ecu": "ZC_FR"}]},
+    {"name": "braking_lane_A", "replica_group": 2, "deadline_us": 8000, "tasks": [
+      {"name": "pedal_travel_A", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_FL", "message_bytes": 8},
+      {"name": "brake_control_A", "period_us": 1000, "wcet_us": 180, "message_bytes": 32},
+      {"name": "caliper_front_A", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_FR"}]},
+    {"name": "braking_lane_B", "replica_group": 2, "deadline_us": 8000, "tasks": [
+      {"name": "pedal_travel_B", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_RL", "message_bytes": 8},
+      {"name": "brake_control_B", "period_us": 1000, "wcet_us": 180, "message_bytes": 32},
+      {"name": "caliper_rear_B", "period_us": 1000, "wcet_us": 30, "ecu": "ZC_RR"}]},
+    {"name": "vehicle_dynamics", "deadline_us": 30000, "tasks": [
+      {"name": "imu", "period_us": 5000, "wcet_us": 50, "ecu": "ZC_RL", "message_bytes": 48},
+      {"name": "state_estimator", "period_us": 5000, "wcet_us": 500, "colocate_with_next": true, "message_bytes": 64},
+      {"name": "torque_vectoring", "period_us": 5000, "wcet_us": 300, "message_bytes": 16},
+      {"name": "drive_torque_split", "period_us": 5000, "wcet_us": 40, "ecu": "ZC_RR"}]},
+    {"name": "airbag", "ecu": "ZC_FR", "deadline_us": 3000, "tasks": [
+      {"name": "crash_sensing", "period_us": 1000, "wcet_us": 60, "core_types": ["lockstep"]},
+      {"name": "deploy_decision", "period_us": 1000, "wcet_us": 80, "core_types": ["lockstep"]}]},
+    {"name": "suspension_control", "deadline_us": 40000, "tasks": [
+      {"name": "ride_height", "period_us": 10000, "wcet_us": 60, "ecu": "ZC_RL", "message_bytes": 32},
+      {"name": "damper_strategy", "period_us": 10000, "wcet_us": 700, "message_bytes": 16},
+      {"name": "damper_valves", "period_us": 10000, "wcet_us": 40, "ecu": "ZC_RR"}]},
+    {"name": "headlights", "deadline_us": 100000, "tasks": [
+      {"name": "light_switch", "period_us": 20000, "wcet_us": 20, "ecu": "ZC_FL", "message_bytes": 4},
+      {"name": "light_manager", "period_us": 20000, "wcet_us": 150, "message_bytes": 8},
+      {"name": "headlamps", "period_us": 20000, "wcet_us": 30, "ecu": "ZC_FR"}]},
+    {"name": "climate_control", "deadline_us": 1000000, "tasks": [
+      {"name": "cabin_temperature", "period_us": 200000, "wcet_us": 50, "ecu": "ZC_RL", "message_bytes": 16},
+      {"name": "climate_strategy", "period_us": 200000, "wcet_us": 1500, "message_bytes": 16},
+      {"name": "blower", "period_us": 200000, "wcet_us": 40, "ecu": "ZC_RR"}]},
+    {"name": "diagnostics", "ecus": ["HPC_A", "HPC_B"], "tasks": [
+      {"name": "fault_memory", "period_us": 1000000, "wcet_us": 5000, "memory_kb": 4096},
+      {"name": "event_logger", "period_us": 1000000, "wcet_us": 3000, "memory_kb": 2048}]}
+  ]
+}

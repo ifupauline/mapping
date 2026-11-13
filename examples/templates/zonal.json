@@ -1,0 +1,71 @@
+{
+  "platform": {
+    "ecus": [
+      {"name": "PCU", "role": "central",
+       "cores": [{"type": "big", "count": 8, "speed_percent": 100},
+                 {"type": "little", "count": 0, "speed_percent": 40}],
+       "added_core_type": "big", "memory_kb": 0, "max_cores": 0},
+      {"name": "ZCU1", "role": "zone",
+       "cores": [{"type": "mcu", "count": 4, "speed_percent": 50},
+                 {"type": "lockstep", "count": 0, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 0},
+      {"name": "ZCU2", "role": "zone",
+       "cores": [{"type": "mcu", "count": 4, "speed_percent": 50},
+                 {"type": "lockstep", "count": 0, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 0},
+      {"name": "ZCU3", "role": "zone",
+       "cores": [{"type": "mcu", "count": 4, "speed_percent": 50},
+                 {"type": "lockstep", "count": 0, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 0},
+      {"name": "ZCU4", "role": "zone",
+       "cores": [{"type": "mcu", "count": 4, "speed_percent": 50},
+                 {"type": "lockstep", "count": 0, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 0},
+      {"name": "ZCU5", "role": "zone",
+       "cores": [{"type": "mcu", "count": 4, "speed_percent": 50},
+                 {"type": "lockstep", "count": 0, "speed_percent": 50}],
+       "added_core_type": "mcu", "memory_kb": 0, "max_cores": 0}
+    ]
+  },
+  "execution_model": {
+    "scheduling": "fixed-priority preemptive",
+    "communication": "implicit",
+    "utilization_cap": 0.8,
+    "let_task_wcet_us": 50,
+    "wcet_margin_percent": 0
+  },
+  "interference_model": {
+    "shared_memory_arbitration": "round-robin",
+    "memory_latency_ns": 0,
+    "memory_accesses_per_ms": 1000
+  },
+  "network_model": {
+    "standard": "TSN",
+    "topology": "star",
+    "link_mbps": 1000,
+    "backbone_mbps": 1000,
+    "switch_latency_us": 2,
+    "link_limit_percent": 100,
+    "traffic_shaping": "CBS",
+    "traffic_classes": 1,
+    "class_max_periods_us": [],
+    "idle_slopes_percent": [75],
+    "proportional_idle_slopes": true,
+    "tas_cycle_us": 500,
+    "tas_windows_percent": [70],
+    "frame_preemption": false,
+    "frer": false
+  },
+  "method": {
+    "allocation": "FFDU",
+    "sigma": 0.4,
+    "affinity": true,
+    "consolidation": true,
+    "swap_moves": false,
+    "relocation_moves": true,
+    "local_search": true,
+    "replica_separation": "ecu",
+    "fixed_hardware": false,
+    "target_scaling": 0
+  }
+}

@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering\footnotesize
+\caption{Implicit communication or strict LET between cores (300
+task-chains, 20 instances). on time: task-chains that meet their deadline
+(\%); $\bar\Delta$: mean bound of the maximum reaction time (ms); $d$:
+largest network bound (\si{\micro s}).}
+\label{tab:communication}
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{3}{c}{\FFDU} & \multicolumn{3}{c@{}}{\CADU} \\
+\cmidrule(lr){2-4}\cmidrule(l){5-7}
+ & on time & $\bar\Delta$ & $d$ & on time & $\bar\Delta$ & $d$ \\
+\midrule
+\rowcolor{white}\multicolumn{7}{@{}l}{\emph{default point}} \\
+\quad implicit & 92.6 & 205.6 & 1415 & 96.2 & 191.2 & 578 \\
+\quad strict LET & 62.4 & 244.6 & 1145 & 79.7 & 207.0 & 402 \\
+\rowcolor{white}\multicolumn{7}{@{}l}{\emph{deadlines at 500\,\%}} \\
+\quad implicit & 99.5 & 208.9 & 1496 & 99.6 & 195.6 & 573 \\
+\quad strict LET & 95.3 & 246.6 & 1109 & 98.1 & 222.4 & 435 \\
+\rowcolor{white}\multicolumn{7}{@{}l}{\emph{ring, three classes}} \\
+\quad implicit & 91.3 & 208.7 & 37135 & 96.0 & 191.7 & 40615 \\
+\quad strict LET & 61.7 & 248.5 & 31650 & 79.3 & 207.5 & 35916 \\
+\bottomrule
+\end{tabular}
+\end{table}

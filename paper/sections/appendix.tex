@@ -1,0 +1,111 @@
+\section{The applications}
+\label{app:generator}
+
+\paragraph{Generator.} An application of $N$ task-chains is drawn chain by
+chain from a seeded pseudo-random generator (xoshiro256** seeded by
+splitmix64). The steps and their parameters are the following.
+\begin{enumerate}
+\item \emph{Structure} (WATERS 2015 rules \cite{kramer2015waters}): 1, 2 or
+3 activation patterns with probabilities 70, 20 and 10\,\%; each pattern
+has 2, 3, 4 or 5 tasks with probabilities 30, 40, 20 and 10\,\%. The
+patterns of a task-chain have distinct periods, drawn with the shares of
+\cref{tab:periods}.
+\item \emph{Chain utilization}: log-uniform between 0.1 and 8\,\% of the
+reference core; 2\,\% of the task-chains are heavy, uniform between 8 and
+80\,\%.
+\item \emph{Bindings}: 25\,\% of the task-chains are local to a random zone
+(heavy ones never are). Of the others, 60\,\% start with a sensor task and
+50\,\% end with an actuator task, each pinned to a random zone. On a
+platform without zones, a random ECU that is not a central computer plays
+the role of the zone. A
+task-chain whose tasks would all be drivers keeps its last task free.
+\item \emph{Task utilizations}: each driver takes 5\,\% of the chain
+utilization; the computation tasks share the rest by UUniFast
+\cite{bini2005measuring}, redrawn while a task exceeds 30\,\% of a core.
+Then $C=\mathrm{round}(UT)$, at least \SI{1}{\micro s} and below $T$.
+\item \emph{Messages}: 4--64 bytes (70\,\%), 65--1500 bytes (25\,\%), or
+1501 bytes to 16\,kB (5\,\%).
+\item \emph{Deadline}: 300\,\% of the sum of the periods of the patterns of
+the task-chain, on its maximum reaction time.
+\item \emph{Constraints}: memory per task log-uniform in 4--256\,KB.
+Optionally, the experiments add: co-location of consecutive free tasks of
+a pattern; zone-only task-chains; per-type WCET factors log-uniform in
+$[(1+v)^{-1},1+v]$, lock-step equal to MCU; safety task-chains restricted to
+lock-step cores; and replicas. A replica is a copy of a random non-heavy
+task-chain, with its pinned tasks moved to zones that the original does
+not use; the free tasks of each are kept out of the zones the other is
+pinned to.
+\end{enumerate}
+The task-chains are finally sorted by decreasing utilization and numbered.
+The task-chains of a software update (\cref{sec:lifecycle}) are drawn the
+same way, from a seed derived from the seed of the application and the
+number of the update, and numbered after the existing ones.
+
+\begin{table}[ht]
+\centering\small
+\caption{Periods of the WATERS 2015 benchmark and their shares of the
+runnables; the 15\,\% of angle-synchronous runnables are left out.}
+\label{tab:periods}
+\begin{tabular}{@{}lrrrrrrrrr@{}}
+\toprule
+period (ms) & 1 & 2 & 5 & 10 & 20 & 50 & 100 & 200 & 1000 \\
+share (\%) & 3 & 2 & 2 & 25 & 25 & 3 & 20 & 1 & 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The detection chain.} This illustrative ADAS chain is not taken
+from a benchmark. It is one task-chain of nine tasks pinned to the central
+computer, in the order GPS grabber (7/50), LIDAR grabber (12/50),
+camera grabber (2/25), localization (28/50), detection (28/50), EKF
+(6.5/10), fusion (25/50), planner (5/10) and control (4.5/10), where $C/T$
+is in ms. The messages are 64, 16\,000, 16\,000, 256, 1024, 256, 1024, 256
+and 64 bytes.
+
+\section{The metaheuristic baselines}
+\label{app:baselines}
+
+Both baselines take the sub-chains of step 1 (\cref{sec:partitioning})
+and map them onto a fixed set of \emph{candidate cores}: the initial cores
+of the platform, then, for every ECU and core type, as many added cores as
+the sub-chains allowed on that ECU whose lightest type it is there would
+fill (their utilization on that type over $\varphi$, rounded up), within $M^{\max}_k$ and at most 64. A
+mapping is admissible when it meets every constraint of
+\cref{sec:problem}, schedulability included (the robust optimal priority
+assignment of step 4 on every core). Both minimize the energy
+\begin{equation}
+E=M-\frac{0.9}{M}\sum_{p\ \text{used}}\Bigl(1-\frac{u_p}{\varphi}\Bigr)^2,
+\label{eq:energy}
+\end{equation}
+where $M$ is the number of cores in use and $u_p$ their loads: fewer cores
+first, then the free capacity gathered on few cores, the next ones to
+empty. Since $E$ grows with the load, a sub-chain also prefers a
+faster core. Neither runs the consolidation, and neither models
+shared-memory contention. Their best mapping then gets the
+deadline-driven local search of step 6, as in the heuristic, so that the
+task-chains on time compare the searches. Both are deterministic for a
+seed, and run on the default, slow-zone, constrained and domain
+platforms of \cref{tab:exact}.
+
+\paragraph{Simulated annealing} \cite{kirkpatrick1983optimization}. It
+starts from a first fit of the sub-chains by decreasing utilization, each
+to the first candidate core that takes it, the fastest cores first. A move
+relocates one sub-chain to another candidate core (probability 0.7) or
+exchanges two sub-chains of two cores (0.3). Half of the time, the moved
+sub-chain is the one, of two drawn at random, on the less loaded core; the
+target is a core in use with probability 0.8. A move that breaks a
+constraint is not made, and one that raises the energy by $d$ is accepted
+with probability $e^{-d/T}$, the temperature decreasing geometrically
+from 0.03 to 0.0003 over the budget of moves. Every mapping visited is
+admissible: a core that loses a sub-chain stays schedulable, since its
+response times can only decrease.
+
+\paragraph{Genetic algorithm.} An individual is an order of the
+sub-chains, decoded by a packing heuristic, as in the hybrid genetic algorithms for
+bin packing of Reeves \cite{reeves1996hybrid}. It is decoded by first fit: each sub-chain
+goes to the first core in use that takes it (the fastest first, then in
+the order they were opened), else opens the first candidate core that
+does, the fastest first. The population has 40 individuals: the order by
+decreasing utilization and random orders. Parents are chosen by binary
+tournaments, recombined by order crossover (OX1, probability 0.9) and
+mutated by a swap (probability 0.3); the two best individuals are kept.

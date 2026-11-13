@@ -1,0 +1,74 @@
+usage: mapping [APPLICATION.json [CONFIGURATION.json]] [options]
+
+Without APPLICATION, a generated application (--seed, --chains).
+Without CONFIGURATION, the built-in zonal platform and the default
+method; the four allocation rules are then compared. With it, the
+rule of the file (--algorithm all compares them). Options override
+the configuration file.
+
+files
+  --config FILE     configuration file (instead of the second argument)
+  --example-config [T]  print the configuration of template T: zonal
+                    (default), domain, hybrid or distributed, then exit
+  --example-application  print a small application file, then exit
+  --generate        print the generated application file, then exit
+  --print-config    print the configuration in effect, then exit
+  --out DIR         write mapping.csv, chains.csv, cores.csv, ecus.csv,
+                    summary.json and system.json into DIR
+generated application
+  --seed N          seed of the generator (default: $MP_SEED or 1)
+  --chains N        task-chains (300)
+  --detection-chain the detection chain (9 tasks) instead
+  --replicas P      % of the chains that are replicas of others (0)
+  --colocate P      % of consecutive free tasks that share a core (0)
+  --zone-only P     % of chains whose free tasks avoid the central
+                    computers (0)
+  --lockstep P      % of chains (safety) on lock-step cores only (0)
+  --type-variation P  WCET on each core type within +-P% of its speed ratio (0)
+method
+  --algorithm A     BFDU, WFDU, FFDU, CADU or all
+  --sigma S         utilization limit of a sub-chain, fraction of a core (0.4)
+  --target-scaling F  sizing: lower the cap until the critical scaling
+                    factor reaches F, e.g. 1.25 (none)
+  --no-affinity     allocation ignores the other sub-chains of a chain
+  --no-repair       no deadline-driven local search
+  --no-consolidation  keep every core the allocation opened
+  --swap            also try swap moves between unschedulable cores
+  --no-relocation   no relocation moves from unschedulable cores
+  --fixed-hardware  add no core: a sub-chain that fits nowhere makes
+                    the mapping infeasible
+  --separate-cores  replicas on different cores, not ECUs
+execution model
+  --phi F           utilization cap of a core, fraction (0.8)
+  --let C           WCET of the LET tasks on the reference core, us (50)
+  --strict-let      strict LET between cores: an output is published at
+                    the end of its producer's period (default: implicit,
+                    copied at the first LET instant after it ends)
+  --margin P        WCET margin in percent (0)
+interference model
+  --memory-latency L  shared memory of each ECU: L ns per request,
+                    round robin between its cores (0: no contention)
+  --access-density N  memory requests per ms of reference WCET (1000)
+network model
+  --topology T      star, tree or ring (star)
+  --link M          rate of the ECU links, Mbit/s (1000)
+  --backbone M      rate of the links between switches, Mbit/s (link)
+  --classes N       LET traffic classes by period, 1 to 3 (1)
+  --tas             time-aware shaping instead of credit-based shapers
+  --ats             asynchronous traffic shaping (802.1Qcr) instead
+  --preemption      frame preemption on the links
+  --frer            ring or custom topology: messages of replicated
+                    task-chains over two routes (802.1CB)
+built-in zonal platform (not with a platform in the configuration)
+  --pcu-cores N     big cores of the central computer, PCU (8)
+  --pcu-little N    little cores of the PCU (0)
+  --pcu-speed P     speed of a big core, % of the reference (100)
+  --little-speed P  speed of a little core, % of the reference (40)
+  --pcu-memory K    memory of the PCU for the tasks, KB (unlimited)
+  --zcu-cores N     microcontroller cores of each zone controller (4)
+  --zcu-lockstep N  lock-step cores of each zone controller (0)
+  --zcu-speed P     speed of a zone core, % of the reference (50)
+  --zcu-memory K    memory of each zone controller, KB (unlimited)
+output
+  --cores           also print the mapping: cores and task-chains
+  --help            this text

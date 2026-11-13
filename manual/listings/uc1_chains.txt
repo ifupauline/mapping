@@ -1,0 +1,30 @@
+  FFDU: task-chains
+  ┌──────────────────────────┬───────┬───────┬─────────────────────────────────────────────────────┬─────────┬──────────┬──────────┬─────────┬──────────┐
+  │                    chain │ tasks │  load │ path: segments on cores                             │   comm. │ reaction │ deadline │ on time │ why late │
+  │                          │       │     % │ (sub-chains)                                        │ ECU/net │       ms │       ms │         │          │
+  ├──────────────────────────┼───────┼───────┼─────────────────────────────────────────────────────┼─────────┼──────────┼──────────┼─────────┼──────────┤
+  │      brake_by_wire_front │     3 │ 21.00 │ c2@ZC_FL(0-1) > c3@ZC_FR(2)                         │     0/1 │      4.5 │      5.0 │ yes     │          │
+  │       brake_by_wire_rear │     3 │ 17.00 │ c2@ZC_FL(0) > c4@ZC_RL(1-2)                         │     0/1 │      4.1 │      5.0 │ yes     │          │
+  │            steer_by_wire │     3 │ 25.00 │ c2@ZC_FL(0) > c3@ZC_FR(1-2)                         │     0/1 │      4.3 │      5.0 │ yes     │          │
+  │        stability_control │     4 │ 15.80 │ c6@ZC_C(0) > c0@HPC(1) > c4@ZC_RL(2)                │     0/2 │     27.2 │     30.0 │ yes     │          │
+  │        propulsion_torque │     3 │  4.70 │ c2@ZC_FL(0) > c5@ZC_RR(1-2)                         │     0/1 │     23.4 │     30.0 │ yes     │          │
+  │          adaptive_cruise │     4 │ 18.10 │ c3@ZC_FR(0) > c1@HPC(1-2) > c5@ZC_RR(3)             │     0/2 │    138.4 │    200.0 │ yes     │          │
+  │             lane_keeping │     4 │ 30.90 │ c2@ZC_FL(0) > c0@HPC(1) > c2@ZC_FL(2) > c3@ZC_FR(3) │     0/3 │    147.8 │    150.0 │ yes     │          │
+  │ traffic_sign_recognition │     3 │ 13.60 │ c2@ZC_FL(0) > c1@HPC(1) > c6@ZC_C(2)                │     0/2 │    365.1 │    400.0 │ yes     │          │
+  │        driver_monitoring │     3 │  9.53 │ c6@ZC_C(0) > c1@HPC(1) > c6@ZC_C(2)                 │     0/2 │    356.0 │    400.0 │ yes     │          │
+  │              park_assist │     4 │  3.98 │ c2@ZC_FL(0) > c1@HPC(1) > c3@ZC_FR(2)               │     0/2 │    282.5 │    300.0 │ yes     │          │
+  │       battery_management │     3 │  4.55 │ c5@ZC_RR(0) > c1@HPC(1) > c5@ZC_RR(2)               │     0/2 │    267.9 │    400.0 │ yes     │          │
+  │       thermal_management │     3 │  0.83 │ c5@ZC_RR(0) > c1@HPC(1) > c4@ZC_RL(2)               │     0/2 │    563.0 │   1000.0 │ yes     │          │
+  │          climate_control │     3 │  0.80 │ c6@ZC_C(0) > c1@HPC(1) > c6@ZC_C(2)                 │     0/2 │    667.0 │   1000.0 │ yes     │          │
+  │               headlights │     3 │  1.00 │ c6@ZC_C(0) > c1@HPC(1) > c2@ZC_FL(2)                │     0/2 │     80.1 │    100.0 │ yes     │          │
+  │          turn_indicators │     3 │  0.55 │ c6@ZC_C(0) > c0@HPC(1) > c4@ZC_RL(2)                │     0/2 │     72.5 │    100.0 │ yes     │          │
+  │                   wipers │     3 │  0.22 │ c3@ZC_FR(0-1) > c2@ZC_FL(2)                         │     0/1 │    232.6 │    300.0 │ yes     │          │
+  │          central_locking │     3 │  0.50 │ c6@ZC_C(0) > c0@HPC(1) > c4@ZC_RL(2)                │     0/2 │    327.0 │    500.0 │ yes     │          │
+  │            tire_pressure │     3 │  0.04 │ c4@ZC_RL(0-1) > c6@ZC_C(2)                          │     0/1 │   2007.4 │   3000.0 │ yes     │          │
+  │        window_front_left │     3 │  0.90 │ c2@ZC_FL(0)                                         │     0/0 │     23.9 │     60.0 │ yes     │          │
+  │       window_front_right │     3 │  0.90 │ c3@ZC_FR(0)                                         │     0/0 │     21.7 │     60.0 │ yes     │          │
+  │             seat_heating │     2 │  0.01 │ c4@ZC_RL(0)                                         │     0/0 │   1002.5 │        - │ yes     │          │
+  │       instrument_cluster │     3 │  7.20 │ c4@ZC_RL(0) > c1@HPC(1) > c6@ZC_C(2)                │     0/2 │     74.3 │    100.0 │ yes     │          │
+  │        energy_management │     2 │  1.90 │ c1@HPC(0)                                           │     0/0 │    135.4 │        - │ yes     │          │
+  │              diagnostics │     2 │  0.80 │ c0@HPC(0)                                           │     0/0 │   1021.3 │        - │ yes     │          │
+  └──────────────────────────┴───────┴───────┴─────────────────────────────────────────────────────┴─────────┴──────────┴──────────┴─────────┴──────────┘

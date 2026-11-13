@@ -1,0 +1,45 @@
+\begin{table}[t]
+\centering\footnotesize
+\caption{Exact formulation against the heuristics (10 instances per row;
+instances without an admissible mapping left out). Zonal platform:
+default, slow zone controllers, spatial constraints; then the domain and
+hybrid platforms of \cref{tab:templates}. \emph{proven}: solved to
+optimality within 60\,s; \emph{opt.}: mean optimum (best found if not
+proven); gaps in \% of the optimum, with consolidation / without.}
+\label{tab:exact}
+\setlength{\tabcolsep}{2pt}
+\rowcolors{2}{brandlight}{white}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+\rowcolor{white}
+platform & chains & proven & $M_{\mathrm{LB}}$ & opt. & \BFDU & \FFDU &
+\CADU \\
+\midrule
+default & 20 & 10/10 & 5.0 & 5.0 & 0 / 20 & 0 / 20 & 0 / 16 \\
+default & 50 & 10/10 & 5.0 & 5.0 & 0 / 34 & 0 / 34 & 4 / 28 \\
+default & 100 & 10/10 & 5.0 & 6.1 & 0 / 31 & 0 / 31 & 21 / 41 \\
+default & 200 & 10/10 & 7.4 & 9.1 & 0 / 13 & 0 / 13 & 35 / 54 \\
+default & 300 & 10/10 & 11.6 & 13.7 & 3 / 11 & 3 / 11 & 37 / 50 \\
+slow zones & 20 & 10/10 & 5.0 & 5.2 & 0 / 16 & 0 / 16 & 2 / 16 \\
+slow zones & 50 & 10/10 & 5.0 & 6.0 & 0 / 14 & 0 / 14 & 15 / 37 \\
+slow zones & 100 & 9/10 & 5.4 & 8.2 & 1 / 10 & 1 / 10 & 39 / 68 \\
+slow zones & 200 & 10/10 & 10.0 & 13.1 & 2 / 6 & 2 / 6 & 58 / 72 \\
+slow zones & 300 & 7/10 & 15.7 & 19.5 & 1 / 5 & 1 / 4 & 44 / 54 \\
+constraints & 20 & 10/10 & 5.0 & 5.0 & 0 / 20 & 0 / 20 & 0 / 14 \\
+constraints & 50 & 10/10 & 5.0 & 5.0 & 4 / 30 & 4 / 30 & 4 / 30 \\
+constraints & 100 & 8/10 & 5.0 & 5.9 & 7 / 39 & 7 / 38 & 19 / 48 \\
+constraints & 200 & 10/10 & 7.6 & 9.1 & 14 / 30 & 13 / 29 & 32 / 53 \\
+\midrule
+domain & 20 & 10/10 & 5.0 & 5.0 & 0 / 14 & 0 / 0 & 0 / 4 \\
+domain & 50 & 10/10 & 5.0 & 5.0 & 0 / 50 & 0 / 18 & 6 / 24 \\
+domain & 100 & 10/10 & 5.0 & 5.1 & 10 / 83 & 2 / 37 & 38 / 63 \\
+domain & 200 & 10/10 & 7.0 & 8.1 & 7 / 50 & 11 / 26 & 36 / 71 \\
+domain & 300 & 10/10 & 10.8 & 12.4 & 5 / 34 & 11 / 34 & 26 / 53 \\
+hybrid & 20 & 10/10 & 5.0 & 5.0 & 0 / 20 & 0 / 20 & 0 / 16 \\
+hybrid & 50 & 10/10 & 5.0 & 5.0 & 0 / 34 & 0 / 34 & 2 / 24 \\
+hybrid & 100 & 10/10 & 5.0 & 5.7 & 2 / 41 & 2 / 41 & 14 / 44 \\
+hybrid & 200 & 10/10 & 7.2 & 8.7 & 1 / 19 & 1 / 19 & 30 / 49 \\
+hybrid & 300 & 10/10 & 11.2 & 13.0 & 3 / 15 & 2 / 14 & 33 / 48 \\
+\bottomrule
+\end{tabular}
+\end{table}

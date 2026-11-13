@@ -1,0 +1,130 @@
+\section{Problem statement}
+\label{sec:problem}
+
+\begin{inbrief}
+A mapping cuts every task-chain into sub-chains, chooses the cores,
+allocates the sub-chains and sets the priorities. It must respect seven
+constraints (C1--C7). The objective is lexicographic: the fewest cores,
+then the most task-chains that meet their deadline. Two variants add a
+timing margin and the software updates of the platform's life. Even the
+first objective is strongly NP-hard.
+\end{inbrief}
+
+\subsection{Decisions}
+
+A \emph{mapping} of an application $\Chains$ onto the platform consists of
+four decisions.
+\begin{enumerate}[label=(D\arabic*)]
+\item A partition of every task-chain into sub-chains, i.e.\ a set $\Frags$
+of runs of consecutive tasks. Every sub-chain $f$ inherits $A_f=
+\bigcap_{\tau\in f}A_\tau$, $\Theta_f=\bigcap_{\tau\in f}\Theta_\tau$,
+$\mu_f=\sum_{\tau\in f}\mu_\tau$ and the replica group of its chain.
+\item A set of cores $\Cores\supseteq\Cores_0$, made of the initial cores
+and the added ones, each with an ECU $\kappa(p)$ and a type
+$\theta(p)\in\Types(\kappa(p))$.
+\item An allocation $\pi:\Frags\to\Cores$.
+\item A priority order on every core: the LET task first, then a total
+order of the application tasks.
+\end{enumerate}
+
+\subsection{Constraints}
+
+A mapping is \emph{admissible} when, for all sub-chains $f,f'$, cores $p$
+and ECUs $k$:
+\begin{align}
+&\kappa(\pi(f))\in A_f,\quad \theta(\pi(f))\in\Theta_f \tag{C1}\label{c:allowed}\\
+&g_{\tau_i}=1\ \Rightarrow\ \tau_i,\tau_{i+1}\text{ on the same core} \tag{C2}\label{c:coloc}\\
+&\mathcal{L}(p)\le\varphi \tag{C3}\label{c:load}\\
+&\textstyle\sum_{f:\kappa(\pi(f))=k}\mu_f\le M_k \tag{C4}\label{c:memory}\\
+&\rho(f)=\rho(f')\ne\varnothing,\ \xi(f)\ne\xi(f')\Rightarrow
+	\kappa(\pi(f))\ne\kappa(\pi(f')) \tag{C5}\label{c:replica}\\
+&\tau_i,\tau_j\in\xi\text{ on }p,\ T_{\tau_i}=T_{\tau_j},\ i<j\Rightarrow
+	\mathrm{prio}(\tau_i)>\mathrm{prio}(\tau_j) \tag{C6}\label{c:prec}\\
+&R_\tau\le T_\tau\quad\text{for every application task }\tau \tag{C7}\label{c:sched}
+\end{align}
+In words: (C1) respects the bindings to ECUs and the allowed core types;
+(C2) keeps co-located tasks together, so a group of co-located tasks
+takes the constraints of all its tasks (the ECU of a driver in it, the
+common allowed ECUs and core types), and an input whose group has none in
+common is rejected; (C3) is the utilization cap and
+(C4) the memory of each ECU; (C5) keeps redundant task-chains on different
+ECUs (the core policy replaces $\kappa(\pi(\cdot))$ with $\pi(\cdot)$);
+(C6) enforces precedence on a core, for the tasks of one chain with the
+same period (\cref{sec:execution}); and (C7) asks
+every task to meet its deadline, with the response times of
+\cref{sec:rta}. With contention, the WCETs in (C3) and (C7) are those of
+\cref{eq:wcet}, so they depend on the number of cores of the ECU that run
+tasks. A mapping that cannot satisfy (C1)--(C5), even with added cores, is
+\emph{infeasible}. This happens when a sub-chain does not fit an empty
+core of any allowed type, or when the pinned tasks alone exceed a memory.
+
+\subsection{Objectives}
+
+Let $M(\pi)$ be the number of cores that run at least one application task,
+and $N(\pi)$ the number of task-chains that meet their deadline
+(\cref{sec:metrics}).
+
+\begin{keybox}{Problem (mapping task-chains onto a vehicle platform)}
+Given the platform, the network configuration and the application, find
+an admissible mapping that
+\begin{enumerate}[label=(O\arabic*),leftmargin=2.2em]
+\item minimizes the number of cores used, $M(\pi)$; then
+\item maximizes the number of task-chains that meet their deadline,
+$N(\pi)$.
+\end{enumerate}
+\emph{Sizing variant:} given a target $\lambda^\star\ge1$, add the
+constraint $\lambda(\pi)\ge\lambda^\star$ on the critical scaling factor
+(\cref{sec:sensitivity}): every WCET may grow by the factor $\lambda^\star$
+without a deadline miss.
+
+\emph{Lifecycle variant:} the hardware chosen for $\Chains$ at the SOP is
+then fixed. Given software updates $\Chains_1,\Chains_2,\dots$ (sets of
+new task-chains), maximize the number of updates that can be added, one
+after the other, without new cores and without moving the sub-chains
+already deployed (\cref{sec:lifecycle}).
+\end{keybox}
+
+The order of the objectives reflects early design. The hardware is the
+cost, and timing is first a constraint (C7), then a quality. The two
+objectives conflict. Packing sub-chains tightly lowers $M$, but it spreads
+task-chains, and a task-chain spread over ECUs pays LET sampling and
+network delays. \Cref{sec:evaluation} therefore reports the trade-off
+between them, and the method offers a communication-aware rule that
+favours (O2).
+
+\begin{proposition}[Hardness]
+\label{prop:hard}
+Deciding whether an admissible mapping with $M(\pi)\le m$ exists is
+NP-hard in the strong sense, even with one ECU, one core type, one task
+per task-chain, harmonic periods and no network.
+\end{proposition}
+\begin{proof}
+The reduction is from bin packing, whose decision version is NP-complete
+in the strong sense \cite{garey1979computers}: given integer sizes
+$s_1,\dots,s_n$, a capacity $B$ and a number $m$, can the items be packed
+into $m$ bins of capacity $B$? Build one single-task chain per item, all
+with the period $T=B$ and the WCET $C_i=s_i$ on a single core type of speed
+100, so that the numbers of the instance are those of the bin-packing
+instance. Set $c_{\LET}=0$, $\ell=0$ and $\varphi=1$, with unlimited memory,
+no replicas and no co-location. A single task cannot be cut, so the
+sub-chains are the tasks. All tasks of a core are released together and
+share one period, so under any fixed-priority order the lowest-priority
+task completes after $\sum C_i$, and the core is schedulable if and only
+if $\sum C_i\le T$, that is, if its utilization is at most 1. So (C3) and
+(C7) coincide, and the admissible mappings onto $m$ cores are exactly the
+packings of the items into $m$ bins. The reduction is polynomial and keeps
+the numbers polynomially bounded, so strong NP-hardness carries over.
+\end{proof}
+The problem is claimed NP-hard, not NP-complete. Membership in NP is not
+known: the natural certificate, a mapping, is checked with fixed-priority
+response times, and computing them is NP-hard in general
+\cite{eisenbrand2008response}.
+
+The response times, the LET periods (a GCD of the periods of each core),
+the contention (the number of cores used per ECU), the multi-rate reaction
+times and the network fixed points are all non-linear in the decisions,
+and a vehicle has thousands of tasks. The method of \cref{sec:method} is
+therefore a decomposition heuristic. Its distance to the optimum of (O1)
+is measured in two ways: by a lower bound on any mapping
+(\cref{sec:lower-bound}) and, on instances of up to 300 task-chains, by an
+exact formulation (\cref{sec:exact}).

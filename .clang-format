@@ -1,0 +1,23 @@
+# Linux kernel coding style for the C code (STYLE.md), reduced to the
+# settings that matter for this project.
+BasedOnStyle: LLVM
+Language: Cpp
+UseTab: Always
+IndentWidth: 8
+TabWidth: 8
+ContinuationIndentWidth: 8
+ColumnLimit: 80
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: false
+IndentCaseLabels: false
+IndentGotoLabels: false
+PointerAlignment: Right
+SpaceAfterCStyleCast: false
+SpacesBeforeTrailingComments: 1
+AlignTrailingComments: true
+SortIncludes: false
+ReflowComments: false

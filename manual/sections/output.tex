@@ -1,0 +1,154 @@
+\section{Reading the results}
+\label{sec:output}
+
+This section reads the output of use case~1 (\cref{sec:uc1}), produced by
+\begin{shell}
+mapping examples/uc1\_central\_sizing/application.json \textbackslash\\
+\quad examples/uc1\_central\_sizing/configuration.json -{}-cores
+\end{shell}
+
+\subsection{What the tool understood}
+
+The output starts with the application and the platform as the tool read
+them: the number of task-chains and tasks, how many are bound to one ECU,
+how many start with a sensor task and end with an actuator task, every ECU
+with its cores, then the models and the method.
+
+\listing[\fontsize{6.3pt}{7.6pt}\selectfont]{listings/uc1_input.txt}
+
+\subsection{The summary table}
+\label{sec:summary}
+
+One column per allocation rule (here only FFDU, the rule of the file).
+
+\begin{table}[h]
+\centering\small\row
+\caption{The rows of the summary table.}
+\label{tab:summary-rows}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{50mm}X@{}}
+\toprule\rowcolor{white}
+row & meaning \\
+\midrule
+feasible & every sub-chain found a core; otherwise the line below the table says which one did not, and why (\cref{sec:infeasible}) \\
+sub-chains, fragmentation rate, forced cuts & the partitioning: sub-chains, cuts in \% of the possible cuts, cuts between tasks bound to different ECUs \\
+cores used $M$ & cores that run at least one task: \textbf{the sizing result}; then on central computers and on the other ECUs \\
+lower bound on $M$ & no mapping of these sub-chains uses fewer cores (each ECU's bound load, and the total load, over the cap) \\
+cores added, cores emptied & cores beyond the initial ones; cores emptied by the consolidation \\
+schedulable cores SR & \% of cores where every task meets its deadline, after the priorities, the optional swaps, the relocations, and at the end \\
+critical scaling factor & the margin of the platform (\cref{sec:concepts-metrics}); with sizing, the cap found and whether the target was reached \\
+application / LET load, room left & in cores, summed over the cores used \\
+task-chains schedulable / meeting deadline & \% of chains whose tasks are all schedulable; and also within their deadline over bounded routes \\
+local search moves & moves kept by the deadline-driven local search \\
+communications inside an ECU / inter-ECU & messages between two cores of one ECU (shared memory) and between ECUs (network flows) \\
+replicated with FRER & flows sent over two routes \\
+network delay bound, busiest port & the largest bound of a flow; the largest LET load of an output port \\
+end-to-end response time, max reaction time & the largest values over the task-chains (\cref{sec:concepts-metrics}) \\
+CPU time & time to compute the design point (and with the sizing) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\begin{minipage}[t]{0.47\textwidth}
+\vspace{0pt}
+\listingbox[\scriptsize]{listings/uc1_summary.txt}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\textwidth}
+\vspace{0pt}\small
+\textbf{Partitioning.} 64 sub-chains for 73 tasks: most chains are cut
+at both ends, where the sensor and the actuator are bound to zone
+controllers (40 forced cuts).
+
+\textbf{Cores.} 7 cores are used: 2 on the HPC and one in each zone
+controller. The lower bound is 5: no mapping of these sub-chains can do
+with fewer. No core was added; none had to be emptied.
+
+\textbf{Schedulability.} Every core is schedulable after the priority
+assignment; the relocation moves had nothing to do. The critical
+scaling factor 1.302: every WCET may grow by 30\,\% before a core misses
+a deadline.
+
+\textbf{Load.} 2.70 cores of application load, 0.34 of LET copies, 2.56
+cores left below the caps.
+
+\textbf{Task-chains.} All on time; the local search kept 6 moves to get
+there. 33 messages cross the network; the largest delay bound is
+0.8\,ms on a port loaded at 0.5\,\%.
+
+\textbf{Time.} The design point took less than a millisecond of CPU.
+\end{minipage}
+
+
+\subsection{Per ECU}
+
+The second table gives, for every ECU and rule, the cores used, their
+load in cores (LET included) and the smallest critical scaling factor of
+its cores. Here \cmd{ZC\_FL} is the ECU with the least margin: its 1.302
+is the factor of the platform.
+
+\listing{listings/uc1_ecus.txt}
+
+\subsection{Cores and task-chains}
+\label{sec:cores-chains}
+
+With \opt{cores}, a table per rule lists the cores in use: ECU, type and
+speed, load and LET load (\% of the core), scaling factor,
+schedulability, number of tasks, and the sub-chains on it as
+\emph{chain.index}.
+
+\listing[\tiny]{listings/uc1_cores.txt}
+
+A second table follows every task-chain: its path as segments on cores,
+with the indices of its sub-chains in brackets; the number of
+communications inside an ECU and over the network; its maximum reaction
+time and its deadline; and, if it is late, why: \emph{task late} (a task
+misses its period), \emph{network} (a flow crosses an overloaded port) or
+\emph{deadline} (the reaction time exceeds the deadline).
+
+\listing[\fontsize{4.6pt}{5.6pt}\selectfont]{listings/uc1_chains.txt}
+
+\begin{tip}[Reading a path]
+\cmd{c6@ZC\_C(0) > c0@HPC(1) > c4@ZC\_RL(2)} (stability control) means:
+sub-chain 0 runs on core c6 of zone controller \cmd{ZC\_C}, sub-chain 1
+on core c0 of the HPC, sub-chain 2 on core c4 of \cmd{ZC\_RL}. The two
+arrows are two inter-ECU communications, each costing LET delays and a
+network transfer: 27\,ms of reaction time for tasks of 5\,ms.
+\end{tip}
+
+\subsection{When the mapping is infeasible}
+\label{sec:infeasible}
+
+A mapping is infeasible when a sub-chain fits on no core. The tool names
+it and says why:
+\begin{shell}
+FFDU: infeasible, sub-chain 23.0 (0.8 \% of a reference core, 6144 KB,\\
+free): not enough memory, at most 5120 KB left on the ECUs it may run on
+\end{shell}
+The other reasons are: no core of the ECUs it may run on has a type it
+allows; the hardware is fixed (\opt{fixed-hardware}); the ECUs with memory
+left already have their largest number of cores; or the sub-chain is
+larger than an empty core (lower \opt{sigma}, or use faster cores).
+
+\subsection{The result files}
+\label{sec:outfiles}
+
+\opt{out DIR} writes six files, one row per rule and item, so that a
+spreadsheet or a script can take over.
+
+\begin{table}[ht]
+\centering\small\row
+\caption{The files of \opt{out}.}
+\label{tab:outfiles}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{24mm}X@{}}
+\toprule\rowcolor{white}
+file & content \\
+\midrule
+\cmd{summary.json} & one object per rule: the rows of the summary table, as numbers \\
+\cmd{ecus.csv} & per rule and ECU: role, cores used, application and LET load (cores), critical scaling factor, memory used and capacity (KB), load of its egress and ingress network ports (\%) \\
+\cmd{cores.csv} & per rule and core in use: ECU, type, speed, added or initial, load and LET load (\%), schedulable, critical scaling factor, tasks \\
+\cmd{chains.csv} & per rule and task-chain: tasks, utilization, sub-chains, communications over the network and inside an ECU, end-to-end response time, maximum reaction time (both empty when the chain has no bound: a task above its period or an unbounded port), deadline, schedulable, network bounded, on time, why late \\
+\cmd{mapping.csv} & per rule and task: chain and task (numbers and names), sub-chain, core, ECU, core type, priority, period, WCET on its core, response time (empty for a task above its period, which has none) \\
+\cmd{system.json} & the timing model of each mapping (cores with their LET task and tasks, chains with the core of each task and the bound of each hop), for the full-system simulation (\cref{sec:ex-syssim}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
